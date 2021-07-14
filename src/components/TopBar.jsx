@@ -5,6 +5,8 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Badge from '@material-ui/core/Badge';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import { useMenu } from "../context/SideMenuContext";
+import { Link } from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -28,15 +30,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function TopBar({ open, onOpenChange }) {
+function TopBar() {
     const classes = useStyles();
+    const [openSideMenu, setOpenSideMenu] = useMenu();
+
     return (
         <AppBar color="inherit" className={classes.appBar}>
             <Toolbar>
-                <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => onOpenChange(!open)}>
+                <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => setOpenSideMenu(!openSideMenu)}>
                     <MenuIcon />
                 </IconButton>
-                <a href="/">[LOGO]</a>
+                <Link to='/'>[LOGO]</Link>
                 <div className={classes.grow}></div>
 
                 <IconButton color="inherit" className={classes.iconButton}>
