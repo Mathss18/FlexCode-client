@@ -1,5 +1,6 @@
 import Routes from './routes'
 import { ThemeProvider, createTheme } from '@material-ui/core/styles';
+import MenuContextProvider from './context/MenuContext';
 function App() {
 
   const theme = createTheme({
@@ -23,7 +24,9 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Routes />
+      <MenuContextProvider>
+        <Routes />
+      </MenuContextProvider>
     </ThemeProvider>
   );
 }
