@@ -14,6 +14,9 @@ function SideMenuContextProvider({ children }) {
     );
 }
 
-export const useMenu = () => useContext(SideMenuContext);
+export function useMenu(){
+    return useContext(SideMenuContext);
+}
 
 export default SideMenuContextProvider;
+

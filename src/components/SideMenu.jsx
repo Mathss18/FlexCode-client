@@ -11,17 +11,20 @@ import {
     ListSubheader,
     Link,
 } from "@material-ui/core/";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import DraftsIcon from "@material-ui/icons/Drafts";
-import SendIcon from "@material-ui/icons/Send";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import StarBorder from "@material-ui/icons/StarBorder";
 import { useHistory } from "react-router-dom";
 import clsx from "clsx";
 import { useCadastroMenu } from "../context/SideMenuCadastroContext";
 import { useMenu } from "../context/SideMenuContext";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
+import LocalShippingIcon from '@material-ui/icons/LocalShipping';
+import DraftsIcon from "@material-ui/icons/Drafts";
+import SendIcon from "@material-ui/icons/Send";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import WorkIcon from '@material-ui/icons/Work';
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 
 const drawerWidth = 240;
 
@@ -73,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function SideMenu({ open, children }) {
+function SideMenu({ children }) {
     const classes = useStyles();
     const history = useHistory();
     const [openCadastroList, setOpenCadastroList] = useCadastroMenu();
@@ -84,7 +87,7 @@ function SideMenu({ open, children }) {
         setOpenSideMenu(!openSideMenu);
     };
 
-    // Função que controla se Side Menu esta aberto ou fechado
+    // Função que controla se Lista de cadastros esta aberto ou fechado
     const handleOpenCadastroList = () => {
         setOpenCadastroList(!openCadastroList);
     };
@@ -118,30 +121,49 @@ function SideMenu({ open, children }) {
                 >
                     <ListItem button onClick={handleOpenCadastroList}>
                         <ListItemIcon>
-                            <InboxIcon />
+                            <AddBoxIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Inbox" />
+                        <ListItemText primary="Cadastros" />
                         {openCadastroList ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
 
                     <Collapse in={openCadastroList} timeout="auto" unmountOnExit>
-                        <List onClick={() => history.push("/cliente/novo")} disablePadding>
+                        <List onClick={() => history.push("/clientes")} disablePadding>
                             <ListItem button className={classes.nested}>
                                 <ListItemIcon>
-                                    <StarBorder />
+                                    <PeopleAltIcon />
                                 </ListItemIcon>
-                                <ListItemText primary="Starred" />
+                                <ListItemText primary="Clientes" />
                             </ListItem>
                         </List>
 
-                        <List onClick={() => history.push("/")} disablePadding>
+                        <List onClick={() => history.push("/fornecedores")} disablePadding>
                             <ListItem button className={classes.nested}>
                                 <ListItemIcon>
-                                    <StarBorder />
+                                    <ShoppingBasketIcon />
                                 </ListItemIcon>
-                                <ListItemText primary="Home" />
+                                <ListItemText primary="Fornecedores" />
                             </ListItem>
                         </List>
+
+                        <List onClick={() => history.push("/transportadoras")} disablePadding>
+                            <ListItem button className={classes.nested}>
+                                <ListItemIcon>
+                                    <LocalShippingIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Transportadoras" />
+                            </ListItem>
+                        </List>
+
+                        <List onClick={() => history.push("/funcionarios")} disablePadding>
+                            <ListItem button className={classes.nested}>
+                                <ListItemIcon>
+                                    <WorkIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Funcionarios" />
+                            </ListItem>
+                        </List>
+
                     </Collapse>
 
                     <ListItem button>
@@ -160,7 +182,7 @@ function SideMenu({ open, children }) {
                 </List>
                 <Divider />
             </Drawer>
-            <main className={clsx(classes.content, { [classes.contentShift]: open })}>
+            <main className={clsx(classes.content, { [classes.contentShift]: openSideMenu })}>
                 <div className={classes.drawerHeader} />
                 {children}
             </main>

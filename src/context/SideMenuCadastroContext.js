@@ -11,6 +11,9 @@ function SideMenuCadastroContextProvider({ children }){
   );
 };
 
-export const useCadastroMenu = () => useContext(SideMenuCadastroContext);
+
+export function useCadastroMenu(){
+  return useContext(SideMenuCadastroContext);
+}
 
 export default SideMenuCadastroContextProvider;
