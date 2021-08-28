@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
     appBar: {
         zIndex: 999,
         boxShadow: 'none',
+        borderBottom: '1px solid #e7e7e7'
         //backgroundColor: theme.palette.background.dark,
     },
     iconButton: {

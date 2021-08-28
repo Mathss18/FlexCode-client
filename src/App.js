@@ -1,6 +1,5 @@
 import Routes from "./routes";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
-import SideMenuCadastroContextProvider from "./context/SideMenuCadastroContext";
 import SideMenuContextProvider from "./context/SideMenuContext";
 
 function App() {

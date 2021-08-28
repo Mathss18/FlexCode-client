@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import SideMenu from '../components/SideMenu';
 import TopBar from '../components/TopBar';
@@ -35,12 +34,10 @@ const useStyles = makeStyles((theme) => ({
 function Home() {
     const classes = useStyles();
 
-    const [open, setOpen] = useState(true);
-
     return (
         <div className={classes.root}>
-            <TopBar open={open} onOpenChange={setOpen} />
-            <SideMenu open={open} onOpenChange={setOpen}>
+            <TopBar/>
+            <SideMenu>
 
                 <div className={classes.card_conteiner}>
                     <DashboardCard type='green' />

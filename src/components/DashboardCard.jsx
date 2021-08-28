@@ -130,7 +130,7 @@ function DashboardCard(props) {
 
                 {/*---- Card Footer* ----*/}
                 <CardActions className={classes.card_green_footer}>
-                    <a size="small" className={classes.card_title} >Ir para calendario de contas</a>
+                    <a size="small" className={classes.card_title} href="#">Ir para calendario de contas</a>
                 </CardActions>
 
             </Card>
@@ -144,7 +144,7 @@ function DashboardCard(props) {
                     {/*---- Card Header* ----*/}
                     <div className={classes.card_header}>
                         <Typography className={classes.card_title} color="textSecondary" gutterBottom>
-                            Contas a receber hoje
+                            Contas a pagar hoje
                         </Typography>
                         <TrendingDownIcon className={classes.card_icon} />
                     </div>
@@ -156,7 +156,7 @@ function DashboardCard(props) {
 
                 {/*---- Card Footer* ----*/}
                 <CardActions className={classes.card_red_footer}>
-                    <a size="small" className={classes.card_title} >Ir para calendario de contas</a>
+                    <a size="small" className={classes.card_title} href="#">Ir para calendario de contas</a>
                 </CardActions>
 
             </Card>
@@ -190,7 +190,7 @@ function DashboardCard(props) {
 
                 {/*---- Card Footer* ----*/}
                 <CardActions className={classes.card_blue_footer}>
-                    <a size="small" className={classes.card_title} >Ir para fulxo de caixa</a>
+                    <a size="small" className={classes.card_title} href="#">Ir para fulxo de caixa</a>
                 </CardActions>
 
             </Card>
