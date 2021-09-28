@@ -11,6 +11,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import MouseIcon from '@material-ui/icons/Mouse';
+import buscarCep from '../../services/buscarCep';
 
 
 
@@ -103,6 +104,25 @@ function CadastrarFuncionarioPage() {
 
     }, []);
 
+    function handleCepChange() {
+        const cep = values.cep;
+        const validacep = /^[0-9]{8}$/;
+        if(validacep.test(cep.replace(/\D/g, ''))) {
+            buscarCep(values.cep.replace(/\D/g, '')).then(response => {
+                setValues({
+                    ...values,
+                    rua: response.logradouro,
+                    estado: response.uf,
+                    bairro: response.bairro,
+                    cidade: response.localidade,
+                    codigoMunicipio: response.ibge
+                })
+            });
+        }else {
+            alert('CEP Inválido');
+        }
+    }
+
     function handleOnChange(event) {
         const { name, value } = event.target;
         // const name = event.target.name;
@@ -129,7 +149,7 @@ function CadastrarFuncionarioPage() {
         fileReader.readAsDataURL(event.target.files[0]);
         fileReader.onload = (e) => {
             if (fileReader.readyState === 2) {
-                setValues({ ...values, ['foto']: e.target.result });
+                setValues({ ...values, 'foto': e.target.result });
             }
         };
     };
@@ -223,7 +243,7 @@ function CadastrarFuncionarioPage() {
                         <Grid container spacing={2}>
 
                             <Grid item xs={3}>
-                                <TextField variant="outlined" label="CEP" fullWidth className={classes.input} value={values.cep} name="cep" onChange={handleOnChange} />
+                                <TextField variant="outlined" label="CEP" fullWidth className={classes.input} value={values.cep} name="cep" onBlur={handleCepChange} onChange={handleOnChange} />
 
                             </Grid>
                             <Grid item xs={3}>
