@@ -9,6 +9,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
+import buscarCep from '../../services/buscarCep';
 
 
 
@@ -79,6 +80,25 @@ function CadastrarTransportadoraPage() {
     const classes = useStyles();
     const history = useHistory();
     const [values, setValues] = useState(initialValues);
+
+    function handleCepChange() {
+        const cep = values.cep;
+        const validacep = /^[0-9]{8}$/;
+        if(validacep.test(cep.replace(/\D/g, ''))) {
+            buscarCep(values.cep.replace(/\D/g, '')).then(response => {
+                setValues({
+                    ...values,
+                    rua: response.logradouro,
+                    estado: response.uf,
+                    bairro: response.bairro,
+                    cidade: response.localidade,
+                    codigoMunicipio: response.ibge
+                })
+            });
+        }else {
+            alert('CEP Inválido');
+        }
+    }
 
     function handleOnChange(event) {
         const { name, value } = event.target;
@@ -169,7 +189,7 @@ function CadastrarTransportadoraPage() {
                         <Grid container spacing={2}>
 
                             <Grid item xs={3}>
-                                <TextField variant="outlined" label="CEP" fullWidth className={classes.input} value={values.cep} name="cep" onChange={handleOnChange} />
+                                <TextField variant="outlined" label="CEP" fullWidth className={classes.input} value={values.cep} name="cep" onBlur={handleCepChange} onChange={handleOnChange} />
 
                             </Grid>
                             <Grid item xs={3}>

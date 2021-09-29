@@ -6,7 +6,6 @@ import DashboardChart from '../components/DashboardChart';
 
 
 
-
 const useStyles = makeStyles((theme) => ({
     root: {
         boxSizing: 'border-box',
@@ -33,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Home() {
     const classes = useStyles();
-
+    
     return (
         <div className={classes.root}>
             <TopBar/>
