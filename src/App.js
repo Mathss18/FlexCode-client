@@ -1,8 +1,7 @@
 import Routes from "./routes";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import SideMenuContextProvider from "./context/SideMenuContext";
-import { Provider } from "react-redux";
-import store from "./store";
+
 
 function App() {
 	const theme = createTheme({
@@ -25,13 +24,11 @@ function App() {
 	});
 
 	return (
-		<Provider store={store}>
-			<ThemeProvider theme={theme}>
-				<SideMenuContextProvider>
-					<Routes />
-				</SideMenuContextProvider>
-			</ThemeProvider>
-		</Provider>
+		<ThemeProvider theme={theme}>
+			<SideMenuContextProvider>
+				<Routes />
+			</SideMenuContextProvider>
+		</ThemeProvider>
 	);
 }
 

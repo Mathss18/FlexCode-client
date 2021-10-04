@@ -2,7 +2,7 @@ import React from "react";
 
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Home from "../src/pages/Home";
-import AuthPage from "../src/pages/AuthPage";
+import LoginPage from "../src/pages/login/LoginPage";
 import ListarClientePage from "./pages/cliente/ListarClientePage";
 import CadastrarClientePage from "./pages/cliente/CadastrarClientePage";
 import EditarClientePage from "./pages/cliente/EditarClientePage";
@@ -27,8 +27,8 @@ export default function Routes() {
 	return (
 		<BrowserRouter>
 			<Switch>
-				<Route path="/" exact component={AuthPage}></Route>
-				<Route path="/Home" exact component={Home}></Route>
+				<Route path="/" exact component={LoginPage}></Route>
+				<Route path="/home" exact component={Home}></Route>
 
 				<Route path="/clientes" exact component={ListarClientePage}></Route>
 				<Route

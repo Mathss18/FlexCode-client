@@ -5,7 +5,7 @@ import MUIDataTable from "mui-datatables";
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import api from '../../services/api';
-import language from '../../config/tableTranslation';
+import config from '../../config/tablesConfig';
 import { Button } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
@@ -45,6 +45,7 @@ function ListarFornecedorPage() {
     const history = useHistory();
     const [fornecedores, setFornecedores] = useState([]);
     const columns = ["Nome", "Tipo", "Telefone", "Celular", "Email", "Contato", "Ações"];
+    var isLoading = false;
     const data = [];
 
     function handleOnClickShowButton(event, id) {
@@ -58,6 +59,9 @@ function ListarFornecedorPage() {
 
 
     useEffect(() => {
+        if(!isLoading) 
+            config.textLabels.body.noMatch = "Nenhum resultado encontrado."
+
         api.get('/fornecedores')
             .then((response) => {
                 response.data['data'].forEach(element => {
@@ -82,11 +86,11 @@ function ListarFornecedorPage() {
                     data.push(array);
 
                 });
-                console.log(data);
                 setFornecedores(data)
+                isLoading = false;
 
             })
-    }, []);
+    }, [isLoading]);
 
     return (
         <>
@@ -100,7 +104,7 @@ function ListarFornecedorPage() {
                     title={"Lista de Fornecedors"}
                     data={fornecedores}
                     columns={columns}
-                    options={language}
+                    options={config}
                 />
             </SideMenu>
 

@@ -5,7 +5,7 @@ import MUIDataTable from "mui-datatables";
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import api from '../../services/api';
-import language from '../../config/tableTranslation';
+import config from '../../config/tablesConfig';
 import { Button } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
@@ -47,6 +47,7 @@ function ListarFuncionarioPage() {
     const [funcionarios, setFuncionarios] = useState([]);
     const [grupos, setGrupos] = useState([]);
     const columns = ["Nome", "Grupo", "Ativo", "Celular", "Email", "Ações"];
+    var isLoading = true;
     const data = [];
 
     function handleOnClickShowButton(event, id) {
@@ -60,6 +61,8 @@ function ListarFuncionarioPage() {
 
 
     useEffect(() => {
+        if(!isLoading) 
+            config.textLabels.body.noMatch = "Nenhum resultado encontrado."
         
         api.get('/funcionarios')
             .then((response) => {
@@ -85,11 +88,11 @@ function ListarFuncionarioPage() {
                     data.push(array);
 
                 });
-
                 setFuncionarios(data)
+                isLoading = false;
 
             })
-    }, []);
+    }, [isLoading]);
 
     return (
         <>
@@ -103,7 +106,7 @@ function ListarFuncionarioPage() {
                     title={"Lista de Funcionario"}
                     data={funcionarios}
                     columns={columns}
-                    options={language}
+                    options={config}
                 />
             </SideMenu>
 

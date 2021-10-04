@@ -39,7 +39,7 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-const AuthPage = () => {
+const LoginPage = () => {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
@@ -53,16 +53,13 @@ const AuthPage = () => {
 	return (
 		<ThemeProvider theme={theme}>
 			<Grid container component="main" sx={{ height: "100vh" }}>
-				<CssBaseline />
 				<Grid
 					item
 					xs={false}
 					sm={4}
 					md={7}
 					sx={{
-						backgroundImage:
-							"https://images.unsplash.com/photo-1630683744364-0b49bd336033?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTYzMjQzNTA0NQ&ixlib=rb-1.2.1&q=80&w=1080",
-						backgroundRepeat: "no-repeat",
+                        backgroundImage: 'https://images.unsplash.com/photo-1630933047088-597438e2fc9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTYzMjQzNDk3OQ&ixlib=rb-1.2.1&q=80&w=1080',
 						backgroundColor: (t) =>
 							t.palette.mode === "light"
 								? t.palette.grey[50]
@@ -151,4 +148,4 @@ const AuthPage = () => {
 	);
 };
 
-export default AuthPage;
+export default LoginPage;

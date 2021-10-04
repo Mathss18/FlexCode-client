@@ -1,7 +1,9 @@
-const language = {
+import CircularProgress from '@mui/material/CircularProgress';
+
+const config = {
     textLabels: {
         body: {
-            noMatch: "Nenhum resultado encontrado.",
+            noMatch: <CircularProgress />,
             toolTip: "Filtrar",
             columnHeaderTooltip: column => `Filtrar por ${column.label}`
         },
@@ -47,4 +49,4 @@ const language = {
     selectableRowsHideCheckboxes: true,	
 };
 
-export default language;
+export default config;
