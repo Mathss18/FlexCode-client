@@ -5,7 +5,7 @@ import MUIDataTable from "mui-datatables";
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import api from '../../services/api';
-import language from '../../config/tableTranslation';
+import config from '../../config/tablesConfig';
 import { Button } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
@@ -45,6 +45,7 @@ function ListarClientePage() {
     const history = useHistory();
     const [clientes, setClientes] = useState([]);
     const columns = ["Nome", "Tipo", "Telefone", "Celular", "Email", "Contato", "Ações"];
+    var isLoading = true;
     const data = [];
 
     function handleOnClickShowButton(event, id) {
@@ -58,6 +59,9 @@ function ListarClientePage() {
 
 
     useEffect(() => {
+        if(!isLoading) 
+            config.textLabels.body.noMatch = "Nenhum resultado encontrado."
+
         api.get('/clientes')
             .then((response) => {
                 response.data['data'].forEach(element => {
@@ -80,13 +84,14 @@ function ListarClientePage() {
                         </>
                         ]
                     data.push(array);
+                    isLoading = false;
 
                 });
-                console.log(data);
                 setClientes(data)
+                isLoading = false;
 
             })
-    }, []);
+    }, [isLoading]);
 
     return (
         <>
@@ -100,7 +105,7 @@ function ListarClientePage() {
                     title={"Lista de Clientes"}
                     data={clientes}
                     columns={columns}
-                    options={language}
+                    options={config}
                 />
             </SideMenu>
 

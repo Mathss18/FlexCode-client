@@ -5,7 +5,7 @@ import MUIDataTable from "mui-datatables";
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import api from '../../services/api';
-import language from '../../config/tableTranslation';
+import config from '../../config/tablesConfig';
 import { Button } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
@@ -45,6 +45,7 @@ function ListarTransportadoraPage() {
     const history = useHistory();
     const [transportadoras, setTransportadoras] = useState([]);
     const columns = ["Nome", "Tipo", "Telefone", "Celular", "Email", "Contato", "Ações"];
+    var isLoading = false;
     const data = [];
 
     function handleOnClickShowButton(event, id) {
@@ -58,6 +59,9 @@ function ListarTransportadoraPage() {
 
 
     useEffect(() => {
+        if(!isLoading) 
+            config.textLabels.body.noMatch = "Nenhum resultado encontrado."
+
         api.get('/transportadoras')
             .then((response) => {
                 response.data['data'].forEach(element => {
@@ -82,11 +86,11 @@ function ListarTransportadoraPage() {
                     data.push(array);
 
                 });
-                console.log(data);
                 setTransportadoras(data)
+                isLoading = false;
 
             })
-    }, []);
+    }, [isLoading]);
 
     return (
         <>
@@ -100,7 +104,7 @@ function ListarTransportadoraPage() {
                     title={"Lista de Transportadoras"}
                     data={transportadoras}
                     columns={columns}
-                    options={language}
+                    options={config}
                 />
             </SideMenu>
 
