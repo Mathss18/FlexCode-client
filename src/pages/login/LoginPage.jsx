@@ -97,7 +97,7 @@ function LoginPage() {
           container
 		  alignItems="center"
 		  justify="center"
-		  style={{ minHeight: '100vh', backgroundColor: '#202030' }}
+		  style={{ minHeight: '100vh', backgroundColor: '#0C2D48' }}
         >
           <Box
 		  	p={4}
