@@ -1,30 +1,17 @@
 import * as React from "react";
 import {
-<<<<<<< HEAD
-	Avatar,
-	Button,
-	TextField,
-	FormControlLabel,
-	Checkbox,
-	Paper,
-	Box,
-	Grid,
-	Typography,
-	createTheme,
-	ThemeProvider,
-=======
+  Avatar,
   Button,
   TextField,
   FormControlLabel,
   Checkbox,
+  Paper,
   Box,
   Grid,
   Typography,
   createTheme,
   ThemeProvider,
->>>>>>> e1fcd5e074271c775f318ed78c51eabf20d3a458
 } from "@mui/material";
-import { makeStyles } from '@mui/styles';
 import { Link } from "react-router-dom";
 import ImageLogin from "../../assets/image-login.jpg";
 
@@ -51,33 +38,7 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-<<<<<<< HEAD
-const LoginPage = () => {
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		const data = new FormData(event.currentTarget);
-		console.log({
-			email: data.get("email"),
-			password: data.get("password"),
-		});
-	};
-=======
-const useStyles = makeStyles({
-    buttonLogin: {
-        borderRadius: '20px',
-        backgroundColor: "#E7A977",
-        color: '#fff',
-        padding: 2,
-        fontSize: '28px',
-        cursor: 'pointer'
-    }
-});
->>>>>>> e1fcd5e074271c775f318ed78c51eabf20d3a458
-
-
 function LoginPage() {
-  const classes = useStyles();
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -121,27 +82,29 @@ function LoginPage() {
           lg={4}
           elevation={4}
           container
-		  alignItems="center"
-		  justify="center"
-		  style={{ minHeight: '100vh', backgroundColor: '#0C2D48' }}
+          alignItems="center"
+          justify="center"
+          style={{ minHeight: "100vh", backgroundColor: "#0C2D48" }}
         >
           <Box
-		  	p={4}
+            p={4}
             sx={{
-			  borderRadius: "30px",
+              borderRadius: "30px",
               mx: 8,
               pt: 6,
               flexDirection: "column",
-			  backgroundColor: '#FFF'
+              backgroundColor: "#FFF",
             }}
           >
             <Box>
-              <Box sx={{
-				  display: 'flex',
-				  justifyContent: 'center'
-			  }}>
-			  	<img src="https://via.placeholder.com/300x110" alt="FlexCode" />
-			  </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <img src="https://via.placeholder.com/300x110" alt="FlexCode" />
+              </Box>
               <Box
                 component="form"
                 noValidate
@@ -174,14 +137,13 @@ function LoginPage() {
                   control={<Checkbox value="remember" color="primary" />}
                   label="Lembrar"
                 />
-                <Link to="/Home" style={{ textDecoration: 'none' }}>
+                <Link to="/Home" style={{ textDecoration: "none" }}>
                   <Button
                     type="submit"
                     fullWidth
                     variant="contained"
-					size="large"
-					className={classes.buttonLogin}
-                    sx={{ mt: 3, mb: 2}}
+                    size="large"
+                    sx={{ mt: 3, mb: 2 }}
                   >
                     ACESSAR CONTA
                   </Button>
@@ -206,6 +168,6 @@ function LoginPage() {
       </Grid>
     </ThemeProvider>
   );
-};
+}
 
 export default LoginPage;

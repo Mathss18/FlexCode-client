@@ -163,6 +163,15 @@ function SideMenu({ children }) {
                                 <ListItemText primary="Funcionarios" />
                             </ListItem>
                         </List>
+                        
+                        <List onClick={() => history.push("/grupos")} disablePadding>
+                            <ListItem button className={classes.nested}>
+                                <ListItemIcon>
+                                    <WorkIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Grupos" />
+                            </ListItem>
+                        </List>
 
                     </Collapse>
 
