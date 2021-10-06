@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 import api from "../../services/api";
 
 import MUIDataTable from "mui-datatables";
-import language from "../../config/tableTranslation";
 
 import TopBar from "../../components/TopBar";
 import SideMenu from "../../components/SideMenu";
@@ -99,7 +98,6 @@ function ListarGrupoPage() {
           title={"Lista de Grupos"}
           data={grupos}
           columns={columns}
-          options={language}
         />
       </SideMenu>
     </>

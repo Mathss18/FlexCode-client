@@ -77,16 +77,6 @@ function CadastrarGrupoPage() {
     const { name, value } = event.target;
 
     console.log(typeof(value));
-
-    // if(typeof value == "boolean"){
-    //   console.log('boolean');
-    // }else{
-    //   console.log(typeof(event.target));
-    // }
-
-    // setValues({ ...values, 
-    //   [event.target.name]: event.target.checked });
-    // console.log(values);
   }
 
   function handleOnSubmit(event) {

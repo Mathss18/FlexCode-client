@@ -23,6 +23,10 @@ import CadastrarFuncionarioPage from "./pages/funcionario/CadastrarFuncionarioPa
 import MostrarFuncionarioPage from "./pages/funcionario/MostrarFuncionarioPage";
 import EditarFuncionarioPage from "./pages/funcionario/EditarFuncionarioPage";
 
+import ListarGrupoPage from "./pages/grupo/ListarGrupoPage";
+import EditarGrupoPage from "./pages/grupo/EditarGrupoPage";
+import CadastrarGrupoPage from "./pages/grupo/CadastrarGrupoPage";
+
 export default function Routes() {
 	return (
 		<BrowserRouter>
@@ -108,6 +112,22 @@ export default function Routes() {
 					path="/funcionario/editar/:id"
 					exact
 					component={EditarFuncionarioPage}
+				></Route>
+				
+				<Route
+					path="/grupos"
+					exact
+					component={ListarGrupoPage}
+				></Route>
+				<Route
+					path="/grupo/novo"
+					exact
+					component={CadastrarGrupoPage}
+				></Route>
+				<Route
+					path="/grupo/editar/:id"
+					exact
+					component={EditarGrupoPage}
 				></Route>
 
 				<Route path="*" component={() => <h1>Page not found</h1>} />
