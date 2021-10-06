@@ -1,5 +1,18 @@
 import * as React from "react";
 import {
+<<<<<<< HEAD
+	Avatar,
+	Button,
+	TextField,
+	FormControlLabel,
+	Checkbox,
+	Paper,
+	Box,
+	Grid,
+	Typography,
+	createTheme,
+	ThemeProvider,
+=======
   Button,
   TextField,
   FormControlLabel,
@@ -9,6 +22,7 @@ import {
   Typography,
   createTheme,
   ThemeProvider,
+>>>>>>> e1fcd5e074271c775f318ed78c51eabf20d3a458
 } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import { Link } from "react-router-dom";
@@ -37,6 +51,17 @@ function Copyright(props) {
 
 const theme = createTheme();
 
+<<<<<<< HEAD
+const LoginPage = () => {
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		const data = new FormData(event.currentTarget);
+		console.log({
+			email: data.get("email"),
+			password: data.get("password"),
+		});
+	};
+=======
 const useStyles = makeStyles({
     buttonLogin: {
         borderRadius: '20px',
@@ -47,6 +72,7 @@ const useStyles = makeStyles({
         cursor: 'pointer'
     }
 });
+>>>>>>> e1fcd5e074271c775f318ed78c51eabf20d3a458
 
 
 function LoginPage() {
