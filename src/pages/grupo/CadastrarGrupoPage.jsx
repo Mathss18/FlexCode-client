@@ -142,22 +142,22 @@ function CadastrarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.jason}
+                          checked={values.segunda}
                           onChange={handleOnChange}
-                          name="jason"
+                          name="terca"
                         />
                       }
-                      label="Jason Killian"
+                      label="Terça"
                     />
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.antoine}
+                          checked={values.segunda}
                           onChange={handleOnChange}
-                          name="antoine"
+                          name="quarta"
                         />
                       }
-                      label="Antoine Llorca"
+                      label="Quarta"
                     />
                   </FormGroup>
                 </FormControl>
