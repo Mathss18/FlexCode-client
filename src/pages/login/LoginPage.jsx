@@ -137,7 +137,7 @@ function LoginPage() {
                   control={<Checkbox value="remember" color="primary" />}
                   label="Lembrar"
                 />
-                <Link to="/Home" style={{ textDecoration: "none" }}>
+                <Link to="/home" style={{ textDecoration: "none" }}>
                   <Button
                     type="submit"
                     fullWidth
