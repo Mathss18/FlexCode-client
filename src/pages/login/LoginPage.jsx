@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 import {
   Avatar,
   Button,
@@ -12,8 +12,10 @@ import {
   createTheme,
   ThemeProvider,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import ImageLogin from "../../assets/image-login.jpg";
+import api from '../../services/api';
+import Swal from 'sweetalert2';
 
 function Copyright(props) {
   return (
@@ -37,16 +39,40 @@ function Copyright(props) {
 }
 
 const theme = createTheme();
+const initialValues = {
+  email: '',
+  senha: '',
+}
 
 function LoginPage() {
-  const handleSubmit = (event) => {
+  const history = useHistory();
+  const [values, setValues] = useState(initialValues);
+
+  function handleSubmit(event) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
+
+    api.post('/login', values)
+      .then(response => {
+        console.log('response', response);
+        console.log(response.data.access_token)
+        localStorage.setItem('token', response.data.access_token);
+        history.push("/home")
+      })
+      .catch(error => {
+        Swal.fire({
+          title: 'Erro ao logar usuário!',
+          html: 'Usuário ou senha incorreta',
+          position: 'center',
+          icon: 'error',
+        })
+      })
+
+  }
+
+  function handleOnChange(event) {
+    const { name, value } = event.target;
+    setValues({ ...values, [name]: value });
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -118,6 +144,8 @@ function LoginPage() {
                   id="email"
                   label="Email"
                   name="email"
+                  value={values.email}
+                  onChange={handleOnChange}
                   autoComplete="email"
                   autoFocus
                   style={{ marginBottom: "20px" }}
@@ -126,10 +154,12 @@ function LoginPage() {
                   margin="normal"
                   required
                   fullWidth
-                  name="password"
+                  name="senha"
                   label="Senha"
                   type="password"
-                  id="password"
+                  id="senha"
+                  value={values.senha}
+                  onChange={handleOnChange}
                   autoComplete="current-password"
                   style={{ marginBottom: "20px" }}
                 />
@@ -137,7 +167,6 @@ function LoginPage() {
                   control={<Checkbox value="remember" color="primary" />}
                   label="Lembrar"
                 />
-                <Link to="/home" style={{ textDecoration: "none" }}>
                   <Button
                     type="submit"
                     fullWidth
@@ -147,7 +176,6 @@ function LoginPage() {
                   >
                     ACESSAR CONTA
                   </Button>
-                </Link>
                 <Grid container>
                   <Grid item xs>
                     <Link href="#" variant="body2">

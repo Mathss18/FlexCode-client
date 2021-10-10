@@ -1,4 +1,4 @@
-import Routes from "./routes";
+import Routes from "./routes/routes";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import SideMenuContextProvider from "./context/SideMenuContext";
 
