@@ -5,16 +5,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
   Grid,
   TextField,
-  Select,
-  MenuItem,
   FormControl,
-  InputLabel,
   Divider,
   Button,
   FormLabel,
   FormControlLabel,
   FormGroup,
-  Switch
+  Switch,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import api from "../../services/api";
@@ -65,7 +62,34 @@ const useStyles = makeStyles((theme) => ({
 
 const initialValues = {
   nome: "",
-  segunda: false,
+  segunda: true,
+  terca: false,
+  quarta: false,
+  quinta: false,
+  sexta: false,
+  sabado: false,
+  domingo: false,
+  controleCliente: false,
+  criarCliente: false,
+  listarCliente: false,
+  editarCliente: false,
+  excluirCliente: false,
+  criarFornecedor: false,
+  listarFornecedor: false,
+  editarFornecedor: false,
+  excluirFornecedor: false,
+  criarFuncionario: false,
+  listarFuncionario: false,
+  editarFuncionario: false,
+  excluirFuncionario: false,
+  criarTransportadora: false,
+  listarTransportadora: false,
+  editarTransportadora: false,
+  excluirTransportadora: false,
+  criarGrupo: false,
+  listarGrupo: false,
+  editarGrupo: false,
+  excluirGrupo: false
 };
 
 function CadastrarGrupoPage() {
@@ -73,11 +97,19 @@ function CadastrarGrupoPage() {
   const history = useHistory();
   const [values, setValues] = useState(initialValues);
 
-  function handleOnChange(event) {
-    const { name, value } = event.target;
+  const handleOnChange = (e) => {
+    let { name, checked, value, type } = e.target;
 
-    console.log(typeof(value));
-  }
+    if (type === "checkbox") {
+      if(checked) {
+        setValues({ ...values, [name]: true });
+      }else {
+        setValues({ ...values, [name]: false });
+      }
+    } else {
+      setValues({ ...values, [name]: value });
+    }
+  };
 
   function handleOnSubmit(event) {
     event.preventDefault();
@@ -105,6 +137,7 @@ function CadastrarGrupoPage() {
                   variant="outlined"
                   label="Nome do Grupo"
                   fullWidth
+                  type="text"
                   className={classes.input}
                   value={values.nome}
                   name="nome"
@@ -125,7 +158,7 @@ function CadastrarGrupoPage() {
               <h3>Configurações</h3>
             </div>
             <Grid container spacing={2}>
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">Dias de acesso</FormLabel>
                   <FormGroup>
@@ -135,29 +168,311 @@ function CadastrarGrupoPage() {
                           checked={values.segunda}
                           onChange={handleOnChange}
                           name="segunda"
+                          type="checkbox"
                         />
                       }
-                      label="Segunda"
+                      label="Segunda-feira"
                     />
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.segunda}
+                          checked={values.terca}
                           onChange={handleOnChange}
                           name="terca"
                         />
                       }
-                      label="Terça"
+                      label="Terça-feira"
                     />
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.segunda}
+                          checked={values.quarta}
                           onChange={handleOnChange}
                           name="quarta"
                         />
                       }
-                      label="Quarta"
+                      label="Quarta-feira"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.quinta}
+                          onChange={handleOnChange}
+                          name="quinta"
+                        />
+                      }
+                      label="Quinta-feira"
+                    />
+
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.sexta}
+                          onChange={handleOnChange}
+                          name="sexta"
+                        />
+                      }
+                      label="Sexta-feira"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.sabado}
+                          onChange={handleOnChange}
+                          name="sabado"
+                        />
+                      }
+                      label="Sabádo"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.domingo}
+                          onChange={handleOnChange}
+                          name="domingo"
+                        />
+                      }
+                      label="Domingo"
+                    />
+                  </FormGroup>
+                </FormControl>
+              </Grid>
+              <Grid item xs={2}>
+                <FormControl component="fieldset" variant="standard">
+                  <FormLabel component="legend">Controle de Clientes</FormLabel>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.criarCliente}
+                          onChange={handleOnChange}
+                          name="criarCliente"
+                          type="checkbox"
+                        />
+                      }
+                      label="Criar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.listarCliente}
+                          onChange={handleOnChange}
+                          name="listarCliente"
+                        />
+                      }
+                      label="Listar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.editarCliente}
+                          onChange={handleOnChange}
+                          name="editarCliente"
+                        />
+                      }
+                      label="Editar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.excluirCliente}
+                          onChange={handleOnChange}
+                          name="excluirCliente"
+                        />
+                      }
+                      label="Excluir"
+                    />
+                  </FormGroup>
+                </FormControl>
+              </Grid>
+              <Grid item xs={2}>
+                <FormControl component="fieldset" variant="standard">
+                  <FormLabel component="legend">Controle de Fornecedores</FormLabel>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.criarFornecedor}
+                          onChange={handleOnChange}
+                          name="criarFornecedor"
+                          type="checkbox"
+                        />
+                      }
+                      label="Criar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.listarFornecedor}
+                          onChange={handleOnChange}
+                          name="listarFornecedor"
+                        />
+                      }
+                      label="Listar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.editarFornecedor}
+                          onChange={handleOnChange}
+                          name="editarFornecedor"
+                        />
+                      }
+                      label="Editar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.excluirFornecedor}
+                          onChange={handleOnChange}
+                          name="excluirFornecedor"
+                        />
+                      }
+                      label="Excluir"
+                    />
+                  </FormGroup>
+                </FormControl>
+              </Grid>
+              <Grid item xs={2}>
+                <FormControl component="fieldset" variant="standard">
+                  <FormLabel component="legend">Controle de Transportadora</FormLabel>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.criarTransportadora}
+                          onChange={handleOnChange}
+                          name="criarTransportadora"
+                          type="checkbox"
+                        />
+                      }
+                      label="Criar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.listarTransportadora}
+                          onChange={handleOnChange}
+                          name="listarTransportadora"
+                        />
+                      }
+                      label="Listar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.editarTransportadora}
+                          onChange={handleOnChange}
+                          name="editarTransportadora"
+                        />
+                      }
+                      label="Editar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.excluirTransportadora}
+                          onChange={handleOnChange}
+                          name="excluirTransportadora"
+                        />
+                      }
+                      label="Excluir"
+                    />
+                  </FormGroup>
+                </FormControl>
+              </Grid>
+              <Grid item xs={2}>
+                <FormControl component="fieldset" variant="standard">
+                  <FormLabel component="legend">Controle de Grupos</FormLabel>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.criarGrupo}
+                          onChange={handleOnChange}
+                          name="criarGrupo"
+                          type="checkbox"
+                        />
+                      }
+                      label="Criar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.listarGrupo}
+                          onChange={handleOnChange}
+                          name="listarGrupo"
+                        />
+                      }
+                      label="Listar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.editarGrupo}
+                          onChange={handleOnChange}
+                          name="editarGrupo"
+                        />
+                      }
+                      label="Editar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.excluirGrupo}
+                          onChange={handleOnChange}
+                          name="excluirGrupo"
+                        />
+                      }
+                      label="Excluir"
+                    />
+                  </FormGroup>
+                </FormControl>
+              </Grid>
+              <Grid item xs={2}>
+                <FormControl component="fieldset" variant="standard">
+                  <FormLabel component="legend">Controle de Funcionários</FormLabel>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.criarFuncionario}
+                          onChange={handleOnChange}
+                          name="criarFuncionario"
+                          type="checkbox"
+                        />
+                      }
+                      label="Criar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.listarFuncionario}
+                          onChange={handleOnChange}
+                          name="listarFuncionario"
+                        />
+                      }
+                      label="Listar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.editarFuncionario}
+                          onChange={handleOnChange}
+                          name="editarFuncionario"
+                        />
+                      }
+                      label="Editar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.excluirFuncionario}
+                          onChange={handleOnChange}
+                          name="excluirFuncionario"
+                        />
+                      }
+                      label="Excluir"
                     />
                   </FormGroup>
                 </FormControl>
