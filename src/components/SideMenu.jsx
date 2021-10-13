@@ -24,6 +24,7 @@ import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import WorkIcon from '@material-ui/icons/Work';
 import AddBoxIcon from '@material-ui/icons/AddBox';
+import GroupsIcon from '@mui/icons-material/Groups';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 
 const drawerWidth = 240;
@@ -104,7 +105,7 @@ function SideMenu({ children }) {
                 }}
             >
                 <div className={classes.drawerHeader}>
-                    <Link to='/'>[LOGO]</Link>
+                    <Link to="/home">[LOGO]</Link>
                     <IconButton onClick={handleDrawerClose}>
                         <ChevronLeftIcon />
                     </IconButton>
@@ -167,7 +168,7 @@ function SideMenu({ children }) {
                         <List onClick={() => history.push("/grupos")} disablePadding>
                             <ListItem button className={classes.nested}>
                                 <ListItemIcon>
-                                    <WorkIcon />
+                                    <GroupsIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="Grupos" />
                             </ListItem>
