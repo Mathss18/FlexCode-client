@@ -68,28 +68,36 @@ const initialValues = {
   quinta: false,
   sexta: false,
   sabado: false,
-  domingo: false,
-  controleCliente: false,
-  criarCliente: false,
-  listarCliente: false,
-  editarCliente: false,
-  excluirCliente: false,
-  criarFornecedor: false,
-  listarFornecedor: false,
-  editarFornecedor: false,
-  excluirFornecedor: false,
+  domingo: 0,
+
+  horaInicio: 'a',
+  horaFim: 'a',
+
+  acessoCliente: [0, 0, 0, 0],
+  clientes:'',
+
+  acessoFornecedor: [0, 0, 0, 0],
+  fornecedores:'',
+
   criarFuncionario: false,
   listarFuncionario: false,
   editarFuncionario: false,
   excluirFuncionario: false,
+  funcionarios: 'a',
+
   criarTransportadora: false,
   listarTransportadora: false,
   editarTransportadora: false,
   excluirTransportadora: false,
+  transportadoras: 'a',
+
   criarGrupo: false,
   listarGrupo: false,
   editarGrupo: false,
-  excluirGrupo: false
+  excluirGrupo: false,
+  grupos: 'a',
+
+  usuarios: 'a'
 };
 
 function CadastrarGrupoPage() {
@@ -98,22 +106,42 @@ function CadastrarGrupoPage() {
   const [values, setValues] = useState(initialValues);
 
   const handleOnChange = (e) => {
-    let { name, checked, value, type } = e.target;
+    let { name, value, type, id } = e.target;
 
     if (type === "checkbox") {
-      if(checked) {
-        setValues({ ...values, [name]: true });
-      }else {
-        setValues({ ...values, [name]: false });
+      var tipoOperacao = id.split('.')[1]; // C, R, U, D
+      var acesso = values.[name];
+      switch (tipoOperacao) {
+        case 'C':
+          acesso[0] == 1 ? acesso[0] = 0 : acesso[0] = 1
+          break;
+        case 'R':
+          acesso[1] == 1 ? acesso[1] = 0 : acesso[1] = 1
+          break;
+        case 'U':
+          acesso[2] == 1 ? acesso[2] = 0 : acesso[2] = 1
+          break;
+        case 'D':
+          acesso[3] == 1 ? acesso[3] = 0 : acesso[3] = 1
+          break;
       }
+      setValues({
+        ...values,
+        clientes: values.acessoCliente.toString().replaceAll(',','.'),
+        fornecedores: values.acessoFornecedor.toString().replaceAll(',','.'),
+      })
+
     } else {
       setValues({ ...values, [name]: value });
     }
+
+    console.log(values);
   };
 
   function handleOnSubmit(event) {
     event.preventDefault();
     console.log(values);
+
     api.post("/grupo", values).then((response) => console.log(response));
   }
 
@@ -244,10 +272,11 @@ function CadastrarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.criarCliente}
+                          checked={values.acessoCliente[0]}
                           onChange={handleOnChange}
-                          name="criarCliente"
+                          name="acessoCliente"
                           type="checkbox"
+                          id="acessoCliente.C"
                         />
                       }
                       label="Criar"
@@ -255,9 +284,10 @@ function CadastrarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.listarCliente}
+                          checked={values.acessoCliente[1]}
                           onChange={handleOnChange}
-                          name="listarCliente"
+                          name="acessoCliente"
+                          id="acessoCliente.R"
                         />
                       }
                       label="Listar"
@@ -265,9 +295,10 @@ function CadastrarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.editarCliente}
+                          checked={values.acessoCliente[2]}
                           onChange={handleOnChange}
-                          name="editarCliente"
+                          name="acessoCliente"
+                          id="acessoCliente.U"
                         />
                       }
                       label="Editar"
@@ -275,9 +306,10 @@ function CadastrarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.excluirCliente}
+                          checked={values.acessoCliente[3]}
                           onChange={handleOnChange}
-                          name="excluirCliente"
+                          name="acessoCliente"
+                          id="acessoCliente.D"
                         />
                       }
                       label="Excluir"
@@ -292,10 +324,11 @@ function CadastrarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.criarFornecedor}
+                          checked={values.acessoFornecedor[0]}
                           onChange={handleOnChange}
-                          name="criarFornecedor"
+                          name="acessoFornecedor"
                           type="checkbox"
+                          id="acessoFornecedor.C"
                         />
                       }
                       label="Criar"
@@ -303,9 +336,10 @@ function CadastrarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.listarFornecedor}
+                          checked={values.acessoFornecedor[1]}
                           onChange={handleOnChange}
-                          name="listarFornecedor"
+                          name="acessoFornecedor"
+                          id="acessoFornecedor.R"
                         />
                       }
                       label="Listar"
@@ -313,9 +347,10 @@ function CadastrarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.editarFornecedor}
+                          checked={values.acessoFornecedor[2]}
                           onChange={handleOnChange}
-                          name="editarFornecedor"
+                          name="acessoFornecedor"
+                          id="acessoFornecedor.U"
                         />
                       }
                       label="Editar"
@@ -323,9 +358,10 @@ function CadastrarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.excluirFornecedor}
+                          checked={values.acessoFornecedor[3]}
                           onChange={handleOnChange}
-                          name="excluirFornecedor"
+                          name="acessoFornecedor"
+                          id="acessoFornecedor.D"
                         />
                       }
                       label="Excluir"
