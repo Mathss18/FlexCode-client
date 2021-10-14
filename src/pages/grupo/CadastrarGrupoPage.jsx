@@ -110,7 +110,8 @@ function CadastrarGrupoPage() {
 
     if (type === "checkbox") {
       var tipoOperacao = id.split('.')[1]; // C, R, U, D
-      var acesso = values.[name];
+
+      var acesso = values?.[name];
       switch (tipoOperacao) {
         case 'C':
           acesso[0] == 1 ? acesso[0] = 0 : acesso[0] = 1
