@@ -6,7 +6,7 @@ import MUIDataTable from "mui-datatables";
 
 import TopBar from "../../components/TopBar";
 import SideMenu from "../../components/SideMenu";
-
+import { config, rowConfig } from '../../config/tablesConfig';
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
@@ -45,7 +45,17 @@ function ListarGrupoPage() {
   const classes = useStyles();
   const history = useHistory();
   const [grupos, setGrupos] = useState([]);
-  const columns = ["Nome", "Ações"];
+  const columns = [
+    {
+      name: 'Nome',
+      options: rowConfig
+    },
+    {
+      name: 'Ações',
+      options: rowConfig
+    },
+  ]
+
   const data = [];
 
   function handleOnClickShowButton(event, id) {

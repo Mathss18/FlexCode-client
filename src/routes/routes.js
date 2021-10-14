@@ -44,7 +44,7 @@ export default function Routes() {
 					<Route path="/cliente/editar/:id" exact component={EditarClientePage}></Route>
 
 					<Route path="/transportadoras" exact component={ListarTransportadoraPage}></Route>
-					<Route path="/transportadora/novo" exactc omponent={CadastrarTransportadoraPage}></Route>
+					<Route path="/transportadora/novo" exactc component={CadastrarTransportadoraPage}></Route>
 					<Route path="/transportadora/mostrar/:id" exact component={MostrarTransportadoraPage}></Route>
 					<Route path="/transportadora/editar/:id" exact component={EditarTransportadoraPage}></Route>
 
