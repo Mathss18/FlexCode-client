@@ -5,7 +5,7 @@ import MUIDataTable from "mui-datatables";
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import api from '../../services/api';
-import config from '../../config/tablesConfig';
+import { config, rowConfig } from '../../config/tablesConfig';
 import { Button } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
@@ -44,7 +44,37 @@ function ListarFornecedorPage() {
     const classes = useStyles();
     const history = useHistory();
     const [fornecedores, setFornecedores] = useState([]);
-    const columns = ["Nome", "Tipo", "Telefone", "Celular", "Email", "Contato", "Ações"];
+    const columns = [
+      {
+        name: 'Nome',
+        options: rowConfig
+      },
+      {
+        name: 'Tipo',
+        options: rowConfig
+      },
+      {
+        name: 'Telefone',
+        options: rowConfig
+      },
+      {
+        name: 'Celular',
+        options: rowConfig
+      },
+      {
+        name: 'Email',
+        options: rowConfig
+      },
+      {
+        name: 'Contato',
+        options: rowConfig
+      },
+      {
+        name: 'Ações',
+        options: rowConfig
+      },
+    ];
+    
     var isLoading = false;
     const data = [];
 
