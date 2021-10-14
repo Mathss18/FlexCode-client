@@ -1,6 +1,8 @@
 import Routes from "./routes/routes";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import SideMenuContextProvider from "./context/SideMenuContext";
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 
 
 function App() {
@@ -26,7 +28,9 @@ function App() {
 	return (
 		<ThemeProvider theme={theme}>
 			<SideMenuContextProvider>
-				<Routes />
+				<MuiPickersUtilsProvider utils={MomentUtils}>
+					<Routes />
+				</MuiPickersUtilsProvider>
 			</SideMenuContextProvider>
 		</ThemeProvider>
 	);

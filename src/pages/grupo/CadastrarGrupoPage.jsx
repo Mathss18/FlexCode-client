@@ -2,17 +2,8 @@ import { useState } from "react";
 import SideMenu from "../../components/SideMenu";
 import TopBar from "../../components/TopBar";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Grid,
-  TextField,
-  FormControl,
-  Divider,
-  Button,
-  FormLabel,
-  FormControlLabel,
-  FormGroup,
-  Switch,
-} from "@material-ui/core";
+import { Grid, TextField, FormControl, Divider, Button, FormLabel, FormControlLabel, FormGroup, Switch } from "@material-ui/core";
+import { TimePicker } from "@material-ui/pickers";
 import { useHistory } from "react-router-dom";
 import api from "../../services/api";
 import CheckIcon from "@material-ui/icons/Check";
@@ -62,75 +53,72 @@ const useStyles = makeStyles((theme) => ({
 
 const initialValues = {
   nome: "",
-  segunda: true,
+  segunda: false,
   terca: false,
   quarta: false,
   quinta: false,
   sexta: false,
   sabado: false,
-  domingo: 0,
+  domingo: false,
 
-  horaInicio: 'a',
-  horaFim: 'a',
+  horaInicio: "",
+  horaFim: "",
 
   acessoCliente: [0, 0, 0, 0],
-  clientes:'',
+  clientes: "",
 
   acessoFornecedor: [0, 0, 0, 0],
-  fornecedores:'',
+  fornecedores: "",
 
-  criarFuncionario: false,
-  listarFuncionario: false,
-  editarFuncionario: false,
-  excluirFuncionario: false,
-  funcionarios: 'a',
+  acessoFuncionario: [0, 0, 0, 0],
+  funcionarios: "",
 
-  criarTransportadora: false,
-  listarTransportadora: false,
-  editarTransportadora: false,
-  excluirTransportadora: false,
-  transportadoras: 'a',
+  acessoTransportadora: [0, 0, 0, 0],
+  transportadoras: "",
 
-  criarGrupo: false,
-  listarGrupo: false,
-  editarGrupo: false,
-  excluirGrupo: false,
-  grupos: 'a',
+  acessoGrupo: [0, 0, 0, 0],
+  grupos: "",
 
-  usuarios: 'a'
+  acessoUsuario: [0, 0, 0, 0],
+  usuarios: "",
 };
 
 function CadastrarGrupoPage() {
   const classes = useStyles();
   const history = useHistory();
   const [values, setValues] = useState(initialValues);
+  const [selectedDate, handleDateChange] = useState(new Date());
 
   const handleOnChange = (e) => {
-    let { name, value, type, id } = e.target;
+    let { name, value, checked, type, id } = e.target;
 
     if (type === "checkbox") {
-      var tipoOperacao = id.split('.')[1]; // C, R, U, D
-      var acesso = values.[name];
-      switch (tipoOperacao) {
-        case 'C':
-          acesso[0] == 1 ? acesso[0] = 0 : acesso[0] = 1
-          break;
-        case 'R':
-          acesso[1] == 1 ? acesso[1] = 0 : acesso[1] = 1
-          break;
-        case 'U':
-          acesso[2] == 1 ? acesso[2] = 0 : acesso[2] = 1
-          break;
-        case 'D':
-          acesso[3] == 1 ? acesso[3] = 0 : acesso[3] = 1
-          break;
+      if (id !== "") {
+        var tipoOperacao = id.split(".")[1]; // C, R, U, D
+        var acesso = values?.[name];
+        // eslint-disable-next-line default-case
+        switch (tipoOperacao) {
+          case "C":
+            acesso[0] == 1 ? (acesso[0] = 0) : (acesso[0] = 1);
+            break;
+          case "R":
+            acesso[1] == 1 ? (acesso[1] = 0) : (acesso[1] = 1);
+            break;
+          case "U":
+            acesso[2] == 1 ? (acesso[2] = 0) : (acesso[2] = 1);
+            break;
+          case "D":
+            acesso[3] == 1 ? (acesso[3] = 0) : (acesso[3] = 1);
+            break;
+        }
+        setValues({
+          ...values,
+          clientes: values.acessoCliente.toString().replaceAll(",", "."),
+          fornecedores: values.acessoFornecedor.toString().replaceAll(",", "."),
+        });
+      } else {
+        setValues({ ...values, [name]: checked });
       }
-      setValues({
-        ...values,
-        clientes: values.acessoCliente.toString().replaceAll(',','.'),
-        fornecedores: values.acessoFornecedor.toString().replaceAll(',','.'),
-      })
-
     } else {
       setValues({ ...values, [name]: value });
     }
@@ -152,25 +140,27 @@ function CadastrarGrupoPage() {
       <SideMenu>
         <div>
           <Divider />
-          <div
-            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
-          >
+          <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
             <AssignmentIcon />
             <h3>Dados do Grupo</h3>
           </div>
           <form onSubmit={handleOnSubmit}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  label="Nome do Grupo"
-                  fullWidth
-                  type="text"
-                  className={classes.input}
-                  value={values.nome}
-                  name="nome"
-                  onChange={handleOnChange}
+              <Grid item xs={6}>
+                <TextField variant="outlined" label="Nome do Grupo" fullWidth type="text" className={classes.input} value={values.nome} name="nome" onChange={handleOnChange} />
+              </Grid>
+              <Grid item xs={3}>
+                <TimePicker
+                  clearable
+                  ampm={false}
+                  minutesStep={5}
+                  label="24 hours"
+                  value={selectedDate}
+                  onChange={handleDateChange}
                 />
+              </Grid>
+              <Grid item xs={3}>
+                <TextField mask="(0)999 999 99 99" maskChar=" " variant="outlined" label="Hora fim" fullWidth type="text" className={classes.input} onChange={handleOnChange} />
               </Grid>
             </Grid>
             <br />
@@ -190,78 +180,14 @@ function CadastrarGrupoPage() {
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">Dias de acesso</FormLabel>
                   <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.segunda}
-                          onChange={handleOnChange}
-                          name="segunda"
-                          type="checkbox"
-                        />
-                      }
-                      label="Segunda-feira"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.terca}
-                          onChange={handleOnChange}
-                          name="terca"
-                        />
-                      }
-                      label="Terça-feira"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.quarta}
-                          onChange={handleOnChange}
-                          name="quarta"
-                        />
-                      }
-                      label="Quarta-feira"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.quinta}
-                          onChange={handleOnChange}
-                          name="quinta"
-                        />
-                      }
-                      label="Quinta-feira"
-                    />
+                    <FormControlLabel control={<Switch checked={values.segunda} onChange={handleOnChange} name="segunda" type="checkbox" />} label="Segunda-feira" />
+                    <FormControlLabel control={<Switch checked={values.terca} onChange={handleOnChange} name="terca" />} label="Terça-feira" />
+                    <FormControlLabel control={<Switch checked={values.quarta} onChange={handleOnChange} name="quarta" />} label="Quarta-feira" />
+                    <FormControlLabel control={<Switch checked={values.quinta} onChange={handleOnChange} name="quinta" />} label="Quinta-feira" />
 
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.sexta}
-                          onChange={handleOnChange}
-                          name="sexta"
-                        />
-                      }
-                      label="Sexta-feira"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.sabado}
-                          onChange={handleOnChange}
-                          name="sabado"
-                        />
-                      }
-                      label="Sabádo"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.domingo}
-                          onChange={handleOnChange}
-                          name="domingo"
-                        />
-                      }
-                      label="Domingo"
-                    />
+                    <FormControlLabel control={<Switch checked={values.sexta} onChange={handleOnChange} name="sexta" />} label="Sexta-feira" />
+                    <FormControlLabel control={<Switch checked={values.sabado} onChange={handleOnChange} name="sabado" />} label="Sabádo" />
+                    <FormControlLabel control={<Switch checked={values.domingo} onChange={handleOnChange} name="domingo" />} label="Domingo" />
                   </FormGroup>
                 </FormControl>
               </Grid>
@@ -269,51 +195,10 @@ function CadastrarGrupoPage() {
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">Controle de Clientes</FormLabel>
                   <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.acessoCliente[0]}
-                          onChange={handleOnChange}
-                          name="acessoCliente"
-                          type="checkbox"
-                          id="acessoCliente.C"
-                        />
-                      }
-                      label="Criar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.acessoCliente[1]}
-                          onChange={handleOnChange}
-                          name="acessoCliente"
-                          id="acessoCliente.R"
-                        />
-                      }
-                      label="Listar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.acessoCliente[2]}
-                          onChange={handleOnChange}
-                          name="acessoCliente"
-                          id="acessoCliente.U"
-                        />
-                      }
-                      label="Editar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.acessoCliente[3]}
-                          onChange={handleOnChange}
-                          name="acessoCliente"
-                          id="acessoCliente.D"
-                        />
-                      }
-                      label="Excluir"
-                    />
+                    <FormControlLabel control={<Switch checked={values.acessoCliente[0]} onChange={handleOnChange} name="acessoCliente" type="checkbox" id="acessoCliente.C" />} label="Criar" />
+                    <FormControlLabel control={<Switch checked={values.acessoCliente[1]} onChange={handleOnChange} name="acessoCliente" id="acessoCliente.R" />} label="Listar" />
+                    <FormControlLabel control={<Switch checked={values.acessoCliente[2]} onChange={handleOnChange} name="acessoCliente" id="acessoCliente.U" />} label="Editar" />
+                    <FormControlLabel control={<Switch checked={values.acessoCliente[3]} onChange={handleOnChange} name="acessoCliente" id="acessoCliente.D" />} label="Excluir" />
                   </FormGroup>
                 </FormControl>
               </Grid>
@@ -322,50 +207,12 @@ function CadastrarGrupoPage() {
                   <FormLabel component="legend">Controle de Fornecedores</FormLabel>
                   <FormGroup>
                     <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.acessoFornecedor[0]}
-                          onChange={handleOnChange}
-                          name="acessoFornecedor"
-                          type="checkbox"
-                          id="acessoFornecedor.C"
-                        />
-                      }
+                      control={<Switch checked={values.acessoFornecedor[0]} onChange={handleOnChange} name="acessoFornecedor" type="checkbox" id="acessoFornecedor.C" />}
                       label="Criar"
                     />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.acessoFornecedor[1]}
-                          onChange={handleOnChange}
-                          name="acessoFornecedor"
-                          id="acessoFornecedor.R"
-                        />
-                      }
-                      label="Listar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.acessoFornecedor[2]}
-                          onChange={handleOnChange}
-                          name="acessoFornecedor"
-                          id="acessoFornecedor.U"
-                        />
-                      }
-                      label="Editar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.acessoFornecedor[3]}
-                          onChange={handleOnChange}
-                          name="acessoFornecedor"
-                          id="acessoFornecedor.D"
-                        />
-                      }
-                      label="Excluir"
-                    />
+                    <FormControlLabel control={<Switch checked={values.acessoFornecedor[1]} onChange={handleOnChange} name="acessoFornecedor" id="acessoFornecedor.R" />} label="Listar" />
+                    <FormControlLabel control={<Switch checked={values.acessoFornecedor[2]} onChange={handleOnChange} name="acessoFornecedor" id="acessoFornecedor.U" />} label="Editar" />
+                    <FormControlLabel control={<Switch checked={values.acessoFornecedor[3]} onChange={handleOnChange} name="acessoFornecedor" id="acessoFornecedor.D" />} label="Excluir" />
                   </FormGroup>
                 </FormControl>
               </Grid>
@@ -374,46 +221,12 @@ function CadastrarGrupoPage() {
                   <FormLabel component="legend">Controle de Transportadora</FormLabel>
                   <FormGroup>
                     <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.criarTransportadora}
-                          onChange={handleOnChange}
-                          name="criarTransportadora"
-                          type="checkbox"
-                        />
-                      }
+                      control={<Switch checked={values.acessoTransportadora[0]} onChange={handleOnChange} name="acessoTransportadora" type="checkbox" id="acessoTransportadora.C" />}
                       label="Criar"
                     />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.listarTransportadora}
-                          onChange={handleOnChange}
-                          name="listarTransportadora"
-                        />
-                      }
-                      label="Listar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.editarTransportadora}
-                          onChange={handleOnChange}
-                          name="editarTransportadora"
-                        />
-                      }
-                      label="Editar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.excluirTransportadora}
-                          onChange={handleOnChange}
-                          name="excluirTransportadora"
-                        />
-                      }
-                      label="Excluir"
-                    />
+                    <FormControlLabel control={<Switch checked={values.acessoTransportadora[1]} onChange={handleOnChange} name="acessoTransportadora" id="acessoTransportadora.R" />} label="Listar" />
+                    <FormControlLabel control={<Switch checked={values.acessoTransportadora[2]} onChange={handleOnChange} name="acessoTransportadora" id="acessoTransportadora.U" />} label="Editar" />
+                    <FormControlLabel control={<Switch checked={values.acessoTransportadora[3]} onChange={handleOnChange} name="acessoTransportadora" id="acessoTransportadora.D" />} label="Excluir" />
                   </FormGroup>
                 </FormControl>
               </Grid>
@@ -421,47 +234,10 @@ function CadastrarGrupoPage() {
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">Controle de Grupos</FormLabel>
                   <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.criarGrupo}
-                          onChange={handleOnChange}
-                          name="criarGrupo"
-                          type="checkbox"
-                        />
-                      }
-                      label="Criar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.listarGrupo}
-                          onChange={handleOnChange}
-                          name="listarGrupo"
-                        />
-                      }
-                      label="Listar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.editarGrupo}
-                          onChange={handleOnChange}
-                          name="editarGrupo"
-                        />
-                      }
-                      label="Editar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.excluirGrupo}
-                          onChange={handleOnChange}
-                          name="excluirGrupo"
-                        />
-                      }
-                      label="Excluir"
-                    />
+                    <FormControlLabel control={<Switch checked={values.acessoGrupo[0]} onChange={handleOnChange} name="acessoGrupo" type="checkbox" id="acessoGrupo.C" />} label="Criar" />
+                    <FormControlLabel control={<Switch checked={values.acessoGrupo[1]} onChange={handleOnChange} name="acessoGrupo" id="acessoGrupo.R" />} label="Listar" />
+                    <FormControlLabel control={<Switch checked={values.acessoGrupo[2]} onChange={handleOnChange} name="acessoGrupo" id="acessoGrupo.U" />} label="Editar" />
+                    <FormControlLabel control={<Switch checked={values.acessoGrupo[3]} onChange={handleOnChange} name="acessoGrupo" id="acessoGrupo.D" />} label="Excluir" />
                   </FormGroup>
                 </FormControl>
               </Grid>
@@ -470,69 +246,31 @@ function CadastrarGrupoPage() {
                   <FormLabel component="legend">Controle de Funcionários</FormLabel>
                   <FormGroup>
                     <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.criarFuncionario}
-                          onChange={handleOnChange}
-                          name="criarFuncionario"
-                          type="checkbox"
-                        />
-                      }
+                      control={<Switch checked={values.acessoFuncionario[0]} onChange={handleOnChange} name="acessoFuncionario" type="checkbox" id="acessoFuncionario.C" />}
                       label="Criar"
                     />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.listarFuncionario}
-                          onChange={handleOnChange}
-                          name="listarFuncionario"
-                        />
-                      }
-                      label="Listar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.editarFuncionario}
-                          onChange={handleOnChange}
-                          name="editarFuncionario"
-                        />
-                      }
-                      label="Editar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.excluirFuncionario}
-                          onChange={handleOnChange}
-                          name="excluirFuncionario"
-                        />
-                      }
-                      label="Excluir"
-                    />
+                    <FormControlLabel control={<Switch checked={values.acessoFuncionario[1]} onChange={handleOnChange} name="acessoFuncionario" id="acessoFuncionario.R" />} label="Listar" />
+                    <FormControlLabel control={<Switch checked={values.acessoFuncionario[2]} onChange={handleOnChange} name="acessoFuncionario" id="acessoFuncionario.U" />} label="Editar" />
+                    <FormControlLabel control={<Switch checked={values.acessoFuncionario[3]} onChange={handleOnChange} name="acessoFuncionario" id="acessoFuncionario.D" />} label="Excluir" />
                   </FormGroup>
                 </FormControl>
               </Grid>
             </Grid>
+            <br />
+            <Divider />
+            <br />
+            <Grid container spacing={2}>
+              
+            </Grid>
 
             <Grid container spacing={0}>
               <Grid item>
-                <Button
-                  type="submit"
-                  variant="outlined"
-                  startIcon={<CheckIcon />}
-                  className={classes.saveButton}
-                >
+                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={classes.saveButton}>
                   Salvar
                 </Button>
               </Grid>
               <Grid item>
-                <Button
-                  onClick={() => history.push("/clientes")}
-                  variant="outlined"
-                  startIcon={<CloseIcon />}
-                  className={classes.cancelButton}
-                >
+                <Button onClick={() => history.push("/clientes")} variant="outlined" startIcon={<CloseIcon />} className={classes.cancelButton}>
                   Cancelar
                 </Button>
               </Grid>
