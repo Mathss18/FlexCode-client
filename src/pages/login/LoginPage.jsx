@@ -53,9 +53,8 @@ function LoginPage() {
 
     api.post('/login', values)
       .then(response => {
-        console.log('response', response);
-        console.log(response.data.access_token)
         localStorage.setItem('token', response.data.access_token);
+        //api.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access_token
         history.push("/home")
       })
       .catch(error => {

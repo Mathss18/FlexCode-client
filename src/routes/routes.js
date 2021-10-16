@@ -1,6 +1,6 @@
 import React from "react";
 
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import Home from "../pages/Home";
 import LoginPage from "../pages/login/LoginPage";
 import ListarClientePage from "../pages/cliente/ListarClientePage";
@@ -29,44 +29,48 @@ import CadastrarGrupoPage from "../pages/grupo/CadastrarGrupoPage";
 import PrivateRoutes from "./PrivateRoutes";
 
 export default function Routes() {
-	return (
-		<BrowserRouter>
-			<Switch>
-				<Route path="/login" exact component={LoginPage}></Route>
-				
+  return (
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/">
+          <Redirect to="/home" />
+        </Route>
 
-				<PrivateRoutes>
-					<Route path="/home" exact component={Home}></Route>
+        <Route path="/login" exact component={LoginPage}></Route>
 
-					<Route path="/clientes" exact component={ListarClientePage}></Route>
-					<Route path="/cliente/novo" exact component={CadastrarClientePage}></Route>
-					<Route path="/cliente/mostrar/:id" exact component={MostrarClientePage}></Route>
-					<Route path="/cliente/editar/:id" exact component={EditarClientePage}></Route>
 
-					<Route path="/transportadoras" exact component={ListarTransportadoraPage}></Route>
-					<Route path="/transportadora/novo" exactc component={CadastrarTransportadoraPage}></Route>
-					<Route path="/transportadora/mostrar/:id" exact component={MostrarTransportadoraPage}></Route>
-					<Route path="/transportadora/editar/:id" exact component={EditarTransportadoraPage}></Route>
+        <PrivateRoutes>
+          <Route path="/home" exact component={Home}></Route>
 
-					<Route path="/fornecedores" exact component={ListarFornecedorPage}></Route>
-					<Route path="/fornecedor/novo" exact component={CadastrarFornecedorPage}></Route>
-					<Route path="/fornecedor/mostrar/:id" exact component={MostrarFornecedorPage}></Route>
-					<Route path="/fornecedor/editar/:id" exact component={EditarFornecedorPage}></Route>
+          <Route path="/clientes" exact component={ListarClientePage}></Route>
+          <Route path="/cliente/novo" exact component={CadastrarClientePage}></Route>
+          <Route path="/cliente/mostrar/:id" exact component={MostrarClientePage}></Route>
+          <Route path="/cliente/editar/:id" exact component={EditarClientePage}></Route>
 
-					<Route path="/funcionarios" exact component={ListarFuncionarioPage}></Route>
-					<Route path="/funcionario/novo" exact component={CadastrarFuncionarioPage}></Route>
-					<Route path="/funcionario/mostrar/:id" exact component={MostrarFuncionarioPage}></Route>
-					<Route path="/funcionario/editar/:id" exact component={EditarFuncionarioPage}></Route>
+          <Route path="/transportadoras" exact component={ListarTransportadoraPage}></Route>
+          <Route path="/transportadora/novo" exactc component={CadastrarTransportadoraPage}></Route>
+          <Route path="/transportadora/mostrar/:id" exact component={MostrarTransportadoraPage}></Route>
+          <Route path="/transportadora/editar/:id" exact component={EditarTransportadoraPage}></Route>
 
-					<Route path="/grupos" exact component={ListarGrupoPage}></Route>
-					<Route path="/grupo/novo" exact component={CadastrarGrupoPage}></Route>
-					<Route path="/grupo/editar/:id" exact component={EditarGrupoPage}></Route>
-				</PrivateRoutes>
+          <Route path="/fornecedores" exact component={ListarFornecedorPage}></Route>
+          <Route path="/fornecedor/novo" exact component={CadastrarFornecedorPage}></Route>
+          <Route path="/fornecedor/mostrar/:id" exact component={MostrarFornecedorPage}></Route>
+          <Route path="/fornecedor/editar/:id" exact component={EditarFornecedorPage}></Route>
 
-				<Route path="*" component={() => <h1>Page not found</h1>} />
+          <Route path="/funcionarios" exact component={ListarFuncionarioPage}></Route>
+          <Route path="/funcionario/novo" exact component={CadastrarFuncionarioPage}></Route>
+          <Route path="/funcionario/mostrar/:id" exact component={MostrarFuncionarioPage}></Route>
+          <Route path="/funcionario/editar/:id" exact component={EditarFuncionarioPage}></Route>
 
-				
-			</Switch>
-		</BrowserRouter>
-	);
+          <Route path="/grupos" exact component={ListarGrupoPage}></Route>
+          <Route path="/grupo/novo" exact component={CadastrarGrupoPage}></Route>
+          <Route path="/grupo/editar/:id" exact component={EditarGrupoPage}></Route>
+        </PrivateRoutes>
+
+        <Route path="*" component={() => <h1>Page not found</h1>} />
+
+
+      </Switch>
+    </BrowserRouter>
+  );
 }
