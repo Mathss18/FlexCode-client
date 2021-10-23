@@ -3,29 +3,42 @@ import React from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import Home from "../pages/Home";
 import LoginPage from "../pages/login/LoginPage";
-import ListarClientePage from "../pages/cliente/ListarClientePage";
-import CadastrarClientePage from "../pages/cliente/CadastrarClientePage";
-import EditarClientePage from "../pages/cliente/EditarClientePage";
-import MostrarClientePage from "../pages/cliente/MostrarClientePage";
+import ListarClientePage from "../pages/Cadastros/cliente/ListarClientePage";
+import CadastrarClientePage from "../pages/Cadastros/cliente/CadastrarClientePage";
+import EditarClientePage from "../pages/Cadastros/cliente/EditarClientePage";
+import MostrarClientePage from "../pages/Cadastros/cliente/MostrarClientePage";
 
-import ListarTransportadoraPage from "../pages/transportadora/ListarTransportadoraPage";
-import CadastrarTransportadoraPage from "../pages/transportadora/CadastrarTransportadoraPage";
-import MostrarTransportadoraPage from "../pages/transportadora/MostrarTransportadoraPage";
-import EditarTransportadoraPage from "../pages/transportadora/EditarTransportadoraPage";
+import ListarTransportadoraPage from "../pages/Cadastros/transportadora/ListarTransportadoraPage";
+import CadastrarTransportadoraPage from "../pages/Cadastros/transportadora/CadastrarTransportadoraPage";
+import MostrarTransportadoraPage from "../pages/Cadastros/transportadora/MostrarTransportadoraPage";
+import EditarTransportadoraPage from "../pages/Cadastros/transportadora/EditarTransportadoraPage";
 
-import ListarFornecedorPage from "../pages/fornecedor/ListarFornecedorPage";
-import CadastrarFornecedorPage from "../pages/fornecedor/CadastrarFornecedorPage";
-import MostrarFornecedorPage from "../pages/fornecedor/MostrarFornecedorPage";
-import EditarFornecedorPage from "../pages/fornecedor/EditarFornecedorPage";
+import ListarFornecedorPage from "../pages/Cadastros/fornecedor/ListarFornecedorPage";
+import CadastrarFornecedorPage from "../pages/Cadastros/fornecedor/CadastrarFornecedorPage";
+import MostrarFornecedorPage from "../pages/Cadastros/fornecedor/MostrarFornecedorPage";
+import EditarFornecedorPage from "../pages/Cadastros/fornecedor/EditarFornecedorPage";
 
-import ListarFuncionarioPage from "../pages/funcionario/ListarFuncionarioPage";
-import CadastrarFuncionarioPage from "../pages/funcionario/CadastrarFuncionarioPage";
-import MostrarFuncionarioPage from "../pages/funcionario/MostrarFuncionarioPage";
-import EditarFuncionarioPage from "../pages/funcionario/EditarFuncionarioPage";
+import ListarFuncionarioPage from "../pages/Cadastros/funcionario/ListarFuncionarioPage";
+import CadastrarFuncionarioPage from "../pages/Cadastros/funcionario/CadastrarFuncionarioPage";
+import MostrarFuncionarioPage from "../pages/Cadastros/funcionario/MostrarFuncionarioPage";
+import EditarFuncionarioPage from "../pages/Cadastros/funcionario/EditarFuncionarioPage";
 
-import ListarGrupoPage from "../pages/grupo/ListarGrupoPage";
-import EditarGrupoPage from "../pages/grupo/EditarGrupoPage";
-import CadastrarGrupoPage from "../pages/grupo/CadastrarGrupoPage";
+import ListarGrupoPage from "../pages/Cadastros/grupo/ListarGrupoPage";
+import EditarGrupoPage from "../pages/Cadastros/grupo/EditarGrupoPage";
+import CadastrarGrupoPage from "../pages/Cadastros/grupo/CadastrarGrupoPage";
+
+import ListarGruposDeProdutos from "../pages/Produtos/gruposDeProdutos/ListarGruposDeProdutos";
+import CadastrarGrupoDeProdutos from "../pages/Produtos/gruposDeProdutos/CadastrarGruposDeProdutos";
+import EditarGrupoDeProdutos from "../pages/Produtos/gruposDeProdutos/EditarGruposDeProdutos";
+
+import ListarUnidadesDeProdutos from "../pages/Produtos/unidadesDeProdutos/ListarUnidadesDeProdutos";
+import CadastrarUnidadeDeProdutos from "../pages/Produtos/unidadesDeProdutos/CadastrarUnidadesDeProdutos";
+import EditarUnidadeDeProdutos from "../pages/Produtos/unidadesDeProdutos/EditarUnidadeDeProdutos";
+
+import ListarGradesDeVariacoes from "../pages/Produtos/gradesDeVariacoes/Listar";
+import CadastrarGradesDeVariacoes from "../pages/Produtos/gradesDeVariacoes/Cadastrar";
+import EditarGradesDeVariacoes from "../pages/Produtos/gradesDeVariacoes/Editar";
+
 import PrivateRoutes from "./PrivateRoutes";
 
 export default function Routes() {
@@ -65,6 +78,18 @@ export default function Routes() {
           <Route path="/grupos" exact component={ListarGrupoPage}></Route>
           <Route path="/grupo/novo" exact component={CadastrarGrupoPage}></Route>
           <Route path="/grupo/editar/:id" exact component={EditarGrupoPage}></Route>
+
+          <Route path="/grupos-produtos" exact component={ListarGruposDeProdutos}></Route>
+          <Route path="/grupo-produto/novo" exact component={CadastrarGrupoDeProdutos}></Route>
+          <Route path="/grupo-produto/editar/:id" exact component={EditarGrupoDeProdutos}></Route>
+
+          <Route path="/unidades-produtos" exact component={ListarUnidadesDeProdutos}></Route>
+          <Route path="/unidade-produto/novo" exact component={CadastrarUnidadeDeProdutos}></Route>
+          <Route path="/unidade-produto/editar/:id" exact component={EditarUnidadeDeProdutos}></Route>
+          
+          <Route path="/grades-variacoes" exact component={ListarGradesDeVariacoes}></Route>
+          <Route path="/grade-variacao/novo" exact component={CadastrarGradesDeVariacoes}></Route>
+          <Route path="/grade-variacao/editar/:id" exact component={EditarGradesDeVariacoes}></Route>
         </PrivateRoutes>
 
         <Route path="*" component={() => <h1>Page not found</h1>} />

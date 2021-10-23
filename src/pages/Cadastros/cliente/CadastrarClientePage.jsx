@@ -130,13 +130,13 @@ function CadastrarClientePage() {
                         <Grid container spacing={2}>
 
                             <Grid item xs={3}>
-                                <FormControl variant="outlined" fullWidth required className={classes.input} name="tipoCliente">
-                                    <InputLabel>Tipo de Cliente</InputLabel>
-                                    <Select label="Tipo de Cliente" name="tipoCliente" value={values.tipoCliente} onChange={handleOnChange}>
-                                        <MenuItem value={"pf"}>Pessoa Física</MenuItem>
-                                        <MenuItem value={"pj"}>Pessoa Jurídica</MenuItem>
-                                    </Select>
-                                </FormControl>
+                                    <FormControl variant="outlined" fullWidth required className={classes.input} name="tipoCliente">
+                                        <InputLabel>Tipo de Cliente</InputLabel>
+                                        <Select label="Tipo de Cliente" name="tipoCliente" value={values.tipoCliente} onChange={handleOnChange}>
+                                            <MenuItem value={"pf"}>Pessoa Física</MenuItem>
+                                            <MenuItem value={"pj"}>Pessoa Jurídica</MenuItem>
+                                        </Select>
+                                    </FormControl>
                             </Grid>
 
                             <Grid item xs={3}>

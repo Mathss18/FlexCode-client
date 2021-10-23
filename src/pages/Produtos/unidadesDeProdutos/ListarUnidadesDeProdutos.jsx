@@ -6,12 +6,12 @@ import MUIDataTable from "mui-datatables";
 
 import TopBar from "../../../components/TopBar";
 import SideMenu from "../../../components/SideMenu";
-import { config, rowConfig } from '../../../config/tablesConfig';
+import { config, rowConfig } from "../../../config/tablesConfig";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
-import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
-import SearchIcon from '@material-ui/icons/Search';
+import AddIcon from "@material-ui/icons/Add";
+import EditIcon from "@material-ui/icons/Edit";
+import SearchIcon from "@material-ui/icons/Search";
 
 const useStyles = makeStyles((theme) => ({
   optionsButtons: {
@@ -41,56 +41,51 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ListarGrupoPage() {
+function ListarUnidadesDeProdutos() {
   const classes = useStyles();
   const history = useHistory();
   const [grupos, setGrupos] = useState([]);
   const columns = [
     {
-      name: 'Nome',
-      options: rowConfig
+      name: "Nome",
+      options: rowConfig,
     },
     {
-      name: 'Cadastrado em',
-      options: rowConfig
+      name: "Sigla",
+      options: rowConfig,
     },
     {
-      name: 'Ações',
-      options: rowConfig
+      name: "Padrão",
+      options: rowConfig,
     },
-  ]
+  ];
 
   const data = [];
 
   function handleOnClickShowButton(event, id) {
-    history.push("/grupo/mostrar/" + id);
+    history.push("/unidade-grupo/mostrar/" + id);
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/grupo/editar/" + id);
+    history.push("/unidade-grupo/editar/" + id);
   }
 
   useEffect(() => {
-    api.get("/grupos").then((response) => {
-      response.data["data"].forEach((element) => {
-        var array = [
-          element["nome"],
-          new Date(element["created_at"]).toLocaleString(),
-          <>
-            <SearchIcon
-              className={classes.optionsButtons}
-              onClick={(event) => handleOnClickShowButton(event, element["id"])}
-            />
-            <EditIcon
-              className={classes.optionsButtons}
-              onClick={(event) => handleOnClickEditButton(event, element["id"])}
-            />
-          </>,
-        ];
-        data.push(array);
-      });
+    api.get("/grupos-produtos").then((response) => {
+      if (response != undefined) {
+        response.data["data"].forEach((element) => {
+          var array = [
+            element["nome"],
+            <>
+              <SearchIcon className={classes.optionsButtons} onClick={(event) => handleOnClickShowButton(event, element["id"])} />
+              <EditIcon className={classes.optionsButtons} onClick={(event) => handleOnClickEditButton(event, element["id"])} />
+            </>,
+          ];
+          data.push(array);
+        });
 
-      setGrupos(data);
+        setGrupos(data);
+      }
     });
   }, []);
 
@@ -101,22 +96,13 @@ function ListarGrupoPage() {
         {grupos.map((grupo, index) => (
           <h4 key={index}>{grupo.nome}</h4>
         ))}
-        <Button
-          onClick={() => history.push("/grupo/novo")}
-          variant="outlined"
-          startIcon={<AddIcon />}
-          className={classes.saveButton}
-        >
+        <Button onClick={() => history.push("/unidade-produto/novo")} variant="outlined" startIcon={<AddIcon />} className={classes.saveButton}>
           Adicionar
         </Button>
-        <MUIDataTable
-          title={"Lista de Grupos"}
-          data={grupos}
-          columns={columns}
-        />
+        <MUIDataTable title={"Lista de Unidades de Produtos"} data={grupos} columns={columns} />
       </SideMenu>
     </>
   );
 }
 
-export default ListarGrupoPage;
+export default ListarUnidadesDeProdutos;

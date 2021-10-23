@@ -1,5 +1,6 @@
 import { useState, createContext, useContext } from "react";
 import SideMenuCadastroContextProvider from "./SideMenuCadastroContext";
+import SideMenuProdutoContextProvider from "./SideMenuProdutoContext";
 
 const SideMenuContext = createContext();
 
@@ -8,7 +9,9 @@ function SideMenuContextProvider({ children }) {
     return (
         <SideMenuContext.Provider value={[ openMenu, setOpenMenu ]}>
             <SideMenuCadastroContextProvider>
-                {children}
+                <SideMenuProdutoContextProvider>
+                    {children}
+                </SideMenuProdutoContextProvider>
             </SideMenuCadastroContextProvider>
         </SideMenuContext.Provider>
     );

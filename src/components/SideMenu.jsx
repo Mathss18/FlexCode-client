@@ -13,8 +13,7 @@ import {
 } from "@material-ui/core/";
 import { useHistory } from "react-router-dom";
 import clsx from "clsx";
-import { useCadastroMenu } from "../context/SideMenuCadastroContext";
-import { useMenu } from "../context/SideMenuContext";
+import { useCadastroMenu, useProdutoMenu, useMenu } from '../context';
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import LocalShippingIcon from '@material-ui/icons/LocalShipping';
@@ -26,6 +25,10 @@ import WorkIcon from '@material-ui/icons/Work';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import GroupsIcon from '@mui/icons-material/Groups';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import SchemaIcon from '@mui/icons-material/Schema';
 
 const drawerWidth = 240;
 
@@ -81,6 +84,7 @@ function SideMenu({ children }) {
     const classes = useStyles();
     const history = useHistory();
     const [openCadastroList, setOpenCadastroList] = useCadastroMenu();
+    const [openProdutoList, setOpenProdutoList] = useProdutoMenu();
     const [openSideMenu, setOpenSideMenu] = useMenu();
 
     // Função que controla se Side Menu esta aberto ou fechado
@@ -92,6 +96,10 @@ function SideMenu({ children }) {
     const handleOpenCadastroList = () => {
         setOpenCadastroList(!openCadastroList);
     };
+
+    const handleOpenProdutosList = () => {
+        setOpenProdutoList(!openProdutoList);
+    }
 
     return (
         <div className={classes.root}>
@@ -174,6 +182,41 @@ function SideMenu({ children }) {
                             </ListItem>
                         </List>
 
+                    </Collapse>
+
+                    <ListItem button onClick={handleOpenProdutosList}>
+                        <ListItemIcon>
+                            <ShoppingCartIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Produtos" />
+                        {openProdutoList ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+
+                    <Collapse in={openProdutoList} timeout="auto" unmountOnExit>
+                        <List onClick={() => history.push("/grupos-produtos")} disablePadding>
+                            <ListItem button className={classes.nested}>
+                                <ListItemIcon>
+                                    <AutoAwesomeMotionIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Grupos de Produtos" />
+                            </ListItem>
+                        </List>
+                        <List onClick={() => history.push("/unidades-produtos")} disablePadding>
+                            <ListItem button className={classes.nested}>
+                                <ListItemIcon>
+                                    <InventoryIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Unidades de Produtos" />
+                            </ListItem>
+                        </List>
+                        <List onClick={() => history.push("/grades-variacoes")} disablePadding>
+                            <ListItem button className={classes.nested}>
+                                <ListItemIcon>
+                                    <SchemaIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Grades/Variações" />
+                            </ListItem>
+                        </List>
                     </Collapse>
 
                     <ListItem button>

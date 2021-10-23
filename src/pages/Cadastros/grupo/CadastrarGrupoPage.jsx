@@ -64,11 +64,6 @@ const useStyles = makeStyles((theme) => ({
   timepicker: {
     backgroundColor: "#FFF",
   },
-  dias_semanas: {
-    flexDirection: "row",
-    width: '100%',
-    justifyContent: 'space-evenly',
-  }
 }));
 
 const initialValues = {
@@ -220,12 +215,24 @@ function CadastrarGrupoPage() {
                 />
               </Grid>
             </Grid>
-            <Grid item xs={12}>
-                <FormControl component="fieldset" style={{ width: "100%", marginTop: 20 }} variant="standard">
+            <br />
+            <Divider />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <SettingsIcon />
+              <h3>Configurações</h3>
+            </div>
+            <Grid container spacing={2}>
+              <Grid item xs={2}>
+                <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">Dias de acesso</FormLabel>
-                  <FormGroup className={classes.dias_semanas}>
+                  <FormGroup>
                     <FormControlLabel
-                      xs={2}
                       control={
                         <Switch
                           checked={values.segunda}
@@ -296,71 +303,6 @@ function CadastrarGrupoPage() {
                         />
                       }
                       label="Domingo"
-                    />
-                  </FormGroup>
-                </FormControl>
-              </Grid>  
-            <br />
-            <Divider />
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                flexWrap: "wrap",
-              }}
-            >
-              <SettingsIcon />
-              <h3>Configurações</h3>
-            </div>
-            <Grid container spacing={2}>
-              <Grid item xs={2}>
-              <FormControl component="fieldset" variant="standard">
-                  <FormLabel component="legend">Controle de Usuários</FormLabel>
-                  <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.acessoUsuario[0]}
-                          onChange={handleOnChange}
-                          name="acessoUsuario"
-                          type="checkbox"
-                          id="acessoUsuario.C"
-                        />
-                      }
-                      label="Criar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.acessoUsuario[1]}
-                          onChange={handleOnChange}
-                          name="acessoUsuario"
-                          id="acessoUsuario.R"
-                        />
-                      }
-                      label="Listar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.acessoUsuario[2]}
-                          onChange={handleOnChange}
-                          name="acessoUsuario"
-                          id="acessoUsuario.U"
-                        />
-                      }
-                      label="Editar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.acessoUsuario[3]}
-                          onChange={handleOnChange}
-                          name="acessoUsuario"
-                          id="acessoUsuario.D"
-                        />
-                      }
-                      label="Excluir"
                     />
                   </FormGroup>
                 </FormControl>
@@ -632,7 +574,6 @@ function CadastrarGrupoPage() {
                 </FormControl>
               </Grid>
             </Grid>
-
             <br />
             <Divider />
             <br />
