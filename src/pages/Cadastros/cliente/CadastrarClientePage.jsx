@@ -79,7 +79,7 @@ function CadastrarClientePage() {
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      api.post("/cliente", values).then((response) => console.log(response));
     },
     onChange: () => {
       handleOnChange();

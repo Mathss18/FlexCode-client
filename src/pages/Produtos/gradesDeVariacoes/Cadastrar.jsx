@@ -8,6 +8,8 @@ import api from "../../../services/api";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,6 +49,9 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.error.main,
     },
   },
+  addButton: {
+    marginTop: theme.spacing(2),
+  },
   timepicker: {
     backgroundColor: "#FFF",
   },
@@ -54,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 
 const initialValues = {
   nome: "",
-  variacoes: [{nome: "teste"}, {nome: "teste3"}],
+  variacoes: ["", ""],
 };
 
 function CadastrarVariacoes() {
@@ -63,14 +68,37 @@ function CadastrarVariacoes() {
   const [values, setValues] = useState(initialValues);
 
   const handleOnChange = (e) => {
-    let { name, value } = e.target;
-    setValues({ ...values, [name]: value });
+    let { name, value, id } = e.target;
+
+    console.log(e);
+
+    if (name === "variacoes") {
+      const index = id.split("_")[1];
+      const newVariacoes = [...values.variacoes];
+      newVariacoes[index] = value;
+      console.log(newVariacoes);
+      setValues({ ...values, variacoes: newVariacoes });
+    } else {
+      setValues({ ...values, [name]: value });
+    }
   };
+
+  const AdicionarVariacao = () => {
+    const newVariacoes = [...values.variacoes];
+    newVariacoes.push("");
+    setValues({ ...values, variacoes: newVariacoes });
+  };
+
+  const removerVariacao = (i) => {
+    const newVariacoes = [...values.variacoes];
+    newVariacoes.splice(i, 1);
+    setValues({ ...values, variacoes: newVariacoes });
+  }
 
   console.log(values);
 
-  function handleOnSubmit(event) {
-    event.preventDefault();
+  function handleOnSubmit(e) {
+    e.preventDefault();
     console.log(values);
 
     api.post("/grupo-produto", values).then((response) => console.log(response));
@@ -79,7 +107,6 @@ function CadastrarVariacoes() {
   return (
     <>
       <TopBar />
-
       <SideMenu>
         <div>
           <Divider />
@@ -92,16 +119,34 @@ function CadastrarVariacoes() {
               <Grid item xs={6}>
                 <TextField variant="outlined" label="Nome" fullWidth type="text" className={classes.input} value={values.nome} name="nome" onChange={handleOnChange} />
               </Grid>
-              {/* <Grid item xs={3}>
-                <TextField variant="outlined" label="Variação 1" fullWidth type="text" className={classes.input} value={values.sigla} name="sigla" onChange={handleOnChange} />
-              </Grid> */}
               {values.variacoes.map((variacao, index) => {
                 return (
-                  <Grid item xs={3}>
-                    <TextField variant="outlined" label={"Variação " + (index + 1)} fullWidth type="text" className={classes.input} value={variacao.nome} name="variacao" onChange={handleOnChange} />
+                  <Grid item xs={2} key={index}>
+                    <TextField
+                      variant="outlined"
+                      label={"Variação " + (index + 1)}
+                      fullWidth
+                      id={"variacoes_" + index}
+                      className={classes.input}
+                      value={variacao}
+                      name="variacoes"
+                      onChange={handleOnChange}
+                      InputProps={ index !== 0 && {
+                          endAdornment: (
+                            <IconButton onClick={() => removerVariacao(index)} >
+                              <DeleteIcon />
+                            </IconButton>
+                          ),
+                      }}
+                    />
                   </Grid>
-                )
+                );
               })}
+            </Grid>
+            <Grid>
+              <Button className={classes.addButton} variant="outlined" onClick={() => AdicionarVariacao()}>
+                Adicionar
+              </Button>
             </Grid>
             <br />
             <Divider />
