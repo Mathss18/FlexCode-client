@@ -63,11 +63,11 @@ function ListarVariacoes() {
   const data = [];
 
   function handleOnClickShowButton(event, id) {
-    history.push("/unidade-grupo/mostrar/" + id);
+    history.push("/grupo-produto/mostrar/" + id);
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/unidade-grupo/editar/" + id);
+    history.push("/grupo-produto/editar/" + id);
   }
 
   useEffect(() => {

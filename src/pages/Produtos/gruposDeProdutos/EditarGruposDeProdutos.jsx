@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
 
 const initialValues = {
   nome: "",
-  grupoPai: null,
+  grupoPai: 0,
 };
 
 function EditarGruposDeProdutos() {
@@ -65,27 +65,31 @@ function EditarGruposDeProdutos() {
   const [grupos, setGrupos] = useState([]);
 
   useEffect(() => {
-    listarGruposDeProdutos();
 
-    api.get("/grupo-produto/" + id).then((response) => {
-      setValues(response.data["data"]);
+    api.get("/grupos-produtos")
+    .then(response => {
+      setGrupos(response.data["data"]);
+    }).catch(error => {
+      console.log('Erro:' + error);
     });
+
+    api.get("/grupo-produto/" + id)
+      .then((response) => {
+        setValues(response.data["data"]);
+      })
+      .catch((error) => {
+        console.log("Erro:" + error);
+      });
+
+
   }, []);
 
-  const listarGruposDeProdutos = async () => {
-    await api
-      .get("/grupos-produtos")
-      .then((res) => {
-        setGrupos(res.data);
-      })
-      .catch((err) => {
-        console.log("Erro:" + err);
-      });
-  };
+
 
   function handleOnChange(event) {
     const { name, value } = event.target;
     setValues({ ...values, [name]: value });
+    console.log(values);
   }
 
   function handleOnSubmit(event) {
@@ -176,18 +180,21 @@ function EditarGruposDeProdutos() {
               <Grid item xs={6}>
                 <TextField variant="outlined" label="Nome do Grupo" fullWidth type="text" className={classes.input} value={values.nome} name="nome" onChange={handleOnChange} />
               </Grid>
-              <Grid item xs={6}>
-                <FormControl variant="outlined" fullWidth className={classes.input}>
-                  <InputLabel id="label-grupo-pai">Grupo Pai</InputLabel>
-                  <Select label="Grupo pai" onChange={handleOnChange} name="nome" value={null}>
-                    <MenuItem value={null}>Nenhum</MenuItem>
-                    {grupos &&
-                      grupos.map((grupo) => {
-                        return <MenuItem value={grupo.id}>{grupo.nome}</MenuItem>;
-                      })}
+
+              <Grid item xs={3}>
+                <FormControl variant="outlined" fullWidth className={classes.input} name="grupoPai">
+                  <InputLabel>Grupo Pai</InputLabel>
+                  <Select label="Grupo Pai" value={values.grupoPai} onChange={handleOnChange}>
+                    <MenuItem value={0}>Nenhum</MenuItem>
+                    {grupos.map((grupo) => {
+                      return (
+                        <MenuItem key={grupo.id} value={grupo.id}>{grupo.nome}</MenuItem>
+                      )
+                    })}
                   </Select>
                 </FormControl>
               </Grid>
+
             </Grid>
             <br />
             <Divider />
@@ -204,7 +211,7 @@ function EditarGruposDeProdutos() {
                 </Button>
               </Grid>
               <Grid item>
-                <Button onClick={() => history.push("/clientes")} variant="outlined" startIcon={<CloseIcon />} className={classes.cancelButton}>
+                <Button onClick={() => history.push("/grupos-produtos")} variant="outlined" startIcon={<CloseIcon />} className={classes.cancelButton}>
                   Cancelar
                 </Button>
               </Grid>

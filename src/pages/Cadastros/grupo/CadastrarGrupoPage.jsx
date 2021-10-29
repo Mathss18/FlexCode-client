@@ -130,7 +130,11 @@ function CadastrarGrupoPage() {
         setValues({
           ...values,
           clientes: values.acessoCliente.toString().replaceAll(",", "."),
+          transportadoras: values.acessoTransportadora.toString().replaceAll(",", "."),
           fornecedores: values.acessoFornecedor.toString().replaceAll(",", "."),
+          grupos: values.acessoGrupo.toString().replaceAll(",", "."),
+          funcionarios: values.acessoFuncionario.toString().replaceAll(",", "."),
+          usuarios: values.acessoUsuario.toString().replaceAll(",", "."),
         });
       } else {
         setValues({ ...values, [name]: checked });
@@ -228,6 +232,7 @@ function CadastrarGrupoPage() {
               <h3>Configurações</h3>
             </div>
             <Grid container spacing={2}>
+  
               <Grid item xs={2}>
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">Dias de acesso</FormLabel>
@@ -307,6 +312,7 @@ function CadastrarGrupoPage() {
                   </FormGroup>
                 </FormControl>
               </Grid>
+
               <Grid item xs={2}>
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">Controle de Clientes</FormLabel>
@@ -359,6 +365,7 @@ function CadastrarGrupoPage() {
                   </FormGroup>
                 </FormControl>
               </Grid>
+
               <Grid item xs={2}>
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">
@@ -413,10 +420,11 @@ function CadastrarGrupoPage() {
                   </FormGroup>
                 </FormControl>
               </Grid>
+
               <Grid item xs={2}>
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">
-                    Controle de Transportadora
+                    Controle de Transportadoras
                   </FormLabel>
                   <FormGroup>
                     <FormControlLabel
@@ -467,6 +475,7 @@ function CadastrarGrupoPage() {
                   </FormGroup>
                 </FormControl>
               </Grid>
+
               <Grid item xs={2}>
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">Controle de Grupos</FormLabel>
@@ -519,6 +528,7 @@ function CadastrarGrupoPage() {
                   </FormGroup>
                 </FormControl>
               </Grid>
+
               <Grid item xs={2}>
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">
@@ -573,6 +583,62 @@ function CadastrarGrupoPage() {
                   </FormGroup>
                 </FormControl>
               </Grid>
+
+              <Grid item xs={2}>
+                <FormControl component="fieldset" variant="standard">
+                  <FormLabel component="legend">
+                    Controle de Usuários
+                  </FormLabel>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.acessoUsuario[0]}
+                          onChange={handleOnChange}
+                          name="acessoUsuario"
+                          type="checkbox"
+                          id="acessoUsuario.C"
+                        />
+                      }
+                      label="Criar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.acessoUsuario[1]}
+                          onChange={handleOnChange}
+                          name="acessoUsuario"
+                          id="acessoUsuario.R"
+                        />
+                      }
+                      label="Listar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.acessoUsuario[2]}
+                          onChange={handleOnChange}
+                          name="acessoUsuario"
+                          id="acessoUsuario.U"
+                        />
+                      }
+                      label="Editar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.acessoUsuario[3]}
+                          onChange={handleOnChange}
+                          name="acessoUsuario"
+                          id="acessoUsuario.D"
+                        />
+                      }
+                      label="Excluir"
+                    />
+                  </FormGroup>
+                </FormControl>
+              </Grid>
+
             </Grid>
             <br />
             <Divider />

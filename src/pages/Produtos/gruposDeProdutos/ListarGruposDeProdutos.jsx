@@ -67,11 +67,11 @@ function ListarGruposDeProdutos() {
   const data = [];
 
   function handleOnClickShowButton(event, id) {
-    history.push("/grupo/mostrar/" + id);
+    history.push("/grupo-produto/mostrar/" + id);
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/grupo/editar/" + id);
+    history.push("/grupo-produto/editar/" + id);
   }
 
   useEffect(() => {

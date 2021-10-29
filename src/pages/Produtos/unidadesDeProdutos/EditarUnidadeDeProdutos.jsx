@@ -65,7 +65,7 @@ function EditarUnidadeDeProdutos() {
   const { id } = useParams();
 
   useEffect(() => {
-    api.get("/grupo-produto/" + id).then((response) => {
+    api.get("/unidade-produto/" + id).then((response) => {
       setValues(response.data["data"]);
     });
   }, []);
@@ -78,7 +78,7 @@ function EditarUnidadeDeProdutos() {
   function handleOnSubmit(event) {
     event.preventDefault();
     api
-      .put("/grupo-produto/" + id, values)
+      .put("/unidade-produto/" + id, values)
       .then((response) => {
         console.log(response);
         Swal.fire({
@@ -123,7 +123,7 @@ function EditarUnidadeDeProdutos() {
     }).then((result) => {
       if (result.isConfirmed) {
         api
-          .delete("/grupo-produto/" + id)
+          .delete("/unidade-produto/" + id)
           .then((result) => {
             Swal.fire("Excluido!", "Cliente excluido com sucesso.", "success");
             history.push("/grupos-produtos");
