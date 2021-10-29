@@ -63,19 +63,20 @@ function ListarUnidadesDeProdutos() {
   const data = [];
 
   function handleOnClickShowButton(event, id) {
-    history.push("/unidade-grupo/mostrar/" + id);
+    history.push("/unidade-produto/mostrar/" + id);
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/unidade-grupo/editar/" + id);
+    history.push("/unidade-produto/editar/" + id);
   }
 
   useEffect(() => {
-    api.get("/grupos-produtos").then((response) => {
+    api.get("/unidades-produtos").then((response) => {
       if (response != undefined) {
         response.data["data"].forEach((element) => {
           var array = [
             element["nome"],
+            element["sigla"],
             <>
               <SearchIcon className={classes.optionsButtons} onClick={(event) => handleOnClickShowButton(event, element["id"])} />
               <EditIcon className={classes.optionsButtons} onClick={(event) => handleOnClickEditButton(event, element["id"])} />

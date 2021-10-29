@@ -54,34 +54,29 @@ const useStyles = makeStyles((theme) => ({
 
 const initialValues = {
   nome: "",
-  grupoPai: 0,
+  grupoPai: null,
 };
 
 function CadastrarGrupoDeProdutos() {
   const classes = useStyles();
   const history = useHistory();
   const [values, setValues] = useState(initialValues);
-  const [ grupos, setGrupos ] = useState([]);
+  const [grupos, setGrupos] = useState([]);
 
   useEffect(() => {
-    listarGruposDeProdutos();
+
+    api.get("/grupos-produtos").then(res => {
+      setGrupos(res.data.data);
+    }).catch(err => {
+      console.log('Erro:' + err);
+    });
+
   }, [])
 
   const handleOnChange = (e) => {
     let { name, value } = e.target;
     setValues({ ...values, [name]: value });
   };
-
-  console.log(values);
-
-
-  const listarGruposDeProdutos = () => {
-    api.get("/grupos-produtos").then(res => {
-        setGrupos(res.data.data);
-    }).catch(err => {
-      console.log('Erro:' + err);
-    });
-  }
 
   function handleOnSubmit(event) {
     event.preventDefault();
@@ -110,10 +105,10 @@ function CadastrarGrupoDeProdutos() {
                 <FormControl variant="outlined" fullWidth className={classes.input}>
                   <InputLabel id="label-grupo-pai">Grupo Pai</InputLabel>
                   <Select label="Grupo pai" onChange={handleOnChange} name="grupoPai" value={values.grupoPai}>
-                    <MenuItem value={0}>
+                    <MenuItem value={null}>
                       Nenhum
                     </MenuItem>
-                    {grupos && 
+                    {grupos &&
                       grupos.map((grupo) => {
                         return <MenuItem value={grupo.id}>{grupo.nome}</MenuItem>
                       })}
