@@ -2,7 +2,7 @@ import React from "react";
 
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import Home from "../pages/Home";
-import LoginPage from "../pages/Login/LoginPage";
+import LoginPage from "../pages/login/LoginPage";
 import ListarClientePage from "../pages/Cadastros/cliente/ListarClientePage";
 import CadastrarClientePage from "../pages/Cadastros/cliente/CadastrarClientePage";
 import EditarClientePage from "../pages/Cadastros/cliente/EditarClientePage";
