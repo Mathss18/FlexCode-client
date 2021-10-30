@@ -1,39 +1,56 @@
+import { useState, useEffect } from 'react';
+// Rotas
 import Routes from "./routes/routes";
-import { ThemeProvider, createTheme } from "@material-ui/core/styles";
+// Providers
 import SideMenuContextProvider from "./context/SideMenuContext";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import styled, { ThemeProvider } from "styled-components";
+// Temas
+import WebFont from 'webfontloader';
+import { GlobalStyles } from './theme/GlobalStyles';
+import { useTheme } from './theme/useTheme';
+
 import MomentUtils from '@date-io/moment';
+
+const Container = styled.div`
+  margin: 5px auto 5px auto;
+`;
 
 
 function App() {
-	const theme = createTheme({
-		palette: {
-			primary: {
-				main: "#3f51b5",
-			},
-			secondary: {
-				main: "#2196f3",
-			},
-			error: {
-				main: "#f44336",
-			},
-			background: {
-				main: "#f4f8fb",
-				dark: "#202634",
-				lightDark: "#293042",
-			},
-		},
-	});
 
-	return (
-		<ThemeProvider theme={theme}>
-			<SideMenuContextProvider>
-				<MuiPickersUtilsProvider utils={MomentUtils}>
-					<Routes />
-				</MuiPickersUtilsProvider>
-			</SideMenuContextProvider>
-		</ThemeProvider>
-	);
+  const { theme, themeLoaded, getFonts } = useTheme();
+  const [selectedTheme, setSelectedTheme] = useState(theme);
+
+  useEffect(() => {
+    setSelectedTheme(theme);
+  }, [themeLoaded]);
+
+  useEffect(() => {
+    WebFont.load({
+      google: {
+        families: getFonts()
+      }
+    });
+  });
+
+  return (
+    <>
+      {
+        themeLoaded && <ThemeProvider theme={selectedTheme}>
+          <GlobalStyles />
+          <Container style={{ fontFamily: selectedTheme.font }}>
+            <SideMenuContextProvider>
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <Routes />
+              </MuiPickersUtilsProvider>
+            </SideMenuContextProvider>
+          </Container>
+        </ThemeProvider>
+      }
+    </>
+  );
+
 }
 
 export default App;

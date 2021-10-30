@@ -63,23 +63,23 @@ function ListarVariacoes() {
   const data = [];
 
   function handleOnClickShowButton(event, id) {
-    history.push("/grupo-produto/mostrar/" + id);
+    history.push("/grade-variacao/mostrar/" + id);
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/grupo-produto/editar/" + id);
+    history.push("/grade-variacao/editar/" + id);
   }
 
   useEffect(() => {
-    api.get("/grupos-produtos").then((response) => {
+    api.get("/tipos-variacoes-produtos").then((response) => {
       if (response != undefined) {
         response.data["data"].forEach((element) => {
           var array = [
             element["nome"],
             new Date(element["created_at"]).toLocaleString(),
             <>
-              <SearchIcon className={classes.optionsButtons} onClick={(event) => handleOnClickShowButton(event, element["id"])} />
-              <EditIcon className={classes.optionsButtons} onClick={(event) => handleOnClickEditButton(event, element["id"])} />
+              <SearchIcon className={'btn-lista'} onClick={(event) => handleOnClickShowButton(event, element["id"])} />
+              <EditIcon className={'btn-lista'} onClick={(event) => handleOnClickEditButton(event, element["id"])} />
             </>,
           ];
           data.push(array);
@@ -97,10 +97,11 @@ function ListarVariacoes() {
         {grupos.map((grupo, index) => (
           <h4 key={index}>{grupo.nome}</h4>
         ))}
-        <Button onClick={() => history.push("/grade-variacao/novo")} variant="outlined" startIcon={<AddIcon />} className={classes.saveButton}>
+        <Button onClick={() => history.push("/grade-variacao/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>
           Adicionar
         </Button>
-        <MUIDataTable title={"Lista de Grades de Variações"} data={grupos} columns={columns} />
+        <MUIDataTable title={"Lista de Grades de Variações"} data={grupos} columns={columns} options={config}
+className={'table-background'}/>
       </SideMenu>
     </>
   );

@@ -1,4 +1,5 @@
 import CircularProgress from '@mui/material/CircularProgress';
+import { alternateRowColor } from '../theme/GlobalStyles';
 
 export const config = {
   textLabels: {
@@ -41,8 +42,8 @@ export const config = {
   },
   setRowProps: (row, dataIndex, rowIndex) => {
     return {
+      className: rowIndex % 2 == 0 ? 'row row-par' : 'row row-impar',
       style: {
-        background: rowIndex % 2 == 0 ? 'white' : '#F2F2F2',
         fontSize: 30,
         color: 'red'
       },

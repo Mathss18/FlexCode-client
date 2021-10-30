@@ -14,46 +14,6 @@ import { useFormik } from "formik";
 import validationSchema from "../../../services/validationSchema";
 import InputMask from 'react-input-mask';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    //flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  input: {
-    backgroundColor: "#fff",
-    // Estilo do helperText
-    "& p": {
-      backgroundColor: "#fafafa",
-      margin: 0,
-      paddingLeft: theme.spacing(1),
-    },
-  },
-  saveButton: {
-    backgroundColor: theme.palette.primary.main,
-    color: "#fff",
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#fff",
-      color: theme.palette.primary.main,
-    },
-  },
-  cancelButton: {
-    backgroundColor: theme.palette.error.main,
-    color: "#fff",
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#fff",
-      color: theme.palette.error.main,
-    },
-  },
-}));
-
 const initialValues = {
   tipoCliente: "",
   situacao: "",
@@ -86,7 +46,6 @@ function CadastrarClientePage() {
     },
   });
 
-  const classes = useStyles();
   const history = useHistory();
   const [values, setValues] = useState(initialValues);
 
@@ -137,9 +96,9 @@ function CadastrarClientePage() {
           <form onSubmit={formik.handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={3}>
-                <FormControl variant="outlined" fullWidth required className={classes.input} name="tipoCliente">
+                <FormControl variant="outlined" fullWidth required name="tipoCliente">
                   <InputLabel>Tipo de Cliente</InputLabel>
-                  <Select label="Tipo de Cliente" name="tipoCliente" value={values.tipoCliente} onChange={handleOnChange}>
+                  <Select className={'input-select'} label="Tipo de Cliente" name="tipoCliente" value={values.tipoCliente} onChange={handleOnChange}>
                     <MenuItem value={"pf"}>Pessoa Física</MenuItem>
                     <MenuItem value={"pj"}>Pessoa Jurídica</MenuItem>
                   </Select>
@@ -147,9 +106,9 @@ function CadastrarClientePage() {
               </Grid>
 
               <Grid item xs={3}>
-                <FormControl variant="outlined" fullWidth required className={classes.input} name="situacao">
+                <FormControl variant="outlined" fullWidth required name="situacao">
                   <InputLabel>Situação</InputLabel>
-                  <Select label="Situação" value="" name="situacao" value={values.situacao} onChange={handleOnChange}>
+                  <Select className={'input-select'} label="Situação" value="" name="situacao" value={values.situacao} onChange={handleOnChange}>
                     <MenuItem value={1}>Ativo</MenuItem>
                     <MenuItem value={0}>Inativo</MenuItem>
                   </Select>
@@ -157,9 +116,9 @@ function CadastrarClientePage() {
               </Grid>
 
               <Grid item xs={3}>
-                <FormControl variant="outlined" fullWidth required className={classes.input} name="tipoContribuinte">
+                <FormControl variant="outlined" fullWidth required name="tipoContribuinte">
                   <InputLabel>Tipo de contribuinte</InputLabel>
-                  <Select label="Tipo de contribuinte" name="tipoContribuinte" value={values.tipoContribuinte} onChange={handleOnChange}>
+                  <Select className={'input-select'} label="Tipo de contribuinte" name="tipoContribuinte" value={values.tipoContribuinte} onChange={handleOnChange}>
                     <MenuItem value={1}>Contribuinte ICMS</MenuItem>
                     <MenuItem value={2}>Contribuinte ISENTO</MenuItem>
                     <MenuItem value={9}>Não Contribuinte</MenuItem>
@@ -173,7 +132,7 @@ function CadastrarClientePage() {
                   fullWidth
                   label="Inscrição Estadual"
                   helperText="Digite ISENTO caso não haja Inscrição Estadual"
-                  className={classes.input}
+                
                   value={values.inscricaoEstadual}
                   name="inscricaoEstadual"
                   onChange={handleOnChange}
@@ -181,13 +140,13 @@ function CadastrarClientePage() {
               </Grid>
 
               <Grid item xs={3}>
-                <TextField variant="outlined" label="Nome/Razão social" fullWidth className={classes.input} value={values.nome} name="nome" onChange={handleOnChange} />
+                <TextField variant="outlined" label="Nome/Razão social" fullWidth value={values.nome} name="nome" onChange={handleOnChange} />
               </Grid>
 
               <Grid item xs={3}>
                 <InputMask mask={"999.999.999-99"} value={values.cpfCnpj} onChange={handleOnChange}>
                   {() => (
-                      <TextField variant="outlined" label="CPF/CNPJ" fullWidth className={classes.input}  name="cpfCnpj" />
+                      <TextField variant="outlined" label="CPF/CNPJ" fullWidth  name="cpfCnpj" />
                   )}
                 </InputMask>
               </Grid>
@@ -197,7 +156,7 @@ function CadastrarClientePage() {
                   variant="outlined"
                   label="Email"
                   fullWidth
-                  className={classes.input}
+                
                   value={formik.values.email}
                   name="email"
                   helperText={formik.touched.email && formik.errors.email}
@@ -207,7 +166,7 @@ function CadastrarClientePage() {
               </Grid>
 
               <Grid item xs={3}>
-                <TextField variant="outlined" label="Contato" fullWidth className={classes.input} value={values.contato} name="contato" onChange={handleOnChange} />
+                <TextField variant="outlined" label="Contato" fullWidth value={values.contato} name="contato" onChange={handleOnChange} />
               </Grid>
             </Grid>
             <br />
@@ -218,24 +177,24 @@ function CadastrarClientePage() {
             </div>
             <Grid container spacing={2}>
               <Grid item xs={3}>
-                <TextField variant="outlined" label="CEP" fullWidth className={classes.input} value={values.cep} name="cep" onBlur={handleCepChange} onChange={handleOnChange} />
+                <TextField variant="outlined" label="CEP" fullWidth value={values.cep} name="cep" onBlur={handleCepChange} onChange={handleOnChange} />
               </Grid>
               <Grid item xs={3}>
-                <TextField variant="outlined" label="Rua" fullWidth className={classes.input} value={values.rua} name="rua" onChange={handleOnChange} />
+                <TextField variant="outlined" label="Rua" fullWidth value={values.rua} name="rua" onChange={handleOnChange} />
               </Grid>
               <Grid item xs={3}>
-                <TextField variant="outlined" label="Número" fullWidth className={classes.input} value={values.numero} name="numero" onChange={handleOnChange} />
+                <TextField variant="outlined" label="Número" fullWidth value={values.numero} name="numero" onChange={handleOnChange} />
               </Grid>
               <Grid item xs={3}>
-                <TextField variant="outlined" label="Cidade" fullWidth className={classes.input} value={values.cidade} name="cidade" onChange={handleOnChange} />
+                <TextField variant="outlined" label="Cidade" fullWidth value={values.cidade} name="cidade" onChange={handleOnChange} />
               </Grid>
               <Grid item xs={3}>
-                <TextField variant="outlined" label="Bairro" fullWidth className={classes.input} value={values.bairro} name="bairro" onChange={handleOnChange} />
+                <TextField variant="outlined" label="Bairro" fullWidth value={values.bairro} name="bairro" onChange={handleOnChange} />
               </Grid>
               <Grid item xs={3}>
-                <FormControl variant="outlined" fullWidth required className={classes.input}>
+                <FormControl variant="outlined" fullWidth required>
                   <InputLabel>Estado</InputLabel>
-                  <Select label="Estado" name="estado" value={values.estado} onChange={handleOnChange}>
+                  <Select className={'input-select'} label="Estado" name="estado" value={values.estado} onChange={handleOnChange}>
                     <MenuItem value={"AC"}>Acre</MenuItem>
                     <MenuItem value={"AL"}>Alagoas</MenuItem>
                     <MenuItem value={"AP"}>Amapá</MenuItem>
@@ -267,24 +226,24 @@ function CadastrarClientePage() {
                 </FormControl>
               </Grid>
               <Grid item xs={3}>
-                <TextField variant="outlined" label="Telefone" fullWidth className={classes.input} value={values.telefone} name="telefone" onChange={handleOnChange} />
+                <TextField variant="outlined" label="Telefone" fullWidth value={values.telefone} name="telefone" onChange={handleOnChange} />
               </Grid>
               <Grid item xs={3}>
-                <TextField variant="outlined" label="Celular" fullWidth className={classes.input} value={values.celular} name="celular" onChange={handleOnChange} />
+                <TextField variant="outlined" label="Celular" fullWidth value={values.celular} name="celular" onChange={handleOnChange} />
               </Grid>
               <Grid item xs={3}>
-                <TextField variant="outlined" label="Código do Municipio" fullWidth className={classes.input} value={values.codigoMunicipio} name="codigoMunicipio" onChange={handleOnChange} />
+                <TextField variant="outlined" label="Código do Municipio" fullWidth value={values.codigoMunicipio} name="codigoMunicipio" onChange={handleOnChange} />
               </Grid>
             </Grid>
 
             <Grid container spacing={0}>
               <Grid item>
-                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={classes.saveButton}>
+                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={'btn btn-primary btn-spacing'}>
                   Salvar
                 </Button>
               </Grid>
               <Grid item>
-                <Button onClick={() => history.push("/clientes")} variant="outlined" startIcon={<CloseIcon />} className={classes.cancelButton}>
+                <Button onClick={() => history.push("/clientes")} variant="outlined" startIcon={<CloseIcon />} className={'btn btn-error btn-spacing'}>
                   Cancelar
                 </Button>
               </Grid>

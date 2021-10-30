@@ -78,8 +78,8 @@ function ListarUnidadesDeProdutos() {
             element["nome"],
             element["sigla"],
             <>
-              <SearchIcon className={classes.optionsButtons} onClick={(event) => handleOnClickShowButton(event, element["id"])} />
-              <EditIcon className={classes.optionsButtons} onClick={(event) => handleOnClickEditButton(event, element["id"])} />
+              <SearchIcon className={'btn-lista'} onClick={(event) => handleOnClickShowButton(event, element["id"])} />
+              <EditIcon className={'btn-lista'} onClick={(event) => handleOnClickEditButton(event, element["id"])} />
             </>,
           ];
           data.push(array);
@@ -97,10 +97,11 @@ function ListarUnidadesDeProdutos() {
         {grupos.map((grupo, index) => (
           <h4 key={index}>{grupo.nome}</h4>
         ))}
-        <Button onClick={() => history.push("/unidade-produto/novo")} variant="outlined" startIcon={<AddIcon />} className={classes.saveButton}>
+        <Button onClick={() => history.push("/unidade-produto/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>
           Adicionar
         </Button>
-        <MUIDataTable title={"Lista de Unidades de Produtos"} data={grupos} columns={columns} />
+        <MUIDataTable title={"Lista de Unidades de Produtos"} data={grupos} columns={columns} options={config}
+className={'table-background'}/>
       </SideMenu>
     </>
   );

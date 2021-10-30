@@ -45,11 +45,9 @@ const useStyles = makeStyles((theme) => ({
     drawer: {
         width: drawerWidth,
         flexShrink: 0,
-    },
-    drawerPaper: {
+      },
+      drawerPaper: {
         width: drawerWidth,
-        //backgroundColor: theme.palette.background.lightDark,
-        //color: '#fff'
     },
     drawerHeader: {
         display: "flex",
@@ -120,11 +118,12 @@ function SideMenu({ children }) {
                 </div>
                 <Divider />
                 <List
+                    className={"sidemenu-list"}
                     component="nav"
                     aria-labelledby="nested-list-subheader"
                     subheader={
                         <ListSubheader component="div" id="nested-list-subheader">
-                            Nested List Items
+                            Menu Lateral
                         </ListSubheader>
                     }
                 >

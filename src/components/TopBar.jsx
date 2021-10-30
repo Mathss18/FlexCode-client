@@ -10,55 +10,33 @@ import { useHistory } from "react-router-dom";
 import { Link } from 'react-router-dom';
 
 
-const useStyles = makeStyles((theme) => ({
-    grow: {
-        flexGrow: 1,
-    },
-    appBar: {
-        zIndex: 999,
-        boxShadow: 'none',
-        borderBottom: '1px solid #e7e7e7'
-        //backgroundColor: theme.palette.background.dark,
-    },
-    iconButton: {
-        paddingRight: theme.spacing(2),
-    },
-    leaveButton: {
-        color: theme.palette.error.main,
-        borderColor: theme.palette.error.main,
-        marginLeft: theme.spacing(2),
-    }
-
-}));
-
 
 function TopBar() {
-    const classes = useStyles();
     const [openSideMenu, setOpenSideMenu] = useMenu();
     const history = useHistory();
 
     return (
-        <AppBar color="inherit" className={classes.appBar}>
+        <AppBar color="inherit" className={'topbar'}>
             <Toolbar>
                 <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => setOpenSideMenu(!openSideMenu)}>
                     <MenuIcon />
                 </IconButton>
                 <Link to='/'>[LOGO]</Link>
-                <div className={classes.grow}></div>
+                <div className={'topbar-spacing'}></div>
 
-                <IconButton color="inherit" className={classes.iconButton}>
+                <IconButton className={'topbar-icon'} color="inherit">
                     <Badge badgeContent={4} color="secondary">
                         <MailIcon />
                     </Badge>
                 </IconButton>
 
-                <IconButton color="inherit" className={classes.iconButton}>
+                <IconButton className={'topbar-icon'} color="inherit">
                     <Badge badgeContent={10} color="secondary">
                         <NotificationsIcon />
                     </Badge>
                 </IconButton>
 
-                <Button variant="outlined" className={classes.leaveButton} startIcon={<ExitToAppIcon />}  onClick={() => {
+                <Button className={'btn btn-error'} variant="outlined" startIcon={<ExitToAppIcon />}  onClick={() => {
                     localStorage.removeItem('token')
                     history.push("/login")
                 }}>Sair</Button>

@@ -11,59 +11,12 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    //flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  input: {
-    backgroundColor: "#fff",
-    // Estilo do helperText
-    "& p": {
-      backgroundColor: "#fafafa",
-      margin: 0,
-      paddingLeft: theme.spacing(1),
-    },
-  },
-  saveButton: {
-    backgroundColor: theme.palette.primary.main,
-    color: "#fff",
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#fff",
-      color: theme.palette.primary.main,
-    },
-  },
-  cancelButton: {
-    backgroundColor: theme.palette.error.main,
-    color: "#fff",
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#fff",
-      color: theme.palette.error.main,
-    },
-  },
-  addButton: {
-    marginTop: theme.spacing(2),
-  },
-  timepicker: {
-    backgroundColor: "#FFF",
-  },
-}));
-
 const initialValues = {
   nome: "",
   variacoes: ["", ""],
 };
 
 function CadastrarVariacoes() {
-  const classes = useStyles();
   const history = useHistory();
   const [values, setValues] = useState(initialValues);
 
@@ -99,6 +52,23 @@ function CadastrarVariacoes() {
 
   function handleOnSubmit(e) {
     e.preventDefault();
+
+    let idTipoVariacao;
+    api.post('/tipo-variacao-produto', values.nome)
+    .then((response) => {
+      idTipoVariacao = response.data.id;
+    })
+    .catch((error) => {
+
+    });
+
+    api.post('/nome-variacao-produto', values.item)
+    .then((response) => {
+      
+    })
+    .catch((error) => {
+
+    });
     console.log(values);
 
     api.post("/grupo-produto", values).then((response) => console.log(response));
@@ -117,7 +87,7 @@ function CadastrarVariacoes() {
           <form onSubmit={handleOnSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <TextField variant="outlined" label="Nome" fullWidth type="text" className={classes.input} value={values.nome} name="nome" onChange={handleOnChange} />
+                <TextField variant="outlined" label="Nome" fullWidth type="text"  value={values.nome} name="nome" onChange={handleOnChange} />
               </Grid>
               {values.variacoes.map((variacao, index) => {
                 return (
@@ -127,13 +97,12 @@ function CadastrarVariacoes() {
                       label={"Variação " + (index + 1)}
                       fullWidth
                       id={"variacoes_" + index}
-                      className={classes.input}
                       value={variacao}
                       name="variacoes"
                       onChange={handleOnChange}
                       InputProps={ index !== 0 && {
                           endAdornment: (
-                            <IconButton onClick={() => removerVariacao(index)} >
+                            <IconButton onClick={() => removerVariacao(index)}>
                               <DeleteIcon />
                             </IconButton>
                           ),
@@ -144,7 +113,7 @@ function CadastrarVariacoes() {
               })}
             </Grid>
             <Grid>
-              <Button className={classes.addButton} variant="outlined" onClick={() => AdicionarVariacao()}>
+              <Button className={'btn btn-primary btn-spacing'} variant="outlined" onClick={() => AdicionarVariacao()}>
                 Adicionar
               </Button>
             </Grid>
@@ -153,12 +122,12 @@ function CadastrarVariacoes() {
 
             <Grid container spacing={0}>
               <Grid item>
-                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={classes.saveButton}>
+                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={'btn btn-primary btn-spacing'}>
                   Salvar
                 </Button>
               </Grid>
               <Grid item>
-                <Button onClick={() => history.push("/grades-variacoes")} variant="outlined" startIcon={<CloseIcon />} className={classes.cancelButton}>
+                <Button onClick={() => history.push("/grades-variacoes")} variant="outlined" startIcon={<CloseIcon />} className={'btn btn-error btn-spacing'}>
                   Cancelar
                 </Button>
               </Grid>

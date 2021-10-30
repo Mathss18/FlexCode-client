@@ -1,0 +1,174 @@
+{
+  "data" : {
+
+    "light" : {
+      "id": "T_001",
+      "name": "Light",
+      "colors": {
+        "body": "#FFFFFF",
+        "text": "#000000",
+        "border": "#e0e0e0",
+        "input": {
+          "border": "#e0e0e0",
+          "background": "#FFFFFF",
+          "text": "#000000"
+        },
+        "button": {
+          "primary":{
+            "background": "#1976d2",
+            "text": "#FFFFFF",
+            "border": "#42a5f5",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#1565c0"
+            }
+          },
+          "secondary":{
+            "background": "#9c27b0",
+            "text": "#FFFFFF",
+            "border": "#ba68c8",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#7b1fa2"
+            }
+          },
+          "success":{
+            "background": "#2e7d32",
+            "text": "#FFFFFF",
+            "border": "#4caf50",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#1b5e20"
+            }
+          },
+          "info":{
+            "background": "#0288d1",
+            "text": "#FFFFFF",
+            "border": "#03a9f4",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#01579b"
+            }
+          },
+          "error":{
+            "background": "#d32f2f",
+            "text": "#FFFFFF",
+            "border": "#ef5350",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#c62828"
+            }
+          }
+        },
+        "table": {
+          "header": {
+            "background": "#e0e0e0",
+            "text": "#000000"
+          },
+          "row": {
+            "hover": "#e0e0e0",
+            "impar":{
+              "background": "#fafafa",
+              "text": "#000000",
+              "hover": "#e0e0e0"
+            },
+            "par": {
+              "background": "#FFFFFF",
+              "text": "#000000",
+              "hover": "#e0e0e0"
+            },
+            "background": "#FFFFFF",
+            "text": "#000000"
+          }
+        },
+        "link": {
+          "text": "teal",
+          "opacity": 1
+        }
+      },
+      "font": "Roboto"
+    },
+
+    "seaWave" : {
+      "id": "T_007",
+      "name": "Sea Wave",
+      "colors": {
+        "body": "#9be7ff",
+        "text": "#0d47a1",
+        "border": "#77b3dd",
+        "input": {
+          "border": "#e0e0e0",
+          "background": "#FFFFFF",
+          "text": "#000000"
+        },
+        "button": {
+          "primary":{
+            "background": "#1976d2",
+            "text": "#FFFFFF",
+            "border": "#42a5f5",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#1565c0"
+            }
+          },
+          "secondary":{
+            "background": "#9c27b0",
+            "text": "#FFFFFF",
+            "border": "#ba68c8",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#7b1fa2"
+            }
+          },
+          "success":{
+            "background": "#2e7d32",
+            "text": "#FFFFFF",
+            "border": "#4caf50",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#1b5e20"
+            }
+          },
+          "error":{
+            "background": "#d32f2f",
+            "text": "#FFFFFF",
+            "border": "#ef5350",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#c62828"
+            }
+          }
+        },
+        "table": {
+          "header": {
+            "background": "#e0e0e0",
+            "text": "#000000"
+          },
+          "row": {
+            "hover": "#e0e0e0",
+            "impar":{
+              "background": "#fafafa",
+              "text": "#000000",
+              "hover": "#e0e0e0"
+            },
+            "par": {
+              "background": "#FFFFFF",
+              "text": "#000000",
+              "hover": "#e0e0e0"
+            },
+            "background": "#FFFFFF",
+            "text": "#000000"
+          }
+        },
+        "link": {
+          "text": "#0d47a1",
+          "opacity": 0.8
+        }
+      },
+      "font": "Ubuntu"
+    }
+
+    
+    
+  }
+}

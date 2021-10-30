@@ -24,43 +24,6 @@ import moment from "moment";
 import "moment/locale/pt-br";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    //flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  input: {
-    backgroundColor: "#fff",
-    // Estilo do helperText
-    "& p": {
-      backgroundColor: "#fafafa",
-      margin: 0,
-      paddingLeft: theme.spacing(1),
-    },
-  },
-  saveButton: {
-    backgroundColor: theme.palette.primary.main,
-    color: "#fff",
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#fff",
-      color: theme.palette.primary.main,
-    },
-  },
-  cancelButton: {
-    backgroundColor: theme.palette.error.main,
-    color: "#fff",
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#fff",
-      color: theme.palette.error.main,
-    },
-  },
   timepicker: {
     backgroundColor: "#FFF",
   },
@@ -99,7 +62,6 @@ const initialValues = {
 };
 
 function CadastrarGrupoPage() {
-  const classes = useStyles();
   const history = useHistory();
   const [values, setValues] = useState(initialValues);
   const [hoursInit, setHoursInit] = useState(initialValues.horaInicio);
@@ -184,7 +146,6 @@ function CadastrarGrupoPage() {
                   label="Nome do Grupo"
                   fullWidth
                   type="text"
-                  className={classes.input}
                   value={values.nome}
                   name="nome"
                   onChange={handleOnChange}
@@ -196,7 +157,6 @@ function CadastrarGrupoPage() {
                   ampm={false}
                   fullWidth
                   inputVariant="outlined"
-                  className={classes.timepicker}
                   minutesStep={5}
                   label="Hora ínicio"
                   value={moment(hoursInit, "hh:mm:ss")}
@@ -209,7 +169,6 @@ function CadastrarGrupoPage() {
                   clearable={false}
                   fullWidth
                   inputVariant="outlined"
-                  className={classes.timepicker}
                   ampm={false}
                   minutesStep={5}
                   label="Hora fim"
@@ -232,7 +191,7 @@ function CadastrarGrupoPage() {
               <h3>Configurações</h3>
             </div>
             <Grid container spacing={2}>
-  
+
               <Grid item xs={2}>
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">Dias de acesso</FormLabel>
@@ -651,7 +610,7 @@ function CadastrarGrupoPage() {
                   type="submit"
                   variant="outlined"
                   startIcon={<CheckIcon />}
-                  className={classes.saveButton}
+                  className={'btn btn-primary btn-spacing'}
                 >
                   Salvar
                 </Button>
@@ -661,7 +620,7 @@ function CadastrarGrupoPage() {
                   onClick={() => history.push("/clientes")}
                   variant="outlined"
                   startIcon={<CloseIcon />}
-                  className={classes.cancelButton}
+                  className={'btn btn-error btn-spacing'}
                 >
                   Cancelar
                 </Button>

@@ -1,14 +1,10 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import SideMenu from "../../../components/SideMenu";
 import TopBar from "../../../components/TopBar";
-import { makeStyles } from "@material-ui/core/styles";
 import {
   Grid,
   TextField,
-  Select,
-  MenuItem,
   FormControl,
-  InputLabel,
   Divider,
   Button,
   FormLabel,
@@ -16,54 +12,15 @@ import {
   FormGroup,
   Switch,
 } from "@material-ui/core";
+import { TimePicker } from "@material-ui/pickers";
 import { useHistory, useParams } from "react-router-dom";
 import api from "../../../services/api";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import SettingsIcon from "@mui/icons-material/Settings";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import Swal from "sweetalert2";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    //flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  input: {
-    backgroundColor: "#fff",
-    // Estilo do helperText
-    "& p": {
-      backgroundColor: "#fafafa",
-      margin: 0,
-      paddingLeft: theme.spacing(1),
-    },
-  },
-  saveButton: {
-    backgroundColor: theme.palette.primary.main,
-    color: "#fff",
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#fff",
-      color: theme.palette.primary.main,
-    },
-  },
-  cancelButton: {
-    backgroundColor: theme.palette.error.main,
-    color: "#fff",
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#fff",
-      color: theme.palette.error.main,
-    },
-  },
-}));
+import moment from "moment";
+import "moment/locale/pt-br";
 
 const initialValues = {
   nome: "",
@@ -74,121 +31,102 @@ const initialValues = {
   sexta: false,
   sabado: false,
   domingo: false,
-  criarCliente: false,
-  listarCliente: false,
-  editarCliente: false,
-  excluirCliente: false,
-  criarFornecedor: false,
-  listarFornecedor: false,
-  editarFornecedor: false,
-  excluirFornecedor: false,
-  criarFuncionario: false,
-  listarFuncionario: false,
-  editarFuncionario: false,
-  excluirFuncionario: false,
-  criarTransportadora: false,
-  listarTransportadora: false,
-  editarTransportadora: false,
-  excluirTransportadora: false,
-  criarGrupo: false,
-  listarGrupo: false,
-  editarGrupo: false,
-  excluirGrupo: false,
+
+  horaInicio: "07:00:00",
+  horaFim: "17:00:00",
+
+  acessoCliente: [0, 0, 0, 0],
+  clientes: "",
+
+  acessoFornecedor: [0, 0, 0, 0],
+  fornecedores: "",
+
+  acessoFuncionario: [0, 0, 0, 0],
+  funcionarios: "",
+
+  acessoTransportadora: [0, 0, 0, 0],
+  transportadoras: "",
+
+  acessoGrupo: [0, 0, 0, 0],
+  grupos: "",
+
+  acessoUsuario: [0, 0, 0, 0],
+  usuarios: "",
 };
 
 function EditarGrupoPage() {
-  const classes = useStyles();
   const history = useHistory();
   const [values, setValues] = useState(initialValues);
+  const [hoursInit, setHoursInit] = useState(initialValues.horaInicio);
+  const [hoursFim, setHoursFim] = useState(initialValues.horaFim);
   const { id } = useParams();
 
   useEffect(() => {
-    api.get("/grupo/" + id).then((response) => {
-      setValues(response.data["data"]);
-    });
-  }, []);
+    api.get('/grupo/' + id)
+        .then((response) => {
+            console.log(response.data['data']);
+            //setValues(response.data['data']);
+        })
+
+}, []);
 
   const handleOnChange = (e) => {
-    let { name, checked, value, type } = e.target;
+    let { name, value, checked, type, id } = e.target;
 
     if (type === "checkbox") {
-      setValues({ ...values, [name]: checked });
+      if (id !== "") {
+        var tipoOperacao = id.split(".")[1]; // C, R, U, D
+        var acesso = values?.[name];
+        // eslint-disable-next-line default-case
+        switch (tipoOperacao) {
+          case "C":
+            acesso[0] == 1 ? (acesso[0] = 0) : (acesso[0] = 1);
+            break;
+          case "R":
+            acesso[1] == 1 ? (acesso[1] = 0) : (acesso[1] = 1);
+            break;
+          case "U":
+            acesso[2] == 1 ? (acesso[2] = 0) : (acesso[2] = 1);
+            break;
+          case "D":
+            acesso[3] == 1 ? (acesso[3] = 0) : (acesso[3] = 1);
+            break;
+        }
+        setValues({
+          ...values,
+          clientes: values.acessoCliente.toString().replaceAll(",", "."),
+          transportadoras: values.acessoTransportadora.toString().replaceAll(",", "."),
+          fornecedores: values.acessoFornecedor.toString().replaceAll(",", "."),
+          grupos: values.acessoGrupo.toString().replaceAll(",", "."),
+          funcionarios: values.acessoFuncionario.toString().replaceAll(",", "."),
+          usuarios: values.acessoUsuario.toString().replaceAll(",", "."),
+        });
+      } else {
+        setValues({ ...values, [name]: checked });
+      }
     } else {
       setValues({ ...values, [name]: value });
     }
+
+    console.log(values);
   };
 
   function handleOnSubmit(event) {
     event.preventDefault();
-    api
-      .put("/grupo/" + id, values)
-      .then((response) => {
-        console.log(response);
-        Swal.fire({
-          title: "Atualizado com sucesso!",
-          html: "Redirecionando...",
-          position: "top-end",
-          icon: "success",
-          timer: 1800,
-          timerProgressBar: true,
-        }).then((result) => {
-          if (result.dismiss === Swal.DismissReason.timer) {
-            history.push("/grupos");
-          }
-        });
-      })
-      .catch((error) => {
-        console.log(error.response.request.responseText);
-        Swal.fire({
-          title: "Erro ao atualizar!",
-          html: error.response.data.message,
-          position: "top-end",
-          icon: "error",
-          timer: 10000,
-          timerProgressBar: true,
-        }).then((result) => {
-          if (result.dismiss === Swal.DismissReason.timer) {
-            //history.push("/clientes")
-          }
-        });
-      });
+    console.log(values);
+
+    api.post("/grupo", values).then((response) => console.log(response));
   }
 
-  function handleDelete() {
-    Swal.fire({
-      title: "Tem certeza?",
-      text: "Isso será irreversivel!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3f51b5",
-      cancelButtonColor: "#f44336",
-      confirmButtonText: "Sim, excluir!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        api
-          .delete("/grupo/" + id)
-          .then((result) => {
-            Swal.fire("Excluido!", "Cliente excluido com sucesso.", "success");
-            history.push("/clientes");
-          })
-          .catch((error) => {
-            console.log(error.response.request.responseText);
-            Swal.fire({
-              title: "Erro ao excluir!",
-              html: error.response.data.message,
-              position: "top-end",
-              icon: "error",
-              timer: 10000,
-              timerProgressBar: true,
-            }).then((result) => {
-              if (result.dismiss === Swal.DismissReason.timer) {
-                //history.push("/clientes")
-              }
-            });
-          });
-      }
-    });
-  }
+  const setHoraInicio = (e) => {
+    setValues({ ...values, horaInicio: new Date(e._d).toLocaleTimeString() });
+    console.log(values);
+  };
+
+  const setHoraFim = (e) => {
+    setValues({ ...values, horaFim: new Date(e._d).toLocaleTimeString() });
+    console.log(values);
+  };
 
   return (
     <>
@@ -205,16 +143,41 @@ function EditarGrupoPage() {
           </div>
           <form onSubmit={handleOnSubmit}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <TextField
                   variant="outlined"
                   label="Nome do Grupo"
                   fullWidth
                   type="text"
-                  className={classes.input}
                   value={values.nome}
                   name="nome"
                   onChange={handleOnChange}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                <TimePicker
+                  clearable={false}
+                  ampm={false}
+                  fullWidth
+                  inputVariant="outlined"
+                  minutesStep={5}
+                  label="Hora ínicio"
+                  value={moment(hoursInit, "hh:mm:ss")}
+                  onAccept={setHoursInit}
+                  onChange={setHoraInicio}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                <TimePicker
+                  clearable={false}
+                  fullWidth
+                  inputVariant="outlined"
+                  ampm={false}
+                  minutesStep={5}
+                  label="Hora fim"
+                  value={moment(hoursFim, "hh:mm:ss")}
+                  onAccept={setHoursFim}
+                  onChange={setHoraFim}
                 />
               </Grid>
             </Grid>
@@ -231,6 +194,7 @@ function EditarGrupoPage() {
               <h3>Configurações</h3>
             </div>
             <Grid container spacing={2}>
+
               <Grid item xs={2}>
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">Dias de acesso</FormLabel>
@@ -310,6 +274,7 @@ function EditarGrupoPage() {
                   </FormGroup>
                 </FormControl>
               </Grid>
+
               <Grid item xs={2}>
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">Controle de Clientes</FormLabel>
@@ -317,10 +282,11 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.criarCliente}
+                          checked={values.acessoCliente[0]}
                           onChange={handleOnChange}
-                          name="criarCliente"
+                          name="acessoCliente"
                           type="checkbox"
+                          id="acessoCliente.C"
                         />
                       }
                       label="Criar"
@@ -328,9 +294,10 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.listarCliente}
+                          checked={values.acessoCliente[1]}
                           onChange={handleOnChange}
-                          name="listarCliente"
+                          name="acessoCliente"
+                          id="acessoCliente.R"
                         />
                       }
                       label="Listar"
@@ -338,9 +305,10 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.editarCliente}
+                          checked={values.acessoCliente[2]}
                           onChange={handleOnChange}
-                          name="editarCliente"
+                          name="acessoCliente"
+                          id="acessoCliente.U"
                         />
                       }
                       label="Editar"
@@ -348,9 +316,10 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.excluirCliente}
+                          checked={values.acessoCliente[3]}
                           onChange={handleOnChange}
-                          name="excluirCliente"
+                          name="acessoCliente"
+                          id="acessoCliente.D"
                         />
                       }
                       label="Excluir"
@@ -358,6 +327,7 @@ function EditarGrupoPage() {
                   </FormGroup>
                 </FormControl>
               </Grid>
+
               <Grid item xs={2}>
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">
@@ -367,10 +337,11 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.criarFornecedor}
+                          checked={values.acessoFornecedor[0]}
                           onChange={handleOnChange}
-                          name="criarFornecedor"
+                          name="acessoFornecedor"
                           type="checkbox"
+                          id="acessoFornecedor.C"
                         />
                       }
                       label="Criar"
@@ -378,9 +349,10 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.listarFornecedor}
+                          checked={values.acessoFornecedor[1]}
                           onChange={handleOnChange}
-                          name="listarFornecedor"
+                          name="acessoFornecedor"
+                          id="acessoFornecedor.R"
                         />
                       }
                       label="Listar"
@@ -388,9 +360,10 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.editarFornecedor}
+                          checked={values.acessoFornecedor[2]}
                           onChange={handleOnChange}
-                          name="editarFornecedor"
+                          name="acessoFornecedor"
+                          id="acessoFornecedor.U"
                         />
                       }
                       label="Editar"
@@ -398,9 +371,10 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.excluirFornecedor}
+                          checked={values.acessoFornecedor[3]}
                           onChange={handleOnChange}
-                          name="excluirFornecedor"
+                          name="acessoFornecedor"
+                          id="acessoFornecedor.D"
                         />
                       }
                       label="Excluir"
@@ -408,19 +382,21 @@ function EditarGrupoPage() {
                   </FormGroup>
                 </FormControl>
               </Grid>
+
               <Grid item xs={2}>
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">
-                    Controle de Transportadora
+                    Controle de Transportadoras
                   </FormLabel>
                   <FormGroup>
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.criarTransportadora}
+                          checked={values.acessoTransportadora[0]}
                           onChange={handleOnChange}
-                          name="criarTransportadora"
+                          name="acessoTransportadora"
                           type="checkbox"
+                          id="acessoTransportadora.C"
                         />
                       }
                       label="Criar"
@@ -428,9 +404,10 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.listarTransportadora}
+                          checked={values.acessoTransportadora[1]}
                           onChange={handleOnChange}
-                          name="listarTransportadora"
+                          name="acessoTransportadora"
+                          id="acessoTransportadora.R"
                         />
                       }
                       label="Listar"
@@ -438,9 +415,10 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.editarTransportadora}
+                          checked={values.acessoTransportadora[2]}
                           onChange={handleOnChange}
-                          name="editarTransportadora"
+                          name="acessoTransportadora"
+                          id="acessoTransportadora.U"
                         />
                       }
                       label="Editar"
@@ -448,9 +426,10 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.excluirTransportadora}
+                          checked={values.acessoTransportadora[3]}
                           onChange={handleOnChange}
-                          name="excluirTransportadora"
+                          name="acessoTransportadora"
+                          id="acessoTransportadora.D"
                         />
                       }
                       label="Excluir"
@@ -458,6 +437,7 @@ function EditarGrupoPage() {
                   </FormGroup>
                 </FormControl>
               </Grid>
+
               <Grid item xs={2}>
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">Controle de Grupos</FormLabel>
@@ -465,10 +445,11 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.criarGrupo}
+                          checked={values.acessoGrupo[0]}
                           onChange={handleOnChange}
-                          name="criarGrupo"
+                          name="acessoGrupo"
                           type="checkbox"
+                          id="acessoGrupo.C"
                         />
                       }
                       label="Criar"
@@ -476,9 +457,10 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.listarGrupo}
+                          checked={values.acessoGrupo[1]}
                           onChange={handleOnChange}
-                          name="listarGrupo"
+                          name="acessoGrupo"
+                          id="acessoGrupo.R"
                         />
                       }
                       label="Listar"
@@ -486,9 +468,10 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.editarGrupo}
+                          checked={values.acessoGrupo[2]}
                           onChange={handleOnChange}
-                          name="editarGrupo"
+                          name="acessoGrupo"
+                          id="acessoGrupo.U"
                         />
                       }
                       label="Editar"
@@ -496,9 +479,10 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.excluirGrupo}
+                          checked={values.acessoGrupo[3]}
                           onChange={handleOnChange}
-                          name="excluirGrupo"
+                          name="acessoGrupo"
+                          id="acessoGrupo.D"
                         />
                       }
                       label="Excluir"
@@ -506,6 +490,7 @@ function EditarGrupoPage() {
                   </FormGroup>
                 </FormControl>
               </Grid>
+
               <Grid item xs={2}>
                 <FormControl component="fieldset" variant="standard">
                   <FormLabel component="legend">
@@ -515,10 +500,11 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.criarFuncionario}
+                          checked={values.acessoFuncionario[0]}
                           onChange={handleOnChange}
-                          name="criarFuncionario"
+                          name="acessoFuncionario"
                           type="checkbox"
+                          id="acessoFuncionario.C"
                         />
                       }
                       label="Criar"
@@ -526,9 +512,10 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.listarFuncionario}
+                          checked={values.acessoFuncionario[1]}
                           onChange={handleOnChange}
-                          name="listarFuncionario"
+                          name="acessoFuncionario"
+                          id="acessoFuncionario.R"
                         />
                       }
                       label="Listar"
@@ -536,9 +523,10 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.editarFuncionario}
+                          checked={values.acessoFuncionario[2]}
                           onChange={handleOnChange}
-                          name="editarFuncionario"
+                          name="acessoFuncionario"
+                          id="acessoFuncionario.U"
                         />
                       }
                       label="Editar"
@@ -546,9 +534,10 @@ function EditarGrupoPage() {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values.excluirFuncionario}
+                          checked={values.acessoFuncionario[3]}
                           onChange={handleOnChange}
-                          name="excluirFuncionario"
+                          name="acessoFuncionario"
+                          id="acessoFuncionario.D"
                         />
                       }
                       label="Excluir"
@@ -556,7 +545,67 @@ function EditarGrupoPage() {
                   </FormGroup>
                 </FormControl>
               </Grid>
+
+              <Grid item xs={2}>
+                <FormControl component="fieldset" variant="standard">
+                  <FormLabel component="legend">
+                    Controle de Usuários
+                  </FormLabel>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.acessoUsuario[0]}
+                          onChange={handleOnChange}
+                          name="acessoUsuario"
+                          type="checkbox"
+                          id="acessoUsuario.C"
+                        />
+                      }
+                      label="Criar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.acessoUsuario[1]}
+                          onChange={handleOnChange}
+                          name="acessoUsuario"
+                          id="acessoUsuario.R"
+                        />
+                      }
+                      label="Listar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.acessoUsuario[2]}
+                          onChange={handleOnChange}
+                          name="acessoUsuario"
+                          id="acessoUsuario.U"
+                        />
+                      }
+                      label="Editar"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={values.acessoUsuario[3]}
+                          onChange={handleOnChange}
+                          name="acessoUsuario"
+                          id="acessoUsuario.D"
+                        />
+                      }
+                      label="Excluir"
+                    />
+                  </FormGroup>
+                </FormControl>
+              </Grid>
+
             </Grid>
+            <br />
+            <Divider />
+            <br />
+            <Grid container spacing={2}></Grid>
 
             <Grid container spacing={0}>
               <Grid item>
@@ -564,27 +613,17 @@ function EditarGrupoPage() {
                   type="submit"
                   variant="outlined"
                   startIcon={<CheckIcon />}
-                  className={classes.saveButton}
+                  className={'btn btn-primary btn-spacing'}
                 >
                   Salvar
                 </Button>
               </Grid>
               <Grid item>
                 <Button
-                  variant="outlined"
-                  startIcon={<DeleteForeverIcon />}
-                  className={classes.cancelButton}
-                  onClick={handleDelete}
-                >
-                  Excluir
-                </Button>
-              </Grid>
-              <Grid item>
-                <Button
-                  onClick={() => history.push("/grupos")}
+                  onClick={() => history.push("/clientes")}
                   variant="outlined"
                   startIcon={<CloseIcon />}
-                  className={classes.cancelButton}
+                  className={'btn btn-error btn-spacing'}
                 >
                   Cancelar
                 </Button>
