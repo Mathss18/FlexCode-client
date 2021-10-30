@@ -104,7 +104,7 @@ function CadastrarGrupoDeProdutos() {
               <Grid item xs={6}>
                 <FormControl variant="outlined" fullWidth className={classes.input}>
                   <InputLabel id="label-grupo-pai">Grupo Pai</InputLabel>
-                  <Select label="Grupo pai" onChange={handleOnChange} name="grupoPai" value={values.grupoPai}>
+                  <Select className={'input-select'} label="Grupo pai" onChange={handleOnChange} name="grupoPai" value={values.grupoPai}>
                     <MenuItem value={null}>
                       Nenhum
                     </MenuItem>
@@ -121,12 +121,12 @@ function CadastrarGrupoDeProdutos() {
 
             <Grid container spacing={0}>
               <Grid item>
-                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={classes.saveButton}>
+                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={'btn btn-primary btn-spacing'}>
                   Salvar
                 </Button>
               </Grid>
               <Grid item>
-                <Button onClick={() => history.push("/grupos-produtos")} variant="outlined" startIcon={<CloseIcon />} className={classes.cancelButton}>
+                <Button onClick={() => history.push("/grupos-produtos")} variant="outlined" startIcon={<CloseIcon />} className={'btn btn-error btn-spacing'}>
                   Cancelar
                 </Button>
               </Grid>

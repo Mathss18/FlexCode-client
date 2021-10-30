@@ -16,49 +16,11 @@ import buscarCep from '../../../services/buscarCep';
 
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        //flexGrow: 1,
-    },
-    paper: {
-        padding: theme.spacing(2),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    },
-    input: {
-        backgroundColor: '#fff',
-        // Estilo do helperText
-        '& p': {
-            backgroundColor: "#fafafa",
-            margin: 0,
-            paddingLeft: theme.spacing(1)
-        },
-
-    },
     image: {
         border: "2px solid black",
         borderRadius: '10px',
         height: "200px",
         maxWidth: "500px",
-    },
-    saveButton: {
-        backgroundColor: theme.palette.primary.main,
-        color: '#fff',
-        marginTop: theme.spacing(2),
-        marginRight: theme.spacing(2),
-        '&:hover': {
-            backgroundColor: '#fff',
-            color: theme.palette.primary.main,
-        },
-    },
-    cancelButton: {
-        backgroundColor: theme.palette.error.main,
-        color: '#fff',
-        marginTop: theme.spacing(2),
-        marginRight: theme.spacing(2),
-        '&:hover': {
-            backgroundColor: '#fff',
-            color: theme.palette.error.main,
-        },
     },
 }));
 
@@ -171,7 +133,7 @@ function CadastrarFuncionarioPage() {
                         <Grid item xs={3}>
                                 <FormControl variant="outlined" fullWidth required className={classes.input} name="grupo">
                                     <InputLabel>Grupo</InputLabel>
-                                    <Select label="Grupo" name="grupo_id" value={values.grupo_id} onChange={handleOnChange}>
+                                    <Select className={'input-select'} label="Grupo" name="grupo_id" value={values.grupo_id} onChange={handleOnChange}>
                                         {grupos.map((grupo) => {
                                             return (
                                                 <MenuItem key={grupo.id} value={grupo.id}>{grupo.nome}</MenuItem>
@@ -184,7 +146,7 @@ function CadastrarFuncionarioPage() {
                             <Grid item xs={3}>
                                 <FormControl variant="outlined" fullWidth required className={classes.input} name="situacao">
                                     <InputLabel>Situação</InputLabel>
-                                    <Select label="Situação" value='' name="situacao" value={values.situacao} onChange={handleOnChange}>
+                                    <Select className={'input-select'} label="Situação" value='' name="situacao" value={values.situacao} onChange={handleOnChange}>
                                         <MenuItem value={1}>Ativo</MenuItem>
                                         <MenuItem value={0}>Inativo</MenuItem>
                                     </Select>
@@ -194,7 +156,7 @@ function CadastrarFuncionarioPage() {
                             <Grid item xs={3}>
                                 <FormControl variant="outlined" fullWidth required className={classes.input} name="sexo">
                                     <InputLabel>Sexo</InputLabel>
-                                    <Select label="Sexo" name="sexo" value={values.sexo} onChange={handleOnChange}>
+                                    <Select className={'input-select'} label="Sexo" name="sexo" value={values.sexo} onChange={handleOnChange}>
                                         <MenuItem value={"masculino"}>Masculino</MenuItem>
                                         <MenuItem value={"feminino"}>Feminino</MenuItem>
                                         <MenuItem value={"outro"}>Outro</MenuItem>
@@ -261,7 +223,7 @@ function CadastrarFuncionarioPage() {
                             <Grid item xs={3}>
                                 <FormControl variant="outlined" fullWidth required className={classes.input} >
                                     <InputLabel>Estado</InputLabel>
-                                    <Select label="Estado" name="estado" value={values.estado} onChange={handleOnChange} >
+                                    <Select className={'input-select'} label="Estado" name="estado" value={values.estado} onChange={handleOnChange} >
                                         <MenuItem value={"AC"}>Acre</MenuItem>
                                         <MenuItem value={"AL"}>Alagoas</MenuItem>
                                         <MenuItem value={"AP"}>Amapá</MenuItem>
@@ -335,7 +297,7 @@ function CadastrarFuncionarioPage() {
                         <Grid container spacing={0}>
 
                             <Grid item>
-                                <Button variant="contained" component="label" startIcon={<PhotoCamera />} className={classes.saveButton}>Carregar Imagem
+                                <Button variant="contained" component="label" startIcon={<PhotoCamera />} className={'btn btn-primary btn-spacing'}>Carregar Imagem
                                     <input
                                         name="foto"
                                         hidden
@@ -352,10 +314,10 @@ function CadastrarFuncionarioPage() {
 
                         <Grid container spacing={0}>
                             <Grid item>
-                                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={classes.saveButton}>Salvar</Button>
+                                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={'btn btn-primary btn-spacing'}>Salvar</Button>
                             </Grid>
                             <Grid item>
-                                <Button onClick={() => history.push("/funcionarios")} variant="outlined" startIcon={<CloseIcon />} className={classes.cancelButton}>Cancelar</Button>
+                                <Button onClick={() => history.push("/funcionarios")} variant="outlined" startIcon={<CloseIcon />} className={'btn btn-error btn-spacing'}>Cancelar</Button>
                             </Grid>
                         </Grid>
                     </form>

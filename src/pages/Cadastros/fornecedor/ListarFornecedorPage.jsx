@@ -109,8 +109,8 @@ function ListarFornecedorPage() {
                         element['email'],
                         element['contato'],
                         <>
-                            <SearchIcon className={classes.optionsButtons} onClick={(event) => handleOnClickShowButton(event, element['id'])} />
-                            <EditIcon className={classes.optionsButtons} onClick={(event) => handleOnClickEditButton(event, element['id'])} />
+                            <SearchIcon className={'btn-lista'} onClick={(event) => handleOnClickShowButton(event, element['id'])} />
+                            <EditIcon className={'btn-lista'} onClick={(event) => handleOnClickEditButton(event, element['id'])} />
                         </>
                         ]
                     data.push(array);
@@ -129,12 +129,13 @@ function ListarFornecedorPage() {
                 {fornecedores.map((fornecedor, index) => (
                     <h4 key={index} >{fornecedor.nome}</h4>
                 ))}
-                <Button onClick={() => history.push("/fornecedor/novo")} variant="outlined" startIcon={<AddIcon />} className={classes.saveButton}>Adicionar</Button>
+                <Button onClick={() => history.push("/fornecedor/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
                 <MUIDataTable
                     title={"Lista de Fornecedors"}
                     data={fornecedores}
                     columns={columns}
                     options={config}
+className={'table-background'}
                 />
             </SideMenu>
 

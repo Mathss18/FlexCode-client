@@ -12,45 +12,7 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import api from "../../../services/api";
 import Swal from "sweetalert2";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    //flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  input: {
-    backgroundColor: "#fff",
-    // Estilo do helperText
-    "& p": {
-      backgroundColor: "#fafafa",
-      margin: 0,
-      paddingLeft: theme.spacing(1),
-    },
-  },
-  saveButton: {
-    backgroundColor: theme.palette.primary.main,
-    color: "#fff",
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#fff",
-      color: theme.palette.primary.main,
-    },
-  },
-  cancelButton: {
-    backgroundColor: theme.palette.error.main,
-    color: "#fff",
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#fff",
-      color: theme.palette.error.main,
-    },
-  },
-}));
+
 
 const initialValues = {
   nome: "",
@@ -58,7 +20,6 @@ const initialValues = {
 };
 
 function EditarGruposDeProdutos() {
-  const classes = useStyles();
   const history = useHistory();
   const [values, setValues] = useState(initialValues);
   const { id } = useParams();
@@ -178,13 +139,13 @@ function EditarGruposDeProdutos() {
           <form onSubmit={handleOnSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <TextField variant="outlined" label="Nome do Grupo" fullWidth type="text" className={classes.input} value={values.nome} name="nome" onChange={handleOnChange} />
+                <TextField variant="outlined" label="Nome do Grupo" fullWidth type="text" value={values.nome} name="nome" onChange={handleOnChange} />
               </Grid>
 
               <Grid item xs={3}>
-                <FormControl variant="outlined" fullWidth className={classes.input} name="grupoPai">
+                <FormControl variant="outlined" fullWidth name="grupoPai">
                   <InputLabel>Grupo Pai</InputLabel>
-                  <Select label="Grupo Pai" value={values.grupoPai} onChange={handleOnChange}>
+                  <Select className={'input-select'} label="Grupo Pai" value={values.grupoPai} onChange={handleOnChange}>
                     <MenuItem value={0}>Nenhum</MenuItem>
                     {grupos.map((grupo) => {
                       return (
@@ -201,17 +162,17 @@ function EditarGruposDeProdutos() {
 
             <Grid container spacing={0}>
               <Grid item>
-                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={classes.saveButton}>
+                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={'btn btn-primary btn-spacing'}>
                   Salvar
                 </Button>
               </Grid>
               <Grid item>
-                <Button variant="outlined" startIcon={<DeleteForeverIcon />} className={classes.cancelButton} onClick={handleDelete}>
+                <Button variant="outlined" startIcon={<DeleteForeverIcon />} className={'btn btn-error btn-spacing'} onClick={handleDelete}>
                   Excluir
                 </Button>
               </Grid>
               <Grid item>
-                <Button onClick={() => history.push("/grupos-produtos")} variant="outlined" startIcon={<CloseIcon />} className={classes.cancelButton}>
+                <Button onClick={() => history.push("/grupos-produtos")} variant="outlined" startIcon={<CloseIcon />} className={'btn btn-error btn-spacing'}>
                   Cancelar
                 </Button>
               </Grid>

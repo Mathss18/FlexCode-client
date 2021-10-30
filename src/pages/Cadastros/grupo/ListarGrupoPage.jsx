@@ -13,36 +13,7 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import SearchIcon from '@material-ui/icons/Search';
 
-const useStyles = makeStyles((theme) => ({
-  optionsButtons: {
-    border: "1px solid #3f51b5",
-    borderRadius: "6px",
-    boxShadow: "2px 2px #757575",
-    backgroundColor: theme.palette.primary.main,
-    color: "#fff",
-    marginRight: theme.spacing(1),
-    padding: 2,
-    fontSize: "28px",
-    cursor: "pointer",
-    "&:hover": {
-      backgroundColor: theme.palette.secondary.main,
-    },
-  },
-  saveButton: {
-    marginBottom: theme.spacing(2),
-    backgroundColor: theme.palette.primary.main,
-    color: "#fff",
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#fff",
-      color: theme.palette.primary.main,
-    },
-  },
-}));
-
 function ListarGrupoPage() {
-  const classes = useStyles();
   const history = useHistory();
   const [grupos, setGrupos] = useState([]);
   const columns = [
@@ -77,14 +48,8 @@ function ListarGrupoPage() {
           element["nome"],
           new Date(element["created_at"]).toLocaleString(),
           <>
-            <SearchIcon
-              className={classes.optionsButtons}
-              onClick={(event) => handleOnClickShowButton(event, element["id"])}
-            />
-            <EditIcon
-              className={classes.optionsButtons}
-              onClick={(event) => handleOnClickEditButton(event, element["id"])}
-            />
+            <SearchIcon className={'btn btn-lista'} onClick={(event) => handleOnClickShowButton(event, element["id"])}/>
+            <EditIcon className={'btn btn-lista'} onClick={(event) => handleOnClickEditButton(event, element["id"])}/>
           </>,
         ];
         data.push(array);
@@ -105,7 +70,7 @@ function ListarGrupoPage() {
           onClick={() => history.push("/grupo/novo")}
           variant="outlined"
           startIcon={<AddIcon />}
-          className={classes.saveButton}
+          className={'btn btn-primary btn-spacing'}
         >
           Adicionar
         </Button>
@@ -113,6 +78,8 @@ function ListarGrupoPage() {
           title={"Lista de Grupos"}
           data={grupos}
           columns={columns}
+          options={config}
+className={'table-background'}
         />
       </SideMenu>
     </>

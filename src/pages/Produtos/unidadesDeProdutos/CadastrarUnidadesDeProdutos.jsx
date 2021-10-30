@@ -9,49 +9,6 @@ import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    //flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  input: {
-    backgroundColor: "#fff",
-    // Estilo do helperText
-    "& p": {
-      backgroundColor: "#fafafa",
-      margin: 0,
-      paddingLeft: theme.spacing(1),
-    },
-  },
-  saveButton: {
-    backgroundColor: theme.palette.primary.main,
-    color: "#fff",
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#fff",
-      color: theme.palette.primary.main,
-    },
-  },
-  cancelButton: {
-    backgroundColor: theme.palette.error.main,
-    color: "#fff",
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#fff",
-      color: theme.palette.error.main,
-    },
-  },
-  timepicker: {
-    backgroundColor: "#FFF",
-  },
-}));
-
 const initialValues = {
   nome: "",
   sigla: "",
@@ -59,7 +16,6 @@ const initialValues = {
 };
 
 function CadastrarUnidadeDeProdutos() {
-  const classes = useStyles();
   const history = useHistory();
   const [values, setValues] = useState(initialValues);
 
@@ -91,15 +47,15 @@ function CadastrarUnidadeDeProdutos() {
           <form onSubmit={handleOnSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <TextField variant="outlined" label="Nome" fullWidth type="text" className={classes.input} value={values.nome} name="nome" onChange={handleOnChange} />
+                <TextField variant="outlined" label="Nome" fullWidth type="text" value={values.nome} name="nome" onChange={handleOnChange} />
               </Grid>
               <Grid item xs={3}>
-                <TextField variant="outlined" label="Sigla" fullWidth type="text" className={classes.input} value={values.sigla} name="sigla" onChange={handleOnChange} />
+                <TextField variant="outlined" label="Sigla" fullWidth type="text" value={values.sigla} name="sigla" onChange={handleOnChange} />
               </Grid>
               <Grid item xs={3}>
-                <FormControl variant="outlined" fullWidth className={classes.input}>
+                <FormControl variant="outlined" fullWidth>
                   <InputLabel>Padrão</InputLabel>
-                  <Select label="Padrão" onChange={handleOnChange} type="select" name="padrao" value={values.padrao}>
+                  <Select className={'input-select'} label="Padrão" onChange={handleOnChange} type="select" name="padrao" value={values.padrao}>
                     <MenuItem value={0}>Não</MenuItem>
                     <MenuItem value={1}>Sim</MenuItem>
                   </Select>
@@ -111,12 +67,12 @@ function CadastrarUnidadeDeProdutos() {
 
             <Grid container spacing={0}>
               <Grid item>
-                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={classes.saveButton}>
+                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={'btn btn-primary btn-spacing'}>
                   Salvar
                 </Button>
               </Grid>
               <Grid item>
-                <Button onClick={() => history.push("/grupos-produtos")} variant="outlined" startIcon={<CloseIcon />} className={classes.cancelButton}>
+                <Button onClick={() => history.push("/unidades-produtos")} variant="outlined" startIcon={<CloseIcon />} className={'btn btn-error btn-spacing'}>
                   Cancelar
                 </Button>
               </Grid>

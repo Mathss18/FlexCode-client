@@ -16,49 +16,12 @@ import MouseIcon from '@material-ui/icons/Mouse';
 import NotInterestedIcon from '@material-ui/icons/NotInterested';
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        //flexGrow: 1,
-    },
-    paper: {
-        padding: theme.spacing(2),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    },
-    input: {
-        backgroundColor: '#fff',
-        // Estilo do helperText
-        '& p': {
-            backgroundColor: "#fafafa",
-            margin: 0,
-            paddingLeft: theme.spacing(1)
-        },
-    },
-    image: {
-        border: "2px solid black",
-        borderRadius: '10px',
-        height: "200px",
-        maxWidth: "500px",
-    },
-    saveButton: {
-        backgroundColor: theme.palette.primary.main,
-        color: '#fff',
-        marginTop: theme.spacing(2),
-        marginRight: theme.spacing(2),
-        '&:hover': {
-            backgroundColor: '#fff',
-            color: theme.palette.primary.main,
-        },
-    },
-    cancelButton: {
-        backgroundColor: theme.palette.error.main,
-        color: '#fff',
-        marginTop: theme.spacing(2),
-        marginRight: theme.spacing(2),
-        '&:hover': {
-            backgroundColor: '#fff',
-            color: theme.palette.error.main,
-        },
-    },
+  image: {
+      border: "2px solid black",
+      borderRadius: '10px',
+      height: "200px",
+      maxWidth: "500px",
+  },
 }));
 
 const initialValues = {
@@ -245,10 +208,10 @@ function EditarClientePage() {
 
     const renderRemoveAccessButton = () => {
         if (values.usuario.situacao === 1) {
-            return <Button type="button" variant="outlined" startIcon={<NotInterestedIcon />} className={classes.cancelButton} onClick={handleRemoveAccess} >Remover Acesso</Button>
+            return <Button type="button" variant="outlined" startIcon={<NotInterestedIcon />} className={'btn btn-error btn-spacing'} onClick={handleRemoveAccess} >Remover Acesso</Button>
         }
         else {
-            return <Button type="button" variant="outlined" startIcon={<CheckIcon />} className={classes.saveButton} onClick={handleGiveAccess} >Devolver Acesso</Button>
+            return <Button type="button" variant="outlined" startIcon={<CheckIcon />} className={'btn btn-primary btn-spacing'} onClick={handleGiveAccess} >Devolver Acesso</Button>
         }
     }
 
@@ -269,7 +232,7 @@ function EditarClientePage() {
                             <Grid item xs={3}>
                                 <FormControl variant="outlined" fullWidth required className={classes.input} name="grupo">
                                     <InputLabel>Grupo</InputLabel>
-                                    <Select label="Grupo" name="grupo_id" value={values.grupo_id} onChange={handleOnChange}>
+                                    <Select className={'input-select'} label="Grupo" name="grupo_id" value={values.grupo_id} onChange={handleOnChange}>
                                         {grupos.map((grupo) => {
                                             return (
                                                 <MenuItem key={grupo.id} value={grupo.id}>{grupo.nome}</MenuItem>
@@ -282,7 +245,7 @@ function EditarClientePage() {
                             <Grid item xs={3}>
                                 <FormControl variant="outlined" fullWidth required className={classes.input} name="situacao">
                                     <InputLabel>Situação</InputLabel>
-                                    <Select label="Situação" value='' name="situacao" value={values.situacao} onChange={handleOnChange}>
+                                    <Select className={'input-select'} label="Situação" value='' name="situacao" value={values.situacao} onChange={handleOnChange}>
                                         <MenuItem value={1}>Ativo</MenuItem>
                                         <MenuItem value={0}>Inativo</MenuItem>
                                     </Select>
@@ -292,7 +255,7 @@ function EditarClientePage() {
                             <Grid item xs={3}>
                                 <FormControl variant="outlined" fullWidth required className={classes.input} name="sexo">
                                     <InputLabel>Sexo</InputLabel>
-                                    <Select label="Sexo" name="sexo" value={values.sexo} onChange={handleOnChange}>
+                                    <Select className={'input-select'} label="Sexo" name="sexo" value={values.sexo} onChange={handleOnChange}>
                                         <MenuItem value={"masculino"}>Masculino</MenuItem>
                                         <MenuItem value={"feminino"}>Feminino</MenuItem>
                                         <MenuItem value={"outro"}>Outro</MenuItem>
@@ -359,7 +322,7 @@ function EditarClientePage() {
                             <Grid item xs={3}>
                                 <FormControl variant="outlined" fullWidth required className={classes.input} >
                                     <InputLabel>Estado</InputLabel>
-                                    <Select label="Estado" name="estado" value={values.estado} onChange={handleOnChange} >
+                                    <Select className={'input-select'} label="Estado" name="estado" value={values.estado} onChange={handleOnChange} >
                                         <MenuItem value={"AC"}>Acre</MenuItem>
                                         <MenuItem value={"AL"}>Alagoas</MenuItem>
                                         <MenuItem value={"AP"}>Amapá</MenuItem>
@@ -436,7 +399,7 @@ function EditarClientePage() {
                         <Grid container spacing={0}>
 
                             <Grid item>
-                                <Button variant="contained" component="label" startIcon={<PhotoCamera />} className={classes.saveButton}>Carregar Imagem
+                                <Button variant="contained" component="label" startIcon={<PhotoCamera />} className={'btn btn-primary btn-spacing'}>Carregar Imagem
                                     <input
                                         name="foto"
                                         hidden
@@ -453,13 +416,13 @@ function EditarClientePage() {
 
                         <Grid container spacing={0}>
                             <Grid item>
-                                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={classes.saveButton}>Salvar</Button>
+                                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={'btn btn-primary btn-spacing'}>Salvar</Button>
                             </Grid>
                             <Grid item>
-                                <Button variant="outlined" startIcon={<DeleteForeverIcon />} className={classes.cancelButton} onClick={handleDelete} >Excluir</Button>
+                                <Button variant="outlined" startIcon={<DeleteForeverIcon />} className={'btn btn-error btn-spacing'} onClick={handleDelete} >Excluir</Button>
                             </Grid>
                             <Grid item>
-                                <Button onClick={() => history.push("/funcionarios")} variant="outlined" startIcon={<CloseIcon />} className={classes.cancelButton}>Cancelar</Button>
+                                <Button onClick={() => history.push("/funcionarios")} variant="outlined" startIcon={<CloseIcon />} className={'btn btn-error btn-spacing'}>Cancelar</Button>
                             </Grid>
                         </Grid>
                     </form>
