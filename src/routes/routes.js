@@ -39,6 +39,10 @@ import ListarGradesDeVariacoes from "../pages/Produtos/gradesDeVariacoes/Listar"
 import CadastrarGradesDeVariacoes from "../pages/Produtos/gradesDeVariacoes/Cadastrar";
 import EditarGradesDeVariacoes from "../pages/Produtos/gradesDeVariacoes/Editar";
 
+import ListarProdutos from "../pages/Produtos/gerenciarProdutos/Listar";
+import CadastrarProdutos from "../pages/Produtos/gerenciarProdutos/Cadastrar";
+import EditarProdutos from "../pages/Produtos/gerenciarProdutos/Editar";
+
 import PrivateRoutes from "./PrivateRoutes";
 
 export default function Routes() {
@@ -90,6 +94,11 @@ export default function Routes() {
           <Route path="/grades-variacoes" exact component={ListarGradesDeVariacoes}></Route>
           <Route path="/grade-variacao/novo" exact component={CadastrarGradesDeVariacoes}></Route>
           <Route path="/grade-variacao/editar/:id" exact component={EditarGradesDeVariacoes}></Route>
+
+          <Route path="/produtos" exact component={ListarProdutos}></Route>
+          <Route path="/produto/novo" exact component={CadastrarProdutos}></Route>
+          <Route path="/produto/editar/:id" exact component={EditarProdutos}></Route>
+
         </PrivateRoutes>
 
         <Route path="*" component={() => <h1>Page not found</h1>} />
