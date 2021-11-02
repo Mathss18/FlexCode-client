@@ -92,6 +92,11 @@ function CadastrarProduto() {
                     <Tab label="Dados" {...a11yProps(0)} />
                     <Tab label="Detalhes" {...a11yProps(1)} />
                     <Tab label="Valores" {...a11yProps(2)} />
+                    <Tab label="Estoque" {...a11yProps(3)} />
+                    <Tab label="Fotos" {...a11yProps(4)} />
+                    <Tab label="Fiscal" {...a11yProps(5)} />
+                    <Tab label="Composição" {...a11yProps(6)} />
+                    <Tab label="Fornecedores" {...a11yProps(7)} />
                   </Tabs>
                 </Box>
               </Grid>
@@ -105,13 +110,13 @@ function CadastrarProduto() {
                 <Detalhes />
               </TabPanel>
               <TabPanel value={value} index={2}>
-                teste3
+                Valores
               </TabPanel>
             </form>
 
             <Grid>
               <Button className={"btn btn-primary btn-spacing"} variant="outlined">
-                Adicionar
+                Continuar
               </Button>
             </Grid>
             <br />
