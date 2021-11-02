@@ -12,7 +12,7 @@ import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import SearchIcon from "@material-ui/icons/Search";
 
-function ListarVariacoes() {
+function ListarProdutos() {
   const history = useHistory();
   const [grupos, setGrupos] = useState([]);
   const columns = [
@@ -27,17 +27,17 @@ function ListarVariacoes() {
     {
       name: "Ações",
       options: rowConfig,
-    }
+    },
   ];
 
   const data = [];
 
   function handleOnClickShowButton(event, id) {
-    history.push("/grade-variacao/mostrar/" + id);
+    history.push("/produto/mostrar/" + id);
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/grade-variacao/editar/" + id);
+    history.push("/produto/editar/" + id);
   }
 
   useEffect(() => {
@@ -48,8 +48,8 @@ function ListarVariacoes() {
             element["nome"],
             new Date(element["created_at"]).toLocaleString(),
             <>
-              <SearchIcon className={'btn-lista'} onClick={(event) => handleOnClickShowButton(event, element["id"])} />
-              <EditIcon className={'btn-lista'} onClick={(event) => handleOnClickEditButton(event, element["id"])} />
+              <SearchIcon className={"btn-lista"} onClick={(event) => handleOnClickShowButton(event, element["id"])} />
+              <EditIcon className={"btn-lista"} onClick={(event) => handleOnClickEditButton(event, element["id"])} />
             </>,
           ];
           data.push(array);
@@ -67,14 +67,13 @@ function ListarVariacoes() {
         {grupos.map((grupo, index) => (
           <h4 key={index}>{grupo.nome}</h4>
         ))}
-        <Button onClick={() => history.push("/grade-variacao/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>
+        <Button onClick={() => history.push("/produto/novo")} variant="outlined" startIcon={<AddIcon />} className={"btn btn-primary btn-spacing"}>
           Adicionar
         </Button>
-        <MUIDataTable title={"Lista de Variações"} data={grupos} columns={columns} options={config}
-className={'table-background'}/>
+        <MUIDataTable title={"Lista de Grades de Variações"} data={grupos} columns={columns} options={config} className={"table-background"} />
       </SideMenu>
     </>
   );
 }
 
-export default ListarVariacoes;
+export default ListarProdutos;
