@@ -129,9 +129,9 @@ function SideMenu({ children }) {
                 >
                     <ListItem button onClick={handleOpenCadastroList}>
                         <ListItemIcon>
-                            <AddBoxIcon />
+                            <AddBoxIcon className={"sidemenu-text"}/>
                         </ListItemIcon>
-                        <ListItemText primary="Cadastros" />
+                        <ListItemText className={"sidemenu-text"} primary="Cadastros"/>
                         {openCadastroList ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
 
@@ -139,45 +139,45 @@ function SideMenu({ children }) {
                         <List onClick={() => history.push("/clientes")} disablePadding>
                             <ListItem button className={classes.nested}>
                                 <ListItemIcon>
-                                    <PeopleAltIcon />
+                                    <PeopleAltIcon className={"sidemenu-text"} />
                                 </ListItemIcon>
-                                <ListItemText primary="Clientes" />
+                                <ListItemText className={"sidemenu-text"} primary="Clientes" />
                             </ListItem>
                         </List>
 
                         <List onClick={() => history.push("/fornecedores")} disablePadding>
                             <ListItem button className={classes.nested}>
                                 <ListItemIcon>
-                                    <ShoppingBasketIcon />
+                                    <ShoppingBasketIcon className={"sidemenu-text"}/>
                                 </ListItemIcon>
-                                <ListItemText primary="Fornecedores" />
+                                <ListItemText className={"sidemenu-text"} primary="Fornecedores" />
                             </ListItem>
                         </List>
 
                         <List onClick={() => history.push("/transportadoras")} disablePadding>
                             <ListItem button className={classes.nested}>
                                 <ListItemIcon>
-                                    <LocalShippingIcon />
+                                    <LocalShippingIcon className={"sidemenu-text"}/>
                                 </ListItemIcon>
-                                <ListItemText primary="Transportadoras" />
+                                <ListItemText className={"sidemenu-text"} primary="Transportadoras" />
                             </ListItem>
                         </List>
 
                         <List onClick={() => history.push("/funcionarios")} disablePadding>
                             <ListItem button className={classes.nested}>
                                 <ListItemIcon>
-                                    <WorkIcon />
+                                    <WorkIcon className={"sidemenu-text"}/>
                                 </ListItemIcon>
-                                <ListItemText primary="Funcionarios" />
+                                <ListItemText className={"sidemenu-text"} primary="Funcionarios" />
                             </ListItem>
                         </List>
                         
                         <List onClick={() => history.push("/grupos")} disablePadding>
                             <ListItem button className={classes.nested}>
                                 <ListItemIcon>
-                                    <GroupsIcon />
+                                    <GroupsIcon className={"sidemenu-text"}/>
                                 </ListItemIcon>
-                                <ListItemText primary="Grupos" />
+                                <ListItemText className={"sidemenu-text"} primary="Grupos" />
                             </ListItem>
                         </List>
 
@@ -185,9 +185,9 @@ function SideMenu({ children }) {
 
                     <ListItem button onClick={handleOpenProdutosList}>
                         <ListItemIcon>
-                            <ShoppingCartIcon />
+                            <ShoppingCartIcon className={"sidemenu-text"}/>
                         </ListItemIcon>
-                        <ListItemText primary="Produtos" />
+                        <ListItemText className={"sidemenu-text"} primary="Produtos" />
                         {openProdutoList ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
 
@@ -195,41 +195,41 @@ function SideMenu({ children }) {
                         <List onClick={() => history.push("/grupos-produtos")} disablePadding>
                             <ListItem button className={classes.nested}>
                                 <ListItemIcon>
-                                    <AutoAwesomeMotionIcon />
+                                    <AutoAwesomeMotionIcon className={"sidemenu-text"}/>
                                 </ListItemIcon>
-                                <ListItemText primary="Grupos de Produtos" />
+                                <ListItemText className={"sidemenu-text"} primary="Grupos de Produtos" />
                             </ListItem>
                         </List>
                         <List onClick={() => history.push("/unidades-produtos")} disablePadding>
                             <ListItem button className={classes.nested}>
                                 <ListItemIcon>
-                                    <InventoryIcon />
+                                    <InventoryIcon className={"sidemenu-text"}/>
                                 </ListItemIcon>
-                                <ListItemText primary="Unidades de Produtos" />
+                                <ListItemText className={"sidemenu-text"} primary="Unidades de Produtos" />
                             </ListItem>
                         </List>
                         <List onClick={() => history.push("/grades-variacoes")} disablePadding>
                             <ListItem button className={classes.nested}>
                                 <ListItemIcon>
-                                    <SchemaIcon />
+                                    <SchemaIcon className={"sidemenu-text"}/>
                                 </ListItemIcon>
-                                <ListItemText primary="Grades/Variações" />
+                                <ListItemText className={"sidemenu-text"} primary="Grades/Variações" />
                             </ListItem>
                         </List>
                     </Collapse>
 
                     <ListItem button>
                         <ListItemIcon>
-                            <SendIcon />
+                            <SendIcon className={"sidemenu-text"}/>
                         </ListItemIcon>
-                        <ListItemText primary="Sent mail" />
+                        <ListItemText className={"sidemenu-text"} primary="Sent mail" />
                     </ListItem>
 
                     <ListItem button>
                         <ListItemIcon>
-                            <DraftsIcon />
+                            <DraftsIcon className={"sidemenu-text"}/>
                         </ListItemIcon>
-                        <ListItemText primary="Drafts" />
+                        <ListItemText className={"sidemenu-text"} primary="Drafts" />
                     </ListItem>
                 </List>
                 <Divider />
