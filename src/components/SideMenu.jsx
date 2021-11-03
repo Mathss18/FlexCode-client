@@ -196,9 +196,9 @@ function SideMenu({ children }) {
                         <List onClick={() => history.push("/produtos")} disablePadding>
                             <ListItem button className={classes.nested}>
                                 <ListItemIcon>
-                                    <LayersIcon />
+                                    <LayersIcon className={"sidemenu-text"}/>
                                 </ListItemIcon>
-                                <ListItemText primary="Gerenciar Produtos" />
+                                <ListItemText className={"sidemenu-text"} primary="Gerenciar Produtos" />
                             </ListItem>
                         </List>
                         <List onClick={() => history.push("/grupos-produtos")} disablePadding>
