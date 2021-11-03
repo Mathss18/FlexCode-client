@@ -28,6 +28,7 @@ import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import LayersIcon from '@mui/icons-material/Layers';
 import SchemaIcon from '@mui/icons-material/Schema';
 
 const drawerWidth = 240;
@@ -192,6 +193,14 @@ function SideMenu({ children }) {
                     </ListItem>
 
                     <Collapse in={openProdutoList} timeout="auto" unmountOnExit>
+                        <List onClick={() => history.push("/produtos")} disablePadding>
+                            <ListItem button className={classes.nested}>
+                                <ListItemIcon>
+                                    <LayersIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Gerenciar Produtos" />
+                            </ListItem>
+                        </List>
                         <List onClick={() => history.push("/grupos-produtos")} disablePadding>
                             <ListItem button className={classes.nested}>
                                 <ListItemIcon>

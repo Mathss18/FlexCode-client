@@ -1,7 +1,6 @@
 import { useState } from "react";
 import SideMenu from "../../../components/SideMenu";
 import TopBar from "../../../components/TopBar";
-import { makeStyles } from "@material-ui/core/styles";
 import { Grid, TextField, Select, MenuItem, FormControl, InputLabel, Divider, Button } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import api from "../../../services/api";
@@ -70,16 +69,8 @@ function CadastrarClientePage() {
 
   function handleOnChange(event) {
     const { name, value } = event.target;
-    // const name = event.target.name;
-    // const value = event.target.value;
     setValues({ ...values, [name]: value });
     console.log(values);
-  }
-
-  function handleOnSubmit(event) {
-    event.preventDefault();
-    console.log(values);
-    api.post("/cliente", values).then((response) => console.log(response));
   }
 
   return (
