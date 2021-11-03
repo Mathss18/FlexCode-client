@@ -41,7 +41,7 @@ export const GlobalStyles = createGlobalStyle`
   /* ========= Top Bar ========= */
 
   .topbar{
-    background: ${({ theme }) => theme.colors.body};
+    background: ${({ theme }) => theme.colors.topbar.background};
     box-shadow: none;
     border-bottom: 1px solid ${({ theme }) => theme.colors.border};
     z-index: 2000;
@@ -67,6 +67,14 @@ export const GlobalStyles = createGlobalStyle`
     margin-top: -1px;
     margin-bottom: -1px;
     border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  }
+
+  .sidemenu-text{
+    color: ${({ theme }) => theme.colors.sidemenu.text};
+  }
+
+  #nested-list-subheader{
+    color: ${({ theme }) => theme.colors.sidemenu.text};
   }
 
   /* ========= Tabela ========= */
