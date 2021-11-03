@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import SideMenu from "../../../components/SideMenu";
 import TopBar from "../../../components/TopBar";
-import { makeStyles } from "@material-ui/core/styles";
-import { Grid, TextField, Select, Divider, Button, MenuItem, FormControl, InputLabel } from "@material-ui/core";
+import { Grid, TextField, Divider, Button} from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import api from "../../../services/api";
 import CheckIcon from "@material-ui/icons/Check";
@@ -46,32 +45,28 @@ function CadastrarVariacoes() {
     const newVariacoes = [...values.variacoes];
     newVariacoes.splice(i, 1);
     setValues({ ...values, variacoes: newVariacoes });
-  }
+  };
 
   console.log(values);
 
   function handleOnSubmit(e) {
     e.preventDefault();
 
-    let idTipoVariacao;
-    api.post('/tipo-variacao-produto', values.nome)
-    .then((response) => {
-      idTipoVariacao = response.data.id;
-    })
-    .catch((error) => {
-
-    });
-
-    api.post('/nome-variacao-produto', values.item)
-    .then((response) => {
-      
-    })
-    .catch((error) => {
-
-    });
-    console.log(values);
-
-    api.post("/grupo-produto", values).then((response) => console.log(response));
+    api.post("/tipo-variacao-produto", {nome:values.nome})
+      .then((res) => {
+        console.log('@VARIACAO-PRODUTO', res.data)
+        values.variacoes.forEach((variacao) => {
+          api.post("/nome-variacao-produto", {
+            nome: variacao,
+            tipo_variacao_produto_id: res.data.data.id,
+            tipo_variacao_produto: res.data.data
+          }).catch( err => {
+            console.log(err);
+          });
+        });
+      }).catch((err) => {
+        console.log('@ERROR', err);
+      });
   }
 
   return (
@@ -87,7 +82,7 @@ function CadastrarVariacoes() {
           <form onSubmit={handleOnSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <TextField variant="outlined" label="Nome" fullWidth type="text"  value={values.nome} name="nome" onChange={handleOnChange} />
+                <TextField variant="outlined" label="Nome" fullWidth type="text" value={values.nome} name="nome" onChange={handleOnChange} />
               </Grid>
               {values.variacoes.map((variacao, index) => {
                 return (
@@ -100,20 +95,22 @@ function CadastrarVariacoes() {
                       value={variacao}
                       name="variacoes"
                       onChange={handleOnChange}
-                      InputProps={ index !== 0 && {
+                      InputProps={
+                        index !== 0 && {
                           endAdornment: (
                             <IconButton onClick={() => removerVariacao(index)}>
                               <DeleteIcon />
                             </IconButton>
                           ),
-                      }}
+                        }
+                      }
                     />
                   </Grid>
                 );
               })}
             </Grid>
             <Grid>
-              <Button className={'btn btn-primary btn-spacing'} variant="outlined" onClick={() => AdicionarVariacao()}>
+              <Button className={"btn btn-primary btn-spacing"} variant="outlined" onClick={() => AdicionarVariacao()}>
                 Adicionar
               </Button>
             </Grid>
@@ -122,12 +119,12 @@ function CadastrarVariacoes() {
 
             <Grid container spacing={0}>
               <Grid item>
-                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={'btn btn-primary btn-spacing'}>
+                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={"btn btn-primary btn-spacing"}>
                   Salvar
                 </Button>
               </Grid>
               <Grid item>
-                <Button onClick={() => history.push("/grades-variacoes")} variant="outlined" startIcon={<CloseIcon />} className={'btn btn-error btn-spacing'}>
+                <Button onClick={() => history.push("/grades-variacoes")} variant="outlined" startIcon={<CloseIcon />} className={"btn btn-error btn-spacing"}>
                   Cancelar
                 </Button>
               </Grid>

@@ -5,6 +5,7 @@ import Routes from "./routes/routes";
 import SideMenuContextProvider from "./context/SideMenuContext";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import styled, { ThemeProvider } from "styled-components";
+import { GerenciarProdutosProvider } from './context/GerenciarProdutosContext';
 // Temas
 import WebFont from 'webfontloader';
 import { GlobalStyles } from './theme/GlobalStyles';
@@ -41,9 +42,11 @@ function App() {
           <GlobalStyles />
           <Container style={{ fontFamily: selectedTheme.font }}>
             <SideMenuContextProvider>
-              <MuiPickersUtilsProvider utils={MomentUtils}>
-                <Routes />
-              </MuiPickersUtilsProvider>
+              <GerenciarProdutosProvider>
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                  <Routes />
+                </MuiPickersUtilsProvider>
+              </GerenciarProdutosProvider>
             </SideMenuContextProvider>
           </Container>
         </ThemeProvider>

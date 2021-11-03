@@ -18,7 +18,7 @@ const initialValues = {
   padrao: 0,
 };
 
-function EditarVariacoes() {
+function EditarProduto() {
   const history = useHistory();
   const [values, setValues] = useState([]);
   const { id } = useParams();
@@ -169,4 +169,4 @@ function EditarVariacoes() {
   );
 }
 
-export default EditarVariacoes;
+export default EditarProduto;
