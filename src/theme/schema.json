@@ -14,12 +14,12 @@
           "text": "#000000"
         },
         "topbar": {
-          "background": "#1f1f1f",
-          "text": "#0d47a1"
+          "background": "#FFFFFF",
+          "text": "#000000"
         },
         "sidemenu":{
-          "background": "#1f1f1f",
-          "text": "#FFFFFF"
+          "background": "#FFFFFF",
+          "text": "#000000"
         },
         "button": {
           "primary":{
@@ -70,8 +70,12 @@
         },
         "table": {
           "header": {
-            "background": "#e0e0e0",
-            "text": "#000000"
+            "background": "#FFFFFF",
+            "text": "#212121"
+          },
+          "footer":{
+            "background": "#2d3035",
+            "text": "#8a8d93"
           },
           "row": {
             "hover": "#e0e0e0",
@@ -169,6 +173,10 @@
             "background": "#e0e0e0",
             "text": "#000000"
           },
+          "footer":{
+            "background": "#2d3035",
+            "text": "#8a8d93"
+          },
           "row": {
             "hover": "#e0e0e0",
             "impar":{
@@ -197,30 +205,30 @@
       "id": "T_003",
       "name": "Dark",
       "colors": {
-        "body": "#121212",
+        "body": "#22252a",
         "text": "#FFFFFF",
-        "border": "#77b3dd",
+        "border": "#34373d",
         "input": {
           "border": "#e0e0e0",
-          "background": "#FFFFFF",
-          "text": "#000000"
+          "background": "#44454e",
+          "text": "#b4b5b8"
         },
         "topbar": {
-          "background": "#1f1f1f",
-          "text": "#FFFFFF"
+          "background": "#2d3035",
+          "text": "#8a8d93"
         },
         "sidemenu":{
-          "background": "#1f1f1f",
-          "text": "#FFFFFF"
+          "background": "#2d3035",
+          "text": "#8a8d93"
         },
         "button": {
           "primary":{
-            "background": "#1976d2",
+            "background": "#857dcc",
             "text": "#FFFFFF",
-            "border": "#42a5f5",
+            "border": "#857dcc",
             "hover": {
               "text": "#FFFFFF",
-              "background": "#1565c0"
+              "background": "#9d97d6"
             }
           },
           "secondary":{
@@ -242,47 +250,51 @@
             }
           },
           "info":{
-            "background": "#0288d1",
+            "background": "#4f5d73",
             "text": "#FFFFFF",
-            "border": "#03a9f4",
+            "border": "#4f5d73",
             "hover": {
               "text": "#FFFFFF",
-              "background": "#01579b"
+              "background": "#727d8f"
             }
           },
           "error":{
-            "background": "#d32f2f",
+            "background": "#c77171",
             "text": "#FFFFFF",
-            "border": "#ef5350",
+            "border": "#c77171",
             "hover": {
               "text": "#FFFFFF",
-              "background": "#c62828"
+              "background": "#d28d8d"
             }
           }
         },
         "table": {
           "header": {
-            "background": "#e0e0e0",
-            "text": "#000000"
+            "background": "#2d3035",
+            "text": "#a9b5b8"
+          },
+          "footer":{
+            "background": "#2d3035",
+            "text": "#8a8d93"
           },
           "row": {
-            "hover": "#e0e0e0",
+            "hover": "#26292d",
             "impar":{
-              "background": "#fafafa",
-              "text": "#000000",
-              "hover": "#e0e0e0"
+              "background": "#282b2f",
+              "text": "#e6e6e7",
+              "hover": "#26292d"
             },
             "par": {
-              "background": "#FFFFFF",
-              "text": "#000000",
-              "hover": "#e0e0e0"
+              "background": "#2d3035",
+              "text": "#e6e6e7",
+              "hover": "#26292d"
             },
             "background": "#FFFFFF",
             "text": "#000000"
           }
         },
         "link": {
-          "text": "#0d47a1",
+          "text": "#4797e5",
           "opacity": 0.8
         }
       },

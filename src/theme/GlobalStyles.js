@@ -26,7 +26,12 @@ export const GlobalStyles = createGlobalStyle`
 
   input {
     background: ${({ theme }) => theme.colors.input.background} !important;
+    color: ${({ theme }) => theme.colors.input.text} !important;
     border-radius: 5px !important;
+  }
+
+  .MuiFormControl-root > * {
+    color: ${({ theme }) => theme.colors.input.text} !important; // cor do texto dentro dos inputs
   }
   
   .input-select{
@@ -55,11 +60,20 @@ export const GlobalStyles = createGlobalStyle`
     padding-right: 20px;
   }
 
+  .MuiBadge-badge{
+    background: #c65656; // icones top bar
+  }
+  
+
   /* ========= Side Menu ========= */
 
   .MuiDrawer-paper{  
-    background: ${({ theme }) => theme.colors.body};
+    background: ${({ theme }) => theme.colors.sidemenu.background};
     border-right: 1px solid ${({ theme }) => theme.colors.border};
+  }
+
+  .MuiListItem-root path{
+    color: #8a8d93;
   }
 
   .sidemenu-list{
@@ -80,23 +94,58 @@ export const GlobalStyles = createGlobalStyle`
   /* ========= Tabela ========= */
 
   .table-background{
-    background: ${({ theme }) => theme.colors.body};
+    background: ${({ theme }) => theme.colors.table.header.background};
+    color: ${({ theme }) => theme.colors.table.header.text}; // titulo tabela
+  }
+  
+  .table-background span{
+    color: ${({ theme }) => theme.colors.table.header.text}; // icones header tabela
   }
 
   .MuiTableCell-head{
-    background: ${({ theme }) => theme.colors.body};
+    background: ${({ theme }) => theme.colors.table.header.background}; // fundo header tabela
   }
 
   .MuiTableCell-footer{
     border-bottom: none;
   }
 
-  .row-par{ 
-    background: ${({ theme }) => theme.colors.table.row.par.background};
+  .MuiTableCell-footer *{
+    color: ${({ theme }) => theme.colors.table.footer.text};
   }
 
+  // -* Row Par *- //
+  .row-par{ 
+    background: ${({ theme }) => theme.colors.table.row.par.background};
+    color: ${({ theme }) => theme.colors.table.row.par.text};
+    
+  }
+
+  .row-par > *{ 
+    background: ${({ theme }) => theme.colors.table.row.par.background};
+    color: ${({ theme }) => theme.colors.table.row.par.text};
+    border: none;
+  }
+
+  .row-par:hover > *{ 
+    background: ${({ theme }) => theme.colors.table.row.par.hover} !important;
+  }
+
+
+  // -* Row Impar *- //
   .row-impar{
     background: ${({ theme }) => theme.colors.table.row.impar.background};
+    color: ${({ theme }) => theme.colors.table.row.impar.text};
+  }
+
+  .row-impar > *{
+    background: ${({ theme }) => theme.colors.table.row.impar.background};
+    color: ${({ theme }) => theme.colors.table.row.impar.text};
+    border: none;
+  }
+
+  .row-impar:hover > *{
+    background: ${({ theme }) => theme.colors.table.row.impar.hover} !important;
   }
   
   .row:hover{
@@ -160,9 +209,9 @@ export const GlobalStyles = createGlobalStyle`
 
 
   .btn-lista{
-    border: 1px solid ${({ theme }) => theme.colors.button.info.background};
+    border: 1px solid #475162;
     border-radius: 6px;
-    box-shadow: 2px 2px #757575;
+    box-shadow: 2px 2px #475162;
     background: ${({ theme }) => theme.colors.button.info.background};
     color: ${({ theme }) => theme.colors.button.info.text};
     margin-right: 8px;
