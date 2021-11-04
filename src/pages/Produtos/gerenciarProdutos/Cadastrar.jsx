@@ -1,13 +1,13 @@
 import { useState } from "react";
 import SideMenu from "../../../components/SideMenu";
 import TopBar from "../../../components/TopBar";
-import { Grid, Divider, Button, Box, Tabs, Tab, TextField } from "@material-ui/core";
+import { Grid, Divider, Button, Box, Tabs, Tab } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import api from "../../../services/api";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import { Dados, Detalhes } from "./Tabs/index";
+import { Dados, Detalhes, Valores, Estoque, Fotos, Fiscal, Fornecedores, Composicao } from "./Tabs/index";
 
 function CadastrarProduto() {
   const history = useHistory();
@@ -110,15 +110,33 @@ function CadastrarProduto() {
                 <Detalhes />
               </TabPanel>
               <TabPanel value={value} index={2}>
-                Valores
+                <Valores />
+              </TabPanel>
+              <TabPanel value={value} index={3}>
+                <Estoque />
+              </TabPanel>
+              <TabPanel value={value} index={4}>
+                <Fotos />
+              </TabPanel>
+              <TabPanel value={value} index={5}>
+                <Fiscal />
+              </TabPanel>
+              <TabPanel value={value} index={6}>
+                <Composicao />
+              </TabPanel>
+              <TabPanel value={value} index={7}>
+                <Fornecedores />
               </TabPanel>
             </form>
 
-            <Grid>
+            <Box sx={{ textAlign: "center" }} spacing={2}>
+              <Button className={"btn btn-primary btn-spacing"} variant="outlined">
+                Voltar
+              </Button>
               <Button className={"btn btn-primary btn-spacing"} variant="outlined">
                 Continuar
               </Button>
-            </Grid>
+            </Box>
             <br />
             <Divider />
 
