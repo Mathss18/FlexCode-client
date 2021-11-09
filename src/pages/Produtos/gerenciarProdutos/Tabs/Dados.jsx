@@ -51,15 +51,6 @@ export function Dados() {
           </Select>
         </FormControl>
       </Grid>
-      <Grid item xs={3}>
-        <FormControl variant="outlined" fullWidth name="possui_composicao">
-          <InputLabel>Possui composição?</InputLabel>
-          <Select className={"input-select"} label="Possui composição?" name="possui_composicao" value={values.possui_composicao} onChange={handleOnChange}>
-            <MenuItem value={0}>Não</MenuItem>
-            <MenuItem value={1}>Sim</MenuItem>
-          </Select>
-        </FormControl>
-      </Grid>
     </Grid>
   );
 }
