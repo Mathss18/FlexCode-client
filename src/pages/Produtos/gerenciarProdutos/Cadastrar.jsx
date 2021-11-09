@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import SideMenu from "../../../components/SideMenu";
 import TopBar from "../../../components/TopBar";
 import { Grid, Divider, Button, Box, Tabs, Tab } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
+import { GerenciarProdutosContext } from "../../../context/GerenciarProdutosContext";
 import api from "../../../services/api";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
@@ -12,6 +13,7 @@ import { Dados, Detalhes, Valores, Estoque, Fotos, Fiscal, Fornecedores, Composi
 function CadastrarProduto() {
   const history = useHistory();
   const [value, setValue] = useState(0);
+  const { values } = useContext(GerenciarProdutosContext);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -92,11 +94,10 @@ function CadastrarProduto() {
                     <Tab label="Dados" {...a11yProps(0)} />
                     <Tab label="Detalhes" {...a11yProps(1)} />
                     <Tab label="Valores" {...a11yProps(2)} />
-                    <Tab label="Estoque" {...a11yProps(3)} />
+                    <Tab disabled={values.movimenta_estoque === 0} label="Estoque" {...a11yProps(3)} />
                     <Tab label="Fotos" {...a11yProps(4)} />
-                    <Tab label="Fiscal" {...a11yProps(5)} />
-                    <Tab label="Composição" {...a11yProps(6)} />
-                    <Tab label="Fornecedores" {...a11yProps(7)} />
+                    <Tab disabled={values.habilitar_nota_fiscal === 0} label="Fiscal" {...a11yProps(5)} />
+                    <Tab label="Fornecedores" {...a11yProps(6)} />
                   </Tabs>
                 </Box>
               </Grid>
@@ -122,18 +123,15 @@ function CadastrarProduto() {
                 <Fiscal />
               </TabPanel>
               <TabPanel value={value} index={6}>
-                <Composicao />
-              </TabPanel>
-              <TabPanel value={value} index={7}>
                 <Fornecedores />
               </TabPanel>
             </form>
 
             <Box sx={{ textAlign: "center" }} spacing={2}>
-              <Button className={"btn btn-primary btn-spacing"} variant="outlined">
+              <Button disabled={value <= 0} className={"btn btn-primary btn-spacing"} variant="outlined" onClick={() => setValue(value - 1)}>
                 Voltar
               </Button>
-              <Button className={"btn btn-primary btn-spacing"} variant="outlined">
+              <Button className={"btn btn-primary btn-spacing"} variant="outlined" onClick={() => setValue(value + 1)}>
                 Continuar
               </Button>
             </Box>

@@ -230,4 +230,11 @@ export const GlobalStyles = createGlobalStyle`
     margin-right: 12px;
   }
 
+  /* ========= POPUP ========= */
+
+  .popup {
+    background: ${({ theme }) => theme.colors.popup.background};
+    color: ${({ theme }) => theme.colors.popup.text};
+  }
+
 `;
