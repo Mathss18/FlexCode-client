@@ -198,7 +198,7 @@ function SideMenu({ children }) {
                                 <ListItemIcon>
                                     <LayersIcon className={"sidemenu-text"}/>
                                 </ListItemIcon>
-                                <ListItemText className={"sidemenu-text"} primary="Gerenciar Produtos" />
+                                <ListItemText className={"sidemenu-text"} primary="Produtos" />
                             </ListItem>
                         </List>
                         <List onClick={() => history.push("/grupos-produtos")} disablePadding>
