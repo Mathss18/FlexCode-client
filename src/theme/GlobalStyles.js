@@ -236,5 +236,4 @@ export const GlobalStyles = createGlobalStyle`
     background: ${({ theme }) => theme.colors.popup.background};
     color: ${({ theme }) => theme.colors.popup.text};
   }
-
 `;
