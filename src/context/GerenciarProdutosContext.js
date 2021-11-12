@@ -37,6 +37,7 @@ export const GerenciarProdutosProvider = (props) => {
     fiscal_pis_st: '',
     fiscal_cofins: '',
     fiscal_cofins_st: '',
+    values_profit: [{}]
   });
 
   console.log(values)

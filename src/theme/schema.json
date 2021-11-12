@@ -1,7 +1,7 @@
 {
-  "data" : {
+  "data": {
 
-    "light" : {
+    "light": {
       "id": "T_001",
       "name": "Light",
       "colors": {
@@ -17,12 +17,12 @@
           "background": "#FFFFFF",
           "text": "#000000"
         },
-        "sidemenu":{
+        "sidemenu": {
           "background": "#FFFFFF",
           "text": "#000000"
         },
         "button": {
-          "primary":{
+          "primary": {
             "background": "#1976d2",
             "text": "#FFFFFF",
             "border": "#42a5f5",
@@ -31,7 +31,7 @@
               "background": "#1565c0"
             }
           },
-          "secondary":{
+          "secondary": {
             "background": "#9c27b0",
             "text": "#FFFFFF",
             "border": "#ba68c8",
@@ -40,7 +40,7 @@
               "background": "#7b1fa2"
             }
           },
-          "success":{
+          "success": {
             "background": "#2e7d32",
             "text": "#FFFFFF",
             "border": "#4caf50",
@@ -49,7 +49,7 @@
               "background": "#1b5e20"
             }
           },
-          "info":{
+          "info": {
             "background": "#0288d1",
             "text": "#FFFFFF",
             "border": "#03a9f4",
@@ -58,7 +58,7 @@
               "background": "#01579b"
             }
           },
-          "error":{
+          "error": {
             "background": "#d32f2f",
             "text": "#FFFFFF",
             "border": "#ef5350",
@@ -73,13 +73,13 @@
             "background": "#FFFFFF",
             "text": "#212121"
           },
-          "footer":{
+          "footer": {
             "background": "#2d3035",
             "text": "#8a8d93"
           },
           "row": {
             "hover": "#e0e0e0",
-            "impar":{
+            "impar": {
               "background": "#fafafa",
               "text": "#000000",
               "hover": "#e0e0e0"
@@ -105,7 +105,7 @@
       "font": "Roboto"
     },
 
-    "seaWave" : {
+    "seaWave": {
       "id": "T_002",
       "name": "Sea Wave",
       "colors": {
@@ -121,12 +121,12 @@
           "background": "#1f1f1f",
           "text": "#0d47a1"
         },
-        "sidemenu":{
+        "sidemenu": {
           "background": "#1f1f1f",
           "text": "#FFFFFF"
         },
         "button": {
-          "primary":{
+          "primary": {
             "background": "#1976d2",
             "text": "#FFFFFF",
             "border": "#42a5f5",
@@ -135,7 +135,7 @@
               "background": "#1565c0"
             }
           },
-          "secondary":{
+          "secondary": {
             "background": "#9c27b0",
             "text": "#FFFFFF",
             "border": "#ba68c8",
@@ -144,7 +144,7 @@
               "background": "#7b1fa2"
             }
           },
-          "success":{
+          "success": {
             "background": "#2e7d32",
             "text": "#FFFFFF",
             "border": "#4caf50",
@@ -153,7 +153,7 @@
               "background": "#1b5e20"
             }
           },
-          "info":{
+          "info": {
             "background": "#0288d1",
             "text": "#FFFFFF",
             "border": "#03a9f4",
@@ -162,7 +162,7 @@
               "background": "#01579b"
             }
           },
-          "error":{
+          "error": {
             "background": "#d32f2f",
             "text": "#FFFFFF",
             "border": "#ef5350",
@@ -177,13 +177,13 @@
             "background": "#e0e0e0",
             "text": "#000000"
           },
-          "footer":{
+          "footer": {
             "background": "#2d3035",
             "text": "#8a8d93"
           },
           "row": {
             "hover": "#e0e0e0",
-            "impar":{
+            "impar": {
               "background": "#fafafa",
               "text": "#000000",
               "hover": "#e0e0e0"
@@ -209,7 +209,7 @@
       "font": "Ubuntu"
     },
 
-    "dark" : {
+    "dark": {
       "id": "T_003",
       "name": "Dark",
       "colors": {
@@ -225,12 +225,12 @@
           "background": "#2d3035",
           "text": "#8a8d93"
         },
-        "sidemenu":{
+        "sidemenu": {
           "background": "#2d3035",
           "text": "#8a8d93"
         },
         "button": {
-          "primary":{
+          "primary": {
             "background": "#857dcc",
             "text": "#FFFFFF",
             "border": "#857dcc",
@@ -239,7 +239,7 @@
               "background": "#9d97d6"
             }
           },
-          "secondary":{
+          "secondary": {
             "background": "#9c27b0",
             "text": "#FFFFFF",
             "border": "#ba68c8",
@@ -248,7 +248,7 @@
               "background": "#7b1fa2"
             }
           },
-          "success":{
+          "success": {
             "background": "#2e7d32",
             "text": "#FFFFFF",
             "border": "#4caf50",
@@ -257,7 +257,7 @@
               "background": "#1b5e20"
             }
           },
-          "info":{
+          "info": {
             "background": "#4f5d73",
             "text": "#FFFFFF",
             "border": "#4f5d73",
@@ -266,7 +266,7 @@
               "background": "#727d8f"
             }
           },
-          "error":{
+          "error": {
             "background": "#c77171",
             "text": "#FFFFFF",
             "border": "#c77171",
@@ -281,13 +281,13 @@
             "background": "#2d3035",
             "text": "#a9b5b8"
           },
-          "footer":{
+          "footer": {
             "background": "#2d3035",
             "text": "#8a8d93"
           },
           "row": {
             "hover": "#26292d",
-            "impar":{
+            "impar": {
               "background": "#282b2f",
               "text": "#e6e6e7",
               "hover": "#26292d"
@@ -313,7 +313,7 @@
       "font": "Ubuntu"
     }
 
-    
-    
+
+
   }
 }
