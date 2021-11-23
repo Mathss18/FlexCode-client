@@ -242,19 +242,19 @@
           "secondary": {
             "background": "#9c27b0",
             "text": "#FFFFFF",
-            "border": "#ba68c8",
+            "border": "#9c27b0",
             "hover": {
               "text": "#FFFFFF",
-              "background": "#7b1fa2"
+              "background": "#50af54"
             }
           },
           "success": {
             "background": "#2e7d32",
             "text": "#FFFFFF",
-            "border": "#4caf50",
+            "border": "#2e7d32",
             "hover": {
               "text": "#FFFFFF",
-              "background": "#1b5e20"
+              "background": "#55c25b"
             }
           },
           "info": {
