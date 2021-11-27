@@ -1,26 +1,23 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { GerenciarProdutosContext } from "../../../../context/GerenciarProdutosContext";
 import { Grid, TextField, Divider, Dialog, DialogTitle, DialogContent, Checkbox, DialogActions, Button, FormControlLabel } from "@material-ui/core";
+import api from "../../../../services/api";
 import MUIDataTable from "mui-datatables";
 import CalculateIcon from "@mui/icons-material/Calculate";
 
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-
 export function Valores() {
   const { values, setValues } = useContext(GerenciarProdutosContext);
-  const [cad, setCad] = useState({
-    descricao: "",
-    porcentagem: "",
-    favorite: 0
-  });
+  const [cad, setCad] = useState({});
   const [open, setOpen] = useState(false);
   const [openFavs, setOpenFavs] = useState(false);
+  const [porcLucros, setPorcLucros] = useState([]);
+  const [dataRow, setDataRow] = useState([]);
+
+  useEffect(() => {
+    api.get("/porcentagens-lucros").then((response) => {
+      setPorcLucros(response.data.data);
+    });
+  }, []);
 
   function handleOnChange(event) {
     const { name, value } = event.target;
@@ -29,20 +26,26 @@ export function Valores() {
 
   function handleOnChangeFavs(event) {
     const { name, value, type, checked } = event.target;
-    if(type === "checkbox"){
+    if (type === "checkbox") {
       console.log(checked);
       setCad({ ...cad, [name]: checked ? 1 : 0 });
-    }else{
+    } else {
       setCad({ ...cad, [name]: value });
     }
   }
 
-  console.log(cad)
+  console.log(cad);
 
   const handleAddValuesFavs = () => {
     setValues({ ...values, values_profit: [...values.values_profit, cad] });
     // values.values_profit.push(cad);
   };
+
+  const handleInsertInTable = () => {
+    setValues({ ...values, values_profit: [...values.values_profit, dataRow] });
+  };
+
+  console.log(values)
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -79,21 +82,6 @@ export function Valores() {
     },
   ];
 
-  const data = [
-    {
-      descricao: "Descrição 1",
-      porcentagem: "R$ 1.000,00",
-    },
-    {
-      descricao: "Descrição 2",
-      porcentagem: "R$ 2.000,00",
-    },
-    {
-      descricao: "Descrição 3",
-      porcentagem: "R$ 3.000,00",
-    },
-  ];
-
   const options = {
     expandableRowsHeader: false,
     print: false,
@@ -103,6 +91,11 @@ export function Valores() {
     search: false,
     viewColumns: false,
     pagination: false,
+    textLabels: {
+      body: {
+        noMatch: "Nenhum resultado encontrado.",
+      },
+    },
     setRowProps: (row, dataIndex, rowIndex) => {
       return {
         className: rowIndex % 2 == 0 ? "row row-par" : "row row-impar",
@@ -122,31 +115,60 @@ export function Valores() {
     },
   };
 
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
-
-  const rows = [
-    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-    createData("Eclair", 262, 16.0, 24, 6.0),
-    createData("Cupcake", 305, 3.7, 67, 4.3),
-    createData("Gingerbread", 356, 16.0, 49, 3.9),
-  ];
+  const options_lucro = {
+    expandableRowsHeader: false,
+    print: false,
+    download: false,
+    filter: false,
+    search: false,
+    viewColumns: false,
+    pagination: false,
+    filterType: "checkbox",
+    textLabels: {
+      body: {
+        noMatch: "Nenhum resultado encontrado.",
+      },
+      selectedRows: {
+        text: "linha(s) selecionadas",
+      },
+    },
+    onRowsSelect: (rowsSelected, allRows) => {
+      allRows.forEach((row) => {
+        setDataRow(porcLucros[row.dataIndex]);
+      });
+    },
+    setRowProps: (row, dataIndex, rowIndex) => {
+      return {
+        className: rowIndex % 2 == 0 ? "row row-par" : "row row-impar",
+        style: {
+          fontSize: 30,
+          color: "red",
+        },
+      };
+    },
+    setCellProps: (value) => {
+      console.log(value);
+      return {
+        style: {
+          border: "2px solid blue",
+        },
+      };
+    },
+  };
 
   return (
     <Grid container spacing={3}>
       <Grid item xs={6}>
         <TextField variant="outlined" style={{ marginBottom: 24 }} label="Valor de Custo" required fullWidth value={values.valor_custo} name="valor_custo" onChange={handleOnChange} />
-        <TextField variant="outlined" style={{ marginBottom: 24 }} label="Despesas acessórias" fullWidth value={values.despesa_acessoria} name="despesa_acessoria" onChange={handleOnChange} />
+        <TextField variant="outlined" style={{ marginBottom: 24 }} label="Despesas acessórias" fullWidth value={values.despesasAdicionais} name="despesasAdicionais" onChange={handleOnChange} />
         <TextField variant="outlined" style={{ marginBottom: 24 }} label="Outras despesas" fullWidth value={values.outras_despesas} name="outras_despesas" onChange={handleOnChange} />
-        <TextField variant="outlined" label="Custo final" fullWidth value={values.custo_final} name="custo_final" onChange={handleOnChange} />
+        <TextField variant="outlined" label="Custo final" fullWidth value={values.custoFinal} name="custoFinal" onChange={handleOnChange} />
       </Grid>
       <br />
       <Divider />
       <Grid spacing={1} container style={{ alignContent: "flex-start" }} item xs={6}>
         <Grid item xs={12}>
-          <MUIDataTable title={"Valores de custo"} data={values.values_profit} columns={columns} options={options} className={"table-background"} />
+          <MUIDataTable title={"Porcentagem de Lucro"} data={values.values_profit} columns={columns} options={options} className={"table-background"} />
         </Grid>
         <Grid spacing={1} container item xs={12}>
           <Grid item style={{ display: "flex", gap: "15px" }}>
@@ -159,6 +181,8 @@ export function Valores() {
           </Grid>
         </Grid>
       </Grid>
+
+      {/* Pop-ups */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle className={"popup"}>Cadastrar valor de Lucro</DialogTitle>
         <DialogContent className={"popup"}>
@@ -166,8 +190,8 @@ export function Valores() {
           <TextField id="name" name="porcentagem" value={cad.porcentagem} label="Porcentagem (%)" type="text" onChange={handleOnChangeFavs} fullWidth variant="outlined" />
         </DialogContent>
         <DialogActions className={"popup"} style={{ justifyContent: "space-around" }}>
-          <FormControlLabel control={<Checkbox color="primary" name="favorite" onChange={handleOnChangeFavs} />} label="Adicionar como favorito" />
-          <div style={{gap: '7px', display: 'flex'}}>
+          <FormControlLabel control={<Checkbox color="primary" name="favorito" onChange={handleOnChangeFavs} />} label="Adicionar como favorito" />
+          <div style={{ gap: "7px", display: "flex" }}>
             <Button className={"btn btn-error"} onClick={handleClose}>
               Fechar
             </Button>
@@ -178,41 +202,15 @@ export function Valores() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openFavs} onClose={handleCloseFavs}>
-        <DialogTitle className={"popup"}>Subscribe</DialogTitle>
-        <DialogContent className={"popup"}>
-          <TableContainer component={Paper}>
-            <Table aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Dessert (100g serving)</TableCell>
-                  <TableCell align="right">Calories</TableCell>
-                  <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                  <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                  <TableCell align="right">Protein&nbsp;(g)</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row) => (
-                  <TableRow key={row.name} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </DialogContent>
+      <Dialog open={openFavs} fullWidth={"lg"} onClose={handleCloseFavs}>
+        <MUIDataTable data={porcLucros} columns={columns} options={options_lucro} className={"table-background"} />
         <DialogActions className={"popup"}>
-          <Button className={"btn btn-danger"} onClick={handleCloseFavs}>
-            Cancel
+          <Button className={"btn btn-error"} onClick={handleCloseFavs}>
+            Fechar
           </Button>
-          <Button onClick={handleCloseFavs}>Subscribe</Button>
+          <Button className={"btn btn-success"} onClick={handleInsertInTable}>
+            Inserir na tabela
+          </Button>
         </DialogActions>
       </Dialog>
     </Grid>
