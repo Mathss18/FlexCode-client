@@ -1,10 +1,9 @@
 import CircularProgress from '@mui/material/CircularProgress';
-import { alternateRowColor } from '../theme/GlobalStyles';
 
 export const config = {
   textLabels: {
     body: {
-      noMatch: <CircularProgress />,
+      noMatch: 'Nenhum resultado encontrado.',//<CircularProgress />,
       toolTip: "Filtrar",
       columnHeaderTooltip: column => `Filtrar por ${column.label}`
     },

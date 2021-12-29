@@ -53,11 +53,13 @@ function LoginPage() {
 
     api.post('/login', values)
       .then(response => {
+        console.log(response);
         localStorage.setItem('token', response.data.access_token);
         //api.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access_token
         history.push("/home")
       })
       .catch(error => {
+        console.log(error);
         Swal.fire({
           title: 'Erro ao logar usuário!',
           html: 'Usuário ou senha incorreta',
