@@ -74,6 +74,7 @@ function CadastrarGrupoPage() {
       if (id !== "") {
         var tipoOperacao = id.split(".")[1]; // C, R, U, D
         var acesso = values?.[name];
+
         // eslint-disable-next-line default-case
         switch (tipoOperacao) {
           case "C":
