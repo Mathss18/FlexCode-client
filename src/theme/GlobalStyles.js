@@ -1,12 +1,5 @@
 import { createGlobalStyle } from "styled-components";
 
-export function alternateRowColor() {
-  console.log( ({ theme }) => theme.colors.primary );
-  var tableRowBgColor = "lightgrey";
-  return tableRowBgColor;
-}
-
-
 export const GlobalStyles = createGlobalStyle`
   * {
     font-family: ${({ theme }) => theme.font} !important;
@@ -16,7 +9,6 @@ export const GlobalStyles = createGlobalStyle`
     background: ${({ theme }) => theme.colors.body};
     color: ${({ theme }) => theme.colors.text};
     font-family: ${({ theme }) => theme.font};
-    
   }
 
   a {
@@ -26,12 +18,20 @@ export const GlobalStyles = createGlobalStyle`
 
   input {
     background: ${({ theme }) => theme.colors.input.background} !important;
-    color: ${({ theme }) => theme.colors.input.text} !important;
+    color: ${({ theme }) => theme.colors.input.text} !important; // cor do texto dentro dos inputs (usuario)
     border-radius: 5px !important;
   }
 
   .MuiFormControl-root > * {
-    color: ${({ theme }) => theme.colors.input.text} !important; // cor do texto dentro dos inputs
+    color: ${({ theme }) => theme.colors.input.text} !important // cor do texto dentro dos inputs (label)
+  }
+
+  .MuiFormHelperText-root.Mui-error{
+    color: ${({ theme }) => theme.colors.button.error.background} !important // cor do texto helper do input
+  }
+
+  .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline{
+    border-color: ${({ theme }) => theme.colors.button.error.background} !important // cor da borda com erro do input
   }
   
   .input-select{
@@ -94,7 +94,7 @@ export const GlobalStyles = createGlobalStyle`
   /* ========= Tabela ========= */
 
   .table-background{
-    background: ${({ theme }) => theme.colors.table.header.background};
+    background: ${({ theme }) => theme.colors.table.header.background}; // cor de fundo header e footer tabela
     color: ${({ theme }) => theme.colors.table.header.text}; // titulo tabela
   }
   
@@ -105,22 +105,21 @@ export const GlobalStyles = createGlobalStyle`
   .MuiTableCell-head{
     background: ${({ theme }) => theme.colors.table.header.background}; // fundo header tabela
   }
-
+  
   .MuiTableCell-footer{
-    border-bottom: none;
+    border-bottom: none; // borda footer tabela
+  }
+  
+  .MuiTablePagination-caption, .MuiTablePagination-selectIcon, #pagination-rows{
+    color: ${({ theme }) => theme.colors.table.footer.text}; // cor informação footer tabela (linhas por pág, itens por página,...)
   }
 
-  .MuiTableCell-footer *{
-    color: ${({ theme }) => theme.colors.table.footer.text};
+  .datatables-noprint{
+    color: ${({ theme }) => theme.colors.table.header.text}; // "Nenhum resultado encontrado" na tabela
   }
+
 
   // -* Row Par *- //
-  .row-par{ 
-    background: ${({ theme }) => theme.colors.table.row.par.background};
-    color: ${({ theme }) => theme.colors.table.row.par.text};
-    
-  }
-
   .row-par > *{ 
     background: ${({ theme }) => theme.colors.table.row.par.background};
     color: ${({ theme }) => theme.colors.table.row.par.text};
@@ -133,10 +132,6 @@ export const GlobalStyles = createGlobalStyle`
 
 
   // -* Row Impar *- //
-  .row-impar{
-    background: ${({ theme }) => theme.colors.table.row.impar.background};
-    color: ${({ theme }) => theme.colors.table.row.impar.text};
-  }
 
   .row-impar > *{
     background: ${({ theme }) => theme.colors.table.row.impar.background};
@@ -148,9 +143,6 @@ export const GlobalStyles = createGlobalStyle`
     background: ${({ theme }) => theme.colors.table.row.impar.hover} !important;
   }
   
-  .row:hover{
-    background: ${({ theme }) => theme.colors.table.row.hover} !important;
-  }
 
 
 

@@ -72,7 +72,6 @@ function ListarFuncionarioPage() {
         options: rowConfig
       },
     ];
-    var isLoading = true;
     const data = [];
 
     function handleOnClickShowButton(event, id) {
@@ -86,8 +85,6 @@ function ListarFuncionarioPage() {
 
 
     useEffect(() => {
-        if(!isLoading) 
-            config.textLabels.body.noMatch = "Nenhum resultado encontrado."
         
         api.get('/funcionarios')
             .then((response) => {
@@ -114,10 +111,9 @@ function ListarFuncionarioPage() {
 
                 });
                 setFuncionarios(data)
-                isLoading = false;
 
             })
-    }, [isLoading]);
+    }, []);
 
     return (
         <>

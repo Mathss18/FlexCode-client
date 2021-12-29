@@ -75,7 +75,6 @@ function ListarFornecedorPage() {
       },
     ];
     
-    var isLoading = false;
     const data = [];
 
     function handleOnClickShowButton(event, id) {
@@ -89,8 +88,6 @@ function ListarFornecedorPage() {
 
 
     useEffect(() => {
-        if(!isLoading) 
-            config.textLabels.body.noMatch = "Nenhum resultado encontrado."
 
         api.get('/fornecedores')
             .then((response) => {
@@ -117,10 +114,9 @@ function ListarFornecedorPage() {
 
                 });
                 setFornecedores(data)
-                isLoading = false;
 
             })
-    }, [isLoading]);
+    }, []);
 
     return (
         <>

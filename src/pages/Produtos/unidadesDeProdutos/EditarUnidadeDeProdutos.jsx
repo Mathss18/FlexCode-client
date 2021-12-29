@@ -51,7 +51,7 @@ function EditarUnidadeDeProdutos() {
           timerProgressBar: true,
         }).then((result) => {
           if (result.dismiss === Swal.DismissReason.timer) {
-            history.push("/grupos-produtos");
+            history.push("/unidades-produtos");
           }
         });
       })
@@ -87,7 +87,7 @@ function EditarUnidadeDeProdutos() {
           .delete("/unidade-produto/" + id)
           .then((result) => {
             Swal.fire("Excluido!", "Cliente excluido com sucesso.", "success");
-            history.push("/grupos-produtos");
+            history.push("/unidades-produtos");
           })
           .catch((error) => {
             console.log(error.response.request.responseText);

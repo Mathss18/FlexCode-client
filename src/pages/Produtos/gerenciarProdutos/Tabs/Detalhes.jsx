@@ -25,7 +25,7 @@ export function Detalhes() {
           <TextField variant="outlined" label="Comprimento (m)" fullWidth value={values.comprimento} name="comprimento" onChange={handleOnChange} />
         </Grid>
         <Grid item xs={6}>
-          <TextField variant="outlined" style={{ marginBottom: 24 }} label="Comissão (%)" fullWidth value={values.comicao} name="comicao" onChange={handleOnChange} />
+          <TextField variant="outlined" style={{ marginBottom: 24 }} label="Comissão (%)" fullWidth value={values.comissao} name="comissao" onChange={handleOnChange} />
           <TextField multiline className={"input-select"} variant="outlined" label="Descrição do Produto" fullWidth value={values.descricao} rows={5} name="descricao" onChange={handleOnChange} />
         </Grid>
       </Grid>

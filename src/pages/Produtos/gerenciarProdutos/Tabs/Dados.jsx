@@ -1,53 +1,119 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import api from "../../../../services/api";
 import { GerenciarProdutosContext } from "../../../../context/GerenciarProdutosContext";
-import { Grid, TextField, FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
+import {
+  Grid,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@material-ui/core";
 
 export function Dados() {
   const { values, setValues } = useContext(GerenciarProdutosContext);
+  const [grupoProdutos, setGrupoProdutos] = useState([]);
 
   function handleOnChange(event) {
     const { name, value } = event.target;
     setValues({ ...values, [name]: value });
   }
 
+  useEffect(() => {
+    api
+      .get("/grupos-produtos")
+      .then((res) => {
+        setGrupoProdutos(res.data.data);
+      })
+      .catch((err) => {
+        console.log("Erro:" + err);
+      });
+  }, [grupoProdutos]);
+
   return (
     <Grid container spacing={3}>
-      <Grid item xs={3}>
-        <TextField required variant="outlined" label="Nome do produto" fullWidth value={values.name} name="name" onChange={handleOnChange} />
+      <Grid item xs={4}>
+        <TextField
+          required
+          variant="outlined"
+          label="Nome do produto"
+          fullWidth
+          value={values.nome}
+          name="nome"
+          onChange={handleOnChange}
+        />
       </Grid>
-      <Grid item xs={3}>
-        <TextField required variant="outlined" label="Código interno" fullWidth value={values.codigo_interno} name="name" onChange={handleOnChange} />
+      <Grid item xs={4}>
+        <TextField
+          required
+          variant="outlined"
+          label="Código interno"
+          fullWidth
+          value={values.codigoInterno}
+          name="codigoInterno"
+          onChange={handleOnChange}
+        />
       </Grid>
-      <Grid item xs={3}>
-        <TextField variant="outlined" label="Código de barra" fullWidth value={values.codigo_barras} name="name" onChange={handleOnChange} />
+      <Grid item xs={4}>
+        <FormControl variant="outlined" fullWidth name="grupo_produto_id">
+          <InputLabel>Grupo de Produtos</InputLabel>
+          <Select
+            className={"input-select"}
+            label="Grupo de Produtos"
+            name="grupo_produto_id"
+            value={values.grupo_produto_id}
+            onChange={handleOnChange}
+          >
+            <MenuItem value={0}>Nenhum</MenuItem>
+            {grupoProdutos &&
+              grupoProdutos.map((grupo) => {
+                return <MenuItem value={grupo.id}>{grupo.nome}</MenuItem>;
+              })}
+          </Select>
+        </FormControl>
       </Grid>
-      <Grid item xs={3}>
-        <TextField variant="outlined" label="Grupo do produto" fullWidth value={values.grupo_do_produto} name="name" onChange={handleOnChange} />
-      </Grid>
-      <Grid item xs={3}>
-        <FormControl variant="outlined" fullWidth name="movimenta_estoque">
+      <Grid item xs={4}>
+        <FormControl variant="outlined" fullWidth name="movimentaEstoque">
           <InputLabel>Movimenta Estoque?</InputLabel>
-          <Select className={"input-select"} label="Movimenta Estoque?" name="movimenta_estoque" value={values.movimenta_estoque} onChange={handleOnChange}>
-            <MenuItem value={0}>Não</MenuItem>
-            <MenuItem value={1}>Sim</MenuItem>
+          <Select
+            className={"input-select"}
+            label="Movimenta Estoque?"
+            name="movimentaEstoque"
+            value={values.movimentaEstoque}
+            onChange={handleOnChange}
+          >
+            <MenuItem value={false}>Não</MenuItem>
+            <MenuItem value={true}>Sim</MenuItem>
           </Select>
         </FormControl>
       </Grid>
-      <Grid item xs={3}>
-        <FormControl variant="outlined" fullWidth name="habilitar_nota_fiscal">
+      <Grid item xs={4}>
+        <FormControl variant="outlined" fullWidth name="habilitaNotaFiscal">
           <InputLabel>Habilitar Nota Fiscal?</InputLabel>
-          <Select className={"input-select"} label="Habilitar Nota Fiscal?" name="habilitar_nota_fiscal" value={values.habilitar_nota_fiscal} onChange={handleOnChange}>
-            <MenuItem value={0}>Não</MenuItem>
-            <MenuItem value={1}>Sim</MenuItem>
+          <Select
+            className={"input-select"}
+            label="Habilitar Nota Fiscal?"
+            name="habilitaNotaFiscal"
+            value={values.habilitaNotaFiscal}
+            onChange={handleOnChange}
+          >
+            <MenuItem value={false}>Não</MenuItem>
+            <MenuItem value={true}>Sim</MenuItem>
           </Select>
         </FormControl>
       </Grid>
-      <Grid item xs={3}>
-        <FormControl variant="outlined" fullWidth name="possui_variacoes">
+      <Grid item xs={4}>
+        <FormControl variant="outlined" fullWidth name="possuiVariacoes">
           <InputLabel>Possui Variações?</InputLabel>
-          <Select className={"input-select"} label="Possui Variações?" name="possui_variacoes" value={values.possui_variacoes} onChange={handleOnChange}>
-            <MenuItem value={0}>Não</MenuItem>
-            <MenuItem value={1}>Sim</MenuItem>
+          <Select
+            className={"input-select"}
+            label="Possui Variações?"
+            name="possuiVariacoes"
+            value={values.possuiVariacoes}
+            onChange={handleOnChange}
+          >
+            <MenuItem value={false}>Não</MenuItem>
+            <MenuItem value={true}>Sim</MenuItem>
           </Select>
         </FormControl>
       </Grid>

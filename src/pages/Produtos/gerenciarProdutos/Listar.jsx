@@ -41,7 +41,7 @@ function ListarProdutos() {
   }
 
   useEffect(() => {
-    api.get("/tipos-variacoes-produtos").then((response) => {
+    api.get("/produtos").then((response) => {
       if (response != undefined) {
         response.data["data"].forEach((element) => {
           var array = [
@@ -70,7 +70,7 @@ function ListarProdutos() {
         <Button onClick={() => history.push("/produto/novo")} variant="outlined" startIcon={<AddIcon />} className={"btn btn-primary btn-spacing"}>
           Adicionar
         </Button>
-        <MUIDataTable title={"Lista de Grades de Variações"} data={grupos} columns={columns} options={config} className={"table-background"} />
+        <MUIDataTable title={"Lista de Produtos"} data={grupos} columns={columns} options={config} className={"table-background"} />
       </SideMenu>
     </>
   );

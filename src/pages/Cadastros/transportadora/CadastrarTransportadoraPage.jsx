@@ -56,7 +56,7 @@ function CadastrarTransportadoraPage() {
                 })
             });
         }else {
-            alert('CEP Inválido');
+            // alert('CEP Inválido');
         }
     }
 

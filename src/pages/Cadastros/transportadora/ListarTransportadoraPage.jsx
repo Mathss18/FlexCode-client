@@ -74,7 +74,6 @@ function ListarTransportadoraPage() {
         options: rowConfig
       },
     ];
-    var isLoading = false;
     const data = [];
 
     function handleOnClickShowButton(event, id) {
@@ -88,8 +87,6 @@ function ListarTransportadoraPage() {
 
 
     useEffect(() => {
-        if(!isLoading) 
-            config.textLabels.body.noMatch = "Nenhum resultado encontrado."
 
         api.get('/transportadoras')
             .then((response) => {
@@ -116,10 +113,9 @@ function ListarTransportadoraPage() {
 
                 });
                 setTransportadoras(data)
-                isLoading = false;
 
             })
-    }, [isLoading]);
+    }, []);
 
     return (
         <>
