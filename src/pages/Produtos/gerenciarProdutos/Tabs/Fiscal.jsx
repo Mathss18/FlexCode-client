@@ -15,25 +15,25 @@ export function Fiscal() {
     <>
       <Grid container spacing={3}>
         <Grid item xs={4}>
-          <TextField variant="outlined" label="NCM" fullWidth value={values.fiscal_ncm} name="fiscal_ncm" onChange={handleOnChange} />
+          <TextField variant="outlined" label="NCM" fullWidth value={values.ncm} name="ncm" onChange={handleOnChange} />
         </Grid>
         <Grid item xs={4}>
-          <TextField variant="outlined" label="CEST" fullWidth value={values.fiscal_cest} name="fiscal_cest" onChange={handleOnChange} />
+          <TextField variant="outlined" label="CEST" fullWidth value={values.cest} name="cest" onChange={handleOnChange} />
         </Grid>
         <Grid item xs={4}>
-          <TextField variant="outlined" label="Origem" fullWidth value={values.fiscal_origem} name="fiscal_origem" onChange={handleOnChange} />
+          <TextField variant="outlined" label="Origem" fullWidth value={values.origem} name="origem" onChange={handleOnChange} />
         </Grid>
         <Grid item xs={3}>
-          <TextField variant="outlined" label="Peso líquido" fullWidth value={values.fiscal_peso_liquido} name="fiscal_peso_liquido" onChange={handleOnChange} />
+          <TextField variant="outlined" label="Peso líquido" fullWidth value={values.pesoLiquido} name="pesoLiquido" onChange={handleOnChange} />
         </Grid>
         <Grid item xs={3}>
-          <TextField variant="outlined" label="Peso bruto" fullWidth value={values.fiscal_peso_bruto} name="fiscal_peso_bruto" onChange={handleOnChange} />
+          <TextField variant="outlined" label="Peso bruto" fullWidth value={values.pesoBruto} name="pesoBruto" onChange={handleOnChange} />
         </Grid>
         <Grid item xs={3}>
-          <TextField variant="outlined" label="Número FCI" fullWidth value={values.fiscal_fci} name="fiscal_fci" onChange={handleOnChange} />
+          <TextField variant="outlined" label="Número FCI" fullWidth value={values.numeroFci} name="numeroFci" onChange={handleOnChange} />
         </Grid>
         <Grid item xs={3}>
-          <TextField variant="outlined" label="% Vr. aprox. tribut." fullWidth value={values.fiscal_aprox_tribut} name="fiscal_aprox_tribut" onChange={handleOnChange} />
+          <TextField variant="outlined" label="% Vr. aprox. tribut." fullWidth value={values.valorAproxTribut} name="valorAproxTribut" onChange={handleOnChange} />
         </Grid>
       </Grid>
       <br />
@@ -44,16 +44,16 @@ export function Fiscal() {
       </div>
       <Grid container spacing={3}>
         <Grid item xs={3}>
-          <TextField variant="outlined" label="Valor fixo PIS" fullWidth value={values.fiscal_pis} name="fiscal_pis" onChange={handleOnChange} />
+          <TextField variant="outlined" label="Valor fixo PIS" fullWidth value={values.valorPixoPis} name="valorPixoPis" onChange={handleOnChange} />
         </Grid>
         <Grid item xs={3}>
-          <TextField variant="outlined" label="Valor fixo PIS ST" fullWidth value={values.fiscal_pis_st} name="fiscal_pis_st" onChange={handleOnChange} />
+          <TextField variant="outlined" label="Valor fixo PIS ST" fullWidth value={values.valorFixoPisSt} name="valorFixoPisSt" onChange={handleOnChange} />
         </Grid>
         <Grid item xs={3}>
-          <TextField variant="outlined" label="Valor fixo COFINS" fullWidth value={values.fiscal_cofins} name="fiscal_cofins" onChange={handleOnChange} />
+          <TextField variant="outlined" label="Valor fixo COFINS" fullWidth value={values.valorFixoCofins} name="valorFixoCofins" onChange={handleOnChange} />
         </Grid>
         <Grid item xs={3}>
-          <TextField variant="outlined" label="Valor fixo COFINS ST" fullWidth value={values.fiscal_cofins_st} name="fiscal_cofins_st" onChange={handleOnChange} />
+          <TextField variant="outlined" label="Valor fixo COFINS ST" fullWidth value={values.valorFixoCofinsSt} name="valorFixoCofinsSt" onChange={handleOnChange} />
         </Grid>
       </Grid>
     </>

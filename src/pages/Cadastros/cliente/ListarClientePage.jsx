@@ -45,7 +45,6 @@ function ListarClientePage() {
     },
   ];
 
-  var isLoading = true;
   const data = [];
 
   function handleOnClickShowButton(event, id) {
@@ -59,8 +58,6 @@ function ListarClientePage() {
 
 
   useEffect(() => {
-    if (!isLoading)
-      config.textLabels.body.noMatch = "Nenhum resultado encontrado."
 
     api.get('/clientes')
       .then((response) => {
@@ -84,14 +81,13 @@ function ListarClientePage() {
             </>
           ]
           data.push(array);
-          isLoading = false;
+
 
         });
         setClientes(data)
-        isLoading = false;
 
       })
-  }, [isLoading]);
+  }, []);
 
   return (
     <>

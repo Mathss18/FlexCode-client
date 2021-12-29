@@ -30,7 +30,7 @@ function CadastrarUnidadeDeProdutos() {
     event.preventDefault();
     console.log(values);
 
-    api.post("/grupo-produto", values).then((response) => console.log(response));
+    api.post("/unidade-produto", values).then((response) => console.log(response));
   }
 
   return (

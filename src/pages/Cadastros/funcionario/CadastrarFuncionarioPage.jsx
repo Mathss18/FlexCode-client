@@ -81,7 +81,7 @@ function CadastrarFuncionarioPage() {
                 })
             });
         }else {
-            alert('CEP Inválido');
+            // alert('CEP Inválido');
         }
     }
 
