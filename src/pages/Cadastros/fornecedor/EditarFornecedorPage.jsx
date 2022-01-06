@@ -20,7 +20,7 @@ import LocationOnIcon from "@material-ui/icons/LocationOn";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import api from "../../../services/api";
 import Swal from "sweetalert2";
-import { confirmAlert, infoAlert, successAlert } from "../../../common/alert";
+import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
 
 const initialValues = {
   tipoFornecedor: "",
@@ -87,7 +87,7 @@ function EditarFornecedorPage() {
         );
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.request.responseText);
+        infoAlert("Atenção", error.response.data.message);
       });
   }
 

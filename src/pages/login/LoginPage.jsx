@@ -39,6 +39,7 @@ function Copyright(props) {
 }
 
 const theme = createTheme();
+
 const initialValues = {
   email: '',
   senha: '',
@@ -165,7 +166,7 @@ function LoginPage() {
                   style={{ marginBottom: "20px" }}
                 />
                 <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
+                  control={<Checkbox value="remember" />}
                   label="Lembrar"
                 />
                   <Button

@@ -20,7 +20,7 @@ import LocationOnIcon from "@material-ui/icons/LocationOn";
 import buscarCep from "../../../services/buscarCep";
 import validationSchema from "../../../services/validationSchema";
 import InputMask from "react-input-mask";
-import { infoAlert, successAlert } from "../../../common/alert";
+import { infoAlert, successAlert } from "../../../utils/alert";
 
 const initialValues = {
   tipoCliente: "",
