@@ -12,6 +12,7 @@ import LocationOnIcon from '@material-ui/icons/LocationOn';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import MouseIcon from '@material-ui/icons/Mouse';
 import buscarCep from '../../../services/buscarCep';
+import { infoAlert, successAlert } from '../../../utils/alert';
 
 
 
@@ -98,11 +99,13 @@ function CadastrarFuncionarioPage() {
         console.log(values);
         api.post('/funcionario', values)
         .then((response) => {
-            console.log(response);
+          successAlert("Sucesso", "Funcionatio Cadastrado", () =>
+            history.push("/funcionarios")
+          );
         })
         .catch((error) => {
-            console.log(error.response.request.responseText);
-        })
+          infoAlert("Atenção", error.response.data.message);
+        });
             
     }
 

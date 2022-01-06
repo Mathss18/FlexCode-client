@@ -19,7 +19,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import buscarCep from "../../../services/buscarCep";
-import { infoAlert, successAlert } from "../../../common/alert";
+import { infoAlert, successAlert } from "../../../utils/alert";
 
 const initialValues = {
   tipoFornecedor: "",
@@ -80,7 +80,7 @@ function CadastrarFornecedorPage() {
       });
     })
     .catch((error)=>{
-        infoAlert('Atenção',error.response.request.responseText);
+        infoAlert("Atenção", error.response.data.message);
     })
   }
 
