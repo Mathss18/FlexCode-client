@@ -2,40 +2,40 @@ import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyles = createGlobalStyle`
   * {
-    font-family: ${({ theme }) => theme.font} !important;
+    font-family: ${({ theme }) => theme.font} !important; // fonte de toda a aplicação
   }
   
   body {
-    background: ${({ theme }) => theme.colors.body};
-    color: ${({ theme }) => theme.colors.text};
-    font-family: ${({ theme }) => theme.font};
+    background: ${({ theme }) => theme.colors.body}; // cor de fundo da aplicação
+    color: ${({ theme }) => theme.colors.text}; // cor padrao do texto da aplicação
+    font-family: ${({ theme }) => theme.font}; // fonte da aplicação
   }
 
   a {
-    color: ${({ theme }) => theme.colors.link.text};
-    cursor: pointer;
+    color: ${({ theme }) => theme.colors.link.text}; // cor do texto de links
+    cursor: pointer; // cursor tipo pointer ao passar o mouse sobre links
   }
 
   input {
-    background: ${({ theme }) => theme.colors.input.background} !important;
+    background: ${({ theme }) => theme.colors.input.background} !important; // cor de fundo dos inputs
     color: ${({ theme }) => theme.colors.input.text} !important; // cor do texto dentro dos inputs (usuario)
     border-radius: 5px !important;
   }
 
   .MuiFormControl-root > * {
-    color: ${({ theme }) => theme.colors.input.text} !important // cor do texto dentro dos inputs (label)
+    color: ${({ theme }) => theme.colors.input.text} !important; // cor do texto dentro dos inputs (label)
   }
 
   .MuiFormHelperText-root.Mui-error{
-    color: ${({ theme }) => theme.colors.button.error.background} !important // cor do texto helper do input
+    color: ${({ theme }) => theme.colors.button.error.background} !important; // cor do texto helper do input quando está com erro
   }
 
   .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline{
-    border-color: ${({ theme }) => theme.colors.button.error.background} !important // cor da borda com erro do input
+    border-color: ${({ theme }) => theme.colors.button.error.background} !important; // cor da borda do input com erro
   }
   
   .input-select{
-    background: ${({ theme }) => theme.colors.input.background} !important;
+    background: ${({ theme }) => theme.colors.input.background} !important; // cor de fundo input select
     border-radius: 5px;
   }
   
