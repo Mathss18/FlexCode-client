@@ -25,7 +25,7 @@ import {
   errorAlert,
   infoAlert,
   successAlert,
-} from "../../../common/alert";
+} from "../../../utils/alert";
 import buscarCep from "../../../services/buscarCep";
 
 const initialValues = {
