@@ -12,10 +12,14 @@ export function successAlert(title='Sucesso', text='', callback=()=>{}){
         if (result.dismiss === Swal.DismissReason.timer) {
             callback()
         }
+        else{
+            callback()
+        }
+        
     })
 }
 
-export function confirmAlert(title='Tem certeza?', text='',isConfirmed, isDenied){
+export function confirmAlert(title='Tem certeza?', text='',isConfirmed, isDenied = ()=>{}){
     Swal.fire({
         title: title,
         text: text,

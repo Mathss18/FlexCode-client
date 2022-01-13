@@ -1,6 +1,4 @@
 import { useState, useContext } from "react";
-import SideMenu from "../../../components/SideMenu";
-import TopBar from "../../../components/TopBar";
 import { Grid, Divider, Button, Box, Tabs, Tab } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import { GerenciarProdutosContext } from "../../../context/GerenciarProdutosContext";
@@ -78,8 +76,6 @@ function CadastrarProduto() {
 
   return (
     <>
-      <TopBar />
-      <SideMenu>
         <div>
           <Divider />
           <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -152,7 +148,6 @@ function CadastrarProduto() {
             </Grid>
           </form>
         </div>
-      </SideMenu>
     </>
   );
 }

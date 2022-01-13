@@ -30,6 +30,7 @@ import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import LayersIcon from '@mui/icons-material/Layers';
 import SchemaIcon from '@mui/icons-material/Schema';
+import { useRef } from "react";
 
 const drawerWidth = 240;
 
@@ -80,6 +81,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function SideMenu({ children }) {
+    const renders = useRef(0);
+    console.log('[RENDERS SIDE MENU: ]',renders.current++);
+    
     const classes = useStyles();
     const history = useHistory();
     const [openCadastroList, setOpenCadastroList] = useCadastroMenu();

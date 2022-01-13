@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
         marginRight: theme.spacing(2),
         marginLeft: theme.spacing(2),
         marginBottom: theme.spacing(2),
-        width: '500px',
+        width: '400px',
         // Transicao 
         transition: theme.transitions.create(['transform', 'color'], {
             duration: theme.transitions.duration.short,
@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     card_blue: {
-        width: '800px',
+        width: '830px',
         backgroundImage: 'linear-gradient(315deg, #00B4DB 0%, #0083B0 74%)',
         "&:hover": {
             cursor: 'pointer',

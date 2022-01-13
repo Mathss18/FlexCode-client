@@ -44,64 +44,71 @@ import CadastrarProdutos from "../pages/Produtos/gerenciarProdutos/Cadastrar";
 import EditarProdutos from "../pages/Produtos/gerenciarProdutos/Editar";
 
 import PrivateRoutes from "./PrivateRoutes";
+import TopBar from "../components/TopBar";
+import SideMenu from "../components/SideMenu";
 
 export default function Routes() {
   return (
     <BrowserRouter>
       <Switch>
+
         <Route exact path="/">
           <Redirect to="/home" />
         </Route>
 
         <Route path="/login" exact component={LoginPage}></Route>
 
-
         <PrivateRoutes>
-          <Route path="/home" exact component={Home}></Route>
+          <TopBar />
+          <SideMenu>
+            <Route path="/home" exact component={Home}></Route>
 
-          <Route path="/clientes" exact component={ListarClientePage}></Route>
-          <Route path="/cliente/novo" exact component={CadastrarClientePage}></Route>
-          <Route path="/cliente/mostrar/:id" exact component={MostrarClientePage}></Route>
-          <Route path="/cliente/editar/:id" exact component={EditarClientePage}></Route>
+            <Route path="/clientes" exact component={ListarClientePage}></Route>
+            <Route path="/cliente/novo" exact component={CadastrarClientePage}></Route>
+            <Route path="/cliente/mostrar/:id" exact component={MostrarClientePage}></Route>
+            <Route path="/cliente/editar/:id" exact component={EditarClientePage}></Route>
 
-          <Route path="/transportadoras" exact component={ListarTransportadoraPage}></Route>
-          <Route path="/transportadora/novo" exactc component={CadastrarTransportadoraPage}></Route>
-          <Route path="/transportadora/mostrar/:id" exact component={MostrarTransportadoraPage}></Route>
-          <Route path="/transportadora/editar/:id" exact component={EditarTransportadoraPage}></Route>
+            <Route path="/transportadoras" exact component={ListarTransportadoraPage}></Route>
+            <Route path="/transportadora/novo" exactc component={CadastrarTransportadoraPage}></Route>
+            <Route path="/transportadora/mostrar/:id" exact component={MostrarTransportadoraPage}></Route>
+            <Route path="/transportadora/editar/:id" exact component={EditarTransportadoraPage}></Route>
 
-          <Route path="/fornecedores" exact component={ListarFornecedorPage}></Route>
-          <Route path="/fornecedor/novo" exact component={CadastrarFornecedorPage}></Route>
-          <Route path="/fornecedor/mostrar/:id" exact component={MostrarFornecedorPage}></Route>
-          <Route path="/fornecedor/editar/:id" exact component={EditarFornecedorPage}></Route>
+            <Route path="/fornecedores" exact component={ListarFornecedorPage}></Route>
+            <Route path="/fornecedor/novo" exact component={CadastrarFornecedorPage}></Route>
+            <Route path="/fornecedor/mostrar/:id" exact component={MostrarFornecedorPage}></Route>
+            <Route path="/fornecedor/editar/:id" exact component={EditarFornecedorPage}></Route>
 
-          <Route path="/funcionarios" exact component={ListarFuncionarioPage}></Route>
-          <Route path="/funcionario/novo" exact component={CadastrarFuncionarioPage}></Route>
-          <Route path="/funcionario/mostrar/:id" exact component={MostrarFuncionarioPage}></Route>
-          <Route path="/funcionario/editar/:id" exact component={EditarFuncionarioPage}></Route>
+            <Route path="/funcionarios" exact component={ListarFuncionarioPage}></Route>
+            <Route path="/funcionario/novo" exact component={CadastrarFuncionarioPage}></Route>
+            <Route path="/funcionario/mostrar/:id" exact component={MostrarFuncionarioPage}></Route>
+            <Route path="/funcionario/editar/:id" exact component={EditarFuncionarioPage}></Route>
 
-          <Route path="/grupos" exact component={ListarGrupoPage}></Route>
-          <Route path="/grupo/novo" exact component={CadastrarGrupoPage}></Route>
-          <Route path="/grupo/editar/:id" exact component={EditarGrupoPage}></Route>
+            <Route path="/grupos" exact component={ListarGrupoPage}></Route>
+            <Route path="/grupo/novo" exact component={CadastrarGrupoPage}></Route>
+            <Route path="/grupo/editar/:id" exact component={EditarGrupoPage}></Route>
 
-          <Route path="/grupos-produtos" exact component={ListarGruposDeProdutos}></Route>
-          <Route path="/grupo-produto/novo" exact component={CadastrarGrupoDeProdutos}></Route>
-          <Route path="/grupo-produto/editar/:id" exact component={EditarGrupoDeProdutos}></Route>
+            <Route path="/grupos-produtos" exact component={ListarGruposDeProdutos}></Route>
+            <Route path="/grupo-produto/novo" exact component={CadastrarGrupoDeProdutos}></Route>
+            <Route path="/grupo-produto/editar/:id" exact component={EditarGrupoDeProdutos}></Route>
 
-          <Route path="/unidades-produtos" exact component={ListarUnidadesDeProdutos}></Route>
-          <Route path="/unidade-produto/novo" exact component={CadastrarUnidadeDeProdutos}></Route>
-          <Route path="/unidade-produto/editar/:id" exact component={EditarUnidadeDeProdutos}></Route>
-          
-          <Route path="/grades-variacoes" exact component={ListarGradesDeVariacoes}></Route>
-          <Route path="/grade-variacao/novo" exact component={CadastrarGradesDeVariacoes}></Route>
-          <Route path="/grade-variacao/editar/:id" exact component={EditarGradesDeVariacoes}></Route>
+            <Route path="/unidades-produtos" exact component={ListarUnidadesDeProdutos}></Route>
+            <Route path="/unidade-produto/novo" exact component={CadastrarUnidadeDeProdutos}></Route>
+            <Route path="/unidade-produto/editar/:id" exact component={EditarUnidadeDeProdutos}></Route>
 
-          <Route path="/produtos" exact component={ListarProdutos}></Route>
-          <Route path="/produto/novo" exact component={CadastrarProdutos}></Route>
-          <Route path="/produto/editar/:id" exact component={EditarProdutos}></Route>
+            <Route path="/grades-variacoes" exact component={ListarGradesDeVariacoes}></Route>
+            <Route path="/grade-variacao/novo" exact component={CadastrarGradesDeVariacoes}></Route>
+            <Route path="/grade-variacao/editar/:id" exact component={EditarGradesDeVariacoes}></Route>
+
+            <Route path="/produtos" exact component={ListarProdutos}></Route>
+            <Route path="/produto/novo" exact component={CadastrarProdutos}></Route>
+            <Route path="/produto/editar/:id" exact component={EditarProdutos}></Route>
+
+          </SideMenu>
 
         </PrivateRoutes>
-
+        
         <Route path="*" component={() => <h1>Page not found</h1>} />
+
 
 
       </Switch>

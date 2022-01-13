@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import api from "../../../services/api";
-
 import MUIDataTable from "mui-datatables";
-
-import TopBar from "../../../components/TopBar";
-import SideMenu from "../../../components/SideMenu";
 import { config, rowConfig } from "../../../config/tablesConfig";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
@@ -76,38 +72,35 @@ function ListarGruposDeProdutos() {
 
   useEffect(() => {
     api.get("/grupos-produtos").then((response) => {
-      if (response != undefined) {
-        response.data["data"].forEach((element) => {
-          var array = [
-            element["nome"],
-            element["grupoPai"],
-            new Date(element["created_at"]).toLocaleString(),
-            <>
-              <SearchIcon className={'btn-lista'} onClick={(event) => handleOnClickShowButton(event, element["id"])} />
-              <EditIcon className={'btn-lista'} onClick={(event) => handleOnClickEditButton(event, element["id"])} />
-            </>,
-          ];
-          data.push(array);
-        });
+      response.data["data"].forEach((element) => {
+        var array = [
+          element["nome"],
+          response.data["data"].filter((item) => item.id === element.grupoPai)[0]?.nome || "",
+          new Date(element["created_at"]).toLocaleString(),
+          <>
+            <SearchIcon className={'btn-lista'} onClick={(event) => handleOnClickShowButton(event, element["id"])} />
+            <EditIcon className={'btn-lista'} onClick={(event) => handleOnClickEditButton(event, element["id"])} />
+          </>,
+        ];
+        data.push(array);
+      });
 
-        setGrupos(data);
-      }
+      setGrupos(data);
+
     });
   }, []);
 
   return (
     <>
-      <TopBar />
-      <SideMenu>
-        {grupos.map((grupo, index) => (
-          <h4 key={index}>{grupo.nome}</h4>
-        ))}
-        <Button onClick={() => history.push("/grupo-produto/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>
-          Adicionar
-        </Button>
-        <MUIDataTable title={"Lista de Grupos de Produtos"} data={grupos} columns={columns} options={config}
-className={'table-background'}/>
-      </SideMenu>
+
+      {grupos.map((grupo, index) => (
+        <h4 key={index}>{grupo.nome}</h4>
+      ))}
+      <Button onClick={() => history.push("/grupo-produto/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>
+        Adicionar
+      </Button>
+      <MUIDataTable title={"Lista de Grupos de Produtos"} data={grupos} columns={columns} options={config}
+        className={'table-background'} />
     </>
   );
 }
