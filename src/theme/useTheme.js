@@ -11,7 +11,7 @@ export const useTheme = () => {
     setToLS('theme', mode)
     setTheme(mode);
   };
-
+  
   const getFonts = () => {
     const allFonts = _.values(_.mapValues(themes.data, 'font'));
     return allFonts;

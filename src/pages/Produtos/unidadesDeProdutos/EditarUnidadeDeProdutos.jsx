@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import SideMenu from "../../../components/SideMenu";
-import TopBar from "../../../components/TopBar";
 import { Grid, TextField, Select, MenuItem, FormControl, InputLabel, Divider, Button } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import LocationOnIcon from "@material-ui/icons/LocationOn";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import api from "../../../services/api";
 import Swal from "sweetalert2";
+import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
+import { useFormik } from "formik";
+import { unidadeProdutoValidation } from "../../../validators/validationSchema";
 
 
 
@@ -22,144 +21,125 @@ const initialValues = {
 
 function EditarUnidadeDeProdutos() {
   const history = useHistory();
-  const [values, setValues] = useState(initialValues);
   const { id } = useParams();
+
+  const formik = useFormik({
+    initialValues: initialValues,
+    onSubmit: (event) => { handleOnSubmit(event) },
+    validationSchema: unidadeProdutoValidation,
+  })
 
   useEffect(() => {
     api.get("/unidade-produto/" + id).then((response) => {
-      setValues(response.data["data"]);
+      formik.setValues(response.data["data"]);
     });
   }, []);
 
-  function handleOnChange(event) {
-    const { name, value } = event.target;
-    setValues({ ...values, [name]: value });
-  }
-
-  function handleOnSubmit(event) {
-    event.preventDefault();
+  function handleOnSubmit(values) {
     api
       .put("/unidade-produto/" + id, values)
-      .then((response) => {
-        console.log(response);
-        Swal.fire({
-          title: "Atualizado com sucesso!",
-          html: "Redirecionando...",
-          position: "top-end",
-          icon: "success",
-          timer: 1800,
-          timerProgressBar: true,
-        }).then((result) => {
-          if (result.dismiss === Swal.DismissReason.timer) {
-            history.push("/unidades-produtos");
-          }
+        .then((response) => {
+          successAlert("Sucesso", "Unidade de Produto Editada", () =>
+            history.push("/unidades-produtos")
+          );
+        })
+        .catch((error) => {
+          infoAlert("Atenção", error.response.data.message);
         });
-      })
-      .catch((error) => {
-        console.log(error.response.request.responseText);
-        Swal.fire({
-          title: "Erro ao atualizar!",
-          html: error.response.data.message,
-          position: "top-end",
-          icon: "error",
-          timer: 10000,
-          timerProgressBar: true,
-        }).then((result) => {
-          if (result.dismiss === Swal.DismissReason.timer) {
-            //history.push("/clientes")
-          }
-        });
-      });
   }
 
   function handleDelete() {
-    Swal.fire({
-      title: "Tem certeza?",
-      text: "Isso será irreversivel!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3f51b5",
-      cancelButtonColor: "#f44336",
-      confirmButtonText: "Sim, excluir!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        api
-          .delete("/unidade-produto/" + id)
-          .then((result) => {
-            Swal.fire("Excluido!", "Cliente excluido com sucesso.", "success");
-            history.push("/unidades-produtos");
-          })
-          .catch((error) => {
-            console.log(error.response.request.responseText);
-            Swal.fire({
-              title: "Erro ao excluir!",
-              html: error.response.data.message,
-              position: "top-end",
-              icon: "error",
-              timer: 10000,
-              timerProgressBar: true,
-            }).then((result) => {
-              if (result.dismiss === Swal.DismissReason.timer) {
-                //history.push("/clientes")
-              }
-            });
-          });
-      }
+    confirmAlert("Tem certeza?", "Isso será irreversivel", () => {
+      deletarUnidadeProduto();
     });
+  }
+
+  function deletarUnidadeProduto() {
+    api
+      .delete("/unidade-produto/" + id)
+      .then((result) => {
+        successAlert("Sucesso", "Unidade de Produto Excluida", () =>
+          history.push("/unidades-produtos")
+        );
+      })
+      .catch((error) => {
+        infoAlert("Atenção", error.response.data.message);
+      });
   }
 
   return (
     <>
-      <TopBar />
-
-      <SideMenu>
-        <div>
-          <Divider />
-          <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
-            <AssignmentIcon />
-            <h3>Dados Da Unidade de Produto</h3>
-          </div>
-          <form onSubmit={handleOnSubmit}>
-          <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <TextField variant="outlined" label="Nome" fullWidth type="text" value={values.nome} name="nome" onChange={handleOnChange} />
-              </Grid>
-              <Grid item xs={3}>
-                <TextField variant="outlined" label="Sigla" fullWidth type="text" value={values.sigla} name="sigla" onChange={handleOnChange} />
-              </Grid>
-              <Grid item xs={3}>
-                <FormControl variant="outlined" fullWidth>
-                  <InputLabel>Padrão</InputLabel>
-                  <Select className={'input-select'} label="Padrão" onChange={handleOnChange} type="select" name="padrao" value={values.padrao}>
-                    <MenuItem value={0}>Não</MenuItem>
-                    <MenuItem value={1}>Sim</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
-            <br />
-            <Divider />
-
-            <Grid container spacing={0}>
-              <Grid item>
-                <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={'btn btn-primary btn-spacing'}>
-                  Salvar
-                </Button>
-              </Grid>
-              <Grid item>
-                <Button variant="outlined" startIcon={<DeleteForeverIcon />} className={'btn btn-error btn-spacing'} onClick={handleDelete}>
-                  Excluir
-                </Button>
-              </Grid>
-              <Grid item>
-                <Button onClick={() => history.push("/unidades-produtos")} variant="outlined" startIcon={<CloseIcon />} className={'btn btn-error btn-spacing'}>
-                  Cancelar
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
+      <div>
+        <Divider />
+        <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+          <AssignmentIcon />
+          <h3>Dados da Unidade de Produtos</h3>
         </div>
-      </SideMenu>
+        <form onSubmit={formik.handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                variant="outlined"
+                label="Nome"
+                fullWidth
+                type="text"
+                value={formik.values.nome}
+                name="nome"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.nome && Boolean(formik.errors.nome)}
+                helperText={formik.touched.nome && formik.errors.nome} />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                variant="outlined"
+                label="Sigla"
+                fullWidth
+                type="text"
+                value={formik.values.sigla}
+                name="sigla"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.sigla && Boolean(formik.errors.sigla)}
+                helperText={formik.touched.sigla && formik.errors.sigla} />
+            </Grid>
+            <Grid item xs={3}>
+              <FormControl variant="outlined" fullWidth>
+                <InputLabel>Padrão</InputLabel>
+                <Select className={'input-select'} label="Padrão" onChange={formik.handleChange} type="select" name="padrao" value={formik.values.padrao}>
+                  <MenuItem value={0}>Não</MenuItem>
+                  <MenuItem value={1}>Sim</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+          <br />
+          <Divider />
+
+          <Grid container spacing={0}>
+            <Grid item>
+              <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={'btn btn-primary btn-spacing'}>
+                Salvar
+              </Button>
+            </Grid>
+            <Grid item>
+            <Button
+              variant="outlined"
+              startIcon={<DeleteForeverIcon />}
+              className={"btn btn-error btn-spacing"}
+              onClick={handleDelete}
+            >
+              Excluir
+            </Button>
+          </Grid>
+            <Grid item>
+              <Button onClick={() => history.push("/unidades-produtos")} variant="outlined" startIcon={<CloseIcon />} className={'btn btn-error btn-spacing'}>
+                Cancelar
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+      </div>
     </>
   );
 }

@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import SideMenu from "../../../components/SideMenu";
-import TopBar from "../../../components/TopBar";
 import MUIDataTable from "mui-datatables";
 import { useHistory } from "react-router-dom";
 import api from '../../../services/api';
@@ -91,8 +89,6 @@ function ListarClientePage() {
 
   return (
     <>
-      <TopBar />
-      <SideMenu>
         <Button onClick={() => history.push("/cliente/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
         <MUIDataTable
           title={"Lista de Clientes"}
@@ -101,8 +97,6 @@ function ListarClientePage() {
           options={config}
           className={'table-background'}
         />
-      </SideMenu>
-
     </>
   );
 }

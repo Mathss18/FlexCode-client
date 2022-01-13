@@ -37,15 +37,14 @@ function App() {
 
   return (
     <>
-      {
-        themeLoaded && <ThemeProvider theme={selectedTheme}>
+      {themeLoaded && <ThemeProvider theme={selectedTheme}>
           <GlobalStyles />
           <Container style={{ fontFamily: selectedTheme.font }}>
             <SideMenuContextProvider>
               <GerenciarProdutosProvider>
-                <MuiPickersUtilsProvider utils={MomentUtils}>
-                  <Routes />
-                </MuiPickersUtilsProvider>
+                  <MuiPickersUtilsProvider utils={MomentUtils}>
+                    <Routes />
+                  </MuiPickersUtilsProvider>
               </GerenciarProdutosProvider>
             </SideMenuContextProvider>
           </Container>
