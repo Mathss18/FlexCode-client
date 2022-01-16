@@ -122,6 +122,10 @@
             }
           }
           
+        },
+        "toast":{
+          "background":"#363636",
+          "text":"#ffffff"
         }
       },
       "font": "Roboto"
@@ -248,6 +252,10 @@
             }
           }
           
+        },
+        "toast":{
+          "background":"#363636",
+          "text":"#ffffff"
         }
       },
       "font": "Nunito"

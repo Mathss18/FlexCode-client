@@ -21,6 +21,7 @@ export const useTheme = () => {
     const localTheme = getFromLS('theme');
     localTheme ? setTheme(localTheme) : setTheme(themes.data.dark);
     setThemeLoaded(true);
+    console.log();
   }, []);
 
   return { theme, themeLoaded, setMode, getFonts };

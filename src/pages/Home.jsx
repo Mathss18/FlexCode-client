@@ -1,6 +1,8 @@
 import { makeStyles } from "@material-ui/core/styles";
+import { useEffect } from "react";
 import DashboardCard from "../components/DashboardCard";
 import DashboardChart from "../components/DashboardChart";
+import { usePusherContext } from "../context/PusherContext";
 
 const useStyles = makeStyles((theme) => ({
   card_conteiner: {

@@ -373,4 +373,12 @@ export const GlobalStyles = createGlobalStyle`
   .swal2-confirm {
     background-color: ${({ theme }) => theme.colors.popup.button.confirm.background} !important;
   }
+
+  /* ========= TOAST ========= */
+
+  .toast-container{
+    color: ${({ theme }) => theme.colors.toast.text};
+    background: ${({ theme }) => theme.colors.toast.background}
+  }
+
 `;

@@ -1,11 +1,12 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://dev.smartma.com.br/api",
+  //baseURL: "https://dev.smartma.com.br/api",
+  baseURL: "http://127.0.0.1:8000/api",
 });
 
 api.interceptors.request.use((config) => {
-  config.headers.authorization = "Bearer " + localStorage.getItem("token");
+  config.headers.authorization = `Bearer ${localStorage.getItem('token')}`
   return config;
 });
 
@@ -17,6 +18,8 @@ api.interceptors.response.use(
     const status = response.response ? response.response.status : null;
     if (status === 401) {
       window.location.href = "/login";
+      localStorage.removeItem('token');
+      localStorage.removeItem('usuario');
       console.log("Interceptado 401: ", localStorage.getItem("token"));
     }
 

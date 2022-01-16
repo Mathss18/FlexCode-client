@@ -4,19 +4,14 @@ import Routes from "./routes/routes";
 // Providers
 import SideMenuContextProvider from "./context/SideMenuContext";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import styled, { ThemeProvider } from "styled-components";
+import { ThemeProvider } from "styled-components";
 import { GerenciarProdutosProvider } from './context/GerenciarProdutosContext';
 // Temas
 import WebFont from 'webfontloader';
 import { GlobalStyles } from './theme/GlobalStyles';
 import { useTheme } from './theme/useTheme';
-
 import MomentUtils from '@date-io/moment';
-
-const Container = styled.div`
-  margin: 5px auto 5px auto;
-`;
-
+import PusherContextProvider from './context/PusherContext';
 
 function App() {
 
@@ -34,21 +29,23 @@ function App() {
       }
     });
   });
+  
+
 
   return (
     <>
       {themeLoaded && <ThemeProvider theme={selectedTheme}>
-          <GlobalStyles />
-          <Container style={{ fontFamily: selectedTheme.font }}>
+        <GlobalStyles />
+          <PusherContextProvider>
             <SideMenuContextProvider>
               <GerenciarProdutosProvider>
-                  <MuiPickersUtilsProvider utils={MomentUtils}>
-                    <Routes />
-                  </MuiPickersUtilsProvider>
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                  <Routes />
+                </MuiPickersUtilsProvider>
               </GerenciarProdutosProvider>
             </SideMenuContextProvider>
-          </Container>
-        </ThemeProvider>
+          </PusherContextProvider>
+      </ThemeProvider>
       }
     </>
   );

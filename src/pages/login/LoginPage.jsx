@@ -16,6 +16,8 @@ import { Link, useHistory } from "react-router-dom";
 import ImageLogin from "../../assets/image-login.jpg";
 import api from '../../services/api';
 import Swal from 'sweetalert2';
+import { setToLS } from "../../utils/storage";
+import { usePusherContext } from "../../context/PusherContext";
 
 function Copyright(props) {
   return (
@@ -48,15 +50,16 @@ const initialValues = {
 function LoginPage() {
   const history = useHistory();
   const [values, setValues] = useState(initialValues);
-
+  const pusherContext = usePusherContext();
+  
   function handleSubmit(event) {
     event.preventDefault();
-
+    
     api.post('/login', values)
-      .then(response => {
-        console.log(response);
+    .then(response => {
         localStorage.setItem('token', response.data.access_token);
-        //api.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access_token
+        setToLS('user', response.data.user);
+        pusherContext.useIsLogged.setIsLogged(true);
         history.push("/home")
       })
       .catch(error => {

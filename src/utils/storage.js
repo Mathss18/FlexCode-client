@@ -9,3 +9,9 @@ export const getFromLS = (key) => {
     return JSON.parse(value);
   }
 }
+
+export const setToLS_async =  (key, value) => {
+  return Promise.resolve().then(function () {
+      localStorage.setItem(key, value);
+  });
+}
