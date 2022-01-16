@@ -38,8 +38,6 @@ export const GerenciarProdutosProvider = (props) => {
     values_profit: []
   });
 
-  console.log(values)
-
   return (
     <GerenciarProdutosContext.Provider value={{values, setValues}}>
       {props.children}

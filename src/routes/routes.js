@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import Home from "../pages/Home";
@@ -46,6 +46,8 @@ import EditarProdutos from "../pages/Produtos/gerenciarProdutos/Editar";
 import PrivateRoutes from "./PrivateRoutes";
 import TopBar from "../components/TopBar";
 import SideMenu from "../components/SideMenu";
+import ChatBox from "../pages/Chat/ChatBox";
+import Chat from "../pages/Chat/Chat";
 
 export default function Routes() {
   return (
@@ -103,10 +105,12 @@ export default function Routes() {
             <Route path="/produto/novo" exact component={CadastrarProdutos}></Route>
             <Route path="/produto/editar/:id" exact component={EditarProdutos}></Route>
 
+            <Route path="/chat" exact component={Chat}></Route>
+
           </SideMenu>
 
         </PrivateRoutes>
-        
+
         <Route path="*" component={() => <h1>Page not found</h1>} />
 
 

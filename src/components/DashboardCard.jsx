@@ -109,7 +109,6 @@ const useStyles = makeStyles((theme) => ({
 function DashboardCard(props) {
     const classes = useStyles();
     const type = props.type;
-    console.log(type);
     if (type === 'green') {
         return (
             <Card className={classes.card + " " + classes.card_green}>
@@ -130,7 +129,7 @@ function DashboardCard(props) {
 
                 {/*---- Card Footer* ----*/}
                 <CardActions className={classes.card_green_footer}>
-                    <a size="small" className={classes.card_title} href="#">Ir para calendario de contas</a>
+                    <a size="small" className={classes.card_title} >Ir para calendario de contas</a>
                 </CardActions>
 
             </Card>
@@ -156,7 +155,7 @@ function DashboardCard(props) {
 
                 {/*---- Card Footer* ----*/}
                 <CardActions className={classes.card_red_footer}>
-                    <a size="small" className={classes.card_title} href="#">Ir para calendario de contas</a>
+                    <a size="small" className={classes.card_title} >Ir para calendario de contas</a>
                 </CardActions>
 
             </Card>
@@ -190,7 +189,7 @@ function DashboardCard(props) {
 
                 {/*---- Card Footer* ----*/}
                 <CardActions className={classes.card_blue_footer}>
-                    <a size="small" className={classes.card_title} href="#">Ir para fulxo de caixa</a>
+                    <a size="small" className={classes.card_title} >Ir para fulxo de caixa</a>
                 </CardActions>
 
             </Card>
