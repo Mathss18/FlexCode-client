@@ -32,10 +32,10 @@ function PusherContextProvider({ children }) {
     if (localStorage.getItem('token') == null) return;
 
     if (!pusher) {
-      const pusherInstance = new Pusher('b207cbd9ce6316eeb648', {
+      const pusherInstance = new Pusher(process.env.REACT_APP_PUSHER_KEY, {
         cluster: 'sa1',
         useTLS: true,
-        authEndpoint: 'http://127.0.0.1:8000/api/broadcasting/auth',
+        authEndpoint: process.env.REACT_APP_API_URL+'/broadcasting/auth',
         auth: {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -68,7 +68,7 @@ function PusherContextProvider({ children }) {
 
     privateChannel.unbind("App\\Events\\PrivateMessageSent");
     privateChannel.bind("App\\Events\\PrivateMessageSent", (data) => callBack(data));
-
+    console.log(privateChannel);
 
     publicChannel.unbind("pusher:subscription_succeeded");
     publicChannel.bind("pusher:subscription_succeeded", (data) => { setarUsuariosOnline(data); console.log('Usuarios Logados:',data); });
