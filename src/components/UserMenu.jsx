@@ -84,6 +84,7 @@ function UserMenu() {
           let user = getFromLS('user');
           user['chat-status'] = status.find(item => item.selected === true).class;
           setToLS('user', user);
+          pusherContext.useUpdateUserStatus.setUpdateUserStatus((old)=>!old);
         })
         .catch((error) => {
           console.log(error);

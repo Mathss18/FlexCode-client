@@ -16,6 +16,33 @@ export const GlobalStyles = createGlobalStyle`
     cursor: pointer; // cursor tipo pointer ao passar o mouse sobre links
   }
 
+  ::-webkit-scrollbar {
+    width: 12px;
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-button {
+      display: none;
+      width: 0;
+      height: 0;
+  }
+
+  ::-webkit-scrollbar-corner {
+      background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+      background-color: #4a4d52;
+      border: 0px solid #282a2d;
+      border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover{
+    background: #5c5f64;
+  }
+
+  /* ========= INPUT ========= */
+
   input {
     background: ${({ theme }) => theme.colors.input.background} !important; // cor de fundo dos inputs
     color: ${({ theme }) => theme.colors.input.text} !important; // cor do texto dentro dos inputs (usuario)
@@ -44,7 +71,7 @@ export const GlobalStyles = createGlobalStyle`
     background: ${({ theme }) => theme.colors.input.background} !important; // cor de fundo input quando há elemento html dentro dele (nesse caso no fim, ex: tela de grade-variacao)
   }
 
-  /* ========= Top Bar ========= */
+  /* ========= TOP BAR ========= */
 
   .topbar{
     background: ${({ theme }) => theme.colors.topbar.background}; // cor de fundo da topbar

@@ -60,6 +60,7 @@ function LoginPage() {
         localStorage.setItem('token', response.data.access_token);
         setToLS('user', response.data.user);
         pusherContext.useIsLogged.setIsLogged(true);
+        console.log(history);
         history.push("/home")
       })
       .catch(error => {
