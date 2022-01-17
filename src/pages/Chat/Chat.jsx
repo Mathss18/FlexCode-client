@@ -16,6 +16,9 @@ import { Button, IconButton } from '@mui/material';
 import { useFocus } from '../../utils/hooks';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import { emojiConfig } from '../../config/emojiConfig';
+import toast from 'react-hot-toast';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 function Chat() {
   const user = getFromLS('user');
@@ -72,40 +75,63 @@ function Chat() {
     scrollToBottom()
   }, [messages, usuarioAtivo]);
 
-
   function handleMessageChange(event) {
     setMessage(event.target.value);
   }
 
   function handleSendMessage(event) {
     event.preventDefault();
+    if(message.trim() === '') return;
     let conteudo = {
       message: message,
       usuario_receptor_id: usuarioAtivo?.id,
     }
 
+    // criar essa fakeMessage que basicamente é usada para colocar no chat a messagem do usario imediatamente
+    let fakeMessage ={
+
+      message: message,
+      usuario_receptor_id: usuarioAtivo?.id,
+      usuario_id: user.id,
+      vizualizado: true, //todo: mudar essa propriedade pq nem sempre a msg vai ser enviada já vizualizada
+      updated_at: Date(),
+      created_at: Date(),
+      id: user.id,
+      usuario: user
+
+    }
+
+    // verifica se o usuario que mandou a msg não é o mesmo do usuario ativo (no caso da pessoa estar conversando com ela mesma) para não duplicar a msg
+    if (user.id != usuarioAtivo?.id)
+      setMessages(oldArray => [...oldArray, fakeMessage]);
+
+    setMessage(''); // deixa o input vazio
+
     api.post('/mensagem-privada', conteudo)
       .then((response) => {
-        response.data['data'].usuario = user;
-        setMessage('');
-
-        // verifica se o usuario que mandou a msg não é o mesmo do usuario ativo (no caso da pessoa estar conversando com ela mesma)
-        if (response.data['data'].usuario.id != usuarioAtivo?.id)
-          setMessages(oldArray => [...oldArray, response.data['data']]);
-
+        
       })
       .catch((error) => {
-        console.log(error);
+        toast.error("Erro ao enviar mensagem.")
+        setMessages(oldArray => oldArray.slice(0, -1));
       });
+
+    if (showEmoji)
+      setShowEmoji(false);
   }
 
   function handleSendMessageWithEnter(event) {
-    if (event.key == 'Enter') { handleSendMessage(event) }
+    if (event.key == 'Enter') {
+      handleSendMessage(event)
+      if (showEmoji)
+        setShowEmoji(false);
+    }
   }
 
   function addMessageToChat(data) {
     if (usuarioAtivo.id == data.message.usuario_id) {
       data.message.usuario = usuarioAtivo;
+      data.message.vizualizado = true;
       setMessages(oldArray => [...oldArray, data.message]);
       lerMensagensNaoLidas(usuarioAtivo)
     }
@@ -225,7 +251,8 @@ function Chat() {
                       <ListItemText className={'message-text'} style={{ wordBreak: 'break-word', width: 'fit-content' }} align={item.possicao} primary={item.message}></ListItemText>
                     </Grid>
                     <Grid item xs={12} className={`message-subtitle-${item.possicao}`}>
-                      <Typography variant="caption" align={item.possicao}>{moment(item.created_at).format("DD/MM HH:mm")}</Typography>
+                      <Typography variant="caption" align={item.possicao}>{moment(item.created_at).format("DD/MM HH:mm")} </Typography>
+                      {!item.vizualizado && <VisibilityOffIcon color="primary" className={'visualized-message-icon'}/> }
                     </Grid>
                   </Grid>
                 </ListItem>
