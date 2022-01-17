@@ -9,7 +9,13 @@ import userPicture from '../../assets/user.jpg';
 import SendIcon from '@material-ui/icons/Send';
 import moment from 'moment';
 import './chat.css';
-
+import { moveObjectInArray } from '../../utils/functions';
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker } from 'emoji-mart'
+import { Button, IconButton } from '@mui/material';
+import { useFocus } from '../../utils/hooks';
+import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import { emojiConfig } from '../../config/emojiConfig';
 
 function Chat() {
   const user = getFromLS('user');
@@ -18,7 +24,11 @@ function Chat() {
   const [usuarios, setUsuarios] = useState([]);
   const [usuarioAtivo, setUsuarioAtivo] = useState();
   const [message, setMessage] = useState('');
+  const [showEmoji, setShowEmoji] = useState(false);
   const messagesEndRef = useRef(null)
+  const [inputRef, setInputFocus] = useFocus()
+
+
 
   useEffect(() => {
     if (!usuarioAtivo)
@@ -37,7 +47,9 @@ function Chat() {
 
     api.get('/usuarios')
       .then((response) => {
-        
+        let userIndex = response.data['data'].findIndex(item => user.id === item.id);
+        console.log(userIndex);
+
         // Conta quantas mensagens não lida têm cada usuario e coloca em um objeto: {id_usuario: quantidade}
         pusherContext.useMensagensNaoLidas.mensagensNaoLidas.forEach((el) => {
           counts[el.usuario_id] = counts[el.usuario_id] ? (counts[el.usuario_id] += 1) : 1;
@@ -48,13 +60,13 @@ function Chat() {
           el.qtdeMensagensNaoLidas = counts[el.id] ? counts[el.id] : 0;
         })
 
-        // Seta o array de usuarios com a qtdeMensagensNaoLidas
-        setUsuarios(response.data['data'])
+        // Seta o array de usuarios colocando o usuario logado no inicio
+        setUsuarios(moveObjectInArray(response.data['data'], userIndex, 0));
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [pusherContext.useMensagensNaoLidas.mensagensNaoLidas]);
+  }, [pusherContext.useMensagensNaoLidas.mensagensNaoLidas, pusherContext.useUpdateUserStatus.updateUserStatus]);
 
   useEffect(() => {
     scrollToBottom()
@@ -66,6 +78,7 @@ function Chat() {
   }
 
   function handleSendMessage(event) {
+    event.preventDefault();
     let conteudo = {
       message: message,
       usuario_receptor_id: usuarioAtivo?.id,
@@ -86,10 +99,15 @@ function Chat() {
       });
   }
 
+  function handleSendMessageWithEnter(event) {
+    if (event.key == 'Enter') { handleSendMessage(event) }
+  }
+
   function addMessageToChat(data) {
     if (usuarioAtivo.id == data.message.usuario_id) {
       data.message.usuario = usuarioAtivo;
       setMessages(oldArray => [...oldArray, data.message]);
+      lerMensagensNaoLidas(usuarioAtivo)
     }
     else {
       notificate(data);
@@ -111,6 +129,10 @@ function Chat() {
         console.log(error);
       });
 
+    lerMensagensNaoLidas(usuario);
+  }
+
+  function lerMensagensNaoLidas(usuario) {
     api.put('/ler-mensagens', { usuario_id: usuario?.id })
       .then((response) => {
         console.log('Qtde de messages lidas', response.data['data']);
@@ -122,12 +144,18 @@ function Chat() {
 
   function notificate(data) {
     if (user['chat-status'] == 'online')
-      notification(`${data.message.usuario.nome} diz`, data.message.message, userPicture); // exibe a notificação de nova mensagem
+      notification(`${data.message.usuario.nome} diz:`, data.message.message, userPicture); // exibe a notificação de nova mensagem
     pusherContext.useUpdateMensagensNaoLidas.setUpdateMensagensNaoLidas((value) => !value); // atualiza o contador de messages nao lidas
   }
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  function addEmoji(emoji) {
+    console.log(emoji);
+    setMessage(message + emoji.native);
+    setInputFocus();
   }
 
   return (
@@ -154,20 +182,27 @@ function Chat() {
           <Divider />
           <List className={'chat-box-contacts-container'}>
 
-            {usuarios.map((item) => {
+            {usuarios.map((item, index) => {
               if (usuarioAtivo && usuarioAtivo.id == item.id)
                 item.ativo = true;
               else
                 item.ativo = false;
+
+              if (pusherContext.useUsuariosOnline.usuariosOnline.find(user => user.id == item.id)) {
+                item.online = true;
+              }
+              else {
+                item.online = false;
+              }
 
               return (
                 <ListItem onClick={() => { trocarUsuarioAtivo(item) }} className={item.ativo ? 'active-contact' : ''} key={item.id} button>
                   <ListItemIcon>
                     <Avatar alt="User" src="https://bootdey.com/img/Content/avatar/avatar6.png" />
                   </ListItemIcon>
-                  <Typography variant="h5" component="h5" className={'contact-name'}>{item.nome}</Typography>
+                  <Typography variant="h5" component="h5" className={'contact-name'}>{item.nome} {index == 0 ? '- Eu' : ''}</Typography>
                   <Typography variant="caption" className={'contact-subtitle'}>{item.qtdeMensagensNaoLidas > 0 ? `${item.qtdeMensagensNaoLidas} novas mensagens` : ''} </Typography>
-                  <div className={['user-status', item['chat-status']].join(" ")} style={{ marginLeft: 'auto' }}><p>⠀</p></div>
+                  <div className={['user-status', item.online ? item['chat-status'] : 'offline'].join(" ")} style={{ marginLeft: 'auto' }}><p>⠀</p></div>
                 </ListItem>
               );
             })}
@@ -187,7 +222,7 @@ function Chat() {
                 <ListItem className={`message-balloon-${item.possicao}`} key={item.id} align={item.possicao}>
                   <Grid container>
                     <Grid item xs={12}>
-                      <ListItemText className={'message-text'} style={{ wordBreak: 'break-all', width: 'fit-content' }} align={item.possicao} primary={item.message}></ListItemText>
+                      <ListItemText className={'message-text'} style={{ wordBreak: 'break-word', width: 'fit-content' }} align={item.possicao} primary={item.message}></ListItemText>
                     </Grid>
                     <Grid item xs={12} className={`message-subtitle-${item.possicao}`}>
                       <Typography variant="caption" align={item.possicao}>{moment(item.created_at).format("DD/MM HH:mm")}</Typography>
@@ -201,14 +236,21 @@ function Chat() {
 
           </List>
 
-          <Grid container className={'text-box-background'}>
-            <Grid item xs={11}>
-              <TextField onChange={handleMessageChange} id="text-field" value={message} placeholder="Digite aqui" fullWidth />
+
+          <Grid container className={'text-box-background'} style={{ position: 'relative' }}>
+            <Grid item align="right">
+              <InsertEmoticonIcon onClick={() => { setShowEmoji(old => !old); setInputFocus(); }} size="large" style={{ paddingTop: '15px', paddingRight: '10px', cursor: 'pointer', fontSize: '50px' }} />
+              {showEmoji && <Picker onClick={(emoji) => { addEmoji(emoji) }} style={{ position: 'absolute', bottom: '96px', left: '0px' }} title='' emoji='' theme="dark" showPreview={false} i18n={emojiConfig} />}
+            </Grid>
+            <Grid item xs={10}>
+              <TextField onChange={handleMessageChange} onKeyPress={handleSendMessageWithEnter} id="text-field" value={message} placeholder="Digite aqui" fullWidth inputRef={inputRef} />
             </Grid>
             <Grid item xs={1} align="right">
               <Fab onClick={handleSendMessage} color="primary" aria-label="add" ><SendIcon /></Fab>
             </Grid>
           </Grid>
+
+
 
         </Grid>
       </Grid>

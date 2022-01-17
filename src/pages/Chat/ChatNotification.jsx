@@ -14,10 +14,10 @@ export function notification(title, message, foto='') {
         <Avatar alt={'user'} className={'user-photo'} src={foto} sx={{ width: 48, height: 48 }} />
       </Badge>
       <Box display="flex" flexDirection="column" ml="10px" flexWrap="wrap">
-        <Typography variant="h5" component="h3" style={{ wordBreak: "break-all" }}>
+        <Typography variant="h6" style={{ wordBreak: "break-word" }}>
           {title}
         </Typography>
-        <Typography variant="subtitle1" component="p" style={{ wordBreak: "break-all" }}>
+        <Typography variant="subtitle2" style={{ wordBreak: "break-word" }}>
           {message}
         </Typography>
       </Box>

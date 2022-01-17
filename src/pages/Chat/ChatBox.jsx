@@ -104,7 +104,7 @@ function ChatBox() {
 
   function notificate(data) {
     if(user['chat-status'] == 'online')
-      notification(`${data.message.usuario.nome} diz`, data.message.message, userPicture); // exibe a notificação de nova mensagem
+      notification(`${data.message.usuario.nome} diz:`, data.message.message, userPicture); // exibe a notificação de nova mensagem
     pusherContext.useUpdateMensagensNaoLidas.setUpdateMensagensNaoLidas((value) => !value); // atualiza o contador de messages nao lidas
   }
 
