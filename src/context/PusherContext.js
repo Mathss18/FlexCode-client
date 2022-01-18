@@ -45,6 +45,7 @@ function PusherContextProvider({ children }) {
 
       setPusher(pusherInstance);
     }
+    setCallBack(() => (data) => notificate(data));
 
   }, [isLogged]);
 
