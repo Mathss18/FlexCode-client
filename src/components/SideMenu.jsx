@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core/";
 import { useHistory } from "react-router-dom";
 import clsx from "clsx";
-import { useCadastroMenu, useProdutoMenu, useMenu } from '../context';
+
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import LocalShippingIcon from '@material-ui/icons/LocalShipping';
@@ -31,6 +31,9 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import LayersIcon from '@mui/icons-material/Layers';
 import SchemaIcon from '@mui/icons-material/Schema';
 import { useRef } from "react";
+import { useCadastroMenu } from "../context/SideMenuCadastroContext";
+import { useProdutoMenu } from "../context/SideMenuProdutoContext";
+import { useMenu } from "../context/SideMenuContext";
 
 const drawerWidth = 240;
 

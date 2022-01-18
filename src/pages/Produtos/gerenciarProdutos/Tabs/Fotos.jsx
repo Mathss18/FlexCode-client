@@ -3,10 +3,11 @@ import { useContext, useState, useCallback } from "react";
 import { GerenciarProdutosContext } from "../../../../context/GerenciarProdutosContext";
 import { Grid, CardMedia, Button } from "@material-ui/core";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
+import OpenWithIcon from "@mui/icons-material/OpenWith";
 
 export function Fotos() {
   const { values, setValues } = useContext(GerenciarProdutosContext);
-  
+
 
   // function handleCapture(event) {
   //   const fileReader = new FileReader();
@@ -20,12 +21,18 @@ export function Fotos() {
   // }
 
   return (
-    <Grid container spacing={3}>
-      <Grid container>
+    <>
+      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+        <OpenWithIcon />
+        <h3>Fotos</h3>
+      </div>
+      <Grid container spacing={3}>
+        <Grid container>
+        </Grid>
+        <Grid item xs={2}>
+          <CardMedia component="img" alt="Imagem Funcionario" image={values.foto} title="Imagem Funcionario" />
+        </Grid>
       </Grid>
-      <Grid item xs={2}>
-        <CardMedia component="img" alt="Imagem Funcionario" image={values.foto} title="Imagem Funcionario" />
-      </Grid>
-    </Grid>
+    </>
   );
 }

@@ -104,6 +104,41 @@ export const gradeVariacoesValidation = yup.object().shape({
   variacoes: yup.mixed('Preencha todos os campos').required('A variação é obrigatória'),
 })
 
+export const produtoValidation = yup.object().shape({
+    nome: yup.string().required('O nome é obrigatório'),
+    codigoInterno: yup.string().required('O código interno é obrigatório'),
+    grupo_produto_id: yup.number().required('O grupo é obrigatório'),
+    movimentaEstoque: yup.boolean().required('É nescessario informar se o produto movimenta estoque'),
+    habilitaNotaFiscal: yup.boolean().required('É nescessario informar se o produto habilita nota fiscal'),
+    possuiVariacoes: yup.boolean().required('É nescessario informar se o produto possui variações'),
+    // peso: 0,
+    // largura: 0,
+    // altura: 0,
+    // comprimento: 0,
+    comissao: yup.number().required('A comissão é obrigatória').min(0),
+    // descricao: "",
+    valor_custo: yup.string().required('O valor de custo é obrigatório'),
+    despesasAdicionais: yup.string().required('As despesas adicionais são obrigatórias'),
+    outras_despesas: yup.string().required('Outras despesas são obrigatórias'),
+    custoFinal: yup.string().required('Custo final é obrigatório'),
+    // estoqueMinimo: 0,
+    // estoqueMaximo: 0,
+    // quantidadeAtual: 0,
+    // foto: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+    // ncm: "",
+    // cest: "",
+    // origem: "",
+    // pesoLiquido: 0,
+    // pesoBruto: 0,
+    // numeroFci: 0,
+    // valorAproxTribut: 0,
+    // valorPixoPis: 0,
+    // valorFixoPisSt: 0,
+    // valorFixoCofins: 0,
+    // valorFixoCofinsSt: 0,
+    // valuesProfit: []
+})
+
 
 
 
