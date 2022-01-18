@@ -1,12 +1,14 @@
-import React, { createContext, useState } from "react";
+import { useFormik } from "formik";
+import React, { createContext, useContext, useState } from "react";
+import { produtoValidation } from "../validators/validationSchema";
 
 export const GerenciarProdutosContext = createContext({});
 
-export const GerenciarProdutosProvider = (props) => {
-  const [values, setValues] = useState({
+function GerenciarProdutosContextProvider(props) {
+  const initialValues = {
     nome: "",
     codigoInterno: "",
-    grupo_produto_id: 0,
+    grupo_produto_id: -1,
     movimentaEstoque: false,
     habilitaNotaFiscal: false,
     possuiVariacoes: false,
@@ -35,12 +37,35 @@ export const GerenciarProdutosProvider = (props) => {
     valorFixoPisSt: 0,
     valorFixoCofins: 0,
     valorFixoCofinsSt: 0,
-    values_profit: []
-  });
+    valuesProfit: []
+  };
+  const [values, setValues] = useState(initialValues);
+
+  function handleOnSubmit(values) {
+    console.log(values);
+  }
+
+  const formik = useFormik({
+    initialValues: initialValues,
+    onSubmit: (event) => { handleOnSubmit(event) },
+    validationSchema: produtoValidation,
+  })
 
   return (
-    <GerenciarProdutosContext.Provider value={{values, setValues}}>
+    <GerenciarProdutosContext.Provider value={
+      {
+        useValues: {values, setValues},
+        formik: formik
+      }
+    }>
       {props.children}
     </GerenciarProdutosContext.Provider>
   );
+
 }
+
+export function useProdutoContext() {
+  return useContext(GerenciarProdutosContext);
+}
+
+export default GerenciarProdutosContextProvider;

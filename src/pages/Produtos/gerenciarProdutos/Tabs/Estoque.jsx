@@ -1,26 +1,62 @@
-import { useContext } from "react";
-import { GerenciarProdutosContext } from "../../../../context/GerenciarProdutosContext";
+import { useProdutoContext } from "../../../../context/GerenciarProdutosContext";
 import { Grid, TextField } from "@material-ui/core";
+import OpenWithIcon from "@mui/icons-material/OpenWith";
 
 export function Estoque() {
-  const { values, setValues } = useContext(GerenciarProdutosContext);
+  const produtoContext = useProdutoContext();
 
   function handleOnChange(event) {
     const { name, value } = event.target;
-    setValues({ ...values, [name]: value });
+    produtoContext.useValues.setValues({ ...produtoContext.useValues.values, [name]: value });
+    produtoContext.formik.setFieldValue(name, value);
+    console.log(produtoContext.formik.values);
   }
 
+
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={4}>
-        <TextField variant="outlined" label="Estoque mínimo (UN)" fullWidth value={values.estoqueMinimo} name="estoqueMinimo" onChange={handleOnChange} />
+    <>
+      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+        <OpenWithIcon />
+        <h3>Estoque</h3>
+      </div>
+      <Grid container spacing={3}>
+        <Grid item xs={4}>
+          <TextField variant="outlined"
+            label="Estoque mínimo (UN)"
+            fullWidth
+            value={produtoContext.useValues.values.estoqueMinimo}
+            name="estoqueMinimo"
+            onChange={handleOnChange} 
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.estoqueMinimo && Boolean(produtoContext.formik.errors.estoqueMinimo)}
+            helperText={produtoContext.formik.touched.estoqueMinimo && produtoContext.formik.errors.estoqueMinimo}
+            />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField variant="outlined"
+            label="Estoque máximo (UN)"
+            fullWidth
+            value={produtoContext.useValues.values.estoqueMaximo}
+            name="estoqueMaximo"
+            onChange={handleOnChange} 
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.estoqueMaximo && Boolean(produtoContext.formik.errors.estoqueMaximo)}
+            helperText={produtoContext.formik.touched.estoqueMaximo && produtoContext.formik.errors.estoqueMaximo}
+            />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField variant="outlined"
+            label="Quantidade atual (UN)"
+            fullWidth
+            value={produtoContext.useValues.values.quantidadeAtual}
+            name="quantidadeAtual"
+            onChange={handleOnChange} 
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.quantidadeAtual && Boolean(produtoContext.formik.errors.quantidadeAtual)}
+            helperText={produtoContext.formik.touched.quantidadeAtual && produtoContext.formik.errors.quantidadeAtual}
+            />
+        </Grid>
       </Grid>
-      <Grid item xs={4}>
-        <TextField variant="outlined" label="Estoque máximo (UN)" fullWidth value={values.estoqueMaximo} name="estoqueMaximo" onChange={handleOnChange} />
-      </Grid>
-      <Grid item xs={4}>
-        <TextField variant="outlined" label="Quantidade atual (UN)" fullWidth value={values.quantidadeAtual} name="quantidadeAtual" onChange={handleOnChange} />
-      </Grid>
-    </Grid>
+    </>
   );
 }
