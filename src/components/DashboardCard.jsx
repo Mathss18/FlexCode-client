@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
         marginRight: theme.spacing(2),
         marginLeft: theme.spacing(2),
         marginBottom: theme.spacing(2),
-        width: '500px',
+        width: '400px',
         // Transicao 
         transition: theme.transitions.create(['transform', 'color'], {
             duration: theme.transitions.duration.short,
@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     card_blue: {
-        width: '800px',
+        width: '830px',
         backgroundImage: 'linear-gradient(315deg, #00B4DB 0%, #0083B0 74%)',
         "&:hover": {
             cursor: 'pointer',
@@ -109,7 +109,6 @@ const useStyles = makeStyles((theme) => ({
 function DashboardCard(props) {
     const classes = useStyles();
     const type = props.type;
-    console.log(type);
     if (type === 'green') {
         return (
             <Card className={classes.card + " " + classes.card_green}>
@@ -130,7 +129,7 @@ function DashboardCard(props) {
 
                 {/*---- Card Footer* ----*/}
                 <CardActions className={classes.card_green_footer}>
-                    <a size="small" className={classes.card_title} href="#">Ir para calendario de contas</a>
+                    <a size="small" className={classes.card_title} >Ir para calendario de contas</a>
                 </CardActions>
 
             </Card>
@@ -156,7 +155,7 @@ function DashboardCard(props) {
 
                 {/*---- Card Footer* ----*/}
                 <CardActions className={classes.card_red_footer}>
-                    <a size="small" className={classes.card_title} href="#">Ir para calendario de contas</a>
+                    <a size="small" className={classes.card_title} >Ir para calendario de contas</a>
                 </CardActions>
 
             </Card>
@@ -190,7 +189,7 @@ function DashboardCard(props) {
 
                 {/*---- Card Footer* ----*/}
                 <CardActions className={classes.card_blue_footer}>
-                    <a size="small" className={classes.card_title} href="#">Ir para fulxo de caixa</a>
+                    <a size="small" className={classes.card_title} >Ir para fulxo de caixa</a>
                 </CardActions>
 
             </Card>

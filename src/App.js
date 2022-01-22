@@ -2,18 +2,16 @@ import { useState, useEffect } from 'react';
 // Rotas
 import Routes from "./routes/routes";
 // Providers
-import SideMenuContextProvider from "./context/SideMenuContext";
+import { ThemeProvider } from "styled-components";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import styled, { ThemeProvider } from "styled-components";
-import { GerenciarProdutosProvider } from './context/GerenciarProdutosContext';
+import GerenciarProdutosContextProvider from './context/GerenciarProdutosContext';
+import SideMenuContextProvider from "./context/SideMenuContext";
+import PusherContextProvider from './context/PusherContext';
 // Temas
 import WebFont from 'webfontloader';
 import { GlobalStyles } from './theme/GlobalStyles';
 import { useTheme } from './theme/useTheme';
-
 import MomentUtils from '@date-io/moment';
-
-
 
 function App() {
 
@@ -31,20 +29,23 @@ function App() {
       }
     });
   });
+  
+
 
   return (
     <>
-      {
-        themeLoaded && <ThemeProvider theme={selectedTheme}>
-          <GlobalStyles />
+      {themeLoaded && <ThemeProvider theme={selectedTheme}>
+        <GlobalStyles />
+          <PusherContextProvider>
             <SideMenuContextProvider>
-              <GerenciarProdutosProvider>
+              <GerenciarProdutosContextProvider>
                 <MuiPickersUtilsProvider utils={MomentUtils}>
                   <Routes />
                 </MuiPickersUtilsProvider>
-              </GerenciarProdutosProvider>
+              </GerenciarProdutosContextProvider>
             </SideMenuContextProvider>
-        </ThemeProvider>
+          </PusherContextProvider>
+      </ThemeProvider>
       }
     </>
   );

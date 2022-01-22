@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import SideMenu from "../../../components/SideMenu";
-import TopBar from "../../../components/TopBar";
 import { Grid, TextField, Select, MenuItem, FormControl, InputLabel, Divider, Button } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import api from "../../../services/api";
 import Swal from "sweetalert2";
 
@@ -26,8 +23,8 @@ function EditarVariacoes() {
   useEffect(() => {
     api.get("/tipo-variacao-produto/" + id).then((response) => {
       api.get("/nomes-variacoes-produtos").then(res => {
-         res.data.data.find(id_variacao => {
-          if(response.data.id == id_variacao.tipo_variacao_produto_id) {
+        res.data.data.find(id_variacao => {
+          if (response.data.id == id_variacao.tipo_variacao_produto_id) {
             setValues(id_variacao.data);
           }
         })
@@ -115,16 +112,13 @@ function EditarVariacoes() {
 
   return (
     <>
-      <TopBar />
-
-      <SideMenu>
-        <div>
-          <Divider />
-          <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
-            <AssignmentIcon />
-            <h3>Dados Da Unidade de Produto</h3>
-          </div>
-          {/* <form onSubmit={handleOnSubmit}>
+      <div>
+        <Divider />
+        <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+          <AssignmentIcon />
+          <h3>Dados Da Unidade de Produto</h3>
+        </div>
+        {/* <form onSubmit={handleOnSubmit}>
           <Grid container spacing={2}>
               <Grid item xs={6}>
                 <TextField variant="outlined" label="Nome" fullWidth type="text" value={values.nome} name="nome" onChange={handleOnChange} />
@@ -163,8 +157,7 @@ function EditarVariacoes() {
               </Grid>
             </Grid>
           </form> */}
-        </div>
-      </SideMenu>
+      </div>
     </>
   );
 }
