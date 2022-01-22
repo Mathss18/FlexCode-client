@@ -81,9 +81,9 @@ function CadastrarClientePage() {
   }
 
   function handleOnChange(event) {
+    console.log(event);
     const { name, value } = event.target;
     setValues({ ...values, [name]: value });
-    console.log(values);
   }
 
   return (

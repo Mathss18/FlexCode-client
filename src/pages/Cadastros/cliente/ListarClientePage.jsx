@@ -9,6 +9,7 @@ import { Button } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import SearchIcon from '@material-ui/icons/Search';
+import { array } from "yup";
 
 
 function ListarClientePage() {
@@ -55,8 +56,6 @@ function ListarClientePage() {
     history.push("/cliente/editar/" + id)
   }
 
-
-
   useEffect(() => {
 
     api.get('/clientes')
@@ -81,21 +80,21 @@ function ListarClientePage() {
             </>
           ]
           data.push(array);
+          
 
 
         });
+        console.log(data);
         setClientes(data)
 
       })
   }, []);
 
+
   return (
     <>
       <TopBar />
       <SideMenu>
-        {clientes.map((cliente, index) => (
-          <h4 key={index} >{cliente.nome}</h4>
-        ))}
         <Button onClick={() => history.push("/cliente/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
         <MUIDataTable
           title={"Lista de Clientes"}

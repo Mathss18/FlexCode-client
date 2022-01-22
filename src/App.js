@@ -13,9 +13,6 @@ import { useTheme } from './theme/useTheme';
 
 import MomentUtils from '@date-io/moment';
 
-const Container = styled.div`
-  margin: 5px auto 5px auto;
-`;
 
 
 function App() {
@@ -40,7 +37,6 @@ function App() {
       {
         themeLoaded && <ThemeProvider theme={selectedTheme}>
           <GlobalStyles />
-          <Container style={{ fontFamily: selectedTheme.font }}>
             <SideMenuContextProvider>
               <GerenciarProdutosProvider>
                 <MuiPickersUtilsProvider utils={MomentUtils}>
@@ -48,7 +44,6 @@ function App() {
                 </MuiPickersUtilsProvider>
               </GerenciarProdutosProvider>
             </SideMenuContextProvider>
-          </Container>
         </ThemeProvider>
       }
     </>
