@@ -42,7 +42,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ListarGruposDeProdutos() {
-  const classes = useStyles();
   const history = useHistory();
   const [grupos, setGrupos] = useState([]);
   const columns = [
@@ -96,7 +95,7 @@ function ListarGruposDeProdutos() {
   }, []);
 
   return (
-    <>
+    <> 
       <TopBar />
       <SideMenu>
         {grupos.map((grupo, index) => (

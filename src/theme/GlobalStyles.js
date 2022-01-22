@@ -104,7 +104,7 @@ export const GlobalStyles = createGlobalStyle`
 
   .MuiTableCell-head{
     background: ${({ theme }) => theme.colors.table.header.background}; // fundo header tabela
-  }
+  }\
   
   .MuiTableCell-footer{
     border-bottom: none; // borda footer tabela
@@ -220,6 +220,11 @@ export const GlobalStyles = createGlobalStyle`
     margin-top: 12px;
     margin-bottom: 12px;
     margin-right: 12px;
+  }
+
+  .backgroundLogin{
+    background: rgb(57,57,57);
+    background: linear-gradient(90deg, rgba(57,57,57,1) 0%, rgba(50,50,52,1) 37%, rgba(50,50,52,1) 70%, rgba(27,25,25,1) 100%);
   }
 
   /* ========= POPUP ========= */
