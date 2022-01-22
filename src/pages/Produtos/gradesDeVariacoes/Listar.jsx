@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import api from "../../../services/api";
-
 import MUIDataTable from "mui-datatables";
-
-import TopBar from "../../../components/TopBar";
-import SideMenu from "../../../components/SideMenu";
 import { config, rowConfig } from "../../../config/tablesConfig";
 import { Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
@@ -62,17 +58,14 @@ function ListarVariacoes() {
 
   return (
     <>
-      <TopBar />
-      <SideMenu>
-        {grupos.map((grupo, index) => (
-          <h4 key={index}>{grupo.nome}</h4>
-        ))}
-        <Button onClick={() => history.push("/grade-variacao/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>
-          Adicionar
-        </Button>
-        <MUIDataTable title={"Lista de Variações"} data={grupos} columns={columns} options={config}
-className={'table-background'}/>
-      </SideMenu>
+      {grupos.map((grupo, index) => (
+        <h4 key={index}>{grupo.nome}</h4>
+      ))}
+      <Button onClick={() => history.push("/grade-variacao/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>
+        Adicionar
+      </Button>
+      <MUIDataTable title={"Lista de Variações"} data={grupos} columns={columns} options={config}
+        className={'table-background'} />
     </>
   );
 }

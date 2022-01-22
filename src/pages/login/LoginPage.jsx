@@ -5,11 +5,13 @@ import { useState } from "react";
 import api from "../../services/api";
 import { setToLS } from "../../utils/storage";
 import { useHistory } from "react-router-dom";
+import { usePusherContext } from "../../context/PusherContext";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const history = useHistory();
+  const pusherContext = usePusherContext();
 
   var dados = {
     email: email,
@@ -23,6 +25,7 @@ function LoginPage() {
   function redirecionar(response) {
     localStorage.setItem("token", response.data.access_token);
     setToLS("user", response.data.user);
+    pusherContext.useIsLogged.setIsLogged(true);
     history.push("/home");
   }
 

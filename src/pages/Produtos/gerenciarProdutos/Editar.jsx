@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import SideMenu from "../../../components/SideMenu";
-import TopBar from "../../../components/TopBar";
 import { Grid, TextField, Select, MenuItem, FormControl, InputLabel, Divider, Button } from "@material-ui/core";
-import CheckIcon from "@material-ui/icons/Check";
-import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import api from "../../../services/api";
 import Swal from "sweetalert2";
 
@@ -115,9 +110,6 @@ function EditarProduto() {
 
   return (
     <>
-      <TopBar />
-
-      <SideMenu>
         <div>
           <Divider />
           <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -164,7 +156,7 @@ function EditarProduto() {
             </Grid>
           </form> */}
         </div>
-      </SideMenu>
+
     </>
   );
 }
