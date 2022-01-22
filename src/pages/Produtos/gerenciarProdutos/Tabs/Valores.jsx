@@ -8,17 +8,17 @@ import OpenWithIcon from "@mui/icons-material/OpenWith";
 import { infoAlert, successAlert } from "../../../../utils/alert";
 import StarIcon from '@mui/icons-material/Star';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
+import toast from "react-hot-toast";
 
 export function Valores() {
-  const [cad, setCad] = useState({
+  const [porcentagemLucro, setPorcentagemLucro] = useState({
     descricao: "",
     porcentagem: 0,
     favorito: false
   });
-  const [open, setOpen] = useState(false);
-  const [openFavs, setOpenFavs] = useState(false);
+  const [openShowOnTable, setOpenShowOnTable] = useState(false);
+  const [openPorcentagemLucro, setOpenPorcentagemLucro] = useState(false);
   const [porcLucros, setPorcLucros] = useState([]);
-  const [dataRow, setDataRow] = useState([]);
   const produtoContext = useProdutoContext();
 
   function handleOnChange(event) {
@@ -43,50 +43,62 @@ export function Valores() {
 
       setPorcLucros(response.data['data']);
     });
-  }, [cad]);
+  }, [porcentagemLucro]);
 
-  function handleOnChangeFavs(event) {
+  function handleOnChangePorcentagemLucro(event) {
     const { name, value, type, checked } = event.target;
     if (type === "checkbox") {
       console.log(checked);
-      setCad({ ...cad, [name]: checked ? true : false });
+      setPorcentagemLucro({ ...porcentagemLucro, [name]: checked ? true : false });
     } else {
-      setCad({ ...cad, [name]: value });
+      setPorcentagemLucro({ ...porcentagemLucro, [name]: value });
     }
   }
 
-  const handleAddValuesFavs = () => {
+  const handleAddChangePorcentagemLucro = () => {
 
     handleClose();
 
-    api.post('/porcentagem-lucro', cad)
+    api.post('/porcentagem-lucro', porcentagemLucro)
       .then((response) => {
         successAlert("Sucesso", "Porcentagem de Lucro Cadastrada");
-        setCad({ descricao: "", porcentagem: 0, favorito: false }); // Reseta o formulário
+        setPorcentagemLucro({ descricao: "", porcentagem: 0, favorito: false }); // Reseta o formulário
       })
       .catch((error) => {
         infoAlert("Atenção", error.response.data.message);
       });
   };
 
-  const handleInsertInTable = () => {
-    produtoContext.useValues.setValues({ ...produtoContext.useValues.values, valuesProfit: [...produtoContext.useValues.values.valuesProfit, dataRow] });
-  };
+  function handleRowClick(rowData) {
+    console.log(rowData);
+  }
+
+  const handleInsertInTable = (rowSelected) => {
+
+    console.log(porcLucros[rowSelected[0].index].id);
+    if(produtoContext.useValues.values.valuesProfit.find((item) => porcLucros[rowSelected[0].index].id === item.id)){
+      toast.error("Porcentagem de lucro já adicionada");
+      return;
+    }
+
+    produtoContext.useValues.setValues({ ...produtoContext.useValues.values, valuesProfit: [...produtoContext.useValues.values.valuesProfit, porcLucros[rowSelected[0].index]] });
+    
+  }
 
   const handleClickOpen = () => {
-    setOpen(true);
+    setOpenShowOnTable(true);
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setOpenShowOnTable(false);
   };
 
   const handleClickOpenFavs = () => {
-    setOpenFavs(true);
+    setOpenPorcentagemLucro(true);
   };
 
   const handleCloseFavs = () => {
-    setOpenFavs(false);
+    setOpenPorcentagemLucro(false);
   };
 
   const columns = [
@@ -122,6 +134,7 @@ export function Valores() {
     download: false,
     filter: false,
     selectableRows: "none",
+    selectableRowsHeader: false,
     search: false,
     viewColumns: false,
     pagination: false,
@@ -156,6 +169,7 @@ export function Valores() {
     filter: false,
     search: false,
     viewColumns: false,
+    selectableRowsHeader: false,
     pagination: false,
     filterType: "checkbox",
     textLabels: {
@@ -166,10 +180,8 @@ export function Valores() {
         text: "linha(s) selecionadas",
       },
     },
-    onRowsSelect: (rowsSelected, allRows) => {
-      allRows.forEach((row) => {
-        setDataRow(porcLucros[row.dataIndex]);
-      });
+    onRowSelectionChange: (currentRowsSelected, allRowsSelected, rowsSelected) => {
+      handleInsertInTable(currentRowsSelected)
     },
     setRowProps: (row, dataIndex, rowIndex) => {
       return {
@@ -260,7 +272,7 @@ export function Valores() {
         </Grid>
 
         {/* Pop-ups */}
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={openShowOnTable} onClose={handleClose}>
 
           <DialogTitle className={"popup"}>Cadastrar porcentagem de lucro</DialogTitle>
 
@@ -269,10 +281,10 @@ export function Valores() {
               autoFocus
               id="name"
               name="descricao"
-              value={cad.descricao}
+              value={porcentagemLucro.descricao}
               label="Descrição"
               type="text"
-              onChange={handleOnChangeFavs}
+              onChange={handleOnChangePorcentagemLucro}
               fullWidth
               variant="outlined"
               style={{ marginBottom: 12 }}
@@ -280,10 +292,10 @@ export function Valores() {
             <TextField
               id="name"
               name="porcentagem"
-              value={cad.porcentagem}
+              value={porcentagemLucro.porcentagem}
               label="Porcentagem (%)"
               type="text"
-              onChange={handleOnChangeFavs}
+              onChange={handleOnChangePorcentagemLucro}
               fullWidth
               variant="outlined"
             />
@@ -293,18 +305,18 @@ export function Valores() {
             className={"popup"}
             style={{ justifyContent: "space-around" }}>
             <FormControlLabel
-              control={<Checkbox color="primary" name="favorito" checked={cad.favorito ? true : false} onChange={handleOnChangeFavs} />}
+              control={<Checkbox color="primary" name="favorito" checked={porcentagemLucro.favorito ? true : false} onChange={handleOnChangePorcentagemLucro} />}
               label="Adicionar como favorito"
             />
             <div style={{ gap: "7px", display: "flex" }}>
               <Button className={"btn btn-error"} onClick={handleClose}> Fechar</Button>
-              <Button className={"btn btn-success"} onClick={handleAddValuesFavs}>Cadastrar</Button>
+              <Button className={"btn btn-success"} onClick={handleAddChangePorcentagemLucro}>Cadastrar</Button>
             </div>
           </DialogActions>
 
         </Dialog>
 
-        <Dialog open={openFavs} fullWidth={"lg"} onClose={handleCloseFavs}>
+        <Dialog open={openPorcentagemLucro} fullWidth={"lg"} onClose={handleCloseFavs}>
 
           <DialogTitle className={"popup"}>Selecionar porcentagens de lucros</DialogTitle>
 
