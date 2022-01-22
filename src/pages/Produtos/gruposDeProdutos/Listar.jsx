@@ -38,7 +38,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ListarGruposDeProdutos() {
-  const classes = useStyles();
   const history = useHistory();
   const [grupos, setGrupos] = useState([]);
   const columns = [
