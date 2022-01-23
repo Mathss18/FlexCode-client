@@ -43,6 +43,18 @@ export const GlobalStyles = createGlobalStyle`
 
   /* ========= INPUT ========= */
 
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none; // Remove as setas dos inputs tipo number
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield; // Remove as setas dos inputs tipo number
+  }
+
   input {
     background: ${({ theme }) => theme.colors.input.background} !important; // cor de fundo dos inputs
     color: ${({ theme }) => theme.colors.input.text} !important; // cor do texto dentro dos inputs (usuario)
@@ -253,6 +265,10 @@ export const GlobalStyles = createGlobalStyle`
   .MuiTableCell-head{
     border-bottom: none; // borda inferior header tabela
     background: ${({ theme }) => theme.colors.table.header.background}; // fundo header tabela
+  }
+
+  .MuiTableCell-head div{
+    color: ${({ theme }) => theme.colors.table.header.text}; // cor do texto header tabela (quando sem opcao de ordenacao)
   }
 
   .MuiTableCell-body{
