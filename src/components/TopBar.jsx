@@ -1,14 +1,14 @@
-import { AppBar, Toolbar, IconButton } from '@material-ui/core/';
-import MenuIcon from '@material-ui/icons/Menu';
-import Badge from '@material-ui/core/Badge';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import { AppBar, Toolbar, IconButton } from "@material-ui/core/";
+import MenuIcon from "@material-ui/icons/Menu";
+import Badge from "@material-ui/core/Badge";
+import MailIcon from "@material-ui/icons/Mail";
+import NotificationsIcon from "@material-ui/icons/Notifications";
 import { useMenu } from "../context/SideMenuContext";
-import { Link, useHistory } from 'react-router-dom';
-import UserMenu from './UserMenu';
-import { Toaster } from 'react-hot-toast';
-import { usePusherContext } from '../context/PusherContext';
-
+import { Link, useHistory } from "react-router-dom";
+import UserMenu from "./UserMenu";
+import { Toaster } from "react-hot-toast";
+import { usePusherContext } from "../context/PusherContext";
+import logoEmpresa from "../assets/logoEmpresa.svg";
 
 function TopBar() {
   const [openSideMenu, setOpenSideMenu] = useMenu();
@@ -16,7 +16,7 @@ function TopBar() {
   const history = useHistory();
 
   return (
-    <AppBar color="inherit" className={'topbar'}>
+    <AppBar color="inherit" className={"topbar"}>
       <Toaster
         position="top-right"
         gutter={8}
@@ -24,43 +24,59 @@ function TopBar() {
         containerStyle={{}}
         toastOptions={{
           // Define default options
-          className: 'toast-container',
+          className: "toast-container",
           duration: 5000,
           // Default options for specific types
           success: {
             duration: 3000,
             theme: {
-              primary: 'green',
-              secondary: 'black',
+              primary: "green",
+              secondary: "black",
             },
           },
         }}
       />
       <Toolbar>
-        <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => setOpenSideMenu(!openSideMenu)}>
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          onClick={() => setOpenSideMenu(!openSideMenu)}
+        >
           <MenuIcon />
         </IconButton>
-        <Link to='/'>[LOGO]</Link>
-        <div className={'topbar-spacing'}></div>
+        <div style={{ width: "100px", height: "50px", cursor:' pointer' }}>
+            <img src={logoEmpresa} alt="logo" style={{marginTop: -24}} onClick={()=> {history.push('/')}} />
+        </div>
+        <div className={"topbar-spacing"}></div>
 
-        <IconButton className={'topbar-icon'} color="inherit" onClick={() => {history.push("/chat"); }} >
-          <Badge badgeContent={pusherContext.useMensagensNaoLidas.mensagensNaoLidas.length} color="secondary">
+        <IconButton
+          className={"topbar-icon"}
+          color="inherit"
+          onClick={() => {
+            history.push("/chat");
+          }}
+        >
+          <Badge
+            badgeContent={
+              pusherContext.useMensagensNaoLidas.mensagensNaoLidas.length
+            }
+            color="secondary"
+          >
             <MailIcon />
           </Badge>
         </IconButton>
 
-        <IconButton className={'topbar-icon'} color="inherit">
+        <IconButton className={"topbar-icon"} color="inherit">
           <Badge badgeContent={10} color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>
 
         <UserMenu />
-
       </Toolbar>
     </AppBar>
   );
-
 }
 
 export default TopBar;
