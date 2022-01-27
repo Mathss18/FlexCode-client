@@ -69,7 +69,6 @@ function PusherContextProvider({ children }) {
 
     privateChannel.unbind("App\\Events\\PrivateMessageSent");
     privateChannel.bind("App\\Events\\PrivateMessageSent", (data) => callBack(data));
-    console.log(privateChannel);
 
     publicChannel.unbind("pusher:subscription_succeeded");
     publicChannel.bind("pusher:subscription_succeeded", (data) => { setarUsuariosOnline(data); console.log('Usuarios Logados:',data); });
@@ -116,7 +115,6 @@ function PusherContextProvider({ children }) {
   function usuarioSaiu(usuario) {
     let aux = removeFromArrayByKeyValue(usuariosOnline, 'id', usuario.id);
     setUsuariosOnline(aux);
-    // console.log('Antes de sair:', usuario.id);
     console.log('Usuario Saiu, então todos os usuarios online', aux)
   }
 

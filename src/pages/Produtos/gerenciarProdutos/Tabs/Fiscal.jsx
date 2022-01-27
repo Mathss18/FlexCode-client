@@ -8,8 +8,8 @@ export function Fiscal() {
 
   function handleOnChange(event) {
     const { name, value } = event.target;
-    produtoContext.useValues.setValues({ ...produtoContext.useValues.values, [name]: value });
-    produtoContext.formik.setFieldValue(name, value);
+    produtoContext.useValues.setValues({ ...produtoContext.useValues.values, [name]: value }); // Altera o State 
+    produtoContext.formik.setFieldValue(name, value); // Altera o formik
     console.log(produtoContext.formik.values);
   }
 

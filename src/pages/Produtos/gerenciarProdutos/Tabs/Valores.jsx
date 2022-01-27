@@ -26,69 +26,41 @@ export function Valores() {
     porcentagem: 0,
     favorito: false,
   });
-  const [openShowOnTable, setOpenShowOnTable] = useState(false);
+  const [openShowOnTable, setOpenShowOnTable] = useState(false); // Estado que armazena se o modal de criar nova porcentagem de lucro está aberto ou não
   const [porcentagensLucros, setPorcentagensLucros] = useState([]); // Lista de porcentagens de lucro
-  const porcentagensLucrosAux = useRef(); // Lista de porcentagens de lucro usando o useRef para ter acesso na primeira renderização
+  const porcentagensLucrosAux = useRef([]); // Lista de porcentagens de lucro auxiliar
   const produtoContext = useProdutoContext();
 
   function handleOnChange(event) {
     const { name, value } = event.target;
-    produtoContext.useValues.setValues({
-      ...produtoContext.useValues.values,
-      [name]: value,
-    });
-    produtoContext.formik.setFieldValue(name, value);
+    produtoContext.useValues.setValues({...produtoContext.useValues.values,[name]: value}); // Altera o State
+    produtoContext.formik.setFieldValue(name, value); // Altera o formik
 
     console.log(produtoContext.formik.values);
   }
 
+  // Verifica se já há algum valor dentro to array de porcentagens de lucro, se não houver trás todas as porcentagens de lucro favoritas
   useEffect(() => {
+    if(produtoContext.formik.values.valuesProfit.length > 0) return;
     api.get("/porcentagens-lucros").then((response) => {
-      response.data["data"] = response.data["data"].filter(
-        (item) => item.favorito == true
-      ); // Filtra só os favoritos
-      response.data["data"].map(
-        (item, index) =>
-          (item.isSelected =
-            produtoContext.useValues.values?.valuesProfit[index]?.isSelected ??
-            false)
-      ); // Atributo para saber se o item está selecionado
-      response.data["data"].map(
-        (item, index) =>
-          (item.checkbox = (
-            <Checkbox
-              checked={
-                produtoContext.useValues.values?.valuesProfit[index]
-                  ?.isSelected ?? false
-              }
-              onClick={() => {
-                addPorcentagemLucro(item, index);
-              }}
-            />
-          ))
-      ); // Coloca uma checkbox
-
-      porcentagensLucrosAux.current = response.data["data"];
-      setPorcentagensLucros(response.data["data"]);
+      response.data["data"] = response.data["data"].filter((item) => item.favorito == true); // Filtra só os favoritos
+      response.data["data"].map((item, index) => (item.isSelected = false)); // Atributo para saber se o item está selecionado
+      response.data["data"].map((item, index) => (item.checkbox = (<Checkbox checked={item.isSelected} onClick={() => { addPorcentagemLucro(item, index); }} />))); // Coloca uma checkbox
+      porcentagensLucrosAux.current = response.data["data"];  
+      setPorcentagensLucros([...porcentagensLucrosAux.current]);
     });
+
   }, []);
 
+  // Verifica se já há algum valor dentro to array de porcentagens de lucro, se não houver trás todas as porcentagens de lucro favoritas
   useEffect(() => {
-    if (!porcentagensLucros) return;
-    porcentagensLucros.map(
-      (item, index) =>
-        (item.checkbox = (
-          <Checkbox
-            checked={
-              produtoContext.useValues.values.valuesProfit[index]?.isSelected
-            }
-            onClick={() => {
-              addPorcentagemLucro(item, index);
-            }}
-          />
-        ))
-    ); // Coloca uma checkbox
-  }, [porcentagensLucros, produtoContext.useValues.values]);
+    if(produtoContext.formik.values.valuesProfit.length <= 0) return;
+      setPorcentagensLucros(produtoContext.formik.values.valuesProfit);
+      porcentagensLucrosAux.current = produtoContext.formik.values.valuesProfit;
+
+
+  }, []);
+
 
   function handleOnChangePorcentagemLucro(event) {
     const { name, value, type, checked } = event.target;
@@ -103,7 +75,7 @@ export function Valores() {
     }
   }
 
-  const handleAddChangePorcentagemLucro = () => {
+  function handleAddChangePorcentagemLucro(){
     handleClose();
 
     api
@@ -118,20 +90,12 @@ export function Valores() {
   };
 
   function addPorcentagemLucro(item, index) {
-    porcentagensLucrosAux.current[index].isSelected =
-      !porcentagensLucrosAux.current[index].isSelected;
-    console.log(porcentagensLucrosAux.current[index].isSelected);
-    setPorcentagensLucros(porcentagensLucrosAux.current);
-
-    produtoContext.useValues.setValues({
-      ...produtoContext.useValues.values,
-      valuesProfit: porcentagensLucrosAux.current,
-    });
-    produtoContext.formik.setFieldValue(
-      "valuesProfit",
-      porcentagensLucrosAux.current
-    );
-    console.log(produtoContext.formik.values);
+    console.log(porcentagensLucros);
+    porcentagensLucrosAux.current[index].isSelected = !porcentagensLucrosAux.current[index].isSelected;
+    porcentagensLucrosAux.current[index].checkbox = (<Checkbox checked={porcentagensLucrosAux.current[index].isSelected} onClick={() => { addPorcentagemLucro(item, index); }} />); // Coloca uma checkbox
+    setPorcentagensLucros([...porcentagensLucrosAux.current]);
+    produtoContext.useValues.setValues({...produtoContext.useValues.values, valuesProfit:porcentagensLucrosAux.current});
+    produtoContext.formik.setFieldValue('valuesProfit', [...porcentagensLucrosAux.current]);
   }
 
   const handleClickOpen = () => {
@@ -201,8 +165,8 @@ export function Valores() {
         <OpenWithIcon />
         <h3>Detalhes</h3>
       </div>
-      <Grid container spacing={3}>
-        <Grid item xs={6} spacing={6}>
+      <Grid container>
+        <Grid item xs={6}>
           <TextField
             variant="outlined"
             style={{ marginBottom: 24 }}
@@ -274,15 +238,12 @@ export function Valores() {
           />
         </Grid>
         <br />
-        <Divider />
         <Grid
-          spacing={1}
           container
           style={{ alignContent: "flex-start" }}
-          item
           xs={6}
         >
-          <Grid item xs={12}>
+          <Grid item xs={12} style={{ marginLeft: 16 }}>
             <MUIDataTable
               title={"Porcentagem de Lucro"}
               data={porcentagensLucros}
@@ -291,7 +252,7 @@ export function Valores() {
               className={"table-background"}
             />
           </Grid>
-          <Grid spacing={1} container item xs={12}>
+          <Grid container xs={12} style={{ marginLeft: 16, marginTop: 8 }}>
             <Grid item style={{ display: "flex", gap: "15px" }}>
               <Button
                 variant="contained"
