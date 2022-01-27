@@ -48,6 +48,7 @@ import PrivateRoutes from "./PrivateRoutes";
 import TopBar from "../components/TopBar";
 import SideMenu from "../components/SideMenu";
 import Chat from "../pages/Chat/Chat";
+import Ajuda from "../pages/Ajuda/Ajuda"
 
 export default function Routes() {
   return (
@@ -106,6 +107,8 @@ export default function Routes() {
             <Route path="/produto/editar/:id" exact component={EditarProdutos}></Route>
 
             <Route path="/chat" exact component={Chat}></Route>
+
+            <Route path="/ajuda" exact component={Ajuda} ></Route>
 
           </SideMenu>
 
