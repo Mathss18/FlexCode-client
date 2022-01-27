@@ -121,7 +121,7 @@ function UserMenu() {
           <li className={'user-list-item'}>
             <SettingsIcon className={'user-list-icon'} /><a>Configurações</a>
           </li>
-          <li className={'user-list-item'}>
+          <li className={'user-list-item'} onClick={ () => {history.push("/ajuda")}}>
             <HelpIcon className={'user-list-icon'} /><a>Ajuda</a>
           </li>
           <li className={'user-list-item'} onClick={() => { pusherContext.useIsLogged.setIsLogged(false); localStorage.removeItem('token'); history.push("/login") }}>

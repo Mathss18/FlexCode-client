@@ -40,7 +40,7 @@ function TopBar() {
         <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => setOpenSideMenu(!openSideMenu)}>
           <MenuIcon />
         </IconButton>
-        <Link to='/'>[LOGO]</Link>
+        <Link to='/'>Flex Code</Link>
         <div className={'topbar-spacing'}></div>
 
         <IconButton className={'topbar-icon'} color="inherit" onClick={() => {history.push("/chat"); }} >

@@ -119,7 +119,7 @@ function SideMenu({ children }) {
                 }}
             >
                 <div className={classes.drawerHeader}>
-                    <Link to="/home">[LOGO]</Link>
+                    <Link to="/home">Flex Code</Link>
                     <IconButton onClick={handleDrawerClose}>
                         <ChevronLeftIcon />
                     </IconButton>
