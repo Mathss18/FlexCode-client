@@ -7,8 +7,8 @@ export function Estoque() {
 
   function handleOnChange(event) {
     const { name, value } = event.target;
-    produtoContext.useValues.setValues({ ...produtoContext.useValues.values, [name]: value });
-    produtoContext.formik.setFieldValue(name, value);
+    produtoContext.useValues.setValues({ ...produtoContext.useValues.values, [name]: value }); // Altera o State 
+    produtoContext.formik.setFieldValue(name, value); // Altera o formik
     console.log(produtoContext.formik.values);
   }
 
@@ -24,6 +24,7 @@ export function Estoque() {
           <TextField variant="outlined"
             label="Estoque mínimo (UN)"
             fullWidth
+            type="number"
             value={produtoContext.useValues.values.estoqueMinimo}
             name="estoqueMinimo"
             onChange={handleOnChange} 
@@ -36,6 +37,7 @@ export function Estoque() {
           <TextField variant="outlined"
             label="Estoque máximo (UN)"
             fullWidth
+            type="number"
             value={produtoContext.useValues.values.estoqueMaximo}
             name="estoqueMaximo"
             onChange={handleOnChange} 
@@ -48,6 +50,7 @@ export function Estoque() {
           <TextField variant="outlined"
             label="Quantidade atual (UN)"
             fullWidth
+            type="number"
             value={produtoContext.useValues.values.quantidadeAtual}
             name="quantidadeAtual"
             onChange={handleOnChange} 

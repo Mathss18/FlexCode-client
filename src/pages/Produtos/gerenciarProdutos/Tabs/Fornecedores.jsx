@@ -1,15 +1,23 @@
-import { useContext } from "react";
-import { GerenciarProdutosContext } from "../../../../context/GerenciarProdutosContext";
-import { Grid, TextField } from "@material-ui/core";
+import { useProdutoContext } from "../../../../context/GerenciarProdutosContext";
+import { Button, Grid, TextField } from "@material-ui/core";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
+import api from "../../../../services/api";
 
 export function Fornecedores() {
-  const { values, setValues } = useContext(GerenciarProdutosContext);
+  const produtoContext = useProdutoContext();
 
-  function handleOnChange(event) {
-    const { name, value } = event.target;
-    setValues({ ...values, [name]: value });
+  function handleCadastrarProduto() {
+    console.log(produtoContext.formik.values);
+
+    api.post("/produto", produtoContext.formik.values)
+    .then(response => {
+      console.log(response);
+    })
+    .catch(error => {
+      console.log(error);
+    });
   }
+
 
   return (
     <>
@@ -18,7 +26,9 @@ export function Fornecedores() {
         <h3>Detalhes</h3>
       </div>
       <Grid container spacing={3}>
-        <TextField variant="outlined" label="Fornecedor" fullWidth value={values.fornecedor} name="fornecedor" onChange={handleOnChange} />
+        <Grid item xs={8}>
+          <Button className="btn btn-primary" onClick={handleCadastrarProduto}>Cadastrar Produto</Button>
+        </Grid>
       </Grid>
     </>
   );

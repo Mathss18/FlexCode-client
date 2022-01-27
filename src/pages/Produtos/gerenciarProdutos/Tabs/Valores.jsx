@@ -1,92 +1,109 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useProdutoContext } from "../../../../context/GerenciarProdutosContext";
-import { Grid, TextField, Divider, Dialog, DialogTitle, DialogContent, Checkbox, DialogActions, Button, FormControlLabel } from "@material-ui/core";
+import {
+  Grid,
+  TextField,
+  Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Checkbox,
+  DialogActions,
+  Button,
+  FormControlLabel,
+  Tooltip,
+} from "@material-ui/core";
 import api from "../../../../services/api";
 import MUIDataTable from "mui-datatables";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
 import { infoAlert, successAlert } from "../../../../utils/alert";
-import StarIcon from '@mui/icons-material/Star';
-import DoDisturbIcon from '@mui/icons-material/DoDisturb';
+import HelpIcon from "@mui/icons-material/Help";
 
 export function Valores() {
-  const [cad, setCad] = useState({
+  const [porcentagemLucro, setPorcentagemLucro] = useState({
     descricao: "",
     porcentagem: 0,
-    favorito: false
+    favorito: false,
   });
-  const [open, setOpen] = useState(false);
-  const [openFavs, setOpenFavs] = useState(false);
-  const [porcLucros, setPorcLucros] = useState([]);
-  const [dataRow, setDataRow] = useState([]);
+  const [openShowOnTable, setOpenShowOnTable] = useState(false); // Estado que armazena se o modal de criar nova porcentagem de lucro está aberto ou não
+  const [porcentagensLucros, setPorcentagensLucros] = useState([]); // Lista de porcentagens de lucro
+  const porcentagensLucrosAux = useRef([]); // Lista de porcentagens de lucro auxiliar
   const produtoContext = useProdutoContext();
 
   function handleOnChange(event) {
     const { name, value } = event.target;
-    produtoContext.useprodutoContext.useValues.values.produtoContext.useValues.setValues({ ...produtoContext.useprodutoContext.useValues.values.values, [name]: value });
-    produtoContext.formik.setFieldValue(name, value);
+    produtoContext.useValues.setValues({...produtoContext.useValues.values,[name]: value}); // Altera o State
+    produtoContext.formik.setFieldValue(name, value); // Altera o formik
+
     console.log(produtoContext.formik.values);
   }
 
+  // Verifica se já há algum valor dentro to array de porcentagens de lucro, se não houver trás todas as porcentagens de lucro favoritas
   useEffect(() => {
+    if(produtoContext.formik.values.valuesProfit.length > 0) return;
     api.get("/porcentagens-lucros").then((response) => {
-
-      response.data['data'].map((item) => {
-        if (item.favorito) {
-          item.favorito = <StarIcon style={{ color: 'gold' }} />
-        }
-        else {
-          item.favorito = <DoDisturbIcon style={{ color: 'indianred' }} />
-        }
-        item.porcentagem = item.porcentagem + '%';
-      });
-
-      setPorcLucros(response.data['data']);
+      response.data["data"] = response.data["data"].filter((item) => item.favorito == true); // Filtra só os favoritos
+      response.data["data"].map((item, index) => (item.isSelected = false)); // Atributo para saber se o item está selecionado
+      response.data["data"].map((item, index) => (item.checkbox = (<Checkbox checked={item.isSelected} onClick={() => { addPorcentagemLucro(item, index); }} />))); // Coloca uma checkbox
+      porcentagensLucrosAux.current = response.data["data"];  
+      setPorcentagensLucros([...porcentagensLucrosAux.current]);
     });
-  }, [cad]);
 
-  function handleOnChangeFavs(event) {
+  }, []);
+
+  // Verifica se já há algum valor dentro to array de porcentagens de lucro, se não houver trás todas as porcentagens de lucro favoritas
+  useEffect(() => {
+    if(produtoContext.formik.values.valuesProfit.length <= 0) return;
+      setPorcentagensLucros(produtoContext.formik.values.valuesProfit);
+      porcentagensLucrosAux.current = produtoContext.formik.values.valuesProfit;
+
+
+  }, []);
+
+
+  function handleOnChangePorcentagemLucro(event) {
     const { name, value, type, checked } = event.target;
     if (type === "checkbox") {
       console.log(checked);
-      setCad({ ...cad, [name]: checked ? true : false });
+      setPorcentagemLucro({
+        ...porcentagemLucro,
+        [name]: checked ? true : false,
+      });
     } else {
-      setCad({ ...cad, [name]: value });
+      setPorcentagemLucro({ ...porcentagemLucro, [name]: value });
     }
   }
 
-  const handleAddValuesFavs = () => {
-
+  function handleAddChangePorcentagemLucro(){
     handleClose();
 
-    api.post('/porcentagem-lucro', cad)
+    api
+      .post("/porcentagem-lucro", porcentagemLucro)
       .then((response) => {
         successAlert("Sucesso", "Porcentagem de Lucro Cadastrada");
-        setCad({ descricao: "", porcentagem: 0, favorito: false }); // Reseta o formulário
+        setPorcentagemLucro({ descricao: "", porcentagem: 0, favorito: false }); // Reseta o formulário
       })
       .catch((error) => {
         infoAlert("Atenção", error.response.data.message);
       });
   };
 
-  const handleInsertInTable = () => {
-    produtoContext.useValues.setValues({ ...produtoContext.useValues.values, valuesProfit: [...produtoContext.useValues.values.valuesProfit, dataRow] });
-  };
+  function addPorcentagemLucro(item, index) {
+    console.log(porcentagensLucros);
+    porcentagensLucrosAux.current[index].isSelected = !porcentagensLucrosAux.current[index].isSelected;
+    porcentagensLucrosAux.current[index].checkbox = (<Checkbox checked={porcentagensLucrosAux.current[index].isSelected} onClick={() => { addPorcentagemLucro(item, index); }} />); // Coloca uma checkbox
+    setPorcentagensLucros([...porcentagensLucrosAux.current]);
+    produtoContext.useValues.setValues({...produtoContext.useValues.values, valuesProfit:porcentagensLucrosAux.current});
+    produtoContext.formik.setFieldValue('valuesProfit', [...porcentagensLucrosAux.current]);
+  }
 
   const handleClickOpen = () => {
-    setOpen(true);
+    setOpenShowOnTable(true);
   };
 
   const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleClickOpenFavs = () => {
-    setOpenFavs(true);
-  };
-
-  const handleCloseFavs = () => {
-    setOpenFavs(false);
+    setOpenShowOnTable(false);
   };
 
   const columns = [
@@ -107,8 +124,8 @@ export function Valores() {
       },
     },
     {
-      name: "favorito",
-      label: "Favorito",
+      name: "checkbox",
+      label: "Selecione",
       options: {
         filter: false,
         sort: false,
@@ -122,6 +139,7 @@ export function Valores() {
     download: false,
     filter: false,
     selectableRows: "none",
+    selectableRowsHeader: false,
     search: false,
     viewColumns: false,
     pagination: false,
@@ -136,55 +154,6 @@ export function Valores() {
         style: {
           fontSize: 30,
           color: "red",
-        },
-      };
-    },
-    setCellProps: (value) => {
-      console.log(value);
-      return {
-        style: {
-          border: "2px solid blue",
-        },
-      };
-    },
-  };
-
-  const options_lucro = {
-    expandableRowsHeader: false,
-    print: false,
-    download: false,
-    filter: false,
-    search: false,
-    viewColumns: false,
-    pagination: false,
-    filterType: "checkbox",
-    textLabels: {
-      body: {
-        noMatch: "Nenhum resultado encontrado.",
-      },
-      selectedRows: {
-        text: "linha(s) selecionadas",
-      },
-    },
-    onRowsSelect: (rowsSelected, allRows) => {
-      allRows.forEach((row) => {
-        setDataRow(porcLucros[row.dataIndex]);
-      });
-    },
-    setRowProps: (row, dataIndex, rowIndex) => {
-      return {
-        className: rowIndex % 2 == 0 ? "row row-par" : "row row-impar",
-        style: {
-          fontSize: 30,
-          color: "red",
-        },
-      };
-    },
-    setCellProps: (value) => {
-      console.log(value);
-      return {
-        style: {
-          border: "2px solid blue",
         },
       };
     },
@@ -196,83 +165,122 @@ export function Valores() {
         <OpenWithIcon />
         <h3>Detalhes</h3>
       </div>
-      <Grid container spacing={3}>
-        <Grid item xs={6} spacing={6}>
-          <TextField variant="outlined"
+      <Grid container>
+        <Grid item xs={6}>
+          <TextField
+            variant="outlined"
             style={{ marginBottom: 24 }}
+            type="number"
+            min="0"
+            step="0.0001"
             label="Valor de Custo"
             fullWidth
-            value={produtoContext.useValues.values.valor_custo}
-            name="valor_custo"
+            value={produtoContext.useValues.values.valorCusto}
+            name="valorCusto"
             onChange={handleOnChange}
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.valorCusto && Boolean(produtoContext.formik.errors.valorCusto)}
+            helperText={produtoContext.formik.touched.valorCusto && produtoContext.formik.errors.valorCusto}
           />
-          <TextField variant="outlined"
+          <TextField
+            variant="outlined"
             style={{ marginBottom: 24 }}
+            type="number"
+            min="0"
+            step="0.0001"
             label="Despesas adicionais"
             fullWidth
-            value={produtoContext.useValues.values.despesa_acessoria}
-            name="despesa_acessoria"
+            value={produtoContext.useValues.values.despesasAdicionais}
+            name="despesasAdicionais"
             onChange={handleOnChange}
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.despesasAdicionais && Boolean(produtoContext.formik.errors.despesasAdicionais)}
+            helperText={produtoContext.formik.touched.despesasAdicionais && produtoContext.formik.errors.despesasAdicionais}
           />
-          <TextField variant="outlined"
+          <TextField
+            variant="outlined"
             style={{ marginBottom: 24 }}
+            type="number"
+            min="0"
+            step="0.0001"
             label="Outras despesas"
             fullWidth
-            value={produtoContext.useValues.values.outras_despesas}
-            name="outras_despesas"
+            value={produtoContext.useValues.values.outrasDespesas}
+            name="outrasDespesas"
             onChange={handleOnChange}
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.outrasDespesas && Boolean(produtoContext.formik.errors.outrasDespesas)}
+            helperText={produtoContext.formik.touched.outrasDespesas && produtoContext.formik.errors.outrasDespesas}
           />
           <TextField
             variant="outlined"
             label="Custo final"
+            type="number"
             fullWidth
-            value={produtoContext.useValues.values.custoFinal}
+            readOnly
+            value={(
+              parseFloat(produtoContext.useValues.values.valorCusto) +
+              parseFloat(produtoContext.useValues.values.despesasAdicionais) +
+              parseFloat(produtoContext.useValues.values.outrasDespesas)
+            ).toFixed(4)}
+            InputProps={{
+              endAdornment: (
+                <Tooltip title="O Custo Final é calculado automaticamente">
+                  <HelpIcon />
+                </Tooltip>
+              ),
+            }}
             name="custoFinal"
             onChange={handleOnChange}
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.valorCusto && Boolean(produtoContext.formik.errors.valorCusto)}
+            helperText={produtoContext.formik.touched.valorCusto && produtoContext.formik.errors.valorCusto}
           />
         </Grid>
         <br />
-        <Divider />
-        <Grid spacing={1} container style={{ alignContent: "flex-start" }} item xs={6}>
-          <Grid item xs={12}>
+        <Grid
+          container
+          style={{ alignContent: "flex-start" }}
+          xs={6}
+        >
+          <Grid item xs={12} style={{ marginLeft: 16 }}>
             <MUIDataTable
               title={"Porcentagem de Lucro"}
-              data={produtoContext.useValues.values.valuesProfit}
-              columns={columns} options={options}
-              className={"table-background"} />
+              data={porcentagensLucros}
+              columns={columns}
+              options={options}
+              className={"table-background"}
+            />
           </Grid>
-          <Grid spacing={1} container item xs={12}>
+          <Grid container xs={12} style={{ marginLeft: 16, marginTop: 8 }}>
             <Grid item style={{ display: "flex", gap: "15px" }}>
-              <Button variant="contained"
+              <Button
+                variant="contained"
                 className="btn btn-primary"
                 startIcon={<CalculateIcon />}
-                onClick={handleClickOpen}>
+                onClick={handleClickOpen}
+              >
                 Cadastrar valor de lucro
-              </Button>
-              <Button variant="contained"
-                className="btn btn-success"
-                startIcon={<CalculateIcon />}
-                onClick={handleClickOpenFavs}>
-                Adicionar
               </Button>
             </Grid>
           </Grid>
         </Grid>
 
         {/* Pop-ups */}
-        <Dialog open={open} onClose={handleClose}>
-
-          <DialogTitle className={"popup"}>Cadastrar porcentagem de lucro</DialogTitle>
+        <Dialog open={openShowOnTable} onClose={handleClose}>
+          <DialogTitle className={"popup"}>
+            Cadastrar porcentagem de lucro
+          </DialogTitle>
 
           <DialogContent className={"popup"}>
             <TextField
               autoFocus
               id="name"
               name="descricao"
-              value={cad.descricao}
+              value={porcentagemLucro.descricao}
               label="Descrição"
               type="text"
-              onChange={handleOnChangeFavs}
+              onChange={handleOnChangePorcentagemLucro}
               fullWidth
               variant="outlined"
               style={{ marginBottom: 12 }}
@@ -280,10 +288,10 @@ export function Valores() {
             <TextField
               id="name"
               name="porcentagem"
-              value={cad.porcentagem}
+              value={porcentagemLucro.porcentagem}
               label="Porcentagem (%)"
               type="text"
-              onChange={handleOnChangeFavs}
+              onChange={handleOnChangePorcentagemLucro}
               fullWidth
               variant="outlined"
             />
@@ -291,36 +299,32 @@ export function Valores() {
 
           <DialogActions
             className={"popup"}
-            style={{ justifyContent: "space-around" }}>
+            style={{ justifyContent: "space-around" }}
+          >
             <FormControlLabel
-              control={<Checkbox color="primary" name="favorito" checked={cad.favorito ? true : false} onChange={handleOnChangeFavs} />}
+              control={
+                <Checkbox
+                  color="primary"
+                  name="favorito"
+                  checked={porcentagemLucro.favorito ? true : false}
+                  onChange={handleOnChangePorcentagemLucro}
+                />
+              }
               label="Adicionar como favorito"
             />
             <div style={{ gap: "7px", display: "flex" }}>
-              <Button className={"btn btn-error"} onClick={handleClose}> Fechar</Button>
-              <Button className={"btn btn-success"} onClick={handleAddValuesFavs}>Cadastrar</Button>
+              <Button className={"btn btn-error"} onClick={handleClose}>
+                {" "}
+                Fechar
+              </Button>
+              <Button
+                className={"btn btn-success"}
+                onClick={handleAddChangePorcentagemLucro}
+              >
+                Cadastrar
+              </Button>
             </div>
           </DialogActions>
-
-        </Dialog>
-
-        <Dialog open={openFavs} fullWidth={"lg"} onClose={handleCloseFavs}>
-
-          <DialogTitle className={"popup"}>Selecionar porcentagens de lucros</DialogTitle>
-
-          <DialogContent className={"popup"}>
-            <MUIDataTable data={porcLucros} columns={columns} options={options_lucro} className={"table-background"} />
-          </DialogContent>
-
-          <DialogActions className={"popup"}>
-            <Button className={"btn btn-error"} onClick={handleCloseFavs}>
-              Fechar
-            </Button>
-            <Button className={"btn btn-success"} onClick={handleInsertInTable}>
-              Inserir na tabela
-            </Button>
-          </DialogActions>
-
         </Dialog>
       </Grid>
     </>
