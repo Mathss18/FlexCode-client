@@ -58,7 +58,7 @@ function CadastrarVariacoes() {
     api.post("/tipo-variacao-produto", { nome: formik.values.nome })
       .then((res) => {
         successAlert("Sucesso", "Variação de Produto Cadastrada", () =>
-          history.push("/grades-variacoess")
+          history.push("/grades-variacoes")
         );
         formik.values.variacoes.forEach((variacao) => {
           api.post("/nome-variacao-produto", {

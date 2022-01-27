@@ -127,8 +127,10 @@
 
 footer {
   position: absolute;
-  left: 38%;
-  top: 92%;
+  top: 95%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
   align-items: center;
   z-index: 3 !important;
 }
