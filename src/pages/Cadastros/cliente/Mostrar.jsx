@@ -37,7 +37,7 @@ function MostrarClientePage() {
   const { id } = useParams();
 
   useEffect(() => {
-    api.get('/cliente/' + id)
+    api.get('/clientes/' + id)
       .then((response) => {
         setValues(response.data['data']);
       })

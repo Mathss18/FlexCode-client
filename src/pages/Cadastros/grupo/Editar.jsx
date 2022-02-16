@@ -23,6 +23,7 @@ import "moment/locale/pt-br";
 import { grupoValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 const initialValues = {
   nome: "",
@@ -58,6 +59,7 @@ const initialValues = {
 
 function EditarGrupoPage() {
   const history = useHistory();
+  const fullScreenLoader = useFullScreenLoader();
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => { handleOnSubmit(event) },
@@ -66,7 +68,8 @@ function EditarGrupoPage() {
   const { id } = useParams();
 
   useEffect(() => {
-    api.get('/grupo/' + id)
+    fullScreenLoader.setLoading(true);
+    api.get('/grupos/' + id)
       .then((response) => {
 
         formik.setValues({
@@ -105,6 +108,9 @@ function EditarGrupoPage() {
         console.log('[RESPONSE]', formik.values);
 
       })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      });
 
 
 
@@ -155,15 +161,19 @@ function EditarGrupoPage() {
 
   function handleOnSubmit(values) {
     console.log(values);
-
-    api.put("/grupo/" + id, values).then((response) => {
+    fullScreenLoader.setLoading(true);
+    api.put("/grupos/" + id, values)
+    .then((response) => {
       successAlert("Sucesso", "Grupo Editado", () =>
         history.push("/grupos")
       );
     })
-      .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
-      });
+    .catch((error) => {
+      infoAlert("Atenção", error.response.data.message);
+    })
+    .finally(() => {
+      fullScreenLoader.setLoading(false);
+    });
   }
 
   function handleDelete() {
@@ -174,7 +184,7 @@ function EditarGrupoPage() {
 
   function deletarGrupo() {
     api
-      .delete("/grupo/" + id)
+      .delete("/grupos/" + id)
       .then((result) => {
         successAlert("Sucesso", "Grupo Excluido", () =>
           history.push("/grupos")

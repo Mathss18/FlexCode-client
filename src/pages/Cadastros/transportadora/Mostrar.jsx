@@ -36,7 +36,7 @@ function MostrarTransportadoraPage() {
   const { id } = useParams();
 
   useEffect(() => {
-    api.get('/transportadora/' + id)
+    api.get('/transportadoras/' + id)
       .then((response) => {
         setValues(response.data['data']);
       })

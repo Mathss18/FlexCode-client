@@ -22,6 +22,7 @@ import InputMask from "react-input-mask";
 import { infoAlert, successAlert } from "../../../utils/alert";
 import { fornecedorValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 const initialValues = {
   tipoFornecedor: "",
@@ -45,6 +46,7 @@ const initialValues = {
 
 function CadastrarFornecedorPage() {
   const history = useHistory();
+  const fullScreenLoader = useFullScreenLoader();
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => { handleOnSubmit(event) },
@@ -53,28 +55,30 @@ function CadastrarFornecedorPage() {
 
 
   function handleCepChange() {
-    // const cep = values.cep;
-    // const validacep = /^[0-9]{8}$/;
-    // if (validacep.test(cep.replace(/\D/g, ""))) {
-    //   buscarCep(values.cep.replace(/\D/g, "")).then((response) => {
-    //     setValues({
-    //       ...values,
-    //       rua: response.logradouro,
-    //       estado: response.uf,
-    //       bairro: response.bairro,
-    //       cidade: response.localidade,
-    //       codigoMunicipio: response.ibge,
-    //     });
-    //   });
-    // } else {
-    //   // alert('CEP Inválido');
-    // }
+    const cep = formik.values.cep;
+    const validacep = /^[0-9]{8}$/;
+    if (validacep.test(cep.replace(/\D/g, ""))) {
+      buscarCep(formik.values.cep.replace(/\D/g, ""))
+      .then((response) => {
+        formik.setValues({
+          ...formik.values,
+          rua: response.logradouro,
+          estado: response.uf,
+          bairro: response.bairro,
+          cidade: response.localidade,
+          codigoMunicipio: response.ibge,
+        });
+      });
+    } else {
+      infoAlert("Atenção!", "CEP inválido");
+    }
   }
 
  
 
   function handleOnSubmit(values) {
-    api.post("/fornecedor", values)
+    fullScreenLoader.setLoading(true);
+    api.post("/fornecedores", values)
       .then((response) => {
         successAlert("Sucesso!", "Fornecedor cadastrado com sucesso!", () => {
           history.push("/fornecedores");
@@ -83,6 +87,9 @@ function CadastrarFornecedorPage() {
       .catch((error) => {
         infoAlert("Atenção", error.response.data.message);
       })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      });
   }
 
   return (

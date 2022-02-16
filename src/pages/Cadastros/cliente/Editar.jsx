@@ -29,6 +29,7 @@ import {
 import buscarCep from "../../../services/buscarCep";
 import { clienteValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 const initialValues = {
   tipoCliente: "",
@@ -53,15 +54,20 @@ const initialValues = {
 function EditarClientePage() {
   const history = useHistory();
   const { id } = useParams();
+  const fullScreenLoader = useFullScreenLoader();
 
   useEffect(() => {
+    fullScreenLoader.setLoading(true);
     api
-      .get("/cliente/" + id)
+      .get("/clientes/" + id)
       .then((response) => {
         formik.setValues(response.data.data);
       })
       .catch((error) => {
         infoAlert("Atenção", error.response.data.message);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
       });
   }, []);
 
@@ -72,27 +78,29 @@ function EditarClientePage() {
   })
 
   function handleCepChange() {
-    // const cep = values.cep;
-    // const validacep = /^[0-9]{8}$/;
-    // if (validacep.test(cep.replace(/\D/g, ""))) {
-    //   buscarCep(values.cep.replace(/\D/g, "")).then((response) => {
-    //     setValues({
-    //       ...values,
-    //       rua: response.logradouro,
-    //       estado: response.uf,
-    //       bairro: response.bairro,
-    //       cidade: response.localidade,
-    //       codigoMunicipio: response.ibge,
-    //     });
-    //   });
-    // } else {
-    //   infoAlert("Atenção!", "CEP inválido");
-    // }
+    const cep = formik.values.cep;
+    const validacep = /^[0-9]{8}$/;
+    if (validacep.test(cep.replace(/\D/g, ""))) {
+      buscarCep(formik.values.cep.replace(/\D/g, ""))
+      .then((response) => {
+        formik.setValues({
+          ...formik.values,
+          rua: response.logradouro,
+          estado: response.uf,
+          bairro: response.bairro,
+          cidade: response.localidade,
+          codigoMunicipio: response.ibge,
+        });
+      });
+    } else {
+      infoAlert("Atenção!", "CEP inválido");
+    }
   }
 
   function handleOnSubmit(values) {
+    fullScreenLoader.setLoading(true);
     api
-      .put("/cliente/" + id, values)
+      .put("/clientes/" + id, values)
       .then((response) => {
         successAlert("Sucesso", "Cliente Editado", () =>
           history.push("/clientes")
@@ -100,6 +108,9 @@ function EditarClientePage() {
       })
       .catch((error) => {
         infoAlert("Atenção", error.response.data.message);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
       });
   }
 
@@ -111,7 +122,7 @@ function EditarClientePage() {
 
   function deletarCliente() {
     api
-      .delete("/cliente/" + id)
+      .delete("/clientes/" + id)
       .then((result) => {
         successAlert("Sucesso", "Cliente Excluido", () =>
           history.push("/clientes")

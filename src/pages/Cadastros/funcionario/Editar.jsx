@@ -15,6 +15,8 @@ import NotInterestedIcon from '@material-ui/icons/NotInterested';
 import FormHelperText from '@mui/material/FormHelperText';
 import { funcionarioValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
+import { values } from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -47,6 +49,7 @@ const initialValues = {
   celular: '',
   emailPessoal: '',
   usuario: '',
+  a: '',
 
   usuarioAccess: '',
 }
@@ -56,6 +59,7 @@ function EditarClientePage() {
   const history = useHistory();
   const [grupos, setGrupos] = useState([]);
   const { id } = useParams();
+  const fullScreenLoader = useFullScreenLoader();
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => { handleOnSubmit(event) },
@@ -63,11 +67,12 @@ function EditarClientePage() {
   })
 
   useEffect(() => {
+    fullScreenLoader.setLoading(true);
     api.get('/grupos')
       .then((response) => {
         setGrupos(response.data['data']);
       });
-    api.get('/funcionario/' + id)
+    api.get('/funcionarios/' + id)
       .then((response) => {
         console.log(response.data['data']);
 
@@ -95,6 +100,9 @@ function EditarClientePage() {
         }
 
       })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      });
 
 
   }, []);
@@ -113,6 +121,10 @@ function EditarClientePage() {
 
 
   function handleRemoveAccess(event) {
+    formik.setValues({
+      ...formik.values,
+      usuarioAccess: 0,
+    });
     document.getElementById('email').disabled = true;
     document.getElementById('senha').disabled = true;
     document.getElementById('email').style.backgroundColor = "#ccc";
@@ -122,6 +134,10 @@ function EditarClientePage() {
   }
 
   function handleGiveAccess(event) {
+    formik.setValues({
+      ...formik.values,
+      usuarioAccess: 1,
+    });
     document.getElementById('email').disabled = false;
     document.getElementById('senha').disabled = false;
     document.getElementById('email').style.backgroundColor = "white";
@@ -132,7 +148,8 @@ function EditarClientePage() {
   }
 
   function handleOnSubmit(values) {
-    api.put('/funcionario/' + id, values)
+    fullScreenLoader.setLoading(true);
+    api.put('/funcionarios/' + id, values)
       .then((response) => {
         console.log(response);
         Swal.fire({
@@ -163,6 +180,9 @@ function EditarClientePage() {
           }
         })
       })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      });
   }
 
   function handleDelete() {
@@ -176,7 +196,7 @@ function EditarClientePage() {
       confirmButtonText: 'Sim, excluir!'
     }).then((result) => {
       if (result.isConfirmed) {
-        api.delete("/funcionario/" + id)
+        api.delete("/funcionarios/" + id)
           .then((result) => {
             Swal.fire(
               'Excluido!',
@@ -552,6 +572,7 @@ function EditarClientePage() {
                 fullWidth
                 className={classes.input}
                 name="email"
+                id="email"
                 value={formik.values.email}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -567,6 +588,7 @@ function EditarClientePage() {
                 fullWidth
                 className={classes.input}
                 name="senha"
+                id="senha"
                 value={formik.values.senha}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}

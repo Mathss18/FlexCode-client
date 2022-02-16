@@ -30,10 +30,12 @@ import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import LayersIcon from '@mui/icons-material/Layers';
 import SchemaIcon from '@mui/icons-material/Schema';
+import ConstructionIcon from '@mui/icons-material/Construction';
 import { useRef } from "react";
 import { useCadastroMenu } from "../context/SideMenuCadastroContext";
 import { useProdutoMenu } from "../context/SideMenuProdutoContext";
 import { useMenu } from "../context/SideMenuContext";
+import { useServicoMenu } from "../context/SideMenuServicoContext copy";
 
 const drawerWidth = 240;
 
@@ -91,6 +93,7 @@ function SideMenu({ children }) {
   const history = useHistory();
   const [openCadastroList, setOpenCadastroList] = useCadastroMenu();
   const [openProdutoList, setOpenProdutoList] = useProdutoMenu();
+  const [openServicoList, setOpenServicoList] = useServicoMenu();
   const [openSideMenu, setOpenSideMenu] = useMenu();
 
   // Função que controla se Side Menu esta aberto ou fechado
@@ -101,6 +104,10 @@ function SideMenu({ children }) {
   // Função que controla se Lista de cadastros esta aberto ou fechado
   const handleOpenCadastroList = () => {
     setOpenCadastroList(!openCadastroList);
+  };
+
+  const handleOpenServicoList = () => {
+    setOpenServicoList(!openServicoList);
   };
 
   const handleOpenProdutosList = () => {
@@ -205,7 +212,7 @@ function SideMenu({ children }) {
                 <ListItemIcon>
                   <LayersIcon className={"sidemenu-text"} />
                 </ListItemIcon>
-                <ListItemText className={"sidemenu-text"} primary="Produtos" />
+                <ListItemText className={"sidemenu-text"} primary="Gerenciar Produtos" />
               </ListItem>
             </List>
             <List onClick={() => history.push("/grupos-produtos")} disablePadding>
@@ -230,6 +237,25 @@ function SideMenu({ children }) {
                   <SchemaIcon className={"sidemenu-text"} />
                 </ListItemIcon>
                 <ListItemText className={"sidemenu-text"} primary="Grades/Variações" />
+              </ListItem>
+            </List>
+          </Collapse>
+
+          <ListItem button onClick={handleOpenServicoList}>
+            <ListItemIcon>
+              <ConstructionIcon className={"sidemenu-text"} />
+            </ListItemIcon>
+            <ListItemText className={"sidemenu-text"} primary="Serviços" />
+            {openServicoList ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+
+          <Collapse in={openServicoList} timeout="auto" unmountOnExit>
+            <List onClick={() => history.push("/servicos")} disablePadding>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <ConstructionIcon className={"sidemenu-text"} />
+                </ListItemIcon>
+                <ListItemText className={"sidemenu-text"} primary="Gerenciar Serviços" />
               </ListItem>
             </List>
           </Collapse>

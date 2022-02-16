@@ -23,6 +23,7 @@ import { infoAlert, successAlert } from "../../../utils/alert";
 import { clienteValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 import { useRef } from "react";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 const initialValues = {
   tipoCliente: "",
@@ -46,6 +47,7 @@ const initialValues = {
 
 function CadastrarClientePage() {
   const history = useHistory();
+  const fullScreenLoader = useFullScreenLoader();
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -55,8 +57,9 @@ function CadastrarClientePage() {
 
   function handleOnSubmit(values) {
     console.log(values);
+    fullScreenLoader.setLoading(true);
     api
-      .post("/cliente", values)
+      .post("/clientes", values)
       .then((response) => {
         successAlert("Sucesso", "Cliente Cadastrado", () =>
           history.push("/clientes")
@@ -64,26 +67,30 @@ function CadastrarClientePage() {
       })
       .catch((error) => {
         infoAlert("Atenção", error.response.data.message);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
       });
   }
 
   function handleCepChange() {
-    // const cep = formik.values.cep;
-    // const validacep = /^[0-9]{8}$/;
-    // if (validacep.test(cep.replace(/\D/g, ""))) {
-    //   buscarCep(formik.values.cep.replace(/\D/g, "")).then((response) => {
-    //     setValues({
-    //       ...values,
-    //       rua: response.logradouro,
-    //       estado: response.uf,
-    //       bairro: response.bairro,
-    //       cidade: response.localidade,
-    //       codigoMunicipio: response.ibge,
-    //     });
-    //   });
-    // } else {
-    //   infoAlert("Atenção!", "CEP inválido");
-    // }
+    const cep = formik.values.cep;
+    const validacep = /^[0-9]{8}$/;
+    if (validacep.test(cep.replace(/\D/g, ""))) {
+      buscarCep(formik.values.cep.replace(/\D/g, ""))
+      .then((response) => {
+        formik.setValues({
+          ...formik.values,
+          rua: response.logradouro,
+          estado: response.uf,
+          bairro: response.bairro,
+          cidade: response.localidade,
+          codigoMunicipio: response.ibge,
+        });
+      });
+    } else {
+      infoAlert("Atenção!", "CEP inválido");
+    }
   }
 
 
@@ -193,6 +200,7 @@ function CadastrarClientePage() {
                 helperText={formik.touched.inscricaoEstadual && formik.errors.inscricaoEstadual}
               />
             </Grid>
+            
 
             <Grid item xs={3}>
               <TextField
@@ -278,7 +286,7 @@ function CadastrarClientePage() {
                 value={formik.values.cep}
                 name="cep"
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
+                onBlur={handleCepChange}
                 error={formik.touched.cep && Boolean(formik.errors.cep)}
                 helperText={formik.touched.cep && formik.errors.cep}
               />

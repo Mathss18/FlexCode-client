@@ -288,6 +288,9 @@ export const GlobalStyles = createGlobalStyle`
     color: ${({ theme }) => theme.colors.table.header.text}; // "Nenhum resultado encontrado" na tabela
   }
 
+  .table-tag{
+    margin-right: 12px; // Tag dentro da tabela
+  }
 
   // -* Row Par *- //
   .row-par > *{ 
@@ -314,6 +317,15 @@ export const GlobalStyles = createGlobalStyle`
   }
   
 
+  /* ========= Card ========= */
+  .card-valores{
+    background: ${({ theme }) => theme.colors.topbar.background}; // cor de fundo do card da aba valores
+    color: ${({ theme }) => theme.colors.button.primary.text}; // cor de texto do card da aba de valores
+  }
+
+  .MuiAutocomplete-tag span {
+    color: ${({ theme }) => theme.colors.button.primary.text}; // cor da tag do multiple select (aba de fornecedores cadastro de produtos)
+  }
 
 
   /* ========= Botoes ========= */

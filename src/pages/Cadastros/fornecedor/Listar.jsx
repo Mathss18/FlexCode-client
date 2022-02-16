@@ -7,11 +7,13 @@ import { Button } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import SearchIcon from '@material-ui/icons/Search';
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 
 function ListarFornecedorPage() {
   const history = useHistory();
   const [fornecedores, setFornecedores] = useState([]);
+  const fullScreenLoader = useFullScreenLoader();
   const columns = [
     {
       name: 'Nome',
@@ -46,17 +48,17 @@ function ListarFornecedorPage() {
   const data = [];
 
   function handleOnClickShowButton(event, id) {
-    history.push("/fornecedor/mostrar/" + id)
+    history.push("/fornecedores/mostrar/" + id)
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/fornecedor/editar/" + id)
+    history.push("/fornecedores/editar/" + id)
   }
 
 
 
   useEffect(() => {
-
+    fullScreenLoader.setLoading(true);
     api.get('/fornecedores')
       .then((response) => {
         response.data['data'].forEach(element => {
@@ -84,11 +86,14 @@ function ListarFornecedorPage() {
         setFornecedores(data)
 
       })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      })
   }, []);
 
   return (
     <>
-      <Button onClick={() => history.push("/fornecedor/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
+      <Button onClick={() => history.push("/fornecedores/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
       <MUIDataTable
         title={"Lista de Fornecedors"}
         data={fornecedores}

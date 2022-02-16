@@ -28,26 +28,31 @@ import ListarGrupoPage from "../pages/Cadastros/grupo/Listar";
 import CadastrarGrupoPage from "../pages/Cadastros/grupo/Cadastrar";
 import EditarGrupoPage from "../pages/Cadastros/grupo/Editar";
 
-import ListarGruposDeProdutos from "../pages/Produtos/gruposDeProdutos/Listar";
-import CadastrarGrupoDeProdutos from "../pages/Produtos/gruposDeProdutos/Cadastrar";
-import EditarGrupoDeProdutos from "../pages/Produtos/gruposDeProdutos/Editar";
+import ListarGruposDeProdutos from "../pages/Produtos/grupos-produtos/Listar";
+import CadastrarGrupoDeProdutos from "../pages/Produtos/grupos-produtos/Cadastrar";
+import EditarGrupoDeProdutos from "../pages/Produtos/grupos-produtos/Editar";
 
-import ListarUnidadesDeProdutos from "../pages/Produtos/unidadesDeProdutos/Listar";
-import CadastrarUnidadeDeProdutos from "../pages/Produtos/unidadesDeProdutos/Cadastrar";
-import EditarUnidadeDeProdutos from "../pages/Produtos/unidadesDeProdutos/Editar";
+import ListarUnidadesDeProdutos from "../pages/Produtos/unidades-produtos/Listar";
+import CadastrarUnidadeDeProdutos from "../pages/Produtos/unidades-produtos/Cadastrar";
+import EditarUnidadeDeProdutos from "../pages/Produtos/unidades-produtos/Editar";
 
-import ListarGradesDeVariacoes from "../pages/Produtos/gradesDeVariacoes/Listar";
-import CadastrarGradesDeVariacoes from "../pages/Produtos/gradesDeVariacoes/Cadastrar";
-import EditarGradesDeVariacoes from "../pages/Produtos/gradesDeVariacoes/Editar";
+import ListarGradesDeVariacoes from "../pages/Produtos/grades-variacoes/Listar";
+import CadastrarGradesDeVariacoes from "../pages/Produtos/grades-variacoes/Cadastrar";
+import EditarGradesDeVariacoes from "../pages/Produtos/grades-variacoes/Editar";
 
-import ListarProdutos from "../pages/Produtos/gerenciarProdutos/Listar";
-import CadastrarProdutos from "../pages/Produtos/gerenciarProdutos/Cadastrar";
-import EditarProdutos from "../pages/Produtos/gerenciarProdutos/Editar";
+import ListarProdutos from "../pages/Produtos/gerenciar-produtos/Listar";
+import CadastrarProdutos from "../pages/Produtos/gerenciar-produtos/Cadastrar";
+import EditarProdutos from "../pages/Produtos/gerenciar-produtos/Editar";
+
+import ListarServicos from "../pages/Servicos/gerenciar-servicos/Listar";
+import CadastrarServicos from "../pages/Servicos/gerenciar-servicos/Cadastrar";
+import EditarServicos from "../pages/Servicos/gerenciar-servicos/Editar";
 
 import PrivateRoutes from "./PrivateRoutes";
 import TopBar from "../components/TopBar";
 import SideMenu from "../components/SideMenu";
 import Chat from "../pages/Chat/Chat";
+import CadastrarOrdemServicoPage from "../pages/Servicos/gerenciar-servicos/Cadastrar";
 
 export default function Routes() {
   return (
@@ -66,44 +71,52 @@ export default function Routes() {
             <Route path="/home" exact component={Home}></Route>
 
             <Route path="/clientes" exact component={ListarClientePage}></Route>
-            <Route path="/cliente/novo" exact component={CadastrarClientePage}></Route>
-            <Route path="/cliente/mostrar/:id" exact component={MostrarClientePage}></Route>
-            <Route path="/cliente/editar/:id" exact component={EditarClientePage}></Route>
+            <Route path="/clientes/novo" exact component={CadastrarClientePage}></Route>
+            <Route path="/clientes/mostrar/:id" exact component={MostrarClientePage}></Route>
+            <Route path="/clientes/editar/:id" exact component={EditarClientePage}></Route>
 
             <Route path="/transportadoras" exact component={ListarTransportadoraPage}></Route>
-            <Route path="/transportadora/novo" exactc component={CadastrarTransportadoraPage}></Route>
-            <Route path="/transportadora/mostrar/:id" exact component={MostrarTransportadoraPage}></Route>
-            <Route path="/transportadora/editar/:id" exact component={EditarTransportadoraPage}></Route>
+            <Route path="/transportadoras/novo" exactc component={CadastrarTransportadoraPage}></Route>
+            <Route path="/transportadoras/mostrar/:id" exact component={MostrarTransportadoraPage}></Route>
+            <Route path="/transportadoras/editar/:id" exact component={EditarTransportadoraPage}></Route>
 
             <Route path="/fornecedores" exact component={ListarFornecedorPage}></Route>
-            <Route path="/fornecedor/novo" exact component={CadastrarFornecedorPage}></Route>
-            <Route path="/fornecedor/mostrar/:id" exact component={MostrarFornecedorPage}></Route>
-            <Route path="/fornecedor/editar/:id" exact component={EditarFornecedorPage}></Route>
+            <Route path="/fornecedores/novo" exact component={CadastrarFornecedorPage}></Route>
+            <Route path="/fornecedores/mostrar/:id" exact component={MostrarFornecedorPage}></Route>
+            <Route path="/fornecedores/editar/:id" exact component={EditarFornecedorPage}></Route>
 
             <Route path="/funcionarios" exact component={ListarFuncionarioPage}></Route>
-            <Route path="/funcionario/novo" exact component={CadastrarFuncionarioPage}></Route>
-            <Route path="/funcionario/mostrar/:id" exact component={MostrarFuncionarioPage}></Route>
-            <Route path="/funcionario/editar/:id" exact component={EditarFuncionarioPage}></Route>
+            <Route path="/funcionarios/novo" exact component={CadastrarFuncionarioPage}></Route>
+            <Route path="/funcionarios/mostrar/:id" exact component={MostrarFuncionarioPage}></Route>
+            <Route path="/funcionarios/editar/:id" exact component={EditarFuncionarioPage}></Route>
 
             <Route path="/grupos" exact component={ListarGrupoPage}></Route>
-            <Route path="/grupo/novo" exact component={CadastrarGrupoPage}></Route>
-            <Route path="/grupo/editar/:id" exact component={EditarGrupoPage}></Route>
+            <Route path="/grupos/novo" exact component={CadastrarGrupoPage}></Route>
+            <Route path="/grupos/editar/:id" exact component={EditarGrupoPage}></Route>
 
             <Route path="/grupos-produtos" exact component={ListarGruposDeProdutos}></Route>
-            <Route path="/grupo-produto/novo" exact component={CadastrarGrupoDeProdutos}></Route>
-            <Route path="/grupo-produto/editar/:id" exact component={EditarGrupoDeProdutos}></Route>
+            <Route path="/grupos-produtos/novo" exact component={CadastrarGrupoDeProdutos}></Route>
+            <Route path="/grupos-produtos/editar/:id" exact component={EditarGrupoDeProdutos}></Route>
 
             <Route path="/unidades-produtos" exact component={ListarUnidadesDeProdutos}></Route>
-            <Route path="/unidade-produto/novo" exact component={CadastrarUnidadeDeProdutos}></Route>
-            <Route path="/unidade-produto/editar/:id" exact component={EditarUnidadeDeProdutos}></Route>
+            <Route path="/unidades-produtos/novo" exact component={CadastrarUnidadeDeProdutos}></Route>
+            <Route path="/unidades-produtos/editar/:id" exact component={EditarUnidadeDeProdutos}></Route>
 
             <Route path="/grades-variacoes" exact component={ListarGradesDeVariacoes}></Route>
-            <Route path="/grade-variacao/novo" exact component={CadastrarGradesDeVariacoes}></Route>
-            <Route path="/grade-variacao/editar/:id" exact component={EditarGradesDeVariacoes}></Route>
+            <Route path="/grades-variacoes/novo" exact component={CadastrarGradesDeVariacoes}></Route>
+            <Route path="/grades-variacoes/editar/:id" exact component={EditarGradesDeVariacoes}></Route>
 
             <Route path="/produtos" exact component={ListarProdutos}></Route>
-            <Route path="/produto/novo" exact component={CadastrarProdutos}></Route>
-            <Route path="/produto/editar/:id" exact component={EditarProdutos}></Route>
+            <Route path="/produtos/novo" exact component={CadastrarProdutos}></Route>
+            <Route path="/produtos/editar/:id" exact component={EditarProdutos} ></Route>
+
+            <Route path="/servicos" exact component={ListarServicos}></Route>
+            <Route path="/servicos/novo" exact component={CadastrarServicos}></Route>
+            <Route path="/servicos/editar/:id" exact component={EditarServicos} ></Route>
+
+            {/* <Route path="/ordens-servicos" exact component={ListarServicos}></Route> */}
+            <Route path="/ordens-servicos/novo" exact component={CadastrarOrdemServicoPage}></Route>
+            {/* <Route path="/ordens-servicos/editar/:id" exact component={EditarServicos} ></Route> */}
 
             <Route path="/chat" exact component={Chat}></Route>
 

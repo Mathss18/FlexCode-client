@@ -24,6 +24,7 @@ import InputMask from "react-input-mask";
 import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
 import { fornecedorValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 const initialValues = {
   tipoFornecedor: "",
@@ -48,6 +49,7 @@ const initialValues = {
 function EditarFornecedorPage() {
   const history = useHistory();
   const { id } = useParams();
+  const fullScreenLoader = useFullScreenLoader();
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => { handleOnSubmit(event) },
@@ -55,15 +57,20 @@ function EditarFornecedorPage() {
   })
 
   useEffect(() => {
-    api.get("/fornecedor/" + id).then((response) => {
+    fullScreenLoader.setLoading(true);
+    api.get("/fornecedores/" + id).then((response) => {
       formik.setValues(response.data["data"]);
+    })
+    .finally(() => {
+      fullScreenLoader.setLoading(false);
     });
   }, []);
 
 
   function handleOnSubmit(values) {
+    fullScreenLoader.setLoading(true);
     api
-      .put("/fornecedor/" + id, values)
+      .put("/fornecedores/" + id, values)
       .then((response) => {
         successAlert("Sucesso", "Fornecedor Editado", () =>
           history.push("/fornecedores")
@@ -71,6 +78,9 @@ function EditarFornecedorPage() {
       })
       .catch((error) => {
         infoAlert("Atenção", error.response.request.responseText);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
       });
   }
 
@@ -82,7 +92,7 @@ function EditarFornecedorPage() {
 
   function deletarFornecedor() {
     api
-      .delete("/fornecedor/" + id)
+      .delete("/fornecedores/" + id)
       .then((result) => {
         successAlert("Sucesso", "Fornecedor Excluido", () =>
           history.push("/fornecedores")

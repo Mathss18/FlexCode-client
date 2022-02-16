@@ -8,12 +8,14 @@ import { Button } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import SearchIcon from '@material-ui/icons/Search';
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 
 
 function ListarFuncionarioPage() {
   const history = useHistory();
   const [funcionarios, setFuncionarios] = useState([]);
+  const fullScreenLoader = useFullScreenLoader();
   const [grupos, setGrupos] = useState([]);
   const columns = [
     {
@@ -44,16 +46,17 @@ function ListarFuncionarioPage() {
   const data = [];
 
   function handleOnClickShowButton(event, id) {
-    history.push("/funcionario/mostrar/" + id)
+    history.push("/funcionarios/mostrar/" + id)
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/funcionario/editar/" + id)
+    history.push("/funcionarios/editar/" + id)
   }
 
 
 
   useEffect(() => {
+    fullScreenLoader.setLoading(true);
 
     api.get('/funcionarios')
       .then((response) => {
@@ -82,6 +85,9 @@ function ListarFuncionarioPage() {
         setFuncionarios(data)
 
       })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      })
   }, []);
 
   return (
@@ -89,7 +95,7 @@ function ListarFuncionarioPage() {
       {funcionarios.map((funcionario, index) => (
         <h4 key={index} >{funcionario.nome}</h4>
       ))}
-      <Button onClick={() => history.push("/funcionario/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
+      <Button onClick={() => history.push("/funcionarios/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
       <MUIDataTable
         title={"Lista de Funcionario"}
         data={funcionarios}
