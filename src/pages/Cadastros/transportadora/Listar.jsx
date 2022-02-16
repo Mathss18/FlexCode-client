@@ -8,11 +8,13 @@ import { Button } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import SearchIcon from '@material-ui/icons/Search';
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 
 function ListarTransportadoraPage() {
   const history = useHistory();
   const [transportadoras, setTransportadoras] = useState([]);
+  const fullScreenLoader = useFullScreenLoader();
   const columns = [
     {
       name: 'Nome',
@@ -46,17 +48,17 @@ function ListarTransportadoraPage() {
   const data = [];
 
   function handleOnClickShowButton(event, id) {
-    history.push("/transportadora/mostrar/" + id)
+    history.push("/transportadoras/mostrar/" + id)
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/transportadora/editar/" + id)
+    history.push("/transportadoras/editar/" + id)
   }
 
 
 
   useEffect(() => {
-
+    fullScreenLoader.setLoading(true);
     api.get('/transportadoras')
       .then((response) => {
         response.data['data'].forEach(element => {
@@ -84,6 +86,9 @@ function ListarTransportadoraPage() {
         setTransportadoras(data)
 
       })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      })
   }, []);
 
   return (
@@ -91,7 +96,7 @@ function ListarTransportadoraPage() {
       {transportadoras.map((transportador, index) => (
         <h4 key={index} >{transportador.nome}</h4>
       ))}
-      <Button onClick={() => history.push("/transportadora/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
+      <Button onClick={() => history.push("/transportadoras/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
       <MUIDataTable
         title={"Lista de Transportadoras"}
         data={transportadoras}

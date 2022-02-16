@@ -92,6 +92,7 @@ export const grupoValidation = yup.object().shape({
 export const grupoProdutoValidation = yup.object().shape({
   nome: yup.string().required('O nome é obrigatório'),
   grupoPai: yup.number('').required('Grupo pai é obrigatório'),
+  // porcentagemLucro: yup.number('').required('A porcentagem de lucro é obrigatória'),
 })
 
 export const unidadeProdutoValidation = yup.object().shape({
@@ -107,10 +108,10 @@ export const gradeVariacoesValidation = yup.object().shape({
 export const produtoValidation = yup.object().shape({
     nome: yup.string().required('O nome é obrigatório'),
     codigoInterno: yup.string().required('O código interno é obrigatório'),
-    grupo_produto_id: yup.number('').required('O grupo é obrigatório'),
+    grupo_produto_id: yup.number('').required('O grupo é obrigatório').min(0, 'O grupo de produto é obrigatório'),
     movimentaEstoque: yup.boolean().required('É nescessario informar se o produto movimenta estoque'),
     habilitaNotaFiscal: yup.boolean().required('É nescessario informar se o produto habilita nota fiscal'),
-    possuiVariacoes: yup.boolean().required('É nescessario informar se o produto possui variações'),
+    codigoBarras: yup.boolean().required('É nescessario informar se o produto possui variações'),
     peso: yup.number('').min(0, 'O peso não pode ser negativo'),
     largura: yup.number('').min(0, 'A largura não pode ser negativa'),
     altura: yup.number('').min(0, 'A altura não pode ser negativa'),
@@ -136,7 +137,15 @@ export const produtoValidation = yup.object().shape({
     // valorFixoPisSt: 0,
     // valorFixoCofins: 0,
     // valorFixoCofinsSt: 0,
-    // valuesProfit: []
+    // porcentagem_lucro_produto: []
+})
+
+export const servicoValidation = yup.object().shape({
+  nome: yup.string().required('O nome é obrigatório'),
+  codigoInterno: yup.string().required('O código interno é obrigatório'),
+  valor:yup.number('').min(0, 'O valor não pode ser negativo'),
+  comissao: yup.number('').required('A comissão é obrigatória').min(0),
+  // descricao: yup.string().required('A descrição é obrigatória'),
 })
 
 

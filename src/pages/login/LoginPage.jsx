@@ -6,12 +6,14 @@ import api from "../../services/api";
 import { setToLS } from "../../utils/storage";
 import { useHistory } from "react-router-dom";
 import { usePusherContext } from "../../context/PusherContext";
+import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const history = useHistory();
   const pusherContext = usePusherContext();
+  const fullScreenLoader = useFullScreenLoader();
 
   var dados = {
     email: email,
@@ -31,6 +33,7 @@ function LoginPage() {
 
   function onSubmit(event) {
     event.preventDefault();
+    fullScreenLoader.setLoading(true);
 
     api
       .post("/login", dados)
@@ -39,6 +42,9 @@ function LoginPage() {
       })
       .catch((error) => {
         console.log(error);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
       });
   }
 
@@ -58,7 +64,7 @@ function LoginPage() {
       <div className="area-login">
         <h1>Entre com sua conta</h1>
 
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} autoComplete="off">
           <FormControl>
             <TextField
               className="input-login"
@@ -66,7 +72,7 @@ function LoginPage() {
               variant="standard"
               type="email"
               name="email"
-              autoComplete="off"
+              autoComplete="somerandomstring"
               value={email}
               onChange={(event) => {
                 setEmail(event.target.value);
@@ -81,7 +87,7 @@ function LoginPage() {
                 type="password"
                 name="senha"
                 style={{ marginTop: "50px" }}
-                autocomplete="off"
+                autoComplete="new-password"
                 value={senha}
                 onChange={alterarSenha}
               />

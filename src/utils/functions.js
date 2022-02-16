@@ -16,7 +16,7 @@ export function objectToArray(obj) {
 
 /**  Remove um elemento de um array por chave: valor.
  * @param {Array} array Array a ser modificado.
- * @param {String} attr Atributo a ser usado para a busca.
+ * @param {String} key Atributo a ser usado para a busca.
  * @param {String} value Valor do atributo a ser usado para a busca.
  * @returns {Array} Array modificado.
  * @example
@@ -61,5 +61,15 @@ export function moveObjectInArray(array, from, to) {
  */
 export function deleteFromArrayByIndex(array, index) {
   return array.filter((item, i) => i !== index);
+}
+
+/** Remove os objetos duplicados de um array por um atributo
+ * @param {Array} array Array a ser modificado.
+ * @param {String} key Atributo a ser usado para a busca.
+ * @returns {Array} Array modificado.
+ * 
+ */
+export function getUniqueArrayOfObjectsByKey(arr, key) {
+  return [...new Map(arr.map(item => [item[key], item])).values()]
 }
 

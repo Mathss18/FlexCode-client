@@ -12,9 +12,9 @@ import WebFont from 'webfontloader';
 import { GlobalStyles } from './theme/GlobalStyles';
 import { useTheme } from './theme/useTheme';
 import MomentUtils from '@date-io/moment';
+import FullScreenLoaderProvider from './context/FullScreenLoaderContext';
 
 function App() {
-
   const { theme, themeLoaded, getFonts } = useTheme();
   const [selectedTheme, setSelectedTheme] = useState(theme);
 
@@ -29,22 +29,24 @@ function App() {
       }
     });
   });
-  
+
 
 
   return (
     <>
       {themeLoaded && <ThemeProvider theme={selectedTheme}>
         <GlobalStyles />
-          <PusherContextProvider>
-            <SideMenuContextProvider>
-              <GerenciarProdutosContextProvider>
-                <MuiPickersUtilsProvider utils={MomentUtils}>
+        <PusherContextProvider>
+          <SideMenuContextProvider>
+            <GerenciarProdutosContextProvider>
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <FullScreenLoaderProvider>
                   <Routes />
-                </MuiPickersUtilsProvider>
-              </GerenciarProdutosContextProvider>
-            </SideMenuContextProvider>
-          </PusherContextProvider>
+                </FullScreenLoaderProvider>
+              </MuiPickersUtilsProvider>
+            </GerenciarProdutosContextProvider>
+          </SideMenuContextProvider>
+        </PusherContextProvider>
       </ThemeProvider>
       }
     </>

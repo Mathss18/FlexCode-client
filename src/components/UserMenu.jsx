@@ -26,7 +26,7 @@ function UserMenu() {
   var indexCurrentStatus;
 
   useEffect(() => {
-    api.get('/usuario/' + user?.id)
+    api.get('/usuarios/' + user?.id)
       .then((response) => {
         let statusAtual = status.filter(item => item.class === response.data['data']['chat-status']);
 

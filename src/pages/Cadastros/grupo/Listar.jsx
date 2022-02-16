@@ -7,10 +7,12 @@ import { Button } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import SearchIcon from '@material-ui/icons/Search';
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 function ListarGrupoPage() {
   const history = useHistory();
   const [grupos, setGrupos] = useState([]);
+  const fullScreenLoader = useFullScreenLoader();
   const columns = [
     {
       name: 'Nome',
@@ -29,29 +31,34 @@ function ListarGrupoPage() {
   const data = [];
 
   function handleOnClickShowButton(event, id) {
-    history.push("/grupo/mostrar/" + id);
+    history.push("/grupos/mostrar/" + id);
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/grupo/editar/" + id);
+    history.push("/grupos/editar/" + id);
   }
 
   useEffect(() => {
-    api.get("/grupos").then((response) => {
-      response.data["data"].forEach((element) => {
-        var array = [
-          element["nome"],
-          new Date(element["created_at"]).toLocaleString(),
-          <>
-            <SearchIcon className={'btn btn-lista'} onClick={(event) => handleOnClickShowButton(event, element["id"])} />
-            <EditIcon className={'btn btn-lista'} onClick={(event) => handleOnClickEditButton(event, element["id"])} />
-          </>,
-        ];
-        data.push(array);
-      });
+    fullScreenLoader.setLoading(true);
+    api.get("/grupos")
+      .then((response) => {
+        response.data["data"].forEach((element) => {
+          var array = [
+            element["nome"],
+            new Date(element["created_at"]).toLocaleString(),
+            <>
+              <SearchIcon className={'btn btn-lista'} onClick={(event) => handleOnClickShowButton(event, element["id"])} />
+              <EditIcon className={'btn btn-lista'} onClick={(event) => handleOnClickEditButton(event, element["id"])} />
+            </>,
+          ];
+          data.push(array);
+        });
 
-      setGrupos(data);
-    });
+        setGrupos(data);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      })
   }, []);
 
   return (
@@ -60,7 +67,7 @@ function ListarGrupoPage() {
         <h4 key={index}>{grupo.nome}</h4>
       ))}
       <Button
-        onClick={() => history.push("/grupo/novo")}
+        onClick={() => history.push("/grupos/novo")}
         variant="outlined"
         startIcon={<AddIcon />}
         className={'btn btn-primary btn-spacing'}

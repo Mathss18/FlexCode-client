@@ -38,7 +38,7 @@ function MostrarFornecedorPage() {
   const { id } = useParams();
 
   useEffect(() => {
-    api.get('/fornecedor/' + id)
+    api.get('/fornecedores/' + id)
       .then((response) => {
         setValues(response.data['data']);
       })

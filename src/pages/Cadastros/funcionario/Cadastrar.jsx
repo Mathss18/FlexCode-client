@@ -14,6 +14,7 @@ import buscarCep from '../../../services/buscarCep';
 import { infoAlert, successAlert } from '../../../utils/alert';
 import { funcionarioValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
+import { useFullScreenLoader } from '../../../context/FullScreenLoaderContext';
 
 
 
@@ -56,6 +57,7 @@ function CadastrarFuncionarioPage() {
   const [grupos, setGrupos] = useState([]);
   const classes = useStyles();
   const history = useHistory();
+  const fullScreenLoader = useFullScreenLoader();
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => { handleOnSubmit(event) },
@@ -71,27 +73,29 @@ function CadastrarFuncionarioPage() {
   }, []);
 
   function handleCepChange() {
-    // const cep = formik.values.cep;
-    // const validacep = /^[0-9]{8}$/;
-    // if (validacep.test(cep.replace(/\D/g, ''))) {
-    //   buscarCep(formik.values.cep.replace(/\D/g, '')).then(response => {
-    //     setValues({
-    //       ...values,
-    //       rua: response.logradouro,
-    //       estado: response.uf,
-    //       bairro: response.bairro,
-    //       cidade: response.localidade,
-    //       codigoMunicipio: response.ibge
-    //     })
-    //   });
-    // } else {
-    //   // alert('CEP Inválido');
-    // }
+    const cep = formik.values.cep;
+    const validacep = /^[0-9]{8}$/;
+    if (validacep.test(cep.replace(/\D/g, ""))) {
+      buscarCep(formik.values.cep.replace(/\D/g, ""))
+      .then((response) => {
+        formik.setValues({
+          ...formik.values,
+          rua: response.logradouro,
+          estado: response.uf,
+          bairro: response.bairro,
+          cidade: response.localidade,
+          codigoMunicipio: response.ibge,
+        });
+      });
+    } else {
+      infoAlert("Atenção!", "CEP inválido");
+    }
   }
 
   function handleOnSubmit(values) {
     console.log(values);
-    api.post('/funcionario', values)
+    fullScreenLoader.setLoading(true);
+    api.post('/funcionarios', values)
       .then((response) => {
         successAlert("Sucesso", "Funcionatio Cadastrado", () =>
           history.push("/funcionarios")
@@ -99,6 +103,9 @@ function CadastrarFuncionarioPage() {
       })
       .catch((error) => {
         infoAlert("Atenção", error.response.data.message);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
       });
 
   }
@@ -306,7 +313,7 @@ function CadastrarFuncionarioPage() {
                 name="cep"
                 value={formik.values.cep}
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
+                onBlur={handleCepChange}
                 error={formik.touched.cep && Boolean(formik.errors.cep)}
                 helperText={formik.touched.cep && formik.errors.cep}
               />

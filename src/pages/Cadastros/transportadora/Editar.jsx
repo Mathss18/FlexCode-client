@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import { transportadoraValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 
 const initialValues = {
@@ -40,6 +41,7 @@ const initialValues = {
 function EditarTransportadoraPage() {
   const history = useHistory();
   const { id } = useParams();
+  const fullScreenLoader = useFullScreenLoader();
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => { handleOnSubmit(event) },
@@ -47,15 +49,20 @@ function EditarTransportadoraPage() {
   })
 
   useEffect(() => {
-    api.get('/transportadora/' + id)
+    fullScreenLoader.setLoading(true);
+    api.get('/transportadoras/' + id)
       .then((response) => {
         formik.setValues(response.data['data']);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
       })
 
   }, []);
 
   function handleOnSubmit(values) {
-    api.put('/transportadora/' + id, values)
+    fullScreenLoader.setLoading(true);
+    api.put('/transportadoras/' + id, values)
       .then((response) => {
         successAlert("Sucesso", "Transportadora Editada", () =>
           history.push("/transportadoras")
@@ -63,7 +70,10 @@ function EditarTransportadoraPage() {
       })
       .catch((error) => {
         infoAlert("Atenção", error.response.data.message);
-      });
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      })
   }
 
   function handleDelete() {
@@ -74,7 +84,7 @@ function EditarTransportadoraPage() {
 
   function deletarTransportadora() {
     api
-      .delete("/transportadora/" + id)
+      .delete("/transportadoras/" + id)
       .then((result) => {
         successAlert("Sucesso", "Transportadora Excluida", () =>
           history.push("/transportadoras")

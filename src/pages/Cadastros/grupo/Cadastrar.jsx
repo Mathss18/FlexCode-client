@@ -23,6 +23,7 @@ import "moment/locale/pt-br";
 import { grupoValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 import { infoAlert, successAlert } from "../../../utils/alert";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 const initialValues = {
   nome: "",
@@ -38,26 +39,27 @@ const initialValues = {
   horaFim: "17:00:00",
 
   acessoCliente: [0, 0, 0, 0],
-  clientes: "",
+  clientes: "0.0.0.0",
 
   acessoFornecedor: [0, 0, 0, 0],
-  fornecedores: "",
+  fornecedores: "0.0.0.0",
 
   acessoFuncionario: [0, 0, 0, 0],
-  funcionarios: "",
+  funcionarios: "0.0.0.0",
 
   acessoTransportadora: [0, 0, 0, 0],
-  transportadoras: "",
+  transportadoras: "0.0.0.0",
 
   acessoGrupo: [0, 0, 0, 0],
-  grupos: "",
+  grupos: "0.0.0.0",
 
   acessoUsuario: [0, 0, 0, 0],
-  usuarios: "",
+  usuarios: "0.0.0.0",
 };
 
 function CadastrarGrupoPage() {
   const history = useHistory();
+  const fullScreenLoader = useFullScreenLoader();
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => { handleOnSubmit(event) },
@@ -108,13 +110,17 @@ function CadastrarGrupoPage() {
   };
 
   function handleOnSubmit(values) {
-    api.post("/grupo", values).then((response) => {
+    fullScreenLoader.setLoading(true);
+    api.post("/grupos", values).then((response) => {
       successAlert("Sucesso", "Grupo Cadastrado", () =>
         history.push("/grupos")
       );
     })
     .catch((error) => {
       infoAlert("Atenção", error.response.data.message);
+    })
+    .finally(() => {
+      fullScreenLoader.setLoading(false);
     });
   }
 

@@ -53,8 +53,8 @@ function DragAndDrop({ state, fileType }) {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        const preview = reader.result
-        const imagem = { name, size, preview }
+        const foto = reader.result
+        const imagem = { nome:name, tamanho:size, foto:foto }
         if (isAllowedFileType.current(file))
           setFiles((prevImages) => [...prevImages, imagem])
         else
@@ -102,8 +102,8 @@ function DragAndDrop({ state, fileType }) {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = () => {
-          const preview = reader.result
-          const imagem = { name, size, preview }
+          const foto = reader.result
+          const imagem = { nome:name, tamanho:size, foto:foto }
           if (isAllowedFileType.current(file))
             setFiles((prevImages) => [...prevImages, imagem])
           else
@@ -116,7 +116,7 @@ function DragAndDrop({ state, fileType }) {
       // var uploadedImages = files.map(file => {
       //   const {name, size} = file
       //   if(isAllowedFileType.current(file))
-      //     return {name, size, preview: URL.createObjectURL(file)}
+      //     return {name, size, foto: URL.createObjectURL(file)}
       //   else
       //     toast.error('Arquivo não é ')
       // })
@@ -169,8 +169,8 @@ function DragAndDrop({ state, fileType }) {
                 <img
                   style={{ height: '100%' }}
                   className="imageItem"
-                  src={item.preview}
-                  alt={item.name}
+                  src={item.foto}
+                  alt={item.nome}
                   loading="lazy"
                 />
                 <DeleteIcon
@@ -185,7 +185,7 @@ function DragAndDrop({ state, fileType }) {
                       'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
                       'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
                   }}
-                  title={index == 0 ? 'Imagem Principal' : item.name}
+                  title={index == 0 ? 'Imagem Principal' : item.nome}
                   position="top"
                   actionIcon={
                     <IconButton

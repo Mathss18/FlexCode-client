@@ -8,11 +8,13 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import SearchIcon from '@material-ui/icons/Search';
 import { array } from "yup";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 
 function ListarClientePage() {
   const history = useHistory();
   const [clientes, setClientes] = useState([]);
+  const fullScreenLoader = useFullScreenLoader();
   const columns = [
     {
       name: 'Nome',
@@ -47,15 +49,15 @@ function ListarClientePage() {
   const data = [];
 
   function handleOnClickShowButton(event, id) {
-    history.push("/cliente/mostrar/" + id)
+    history.push("/clientes/mostrar/" + id)
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/cliente/editar/" + id)
+    history.push("/clientes/editar/" + id)
   }
 
   useEffect(() => {
-
+    fullScreenLoader.setLoading(true);
     api.get('/clientes')
       .then((response) => {
         response.data['data'].forEach(element => {
@@ -86,12 +88,15 @@ function ListarClientePage() {
         setClientes(data)
 
       })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      })
   }, []);
 
 
   return (
     <>
-        <Button onClick={() => history.push("/cliente/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
+        <Button onClick={() => history.push("/clientes/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
         <MUIDataTable
           title={"Lista de Clientes"}
           data={clientes}
