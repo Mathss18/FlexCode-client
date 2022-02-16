@@ -1,0 +1,21 @@
+.contentAjuda {
+  width: 25%;
+}
+
+.tituloAjuda h1 {
+  color: #a9b5b8 !important;
+}
+
+.accordionAjuda {
+  background: #44454e !important;
+}
+
+.containerAjuda svg {
+  color: #a9b5b8 !important;
+}
+
+.contentRow {
+  color: #a9b5b8;
+  display: flex !important;
+  margin-top: 50px;
+}
