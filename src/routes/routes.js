@@ -52,8 +52,8 @@ import PrivateRoutes from "./PrivateRoutes";
 import TopBar from "../components/TopBar";
 import SideMenu from "../components/SideMenu";
 import Chat from "../pages/Chat/Chat";
-import CadastrarOrdemServicoPage from "../pages/Servicos/gerenciar-servicos/Cadastrar";
 import Ajuda from "../pages/Ajuda/Ajuda"
+import CadastrarOrdemServicoPage from "../pages/OrdensServicos/Cadastrar";
 
 export default function Routes() {
   return (

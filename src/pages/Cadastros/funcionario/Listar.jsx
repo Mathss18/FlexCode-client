@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import SideMenu from "../../../components/SideMenu";
 import MUIDataTable from "mui-datatables";
 import { useHistory } from "react-router-dom";
 import api from '../../../services/api';
@@ -97,7 +96,7 @@ function ListarFuncionarioPage() {
       ))}
       <Button onClick={() => history.push("/funcionarios/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
       <MUIDataTable
-        title={"Lista de Funcionario"}
+        title={"Lista de Funcionarios"}
         data={funcionarios}
         columns={columns}
         options={config}

@@ -96,13 +96,13 @@ export function Valores() {
             label="Custo final"
             type="number"
             fullWidth
-            readOnly
             value={(
               parseFloat(produtoContext.useValues.values.valorCusto) +
               parseFloat(produtoContext.useValues.values.despesasAdicionais) +
               parseFloat(produtoContext.useValues.values.outrasDespesas)
             ).toFixed(4)}
             InputProps={{
+              readOnly: true,
               endAdornment: (
                 <Tooltip title="O Custo Final é calculado automaticamente">
                   <HelpIcon />

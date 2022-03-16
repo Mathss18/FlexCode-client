@@ -276,7 +276,6 @@ function EditarClientePage() {
                 <Select
                   className={'input-select'}
                   label="Situação"
-                  value=''
                   name="situacao"
                   value={formik.values.situacao}
                   onChange={formik.handleChange}

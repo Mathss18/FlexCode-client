@@ -72,6 +72,10 @@ export const GlobalStyles = createGlobalStyle`
   .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline{
     border-color: ${({ theme }) => theme.colors.button.error.background} !important; // cor da borda do input com erro
   }
+
+  .MuiTypography-colorTextSecondary{
+    color: ${({ theme }) => theme.colors.input.text} !important; // cor do texto helper do input
+  }
   
   .input-select{
     background: ${({ theme }) => theme.colors.input.background} !important; // cor de fundo input select
@@ -81,6 +85,10 @@ export const GlobalStyles = createGlobalStyle`
   .MuiOutlinedInput-adornedEnd{
     cursor: pointer; // cursor tipo pointer ao passar o mouse em cima do elemento no fim do input
     background: ${({ theme }) => theme.colors.input.background} !important; // cor de fundo input quando há elemento html dentro dele (nesse caso no fim, ex: tela de grade-variacao)
+  }
+  
+  .MuiInputBase-adornedStart{
+    background: ${({ theme }) => theme.colors.input.background} !important; // cor de fundo input quando há elemento html dentro dele (nesse caso no inicio)
   }
 
   /* ========= TOP BAR ========= */
@@ -314,6 +322,34 @@ export const GlobalStyles = createGlobalStyle`
 
   .row-impar:hover > *{
     background: ${({ theme }) => theme.colors.table.row.impar.hover} !important; // cor de fundo da linha da tabela quando a linha for impar e o mouse estiver sobre ela
+  }
+
+
+  /* ========= DataGrid ========= */
+  .table-data-grid{
+    color: ${({ theme }) => theme.colors.table.header.text}; // cor de texto do data grid
+    border: none; // borda do data grid
+  }
+
+  .MuiDataGrid-columnHeaders{
+    border-bottom: 1px solid ${({ theme }) => theme.colors.table.header.text}; // borda inferior header do data grid 
+  }
+
+  .MuiDataGrid-checkboxInput {
+    color: ${({ theme }) => theme.colors.table.header.text}; // cor da checkbox do data grid
+  }
+
+  .MuiDataGrid-cell{
+    border: none !important;
+    border-bottom: rgba(255, 255, 255, 0.15) solid 1px !important; // borda da celula do data grid
+  }
+
+  .MuiDataGrid-cell--editable{
+    background: ${({ theme }) => theme.colors.body} !important; // cor de fundo da celula do data grid quando for editavel
+  }
+  
+  .MuiDataGrid-cell{
+    background: ${({ theme }) => theme.colors.body} !important; // cor de fundo da celula do data grid quando for editavel
   }
   
 

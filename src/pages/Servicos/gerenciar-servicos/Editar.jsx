@@ -118,7 +118,7 @@ function EditarServicoPage() {
                 variant="outlined"
                 label="Valor"
                 fullWidth
-                type="text"
+                type="number"
                 value={formik.values.valor}
                 name="valor"
                 onChange={formik.handleChange}

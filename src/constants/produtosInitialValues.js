@@ -5,7 +5,7 @@ export const initialValues = {
     unidade_produto_id: -1,
     movimentaEstoque: false,
     habilitaNotaFiscal: false,
-    codigoBarras: false,
+    codigoBarras: "",
     peso: '',
     largura: '',
     altura: '',
