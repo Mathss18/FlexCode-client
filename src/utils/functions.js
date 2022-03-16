@@ -1,3 +1,4 @@
+import _ from "lodash";
 
 /** Transforma um objeto em array.
  * @param {Object} obj Objeto a ser transformado em array.
@@ -72,4 +73,14 @@ export function deleteFromArrayByIndex(array, index) {
 export function getUniqueArrayOfObjectsByKey(arr, key) {
   return [...new Map(arr.map(item => [item[key], item])).values()]
 }
+
+/** Compara dois arrays (nested arrays), e retorna true ou false se forem iguais.
+ * @param {Array} array Array a ser comparado.
+ * @param {Array} array Array a ser comparado.
+ * @returns {Boolean} true se arrays forem iguais ou false se forem diferentes.
+ * 
+ */
+export function isArrayEqual(arr1, arr2) {
+  return _(arr1).differenceWith(arr2, _.isEqual).isEmpty();
+};
 

@@ -70,9 +70,11 @@ function PusherContextProvider({ children }) {
     privateChannel.unbind("App\\Events\\PrivateMessageSent");
     privateChannel.bind("App\\Events\\PrivateMessageSent", (data) => callBack(data));
 
+    console.log('antes',publicChannel);
     publicChannel.unbind("pusher:subscription_succeeded");
-    publicChannel.bind("pusher:subscription_succeeded", (data) => { setarUsuariosOnline(data); console.log('Usuarios Logados:',data); });
-    // console.clear(''); //TODO: remove in production
+    publicChannel.bind("pusher:subscription_succeeded", (data) => { setarUsuariosOnline(data); console.log('Usuarios Logados:',data); console.clear(); });
+    console.log('depois',publicChannel);
+    console.clear(''); //TODO: remove in production
 
 
   }, [privateChannel, publicChannel, callBack])

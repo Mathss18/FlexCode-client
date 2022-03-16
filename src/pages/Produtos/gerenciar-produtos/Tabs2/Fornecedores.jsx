@@ -15,7 +15,7 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export function Fornecedores() {
   const produtoContext = useProdutoContext();
-  const [clientes, setClientes] = useState({});
+  const [clientes, setClientes] = useState([]);
   const [fornecedores, setFornecedores] = useState([]);
   const { id } = useParams();
 
