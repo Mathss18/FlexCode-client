@@ -13,11 +13,11 @@ import { useHistory } from "react-router-dom";
 import api from "../../../services/api";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
-import HelpIcon from '@mui/icons-material/Help';
+import HelpIcon from "@mui/icons-material/Help";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
-import FormHelperText from '@mui/material/FormHelperText';
-import buscarCep from "../../../services/buscarCep";
+import FormHelperText from "@mui/material/FormHelperText";
+import buscarCep from "../../../services/cep";
 import InputMask from "react-input-mask";
 import { infoAlert, successAlert } from "../../../utils/alert";
 import { clienteValidation } from "../../../validators/validationSchema";
@@ -51,13 +51,13 @@ function CadastrarClientePage() {
 
   const formik = useFormik({
     initialValues: initialValues,
-    onSubmit: (event) => { handleOnSubmit(event) },
+    onSubmit: (event) => {
+      handleOnSubmit(event);
+    },
     validationSchema: clienteValidation,
-  })
+  });
 
   function handleOnSubmit(values) {
-    console.log(values);
-    fullScreenLoader.setLoading(true);
     api
       .post("/clientes", values)
       .then((response) => {
@@ -69,7 +69,7 @@ function CadastrarClientePage() {
         infoAlert("Atenção", error.response.data.message);
       })
       .finally(() => {
-        fullScreenLoader.setLoading(false);
+        formik.setSubmitting(false);
       });
   }
 
@@ -77,8 +77,7 @@ function CadastrarClientePage() {
     const cep = formik.values.cep;
     const validacep = /^[0-9]{8}$/;
     if (validacep.test(cep.replace(/\D/g, ""))) {
-      buscarCep(formik.values.cep.replace(/\D/g, ""))
-      .then((response) => {
+      buscarCep(formik.values.cep.replace(/\D/g, "")).then((response) => {
         formik.setValues({
           ...formik.values,
           rua: response.logradouro,
@@ -92,7 +91,6 @@ function CadastrarClientePage() {
       infoAlert("Atenção!", "CEP inválido");
     }
   }
-
 
   return (
     <>
@@ -116,17 +114,20 @@ function CadastrarClientePage() {
                   value={formik.values.tipoCliente}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.tipoCliente && Boolean(formik.errors.tipoCliente)}
-
+                  error={
+                    formik.touched.tipoCliente &&
+                    Boolean(formik.errors.tipoCliente)
+                  }
                 >
                   <MenuItem value={"pf"}>Pessoa Física</MenuItem>
                   <MenuItem value={"pj"}>Pessoa Jurídica</MenuItem>
                 </Select>
-                {formik.touched.tipoCliente && Boolean(formik.errors.tipoCliente) 
-                ? <FormHelperText>{formik.errors.tipoCliente}</FormHelperText> 
-                : ''
-                }
-
+                {formik.touched.tipoCliente &&
+                Boolean(formik.errors.tipoCliente) ? (
+                  <FormHelperText>{formik.errors.tipoCliente}</FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
 
@@ -140,24 +141,23 @@ function CadastrarClientePage() {
                   value={formik.values.situacao}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.situacao && Boolean(formik.errors.situacao)}
+                  error={
+                    formik.touched.situacao && Boolean(formik.errors.situacao)
+                  }
                 >
                   <MenuItem value={1}>Ativo</MenuItem>
                   <MenuItem value={0}>Inativo</MenuItem>
                 </Select>
-                {formik.touched.situacao && Boolean(formik.errors.situacao) 
-                ? <FormHelperText>{formik.errors.situacao}</FormHelperText> 
-                : ''
-                }
+                {formik.touched.situacao && Boolean(formik.errors.situacao) ? (
+                  <FormHelperText>{formik.errors.situacao}</FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
 
             <Grid item xs={3}>
-              <FormControl
-                variant="outlined"
-                fullWidth
-                name="tipoContribuinte"
-              >
+              <FormControl variant="outlined" fullWidth name="tipoContribuinte">
                 <InputLabel>Tipo de contribuinte</InputLabel>
                 <Select
                   className={"input-select"}
@@ -166,16 +166,23 @@ function CadastrarClientePage() {
                   value={formik.values.tipoContribuinte}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.tipoContribuinte && Boolean(formik.errors.tipoContribuinte)}
+                  error={
+                    formik.touched.tipoContribuinte &&
+                    Boolean(formik.errors.tipoContribuinte)
+                  }
                 >
                   <MenuItem value={1}>Contribuinte ICMS</MenuItem>
                   <MenuItem value={2}>Contribuinte ISENTO</MenuItem>
                   <MenuItem value={9}>Não Contribuinte</MenuItem>
                 </Select>
-                {formik.touched.tipoContribuinte && Boolean(formik.errors.tipoContribuinte) 
-                ? <FormHelperText>{formik.errors.tipoContribuinte}</FormHelperText> 
-                : ''
-                }
+                {formik.touched.tipoContribuinte &&
+                Boolean(formik.errors.tipoContribuinte) ? (
+                  <FormHelperText>
+                    {formik.errors.tipoContribuinte}
+                  </FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
 
@@ -187,19 +194,24 @@ function CadastrarClientePage() {
                 value={formik.values.inscricaoEstadual}
                 name="inscricaoEstadual"
                 InputProps={{
-                  endAdornment:
-                    <Tooltip
-                      title="Digite ISENTO caso não haja Inscrição Estadual">
+                  endAdornment: (
+                    <Tooltip title="Digite ISENTO caso não haja Inscrição Estadual">
                       <HelpIcon />
                     </Tooltip>
+                  ),
                 }}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.inscricaoEstadual && Boolean(formik.errors.inscricaoEstadual)}
-                helperText={formik.touched.inscricaoEstadual && formik.errors.inscricaoEstadual}
+                error={
+                  formik.touched.inscricaoEstadual &&
+                  Boolean(formik.errors.inscricaoEstadual)
+                }
+                helperText={
+                  formik.touched.inscricaoEstadual &&
+                  formik.errors.inscricaoEstadual
+                }
               />
             </Grid>
-            
 
             <Grid item xs={3}>
               <TextField
@@ -221,7 +233,6 @@ function CadastrarClientePage() {
                 value={formik.values.cpfCnpj}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                
               >
                 {() => (
                   <TextField
@@ -229,7 +240,9 @@ function CadastrarClientePage() {
                     label="CPF/CNPJ"
                     fullWidth
                     name="cpfCnpj"
-                    error={formik.touched.cpfCnpj && Boolean(formik.errors.cpfCnpj)}
+                    error={
+                      formik.touched.cpfCnpj && Boolean(formik.errors.cpfCnpj)
+                    }
                     helperText={formik.touched.cpfCnpj && formik.errors.cpfCnpj}
                   />
                 )}
@@ -382,10 +395,11 @@ function CadastrarClientePage() {
                   <MenuItem value={"SE"}>Sergipe</MenuItem>
                   <MenuItem value={"TO"}>Tocantins</MenuItem>
                 </Select>
-                {formik.touched.estado && Boolean(formik.errors.estado) 
-                ? <FormHelperText>{formik.errors.estado}</FormHelperText> 
-                : ''
-                }
+                {formik.touched.estado && Boolean(formik.errors.estado) ? (
+                  <FormHelperText>{formik.errors.estado}</FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
             <Grid item xs={3}>
@@ -397,7 +411,9 @@ function CadastrarClientePage() {
                 name="telefone"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.telefone && Boolean(formik.errors.telefone)}
+                error={
+                  formik.touched.telefone && Boolean(formik.errors.telefone)
+                }
                 helperText={formik.touched.telefone && formik.errors.telefone}
               />
             </Grid>
@@ -423,8 +439,14 @@ function CadastrarClientePage() {
                 name="codigoMunicipio"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.codigoMunicipio && Boolean(formik.errors.codigoMunicipio)}
-                helperText={formik.touched.codigoMunicipio && formik.errors.codigoMunicipio}
+                error={
+                  formik.touched.codigoMunicipio &&
+                  Boolean(formik.errors.codigoMunicipio)
+                }
+                helperText={
+                  formik.touched.codigoMunicipio &&
+                  formik.errors.codigoMunicipio
+                }
               />
             </Grid>
           </Grid>
@@ -436,6 +458,7 @@ function CadastrarClientePage() {
                 variant="outlined"
                 startIcon={<CheckIcon />}
                 className={"btn btn-primary btn-spacing"}
+                disabled={formik.isSubmitting}
               >
                 Salvar
               </Button>
@@ -446,6 +469,7 @@ function CadastrarClientePage() {
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
+                disabled={formik.isSubmitting}
               >
                 Cancelar
               </Button>

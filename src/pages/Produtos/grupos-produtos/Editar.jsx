@@ -263,6 +263,7 @@ function EditarGruposDeProdutos() {
                 variant="outlined"
                 startIcon={<DeleteForeverIcon />}
                 className={"btn btn-error btn-spacing"}
+disabled={formik.isSubmitting}
                 onClick={handleDelete}
               >
                 Excluir

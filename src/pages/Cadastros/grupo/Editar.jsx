@@ -16,7 +16,7 @@ import api from "../../../services/api";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import SettingsIcon from "@mui/icons-material/Settings";
 import moment from "moment";
 import "moment/locale/pt-br";
@@ -62,61 +62,63 @@ function EditarGrupoPage() {
   const fullScreenLoader = useFullScreenLoader();
   const formik = useFormik({
     initialValues: initialValues,
-    onSubmit: (event) => { handleOnSubmit(event) },
+    onSubmit: (event) => {
+      handleOnSubmit(event);
+    },
     validationSchema: grupoValidation,
-  })
+  });
   const { id } = useParams();
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
-    api.get('/grupos/' + id)
+    api
+      .get("/grupos/" + id)
       .then((response) => {
-
         formik.setValues({
           ...formik.values,
-          nome: response.data['data'].nome,
-          horaInicio: response.data['data'].horaInicio,
-          horaFim: response.data['data'].horaFim,
+          nome: response.data["data"].nome,
+          horaInicio: response.data["data"].horaInicio,
+          horaFim: response.data["data"].horaFim,
 
-          segunda: response.data['data'].segunda,
-          terca: response.data['data'].terca,
-          quarta: response.data['data'].quarta,
-          quinta: response.data['data'].quinta,
-          sexta: response.data['data'].sexta,
-          sabado: response.data['data'].sabado,
-          domingo: response.data['data'].domingo,
+          segunda: response.data["data"].segunda,
+          terca: response.data["data"].terca,
+          quarta: response.data["data"].quarta,
+          quinta: response.data["data"].quinta,
+          sexta: response.data["data"].sexta,
+          sabado: response.data["data"].sabado,
+          domingo: response.data["data"].domingo,
 
-          acessoCliente: response.data['data'].clientes.split('.').map(Number),
-          clientes: response.data['data'].clientes,
+          acessoCliente: response.data["data"].clientes.split(".").map(Number),
+          clientes: response.data["data"].clientes,
 
-          acessoFornecedor: response.data['data'].fornecedores.split('.').map(Number),
-          fornecedores: response.data['data'].fornecedores,
+          acessoFornecedor: response.data["data"].fornecedores
+            .split(".")
+            .map(Number),
+          fornecedores: response.data["data"].fornecedores,
 
-          acessoFuncionario: response.data['data'].funcionarios.split('.').map(Number),
-          funcionarios: response.data['data'].funcionarios,
+          acessoFuncionario: response.data["data"].funcionarios
+            .split(".")
+            .map(Number),
+          funcionarios: response.data["data"].funcionarios,
 
-          acessoTransportadora: response.data['data'].transportadoras.split('.').map(Number),
-          transportadoras: response.data['data'].transportadoras,
+          acessoTransportadora: response.data["data"].transportadoras
+            .split(".")
+            .map(Number),
+          transportadoras: response.data["data"].transportadoras,
 
-          acessoGrupo: response.data['data'].grupos.split('.').map(Number),
-          grupos: response.data['data'].grupos,
+          acessoGrupo: response.data["data"].grupos.split(".").map(Number),
+          grupos: response.data["data"].grupos,
 
-          acessoUsuario: response.data['data'].usuarios.split('.').map(Number),
-          usuarios: response.data['data'].usuarios,
+          acessoUsuario: response.data["data"].usuarios.split(".").map(Number),
+          usuarios: response.data["data"].usuarios,
         });
 
-        console.log('[RESPONSE]', formik.values);
-
+        console.log("[RESPONSE]", formik.values);
       })
       .finally(() => {
         fullScreenLoader.setLoading(false);
       });
-
-
-
   }, []);
-
-
 
   const handleOnChange = (e) => {
     let { name, value, checked, type, id } = e.target;
@@ -143,10 +145,16 @@ function EditarGrupoPage() {
         formik.setValues({
           ...formik.values,
           clientes: formik.values.acessoCliente.toString().replaceAll(",", "."),
-          transportadoras: formik.values.acessoTransportadora.toString().replaceAll(",", "."),
-          fornecedores: formik.values.acessoFornecedor.toString().replaceAll(",", "."),
+          transportadoras: formik.values.acessoTransportadora
+            .toString()
+            .replaceAll(",", "."),
+          fornecedores: formik.values.acessoFornecedor
+            .toString()
+            .replaceAll(",", "."),
           grupos: formik.values.acessoGrupo.toString().replaceAll(",", "."),
-          funcionarios: formik.values.acessoFuncionario.toString().replaceAll(",", "."),
+          funcionarios: formik.values.acessoFuncionario
+            .toString()
+            .replaceAll(",", "."),
           usuarios: formik.values.acessoUsuario.toString().replaceAll(",", "."),
         });
       } else {
@@ -160,20 +168,17 @@ function EditarGrupoPage() {
   };
 
   function handleOnSubmit(values) {
-    console.log(values);
-    fullScreenLoader.setLoading(true);
-    api.put("/grupos/" + id, values)
-    .then((response) => {
-      successAlert("Sucesso", "Grupo Editado", () =>
-        history.push("/grupos")
-      );
-    })
-    .catch((error) => {
-      infoAlert("Atenção", error.response.data.message);
-    })
-    .finally(() => {
-      fullScreenLoader.setLoading(false);
-    });
+    api
+      .put("/grupos/" + id, values)
+      .then((response) => {
+        successAlert("Sucesso", "Grupo Editado", () => history.push("/grupos"));
+      })
+      .catch((error) => {
+        infoAlert("Atenção", error.response.data.message);
+      })
+      .finally(() => {
+        formik.setSubmitting(false);
+      });
   }
 
   function handleDelete() {
@@ -196,12 +201,18 @@ function EditarGrupoPage() {
   }
 
   const setHoraInicio = (e) => {
-    formik.setValues({ ...formik.values, horaInicio: new Date(e._d).toLocaleTimeString() });
+    formik.setValues({
+      ...formik.values,
+      horaInicio: new Date(e._d).toLocaleTimeString(),
+    });
     console.log(formik.values);
   };
 
   const setHoraFim = (e) => {
-    formik.setValues({ ...formik.values, horaFim: new Date(e._d).toLocaleTimeString() });
+    formik.setValues({
+      ...formik.values,
+      horaFim: new Date(e._d).toLocaleTimeString(),
+    });
     console.log(formik.values);
   };
 
@@ -243,8 +254,12 @@ function EditarGrupoPage() {
                 onAccept={setHoraInicio}
                 onChange={setHoraInicio}
                 onBlur={formik.handleBlur}
-                error={formik.touched.horaInicio && Boolean(formik.errors.horaInicio)}
-                helperText={formik.touched.horaInicio && formik.errors.horaInicio}
+                error={
+                  formik.touched.horaInicio && Boolean(formik.errors.horaInicio)
+                }
+                helperText={
+                  formik.touched.horaInicio && formik.errors.horaInicio
+                }
               />
             </Grid>
             <Grid item xs={3}>
@@ -277,7 +292,6 @@ function EditarGrupoPage() {
             <h3>Configurações</h3>
           </div>
           <Grid container spacing={2}>
-
             <Grid item xs={2}>
               <FormControl component="fieldset" variant="standard">
                 <FormLabel component="legend">Dias de acesso</FormLabel>
@@ -631,9 +645,7 @@ function EditarGrupoPage() {
 
             <Grid item xs={2}>
               <FormControl component="fieldset" variant="standard">
-                <FormLabel component="legend">
-                  Controle de Usuários
-                </FormLabel>
+                <FormLabel component="legend">Controle de Usuários</FormLabel>
                 <FormGroup>
                   <FormControlLabel
                     control={
@@ -683,7 +695,6 @@ function EditarGrupoPage() {
                 </FormGroup>
               </FormControl>
             </Grid>
-
           </Grid>
           <br />
           <Divider />
@@ -692,18 +703,40 @@ function EditarGrupoPage() {
 
           <Grid container spacing={0}>
             <Grid item>
-              <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={'btn btn-primary btn-spacing'} > Salvar </Button>
+              <Button
+                type="submit"
+                variant="outlined"
+                startIcon={<CheckIcon />}
+                className={"btn btn-primary btn-spacing"}
+              >
+                {" "}
+                Salvar{" "}
+              </Button>
             </Grid>
             <Grid item>
-              <Button variant="outlined" startIcon={<DeleteForeverIcon />} className={'btn btn-error btn-spacing'} onClick={handleDelete} >Excluir</Button>
+              <Button
+                variant="outlined"
+                startIcon={<DeleteForeverIcon />}
+                className={"btn btn-error btn-spacing"}
+                onClick={handleDelete}
+              >
+                Excluir
+              </Button>
             </Grid>
             <Grid item>
-              <Button onClick={() => history.push("/grupos")} variant="outlined" startIcon={<CloseIcon />} className={'btn btn-error btn-spacing'} > Cancelar </Button>
+              <Button
+                onClick={() => history.push("/grupos")}
+                variant="outlined"
+                startIcon={<CloseIcon />}
+                className={"btn btn-error btn-spacing"}
+              >
+                {" "}
+                Cancelar{" "}
+              </Button>
             </Grid>
           </Grid>
         </form>
       </div>
-
     </>
   );
 }

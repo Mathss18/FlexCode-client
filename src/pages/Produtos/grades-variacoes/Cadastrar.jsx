@@ -124,7 +124,8 @@ function CadastrarVariacoes() {
             })}
           </Grid>
           <Grid>
-            <Button className={"btn btn-primary btn-spacing"} variant="outlined" onClick={() => AdicionarVariacao()}>
+            <Button className={"btn btn-primary btn-spacing"}
+disabled={formik.isSubmitting} variant="outlined" onClick={() => AdicionarVariacao()}>
               Adicionar
             </Button>
           </Grid>
@@ -133,12 +134,14 @@ function CadastrarVariacoes() {
 
           <Grid container spacing={0}>
             <Grid item>
-              <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={"btn btn-primary btn-spacing"}>
+              <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={"btn btn-primary btn-spacing"}
+disabled={formik.isSubmitting}>
                 Salvar
               </Button>
             </Grid>
             <Grid item>
-              <Button onClick={() => history.push("/grades-variacoes")} variant="outlined" startIcon={<CloseIcon />} className={"btn btn-error btn-spacing"}>
+              <Button onClick={() => history.push("/grades-variacoes")} variant="outlined" startIcon={<CloseIcon />} className={"btn btn-error btn-spacing"}
+disabled={formik.isSubmitting}>
                 Cancelar
               </Button>
             </Grid>

@@ -40,7 +40,6 @@ function CadastrarServicoPage() {
   })
 
   function handleOnSubmit(values) {
-    fullScreenLoader.setLoading(true);
     api
       .post("/servicos",values)
         .then((response) => {
@@ -51,7 +50,9 @@ function CadastrarServicoPage() {
         .catch((error) => {
           infoAlert("Atenção", error.response.data.message);
         })
-        .finally(() => fullScreenLoader.setLoading(false));
+        .finally(() => {
+          formik.setSubmitting(false);
+        });
   }
 
 
@@ -162,6 +163,7 @@ function CadastrarServicoPage() {
                 variant="outlined"
                 startIcon={<CheckIcon />}
                 className={"btn btn-primary btn-spacing"}
+disabled={formik.isSubmitting}
               >
                 Salvar
               </Button>
@@ -172,6 +174,7 @@ function CadastrarServicoPage() {
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
+disabled={formik.isSubmitting}
               >
                 Cancelar
               </Button>

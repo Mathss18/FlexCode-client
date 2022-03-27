@@ -53,7 +53,9 @@ import TopBar from "../components/TopBar";
 import SideMenu from "../components/SideMenu";
 import Chat from "../pages/Chat/Chat";
 import Ajuda from "../pages/Ajuda/Ajuda"
-import CadastrarOrdemServicoPage from "../pages/OrdensServicos/Cadastrar";
+import CadastrarOrdensServicoPage from "../pages/OrdensServicos/Cadastrar";
+import ListarOrdensServicos from "../pages/OrdensServicos/Listar";
+import EditarOrdensServicoPage from "../pages/OrdensServicos/Editar";
 
 export default function Routes() {
   return (
@@ -115,9 +117,9 @@ export default function Routes() {
             <Route path="/servicos/novo" exact component={CadastrarServicos}></Route>
             <Route path="/servicos/editar/:id" exact component={EditarServicos} ></Route>
 
-            {/* <Route path="/ordens-servicos" exact component={ListarServicos}></Route> */}
-            <Route path="/ordens-servicos/novo" exact component={CadastrarOrdemServicoPage}></Route>
-            {/* <Route path="/ordens-servicos/editar/:id" exact component={EditarServicos} ></Route> */}
+            <Route path="/ordens-servicos" exact component={ListarOrdensServicos}></Route>
+            <Route path="/ordens-servicos/novo" exact component={CadastrarOrdensServicoPage}></Route>
+            <Route path="/ordens-servicos/editar/:id" exact component={EditarOrdensServicoPage} ></Route>
 
             <Route path="/chat" exact component={Chat}></Route>
 

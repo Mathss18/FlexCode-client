@@ -78,7 +78,6 @@ function CadastrarGrupoDeProdutos() {
   }, [])
 
   function handleOnSubmit(values) {
-    console.log(selectedRows.current.length);
     if (selectedRows.current.length === 0) {
       toast.error("Selecione pelo menos uma porcentagem de lucro para associar ao grupo de produto.")
       return;

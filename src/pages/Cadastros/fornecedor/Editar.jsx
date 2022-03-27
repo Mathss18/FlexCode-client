@@ -14,12 +14,12 @@ import {
 import api from "../../../services/api";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
-import HelpIcon from '@mui/icons-material/Help';
+import HelpIcon from "@mui/icons-material/Help";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
-import FormHelperText from '@mui/material/FormHelperText';
+import FormHelperText from "@mui/material/FormHelperText";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import buscarCep from "../../../services/buscarCep";
+import buscarCep from "../../../services/cep";
 import InputMask from "react-input-mask";
 import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
 import { fornecedorValidation } from "../../../validators/validationSchema";
@@ -52,23 +52,25 @@ function EditarFornecedorPage() {
   const fullScreenLoader = useFullScreenLoader();
   const formik = useFormik({
     initialValues: initialValues,
-    onSubmit: (event) => { handleOnSubmit(event) },
+    onSubmit: (event) => {
+      handleOnSubmit(event);
+    },
     validationSchema: fornecedorValidation,
-  })
+  });
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
-    api.get("/fornecedores/" + id).then((response) => {
-      formik.setValues(response.data["data"]);
-    })
-    .finally(() => {
-      fullScreenLoader.setLoading(false);
-    });
+    api
+      .get("/fornecedores/" + id)
+      .then((response) => {
+        formik.setValues(response.data["data"]);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      });
   }, []);
 
-
   function handleOnSubmit(values) {
-    fullScreenLoader.setLoading(true);
     api
       .put("/fornecedores/" + id, values)
       .then((response) => {
@@ -80,7 +82,7 @@ function EditarFornecedorPage() {
         infoAlert("Atenção", error.response.request.responseText);
       })
       .finally(() => {
-        fullScreenLoader.setLoading(false);
+        formik.setSubmitting(false);
       });
   }
 
@@ -105,7 +107,6 @@ function EditarFornecedorPage() {
 
   return (
     <>
-
       <div>
         <Divider />
         <div
@@ -115,7 +116,7 @@ function EditarFornecedorPage() {
           <h3>Dados Pessoais</h3>
         </div>
         <form onSubmit={formik.handleSubmit}>
-        <Grid container spacing={2}>
+          <Grid container spacing={2}>
             <Grid item xs={3}>
               <FormControl variant="outlined" fullWidth name="tipoFornecedor">
                 <InputLabel>Tipo de Fornecedor</InputLabel>
@@ -126,17 +127,22 @@ function EditarFornecedorPage() {
                   value={formik.values.tipoFornecedor}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.tipoFornecedor && Boolean(formik.errors.tipoFornecedor)}
-
+                  error={
+                    formik.touched.tipoFornecedor &&
+                    Boolean(formik.errors.tipoFornecedor)
+                  }
                 >
                   <MenuItem value={"pf"}>Pessoa Física</MenuItem>
                   <MenuItem value={"pj"}>Pessoa Jurídica</MenuItem>
                 </Select>
-                {formik.touched.tipoFornecedor && Boolean(formik.errors.tipoFornecedor) 
-                ? <FormHelperText>{formik.errors.tipoFornecedor}</FormHelperText> 
-                : ''
-                }
-
+                {formik.touched.tipoFornecedor &&
+                Boolean(formik.errors.tipoFornecedor) ? (
+                  <FormHelperText>
+                    {formik.errors.tipoFornecedor}
+                  </FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
 
@@ -146,29 +152,27 @@ function EditarFornecedorPage() {
                 <Select
                   className={"input-select"}
                   label="Situação"
-                  value=""
                   name="situacao"
                   value={formik.values.situacao}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.situacao && Boolean(formik.errors.situacao)}
+                  error={
+                    formik.touched.situacao && Boolean(formik.errors.situacao)
+                  }
                 >
                   <MenuItem value={1}>Ativo</MenuItem>
                   <MenuItem value={0}>Inativo</MenuItem>
                 </Select>
-                {formik.touched.situacao && Boolean(formik.errors.situacao) 
-                ? <FormHelperText>{formik.errors.situacao}</FormHelperText> 
-                : ''
-                }
+                {formik.touched.situacao && Boolean(formik.errors.situacao) ? (
+                  <FormHelperText>{formik.errors.situacao}</FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
 
             <Grid item xs={3}>
-              <FormControl
-                variant="outlined"
-                fullWidth
-                name="tipoContribuinte"
-              >
+              <FormControl variant="outlined" fullWidth name="tipoContribuinte">
                 <InputLabel>Tipo de contribuinte</InputLabel>
                 <Select
                   className={"input-select"}
@@ -177,16 +181,23 @@ function EditarFornecedorPage() {
                   value={formik.values.tipoContribuinte}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.tipoContribuinte && Boolean(formik.errors.tipoContribuinte)}
+                  error={
+                    formik.touched.tipoContribuinte &&
+                    Boolean(formik.errors.tipoContribuinte)
+                  }
                 >
                   <MenuItem value={1}>Contribuinte ICMS</MenuItem>
                   <MenuItem value={2}>Contribuinte ISENTO</MenuItem>
                   <MenuItem value={9}>Não Contribuinte</MenuItem>
                 </Select>
-                {formik.touched.tipoContribuinte && Boolean(formik.errors.tipoContribuinte) 
-                ? <FormHelperText>{formik.errors.tipoContribuinte}</FormHelperText> 
-                : ''
-                }
+                {formik.touched.tipoContribuinte &&
+                Boolean(formik.errors.tipoContribuinte) ? (
+                  <FormHelperText>
+                    {formik.errors.tipoContribuinte}
+                  </FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
 
@@ -198,16 +209,22 @@ function EditarFornecedorPage() {
                 value={formik.values.inscricaoEstadual}
                 name="inscricaoEstadual"
                 InputProps={{
-                  endAdornment:
-                    <Tooltip
-                      title="Digite ISENTO caso não haja Inscrição Estadual">
+                  endAdornment: (
+                    <Tooltip title="Digite ISENTO caso não haja Inscrição Estadual">
                       <HelpIcon />
                     </Tooltip>
+                  ),
                 }}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.inscricaoEstadual && Boolean(formik.errors.inscricaoEstadual)}
-                helperText={formik.touched.inscricaoEstadual && formik.errors.inscricaoEstadual}
+                error={
+                  formik.touched.inscricaoEstadual &&
+                  Boolean(formik.errors.inscricaoEstadual)
+                }
+                helperText={
+                  formik.touched.inscricaoEstadual &&
+                  formik.errors.inscricaoEstadual
+                }
               />
             </Grid>
 
@@ -231,7 +248,6 @@ function EditarFornecedorPage() {
                 value={formik.values.cpfCnpj}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                
               >
                 {() => (
                   <TextField
@@ -239,7 +255,9 @@ function EditarFornecedorPage() {
                     label="CPF/CNPJ"
                     fullWidth
                     name="cpfCnpj"
-                    error={formik.touched.cpfCnpj && Boolean(formik.errors.cpfCnpj)}
+                    error={
+                      formik.touched.cpfCnpj && Boolean(formik.errors.cpfCnpj)
+                    }
                     helperText={formik.touched.cpfCnpj && formik.errors.cpfCnpj}
                   />
                 )}
@@ -392,10 +410,11 @@ function EditarFornecedorPage() {
                   <MenuItem value={"SE"}>Sergipe</MenuItem>
                   <MenuItem value={"TO"}>Tocantins</MenuItem>
                 </Select>
-                {formik.touched.estado && Boolean(formik.errors.estado) 
-                ? <FormHelperText>{formik.errors.estado}</FormHelperText> 
-                : ''
-                }
+                {formik.touched.estado && Boolean(formik.errors.estado) ? (
+                  <FormHelperText>{formik.errors.estado}</FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
             <Grid item xs={3}>
@@ -407,7 +426,9 @@ function EditarFornecedorPage() {
                 name="telefone"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.telefone && Boolean(formik.errors.telefone)}
+                error={
+                  formik.touched.telefone && Boolean(formik.errors.telefone)
+                }
                 helperText={formik.touched.telefone && formik.errors.telefone}
               />
             </Grid>
@@ -433,8 +454,14 @@ function EditarFornecedorPage() {
                 name="codigoMunicipio"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.codigoMunicipio && Boolean(formik.errors.codigoMunicipio)}
-                helperText={formik.touched.codigoMunicipio && formik.errors.codigoMunicipio}
+                error={
+                  formik.touched.codigoMunicipio &&
+                  Boolean(formik.errors.codigoMunicipio)
+                }
+                helperText={
+                  formik.touched.codigoMunicipio &&
+                  formik.errors.codigoMunicipio
+                }
               />
             </Grid>
           </Grid>
@@ -446,6 +473,7 @@ function EditarFornecedorPage() {
                 variant="outlined"
                 startIcon={<CheckIcon />}
                 className={"btn btn-primary btn-spacing"}
+                disabled={formik.isSubmitting}
               >
                 Salvar
               </Button>
@@ -455,6 +483,7 @@ function EditarFornecedorPage() {
                 variant="outlined"
                 startIcon={<DeleteForeverIcon />}
                 className={"btn btn-error btn-spacing"}
+                disabled={formik.isSubmitting}
                 onClick={handleDelete}
               >
                 Excluir
@@ -466,6 +495,7 @@ function EditarFornecedorPage() {
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
+                disabled={formik.isSubmitting}
               >
                 Cancelar
               </Button>
@@ -473,7 +503,6 @@ function EditarFornecedorPage() {
           </Grid>
         </form>
       </div>
-
     </>
   );
 }

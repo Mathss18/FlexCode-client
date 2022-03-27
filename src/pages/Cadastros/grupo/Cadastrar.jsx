@@ -110,7 +110,6 @@ function CadastrarGrupoPage() {
   };
 
   function handleOnSubmit(values) {
-    fullScreenLoader.setLoading(true);
     api.post("/grupos", values).then((response) => {
       successAlert("Sucesso", "Grupo Cadastrado", () =>
         history.push("/grupos")
@@ -120,7 +119,7 @@ function CadastrarGrupoPage() {
       infoAlert("Atenção", error.response.data.message);
     })
     .finally(() => {
-      fullScreenLoader.setLoading(false);
+      formik.setSubmitting(false);
     });
   }
 

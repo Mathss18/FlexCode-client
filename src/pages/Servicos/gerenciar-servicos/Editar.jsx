@@ -42,7 +42,6 @@ function EditarServicoPage() {
   }, []);
 
   function handleOnSubmit(values) {
-    fullScreenLoader.setLoading(true);
     api
       .put("/servicos/" + id, values)
         .then((response) => {
@@ -53,7 +52,9 @@ function EditarServicoPage() {
         .catch((error) => {
           infoAlert("Atenção", error.response.data.message);
         })
-        .finally(() => fullScreenLoader.setLoading(false));
+        .finally(() => {
+          formik.setSubmitting(false);
+        });
   }
 
   function handleDelete() {
@@ -172,6 +173,7 @@ function EditarServicoPage() {
               variant="outlined"
               startIcon={<DeleteForeverIcon />}
               className={"btn btn-error btn-spacing"}
+disabled={formik.isSubmitting}
               onClick={handleDelete}
             >
               Excluir
