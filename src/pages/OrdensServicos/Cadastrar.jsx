@@ -57,15 +57,16 @@ const initialValues = {
   observacaoInterna: "",
 };
 
-function CadastrarOrdemServicoPage() {
+function CadastrarOrdensServicoPage() {
   const history = useHistory();
-  const [clientes, setClientes] = useState([]);
+  const [clientes, setClientes] = useState({});
   const [funcionarios, setFuncionarios] = useState([{}]);
   const [produtos, setProdutos] = useState([]);
   const [servicos, setServicos] = useState([]);
   const [rowsProdutos, setRowsProdutos] = useState([]);
   const [rowsServicos, setRowsServicos] = useState([]);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+  
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => {
@@ -84,9 +85,12 @@ function CadastrarOrdemServicoPage() {
         <>
           <Autocomplete
             fullWidth
+            disableClearable={true}
             name="produto_id"
             onChange={(event, value) => handleClienteChange(params, value)}
-            isOptionEqualToValue={(option, value) => option.value === value.value}
+            isOptionEqualToValue={(option, value) =>
+              option.value === value.value
+            }
             disablePortal
             options={produtos}
             renderInput={(params) => (
@@ -160,9 +164,12 @@ function CadastrarOrdemServicoPage() {
         <>
           <Autocomplete
             fullWidth
+            disableClearable={true}
             name="servico_id"
             onChange={(event, value) => handleServicoChange(params, value)}
-            isOptionEqualToValue={(option, value) => option.value === value.value}
+            isOptionEqualToValue={(option, value) =>
+              option.value === value.value
+            }
             disablePortal
             options={servicos}
             renderInput={(params) => (
@@ -234,7 +241,6 @@ function CadastrarOrdemServicoPage() {
         response.data["data"].forEach((cliente) => {
           array.push({ label: cliente.nome, value: cliente.id });
         });
-        formik.setFieldValue("cliente_id", {}); // Altera o formik
         setClientes(array);
       })
       .catch((error) => {
@@ -249,24 +255,6 @@ function CadastrarOrdemServicoPage() {
         var array = [];
         response.data["data"].forEach((funcionario) => {
           array.push({ label: funcionario.nome, value: funcionario.id });
-        });
-        formik.setFieldValue("funcionarios_id", []); // Altera o formik
-        setFuncionarios(array);
-      })
-      .catch((error) => {});
-  }, []);
-
-  useEffect(() => {
-    api
-      .get("/funcionarios")
-      .then((response) => {
-        var array = [];
-        response.data["data"].forEach((funcionario) => {
-          array.push({ 
-            label: funcionario.nome, 
-            value: funcionario.id,
-            
-           });
         });
         formik.setFieldValue("funcionarios_id", []); // Altera o formik
         setFuncionarios(array);
@@ -321,25 +309,50 @@ function CadastrarOrdemServicoPage() {
   const fullScreenLoader = useFullScreenLoader();
 
   function handleOnSubmit(values) {
-    
-    if(rowsProdutos.find((produto)=>produto.produto_id === '')){
-      errorAlert("Por favor, selecione um produto para cada linha de produtos!");
-      return;
-    }
-    if(rowsProdutos.find((produto)=>produto.quantidade <= 0)){
-      errorAlert("Por favor, selecione uma quantidade válida para cada linha de produtos!");
+    if (rowsProdutos.length === 0 && rowsServicos.length === 0) {
+      console.log(rowsProdutos.length);
+      errorAlert("É necessário adicionar pelo menos um produto ou serviço!");
       return;
     }
 
-    if(rowsServicos.find((servico)=>servico.servico_id === '')){
-      errorAlert("Por favor, selecione um serviço para cada linha de serviços!");
+    if (rowsProdutos.find((produto) => produto.produto_id === "")) {
+      errorAlert(
+        "Por favor, selecione um produto para cada linha de produtos!"
+      );
       return;
     }
-    if(rowsServicos.find((servico)=>servico.quantidade <= 0)){
-      errorAlert("Por favor, selecione uma quantidade válida para cada linha de serviços!");
+    if (rowsProdutos.find((produto) => produto.quantidade <= 0)) {
+      errorAlert(
+        "Por favor, selecione uma quantidade válida para cada linha de produtos!"
+      );
       return;
     }
-    
+    if (rowsProdutos.find((produto) => produto.preco < 0)) {
+      errorAlert(
+        "Por favor, selecione uma preço válido para cada linha de produtos!"
+      );
+      return;
+    }
+
+    if (rowsServicos.find((servico) => servico.servico_id === "")) {
+      errorAlert(
+        "Por favor, selecione um serviço para cada linha de serviços!"
+      );
+      return;
+    }
+    if (rowsServicos.find((servico) => servico.preco < 0)) {
+      errorAlert(
+        "Por favor, selecione uma preço válido para cada linha de serviços!"
+      );
+      return;
+    }
+    if (rowsServicos.find((servico) => servico.quantidade <= 0)) {
+      errorAlert(
+        "Por favor, selecione uma quantidade válida para cada linha de serviços!"
+      );
+      return;
+    }
+
     const params = {
       ...formik.values,
       produtos: rowsProdutos,
@@ -348,17 +361,16 @@ function CadastrarOrdemServicoPage() {
 
     fullScreenLoader.setLoading(true);
     api
-      .post("/ordens-servicos",params)
-        .then((response) => {
-          successAlert("Sucesso", "Ordem de Serviço Cadastrada", () =>
-            history.push("/servicos")
-          );
-        })
-        .catch((error) => {
-          infoAlert("Atenção", error.response.data.message);
-        })
-        .finally(() => fullScreenLoader.setLoading(false));
-
+      .post("/ordens-servicos", params)
+      .then((response) => {
+        successAlert("Sucesso", "Ordem de Serviço Cadastrada", () =>
+          history.push("/ordens-servicos")
+        );
+      })
+      .catch((error) => {
+        infoAlert("Atenção", error.response.data.message);
+      })
+      .finally(() => fullScreenLoader.setLoading(false));
   }
 
   function handleOnChange(name, value) {
@@ -414,18 +426,17 @@ function CadastrarOrdemServicoPage() {
         (produto) => produto.value === row.produto_id
       );
       if (selectedProduto) {
-
-        if(objectToArray(dataGrid.rows.idRowsLookup)[index].preco <= 0){
-          objectToArray(dataGrid.rows.idRowsLookup)[index].preco = selectedProduto.preco;
-        }
-        else{
+        if (objectToArray(dataGrid.rows.idRowsLookup)[index].preco <= 0) {
+          objectToArray(dataGrid.rows.idRowsLookup)[index].preco =
+            selectedProduto.preco;
+        } else {
           console.log("Preço original mudado");
         }
-        
 
-        objectToArray(dataGrid.rows.idRowsLookup)[index].total = Math.round(
-          (objectToArray(dataGrid.rows.idRowsLookup)[index].preco * Number(row.quantidade)).toFixed(2)
-        );
+        objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
+          objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
+          Number(row.quantidade)
+        ).toFixed(2);
       }
     });
     setRowsProdutos(objectToArray(dataGrid.rows.idRowsLookup));
@@ -469,18 +480,17 @@ function CadastrarOrdemServicoPage() {
         (servico) => servico.value === row.servico_id
       );
       if (selectdServico) {
-
-        if(objectToArray(dataGrid.rows.idRowsLookup)[index].preco <= 0){
-          objectToArray(dataGrid.rows.idRowsLookup)[index].preco = selectdServico.preco;
-        }
-        else{
+        if (objectToArray(dataGrid.rows.idRowsLookup)[index].preco <= 0) {
+          objectToArray(dataGrid.rows.idRowsLookup)[index].preco =
+            selectdServico.preco;
+        } else {
           console.log("Preço original mudado");
         }
-        
 
-        objectToArray(dataGrid.rows.idRowsLookup)[index].total = 
-          (objectToArray(dataGrid.rows.idRowsLookup)[index].preco * Number(row.quantidade)).toFixed(2)
-        
+        objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
+          objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
+          Number(row.quantidade)
+        ).toFixed(2);
       }
     });
     setRowsServicos(objectToArray(dataGrid.rows.idRowsLookup));
@@ -497,7 +507,7 @@ function CadastrarOrdemServicoPage() {
     });
     rowsServicos.forEach((row) => {
       total = total + Number(row.total);
-      console.log('total', typeof total);
+      console.log("total", typeof total);
     });
 
     total = total + Number(formik.values.frete);
@@ -537,10 +547,12 @@ function CadastrarOrdemServicoPage() {
             </Grid>
             <Grid item xs={4}>
               <Autocomplete
-                value={formik.cliente_id}
+                value={formik.values.cliente_id}
                 name="cliente_id"
                 onChange={(event, value) => handleOnChange("cliente_id", value)}
-                isOptionEqualToValue={(option, value) => option.value === value.value}
+                isOptionEqualToValue={(option, value) =>
+                  option.value === value.value
+                }
                 disablePortal
                 options={clientes}
                 renderInput={(params) => (
@@ -932,26 +944,36 @@ function CadastrarOrdemServicoPage() {
                 name="observacao"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.observacao && Boolean(formik.errors.observacao)}
-                helperText={formik.touched.observacao && formik.errors.observacao}
+                error={
+                  formik.touched.observacao && Boolean(formik.errors.observacao)
+                }
+                helperText={
+                  formik.touched.observacao && formik.errors.observacao
+                }
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
-                  multiline
-                  className={"input-select"}
-                  variant="outlined"
-                  label="Observações Internas"
-                  placeholder="Observações Internas não aparecem para o cliente" 
-                  fullWidth
-                  value={formik.values.observacaoInterna}
-                  rows={5}
-                  name="observacaoInterna"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.observacaoInterna && Boolean(formik.errors.observacaoInterna)}
-                  helperText={formik.touched.observacaoInterna && formik.errors.observacaoInterna}
-                />
+                multiline
+                className={"input-select"}
+                variant="outlined"
+                label="Observações Internas"
+                placeholder="Observações Internas não aparecem para o cliente"
+                fullWidth
+                value={formik.values.observacaoInterna}
+                rows={5}
+                name="observacaoInterna"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.observacaoInterna &&
+                  Boolean(formik.errors.observacaoInterna)
+                }
+                helperText={
+                  formik.touched.observacaoInterna &&
+                  formik.errors.observacaoInterna
+                }
+              />
             </Grid>
           </Grid>
         </div>
@@ -964,6 +986,7 @@ function CadastrarOrdemServicoPage() {
                 variant="outlined"
                 startIcon={<CheckIcon />}
                 className={"btn btn-primary btn-spacing"}
+disabled={formik.isSubmitting}
               >
                 Salvar
               </Button>
@@ -974,6 +997,7 @@ function CadastrarOrdemServicoPage() {
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
+disabled={formik.isSubmitting}
               >
                 Cancelar
               </Button>
@@ -985,4 +1009,4 @@ function CadastrarOrdemServicoPage() {
   );
 }
 
-export default CadastrarOrdemServicoPage;
+export default CadastrarOrdensServicoPage;

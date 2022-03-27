@@ -19,7 +19,7 @@ export function successAlert(title='Sucesso', text='', callback=()=>{}){
     })
 }
 
-export function confirmAlert(title='Tem certeza?', text='',isConfirmed, isDenied = ()=>{}){
+export function confirmAlert(title='Tem certeza?', text='',isConfirmed=()=>{}, isDenied = ()=>{}){
     Swal.fire({
         title: title,
         text: text,
@@ -54,13 +54,13 @@ export function infoAlert(title='Atenção', text='', callback=()=>{}){
     })
 }
 
-export function errorAlert(title='Erro', text='',callback){
+export function errorAlert(title='Erro', text='',callback=()=>{}){
     Swal.fire({
         title: title,
         html: text,
         position: 'center',
         icon: 'error',
-        timer: 10000,
+        timer: 5000,
         timerProgressBar: true,
     }).then((result) => {
         if (result.dismiss === Swal.DismissReason.timer) {

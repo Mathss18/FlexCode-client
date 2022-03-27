@@ -217,7 +217,7 @@ export const ordemServicoValidation = yup.object().shape({
   situacao: yup.number("").required("A situação é obrigatória").min(0),
   dataEntrada: yup.string().required("A data de entrada é obrigatória"),
   horaEntrada: yup.string().required("A hora de entrada é obrigatória"),
-  dataSaida: yup.string(),
+  dataSaida: yup.string().nullable(),
   horaSaida: yup.string().nullable(),
   frete: yup.number("").required("O frete é obrigatório").min(0, "O valor não pode ser negativo"),
   outros: yup.number("").required("Outros gastos é obrigatório").min(0,"O valor não pode ser negativo"),

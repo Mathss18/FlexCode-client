@@ -60,43 +60,46 @@ export function Dados() {
 
         produtoContext.useValues.setValues(response.data['data']);
 
-        produtoContext.formik.setFieldValue("nome", response.data['data'].nome);
-        produtoContext.formik.setFieldValue("codigoInterno", response.data['data'].codigoInterno);
-        produtoContext.formik.setFieldValue("grupo_produto_id", response.data['data'].grupo_produto_id);
-        produtoContext.formik.setFieldValue("unidade_produto_id", response.data['data'].unidade_produto_id);
-        produtoContext.formik.setFieldValue("movimentaEstoque", response.data['data'].movimentaEstoque);
-        produtoContext.formik.setFieldValue("habilitaNotaFiscal", response.data['data'].habilitaNotaFiscal);
-        produtoContext.formik.setFieldValue("codigoBarras", response.data['data'].codigoBarras);
-        produtoContext.formik.setFieldValue("peso", response.data['data'].peso);
-        produtoContext.formik.setFieldValue("largura", response.data['data'].largura);
-        produtoContext.formik.setFieldValue("altura", response.data['data'].altura);
-        produtoContext.formik.setFieldValue("comprimento", response.data['data'].comprimento);
-        produtoContext.formik.setFieldValue("comissao", response.data['data'].comissao);
-        produtoContext.formik.setFieldValue("descricao", response.data['data'].descricao);
-        produtoContext.formik.setFieldValue("valorCusto", response.data['data'].valorCusto);
-        produtoContext.formik.setFieldValue("despesasAdicionais", response.data['data'].despesasAdicionais);
-        produtoContext.formik.setFieldValue("outrasDespesas", response.data['data'].outrasDespesas);
-        produtoContext.formik.setFieldValue("custoFinal", response.data['data'].custoFinal);
-        produtoContext.formik.setFieldValue("estoqueMinimo", response.data['data'].estoqueMinimo);
-        produtoContext.formik.setFieldValue("estoqueMaximo", response.data['data'].estoqueMaximo);
-        produtoContext.formik.setFieldValue("quantidadeAtual", response.data['data'].quantidadeAtual);
-        produtoContext.formik.setFieldValue("foto_produto", response.data['data'].foto_produto);
-        produtoContext.formik.setFieldValue("fotoPrincipal", response.data['data'].fotoPrincipal);
-        produtoContext.formik.setFieldValue("ncm", response.data['data'].ncm);
-        produtoContext.formik.setFieldValue("cest", response.data['data'].cest);
-        produtoContext.formik.setFieldValue("origem", response.data['data'].origem);
-        produtoContext.formik.setFieldValue("pesoLiquido", response.data['data'].pesoLiquido);
-        produtoContext.formik.setFieldValue("pesoBruto", response.data['data'].pesoBruto);
-        produtoContext.formik.setFieldValue("numeroFci", response.data['data'].numeroFci);
-        produtoContext.formik.setFieldValue("valorAproxTribut", response.data['data'].valorAproxTribut);
-        produtoContext.formik.setFieldValue("valorPixoPis", response.data['data'].valorPixoPis);
-        produtoContext.formik.setFieldValue("valorFixoPisSt", response.data['data'].valorFixoPisSt);
-        produtoContext.formik.setFieldValue("valorFixoCofins", response.data['data'].valorFixoCofins);
-        produtoContext.formik.setFieldValue("valorFixoCofinsSt", response.data['data'].valorFixoCofinsSt);
-        produtoContext.formik.setFieldValue("porcentagem_lucro_produto", response.data['data'].porcentagem_lucro_produto);
-        produtoContext.formik.setFieldValue("fornecedores_id", response.data['data'].fornecedores);
-        produtoContext.formik.setFieldValue("cliente_id", response.data['data'].cliente_id);
-        produtoContext.formik.setFieldValue("fornecedores_id", response.data['data'].fornecedores_id);
+        const valuesToFillFormik = {
+          nome: response.data['data'].nome,
+          codigoInterno: response.data['data'].codigoInterno,
+          grupo_produto_id: response.data['data'].grupo_produto_id,
+          unidade_produto_id: response.data['data'].unidade_produto_id,
+          movimentaEstoque: response.data['data'].movimentaEstoque,
+          habilitaNotaFiscal: response.data['data'].habilitaNotaFiscal,
+          codigoBarras: response.data['data'].codigoBarras,
+          peso: response.data['data'].peso,
+          largura: response.data['data'].largura,
+          altura: response.data['data'].altura,
+          comprimento: response.data['data'].comprimento,
+          comissao: response.data['data'].comissao,
+          descricao: response.data['data'].descricao,
+          valorCusto: response.data['data'].valorCusto,
+          despesasAdicionais: response.data['data'].despesasAdicionais,
+          outrasDespesas: response.data['data'].outrasDespesas,
+          custoFinal: response.data['data'].custoFinal,
+          estoqueMinimo: response.data['data'].estoqueMinimo,
+          estoqueMaximo: response.data['data'].estoqueMaximo,
+          quantidadeAtual: response.data['data'].quantidadeAtual,
+          foto_produto: response.data['data'].foto_produto,
+          fotoPrincipal: response.data['data'].fotoPrincipal,
+          ncm: response.data['data'].ncm,
+          cest: response.data['data'].cest,
+          origem: response.data['data'].origem,
+          pesoLiquido: response.data['data'].pesoLiquido,
+          pesoBruto: response.data['data'].pesoBruto,
+          numeroFci: response.data['data'].numeroFci,
+          valorAproxTribut: response.data['data'].valorAproxTribut,
+          valorPixoPis: response.data['data'].valorPixoPis,
+          valorFixoPisSt: response.data['data'].valorFixoPisSt,
+          valorFixoCofins: response.data['data'].valorFixoCofins,
+          valorFixoCofinsSt: response.data['data'].valorFixoCofinsSt,
+          porcentagem_lucro_produto: response.data['data'].porcentagem_lucro_produto,
+          fornecedores_id: response.data['data'].fornecedores_id,
+          cliente_id: response.data['data'].cliente_id,
+        }
+
+        produtoContext.formik.setValues(valuesToFillFormik);
 
         console.log(response.data['data']);
       })

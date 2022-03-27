@@ -26,7 +26,7 @@ import {
   infoAlert,
   successAlert,
 } from "../../../utils/alert";
-import buscarCep from "../../../services/buscarCep";
+import buscarCep from "../../../services/cep";
 import { clienteValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
@@ -98,7 +98,6 @@ function EditarClientePage() {
   }
 
   function handleOnSubmit(values) {
-    fullScreenLoader.setLoading(true);
     api
       .put("/clientes/" + id, values)
       .then((response) => {
@@ -110,7 +109,7 @@ function EditarClientePage() {
         infoAlert("Atenção", error.response.data.message);
       })
       .finally(() => {
-        fullScreenLoader.setLoading(false);
+        formik.setSubmitting(false);
       });
   }
 
@@ -174,7 +173,6 @@ function EditarClientePage() {
               <Select
                 className={"input-select"}
                 label="Situação"
-                value=""
                 name="situacao"
                 value={formik.values.situacao}
                 onChange={formik.handleChange}
@@ -474,6 +472,7 @@ function EditarClientePage() {
               variant="outlined"
               startIcon={<CheckIcon />}
               className={"btn btn-primary btn-spacing"}
+              disabled={formik.isSubmitting}
             >
               Salvar
             </Button>
@@ -483,6 +482,7 @@ function EditarClientePage() {
               variant="outlined"
               startIcon={<DeleteForeverIcon />}
               className={"btn btn-error btn-spacing"}
+              disabled={formik.isSubmitting}
               onClick={handleDelete}
             >
               Excluir
@@ -494,6 +494,7 @@ function EditarClientePage() {
               variant="outlined"
               startIcon={<CloseIcon />}
               className={"btn btn-error btn-spacing"}
+              disabled={formik.isSubmitting}
             >
               Cancelar
             </Button>

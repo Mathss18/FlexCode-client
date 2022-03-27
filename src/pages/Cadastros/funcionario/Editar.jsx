@@ -1,58 +1,69 @@
 import { useEffect, useState } from "react";
-import { useParams, useHistory } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-import { Grid, TextField, Select, MenuItem, FormControl, InputLabel, Divider, Button, CardMedia } from '@material-ui/core';
-import CheckIcon from '@material-ui/icons/Check';
-import CloseIcon from '@material-ui/icons/Close';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import api from '../../../services/api';
-import Swal from 'sweetalert2';
-import PhotoCamera from '@material-ui/icons/PhotoCamera';
-import MouseIcon from '@material-ui/icons/Mouse';
-import NotInterestedIcon from '@material-ui/icons/NotInterested';
-import FormHelperText from '@mui/material/FormHelperText';
+import { useParams, useHistory } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
+import {
+  Grid,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Divider,
+  Button,
+  CardMedia,
+} from "@material-ui/core";
+import CheckIcon from "@material-ui/icons/Check";
+import CloseIcon from "@material-ui/icons/Close";
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import api from "../../../services/api";
+import Swal from "sweetalert2";
+import PhotoCamera from "@material-ui/icons/PhotoCamera";
+import MouseIcon from "@material-ui/icons/Mouse";
+import NotInterestedIcon from "@material-ui/icons/NotInterested";
+import FormHelperText from "@mui/material/FormHelperText";
 import { funcionarioValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
-import { values } from "lodash";
+import { useScrollBlock } from "../../../hooks/useScrollBlock";
+import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
 
 const useStyles = makeStyles((theme) => ({
   image: {
     border: "2px solid black",
-    borderRadius: '10px',
+    borderRadius: "10px",
     height: "200px",
     maxWidth: "500px",
   },
 }));
 
 const initialValues = {
-  situacao: '',
-  nome: '',
-  cpf: '',
-  rg: '',
-  dataNascimento: '',
-  sexo: '',
-  grupo_id: '',
-  email: '',
-  senha: '',
-  comissao: '',
+  situacao: "",
+  nome: "",
+  cpf: "",
+  rg: "",
+  dataNascimento: "",
+  sexo: "",
+  grupo_id: "",
+  email: "",
+  senha: "",
+  comissao: "",
   foto: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
-  rua: '',
-  cidade: '',
-  numero: '',
-  cep: '',
-  bairro: '',
-  estado: '',
-  telefone: '',
-  celular: '',
-  emailPessoal: '',
-  usuario: '',
-  a: '',
+  rua: "",
+  cidade: "",
+  numero: "",
+  cep: "",
+  bairro: "",
+  estado: "",
+  telefone: "",
+  celular: "",
+  emailPessoal: "",
+  usuario: "",
+  a: "",
 
-  usuarioAccess: '',
-}
+  usuarioAccess: "",
+};
 
 function EditarClientePage() {
   const classes = useStyles();
@@ -60,51 +71,53 @@ function EditarClientePage() {
   const [grupos, setGrupos] = useState([]);
   const { id } = useParams();
   const fullScreenLoader = useFullScreenLoader();
+  const [blockScroll, allowScroll] = useScrollBlock();
   const formik = useFormik({
     initialValues: initialValues,
-    onSubmit: (event) => { handleOnSubmit(event) },
+    onSubmit: (event) => {
+      handleOnSubmit(event);
+    },
     validationSchema: funcionarioValidation,
-  })
+  });
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
-    api.get('/grupos')
+    blockScroll();
+    api.get("/grupos").then((response) => {
+      setGrupos(response.data["data"]);
+    });
+    api
+      .get("/funcionarios/" + id)
       .then((response) => {
-        setGrupos(response.data['data']);
-      });
-    api.get('/funcionarios/' + id)
-      .then((response) => {
-        console.log(response.data['data']);
+        console.log(response.data["data"]);
 
         // Verifica se o funcionario tem um usuario (verifica se tem email no sistema)
-        if (response.data['data'].usuario === null) {
-          response.data['data'].usuario = { email: '', senha: '' };
+        if (response.data["data"].usuario === null) {
+          response.data["data"].usuario = { email: "", senha: "" };
         }
 
-        formik.setValues(response.data['data']);
-        formik.setValues(values => {
+        formik.setValues(response.data["data"]);
+        formik.setValues((values) => {
           return {
             ...values,
-            emailPessoal: response.data['data']['email'],
-            usuarioAccess: response.data['data'].usuario['situacao'],
-            email: response.data['data'].usuario['email'],
-            senha: response.data['data'].usuario['senha'],
-          }
-        })
+            emailPessoal: response.data["data"]["email"],
+            usuarioAccess: response.data["data"].usuario["situacao"],
+            email: response.data["data"].usuario["email"],
+            senha: response.data["data"].usuario["senha"],
+          };
+        });
 
-        if (response.data['data'].usuario['situacao'] === 0) {
-          document.getElementById('email').disabled = true;
-          document.getElementById('senha').disabled = true;
-          document.getElementById('email').style.backgroundColor = "#ccc";
-          document.getElementById('senha').style.backgroundColor = "#ccc";
+        if (response.data["data"].usuario["situacao"] === 0) {
+          document.getElementById("email").disabled = true;
+          document.getElementById("senha").disabled = true;
+          document.getElementById("email").style.backgroundColor = "#ccc";
+          document.getElementById("senha").style.backgroundColor = "#ccc";
         }
-
       })
       .finally(() => {
         fullScreenLoader.setLoading(false);
+        allowScroll();
       });
-
-
   }, []);
 
   function handleCapture(event) {
@@ -114,21 +127,22 @@ function EditarClientePage() {
     fileReader.onload = (e) => {
       if (fileReader.readyState === 2) {
         console.log(e);
-        formik.setValues((values) => { return { ...values, 'foto': e.target.result } });
+        formik.setValues((values) => {
+          return { ...values, foto: e.target.result };
+        });
       }
     };
-  };
-
+  }
 
   function handleRemoveAccess(event) {
     formik.setValues({
       ...formik.values,
       usuarioAccess: 0,
     });
-    document.getElementById('email').disabled = true;
-    document.getElementById('senha').disabled = true;
-    document.getElementById('email').style.backgroundColor = "#ccc";
-    document.getElementById('senha').style.backgroundColor = "#ccc";
+    document.getElementById("email").disabled = true;
+    document.getElementById("senha").disabled = true;
+    document.getElementById("email").style.backgroundColor = "#ccc";
+    document.getElementById("senha").style.backgroundColor = "#ccc";
     formik.values.usuario.situacao = 0;
     formik.values.usuarioAccess = 0;
   }
@@ -138,185 +152,188 @@ function EditarClientePage() {
       ...formik.values,
       usuarioAccess: 1,
     });
-    document.getElementById('email').disabled = false;
-    document.getElementById('senha').disabled = false;
-    document.getElementById('email').style.backgroundColor = "white";
-    document.getElementById('senha').style.backgroundColor = "white";
+    document.getElementById("email").disabled = false;
+    document.getElementById("senha").disabled = false;
+    document.getElementById("email").style.backgroundColor = "white";
+    document.getElementById("senha").style.backgroundColor = "white";
     formik.values.usuario.situacao = 1;
     formik.values.usuarioAccess = 1;
-
   }
 
   function handleOnSubmit(values) {
-    fullScreenLoader.setLoading(true);
-    api.put('/funcionarios/' + id, values)
+    api
+      .put("/funcionarios/" + id, values)
       .then((response) => {
-        console.log(response);
-        Swal.fire({
-          title: 'Atualizado com sucesso!',
-          html: 'Redirecionando...',
-          position: 'top-end',
-          icon: 'success',
-          timer: 1800,
-          timerProgressBar: true,
-        }).then((result) => {
-          if (result.dismiss === Swal.DismissReason.timer) {
-            history.push("/funcionarios")
-          }
-        })
+        successAlert("Sucesso", "Funcionario Editado", () =>
+          history.push("/funcionarios")
+        );
       })
       .catch((error) => {
-        console.log(error.response.request.responseText);
-        Swal.fire({
-          title: 'Erro ao atualizar!',
-          html: error.response.data.message,
-          position: 'top-end',
-          icon: 'error',
-          timer: 10000,
-          timerProgressBar: true,
-        }).then((result) => {
-          if (result.dismiss === Swal.DismissReason.timer) {
-            //history.push("/clientes")
-          }
-        })
+        infoAlert("Atenção", error.response.request.responseText);
       })
       .finally(() => {
-        fullScreenLoader.setLoading(false);
+        formik.setSubmitting(false);
       });
   }
 
   function handleDelete() {
-    Swal.fire({
-      title: 'Tem certeza?',
-      text: "Isso será irreversivel!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3f51b5',
-      cancelButtonColor: '#f44336',
-      confirmButtonText: 'Sim, excluir!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        api.delete("/funcionarios/" + id)
-          .then((result) => {
-            Swal.fire(
-              'Excluido!',
-              'Cliente excluido com sucesso.',
-              'success'
-            )
-            history.push("/funcionarios")
-          })
-          .catch((error) => {
-            console.log(error.response.request.responseText);
-            Swal.fire({
-              title: 'Erro ao excluir!',
-              html: error.response.data.message,
-              position: 'top-end',
-              icon: 'error',
-              timer: 10000,
-              timerProgressBar: true,
-            }).then((result) => {
-              if (result.dismiss === Swal.DismissReason.timer) {
-                //history.push("/clientes")
-              }
-            })
-          })
+    confirmAlert("Tem certeza?", "Isso será irreversivel", () => {
+      deletarFuncionario();
+    });
+  }
 
-      }
-
-    })
+  function deletarFuncionario() {
+    api
+      .delete("/funcionarios/" + id)
+      .then((result) => {
+        successAlert("Sucesso", "Funcionario Excluido", () =>
+          history.push("/funcionarios")
+        );
+      })
+      .catch((error) => {
+        infoAlert("Atenção", error.response.data.message);
+      });
   }
 
   const renderRemoveAccessButton = () => {
     if (formik.values.usuario.situacao === 1) {
-      return <Button type="button" variant="outlined" startIcon={<NotInterestedIcon />} className={'btn btn-error btn-spacing'} onClick={handleRemoveAccess} >Remover Acesso</Button>
+      return (
+        <Button
+          type="button"
+          variant="outlined"
+          startIcon={<NotInterestedIcon />}
+          className={"btn btn-error btn-spacing"}
+          onClick={handleRemoveAccess}
+        >
+          Remover Acesso
+        </Button>
+      );
+    } else {
+      return (
+        <Button
+          type="button"
+          variant="outlined"
+          startIcon={<CheckIcon />}
+          className={"btn btn-primary btn-spacing"}
+          onClick={handleGiveAccess}
+        >
+          Devolver Acesso
+        </Button>
+      );
     }
-    else {
-      return <Button type="button" variant="outlined" startIcon={<CheckIcon />} className={'btn btn-primary btn-spacing'} onClick={handleGiveAccess} >Devolver Acesso</Button>
-    }
-  }
+  };
 
   return (
     <>
-    
       <div>
-      <Divider />
-        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', }}>
+        <Divider />
+        <div
+          style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+        >
           <AssignmentIcon />
           <h3>Dados Pessoais</h3>
         </div>
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
-
             <Grid item xs={3}>
-              <FormControl variant="outlined" fullWidth className={classes.input} name="grupo">
+              <FormControl
+                variant="outlined"
+                fullWidth
+                className={classes.input}
+                name="grupo"
+              >
                 <InputLabel>Grupo</InputLabel>
-                <Select className={'input-select'}
-                  label="Grupo" name="grupo_id"
+                <Select
+                  className={"input-select"}
+                  label="Grupo"
+                  name="grupo_id"
                   value={formik.values.grupo_id}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.grupo_id && Boolean(formik.errors.grupo_id)}
+                  error={
+                    formik.touched.grupo_id && Boolean(formik.errors.grupo_id)
+                  }
                 >
                   {grupos.map((grupo) => {
                     return (
-                      <MenuItem key={grupo.id} value={grupo.id}>{grupo.nome}</MenuItem>
-                    )
+                      <MenuItem key={grupo.id} value={grupo.id}>
+                        {grupo.nome}
+                      </MenuItem>
+                    );
                   })}
                 </Select>
-                {formik.touched.grupo_id && Boolean(formik.errors.grupo_id)
-                  ? <FormHelperText>{formik.errors.grupo_id}</FormHelperText>
-                  : ''
-                }
+                {formik.touched.grupo_id && Boolean(formik.errors.grupo_id) ? (
+                  <FormHelperText>{formik.errors.grupo_id}</FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
 
             <Grid item xs={3}>
-              <FormControl variant="outlined" fullWidth className={classes.input} name="situacao">
+              <FormControl
+                variant="outlined"
+                fullWidth
+                className={classes.input}
+                name="situacao"
+              >
                 <InputLabel>Situação</InputLabel>
                 <Select
-                  className={'input-select'}
+                  className={"input-select"}
                   label="Situação"
                   name="situacao"
                   value={formik.values.situacao}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.situacao && Boolean(formik.errors.situacao)}>
+                  error={
+                    formik.touched.situacao && Boolean(formik.errors.situacao)
+                  }
+                >
                   <MenuItem value={1}>Ativo</MenuItem>
                   <MenuItem value={0}>Inativo</MenuItem>
                 </Select>
-                {formik.touched.situacao && Boolean(formik.errors.situacao)
-                  ? <FormHelperText>{formik.errors.situacao}</FormHelperText>
-                  : ''
-                }
+                {formik.touched.situacao && Boolean(formik.errors.situacao) ? (
+                  <FormHelperText>{formik.errors.situacao}</FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
 
             <Grid item xs={3}>
-              <FormControl variant="outlined" fullWidth className={classes.input} name="sexo">
+              <FormControl
+                variant="outlined"
+                fullWidth
+                className={classes.input}
+                name="sexo"
+              >
                 <InputLabel>Sexo</InputLabel>
                 <Select
-                  className={'input-select'}
+                  className={"input-select"}
                   label="Sexo"
                   name="sexo"
                   value={formik.values.sexo}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.sexo && Boolean(formik.errors.sexo)}>
+                  error={formik.touched.sexo && Boolean(formik.errors.sexo)}
+                >
                   <MenuItem value={"masculino"}>Masculino</MenuItem>
                   <MenuItem value={"feminino"}>Feminino</MenuItem>
                   <MenuItem value={"outro"}>Outro</MenuItem>
                 </Select>
-                {formik.touched.sexo && Boolean(formik.errors.sexo)
-                  ? <FormHelperText>{formik.errors.sexo}</FormHelperText>
-                  : ''
-                }
+                {formik.touched.sexo && Boolean(formik.errors.sexo) ? (
+                  <FormHelperText>{formik.errors.sexo}</FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
 
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
-                fullWidth label="RG"
+                fullWidth
+                label="RG"
                 className={classes.input}
                 name="rg"
                 value={formik.values.rg}
@@ -358,13 +375,12 @@ function EditarClientePage() {
             </Grid>
 
             <Grid item xs={3}>
-              <TextField variant="outlined"
-                onFocus={
-                  (e) => {
-                    e.currentTarget.type = "date";
-                    e.currentTarget.focus();
-                  }
-                }
+              <TextField
+                variant="outlined"
+                onFocus={(e) => {
+                  e.currentTarget.type = "date";
+                  e.currentTarget.focus();
+                }}
                 label="Data de Nascimento"
                 fullWidth
                 className={classes.input}
@@ -372,8 +388,13 @@ function EditarClientePage() {
                 value={formik.values.dataNascimento}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.dataNascimento && Boolean(formik.errors.dataNascimento)}
-                helperText={formik.touched.dataNascimento && formik.errors.dataNascimento}
+                error={
+                  formik.touched.dataNascimento &&
+                  Boolean(formik.errors.dataNascimento)
+                }
+                helperText={
+                  formik.touched.dataNascimento && formik.errors.dataNascimento
+                }
               />
             </Grid>
 
@@ -384,12 +405,15 @@ function EditarClientePage() {
                 step="0.01"
                 variant="outlined"
                 label="Comissão (%)"
-                fullWidth className={classes.input}
+                fullWidth
+                className={classes.input}
                 name="comissao"
                 value={formik.values.comissao}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.comissao && Boolean(formik.errors.comissao)}
+                error={
+                  formik.touched.comissao && Boolean(formik.errors.comissao)
+                }
                 helperText={formik.touched.comissao && formik.errors.comissao}
               />
             </Grid>
@@ -398,25 +422,31 @@ function EditarClientePage() {
               <TextField
                 variant="outlined"
                 label="Email Pessoal"
-                fullWidth className={classes.input}
+                fullWidth
+                className={classes.input}
                 name="emailPessoal"
                 value={formik.values.emailPessoal}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.emailPessoal && Boolean(formik.errors.emailPessoal)}
-                helperText={formik.touched.emailPessoal && formik.errors.emailPessoal}
+                error={
+                  formik.touched.emailPessoal &&
+                  Boolean(formik.errors.emailPessoal)
+                }
+                helperText={
+                  formik.touched.emailPessoal && formik.errors.emailPessoal
+                }
               />
             </Grid>
-
           </Grid>
           <br />
           <Divider />
-          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', }}>
+          <div
+            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+          >
             <LocationOnIcon />
             <h3>Endereço</h3>
           </div>
           <Grid container spacing={2}>
-
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
@@ -432,7 +462,8 @@ function EditarClientePage() {
               />
             </Grid>
             <Grid item xs={3}>
-              <TextField variant="outlined"
+              <TextField
+                variant="outlined"
                 label="Rua"
                 fullWidth
                 className={classes.input}
@@ -445,7 +476,8 @@ function EditarClientePage() {
               />
             </Grid>
             <Grid item xs={3}>
-              <TextField variant="outlined"
+              <TextField
+                variant="outlined"
                 label="Número"
                 fullWidth
                 className={classes.input}
@@ -458,7 +490,8 @@ function EditarClientePage() {
               />
             </Grid>
             <Grid item xs={3}>
-              <TextField variant="outlined"
+              <TextField
+                variant="outlined"
                 label="Cidade"
                 fullWidth
                 className={classes.input}
@@ -471,7 +504,8 @@ function EditarClientePage() {
               />
             </Grid>
             <Grid item xs={3}>
-              <TextField variant="outlined"
+              <TextField
+                variant="outlined"
                 label="Bairro"
                 fullWidth
                 className={classes.input}
@@ -484,16 +518,21 @@ function EditarClientePage() {
               />
             </Grid>
             <Grid item xs={3}>
-              <FormControl variant="outlined" fullWidth className={classes.input} >
+              <FormControl
+                variant="outlined"
+                fullWidth
+                className={classes.input}
+              >
                 <InputLabel>Estado</InputLabel>
                 <Select
-                  className={'input-select'}
+                  className={"input-select"}
                   label="Estado"
                   name="estado"
                   value={formik.values.estado}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.estado && Boolean(formik.errors.estado)} >
+                  error={formik.touched.estado && Boolean(formik.errors.estado)}
+                >
                   <MenuItem value={"AC"}>Acre</MenuItem>
                   <MenuItem value={"AL"}>Alagoas</MenuItem>
                   <MenuItem value={"AP"}>Amapá</MenuItem>
@@ -522,14 +561,16 @@ function EditarClientePage() {
                   <MenuItem value={"SE"}>Sergipe</MenuItem>
                   <MenuItem value={"TO"}>Tocantins</MenuItem>
                 </Select>
-                {formik.touched.estado && Boolean(formik.errors.estado)
-                  ? <FormHelperText>{formik.errors.estado}</FormHelperText>
-                  : ''
-                }
+                {formik.touched.estado && Boolean(formik.errors.estado) ? (
+                  <FormHelperText>{formik.errors.estado}</FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
             <Grid item xs={3}>
-              <TextField variant="outlined"
+              <TextField
+                variant="outlined"
                 label="Telefone"
                 fullWidth
                 className={classes.input}
@@ -537,12 +578,15 @@ function EditarClientePage() {
                 value={formik.values.telefone}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.telefone && Boolean(formik.errors.telefone)}
+                error={
+                  formik.touched.telefone && Boolean(formik.errors.telefone)
+                }
                 helperText={formik.touched.telefone && formik.errors.telefone}
               />
             </Grid>
             <Grid item xs={3}>
-              <TextField variant="outlined"
+              <TextField
+                variant="outlined"
                 label="Celular"
                 fullWidth
                 className={classes.input}
@@ -558,13 +602,14 @@ function EditarClientePage() {
           <br />
           <br />
           <Divider />
-          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', }}>
+          <div
+            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+          >
             <MouseIcon />
             <h3>Criar Usuario</h3>
           </div>
           <Grid container spacing={2}>
-
-          <Grid item xs={3}>
+            <Grid item xs={3}>
               <TextField
                 variant="outlined"
                 label="Email"
@@ -578,7 +623,6 @@ function EditarClientePage() {
                 error={formik.touched.email && Boolean(formik.errors.email)}
                 helperText={formik.touched.email && formik.errors.email}
               />
-
             </Grid>
             <Grid item xs={3}>
               <TextField
@@ -599,32 +643,42 @@ function EditarClientePage() {
               {renderRemoveAccessButton()}
             </Grid>
             <Grid item xs={12}>
-              <p>* Essas serão as informações para o funcionario acessar o sistema</p>
+              <p>
+                * Essas serão as informações para o funcionario acessar o
+                sistema
+              </p>
             </Grid>
           </Grid>
 
-
           <br />
           <Divider />
-          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', }}>
+          <div
+            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+          >
             <PhotoCamera />
             <h3>Imagem</h3>
           </div>
 
           <Grid container spacing={2}>
             <Grid item>
-            <CardMedia
+              <CardMedia
                 className={classes.image}
                 component="img"
                 alt="Imagem Funcionario"
                 image={formik.values.foto}
-                title="Imagem Funcionario" />
+                title="Imagem Funcionario"
+              />
             </Grid>
           </Grid>
           <Grid container spacing={0}>
-
             <Grid item>
-              <Button variant="contained" component="label" startIcon={<PhotoCamera />} className={'btn btn-primary btn-spacing'}>Carregar Imagem
+              <Button
+                variant="contained"
+                component="label"
+                startIcon={<PhotoCamera />}
+                className={"btn btn-primary btn-spacing"}
+              >
+                Carregar Imagem
                 <input
                   name="foto"
                   hidden
@@ -634,26 +688,43 @@ function EditarClientePage() {
                   onChange={handleCapture}
                 />
               </Button>
-
             </Grid>
           </Grid>
-
 
           <Grid container spacing={0}>
             <Grid item>
-              <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={'btn btn-primary btn-spacing'}>Salvar</Button>
+              <Button
+                type="submit"
+                variant="outlined"
+                startIcon={<CheckIcon />}
+                className={"btn btn-primary btn-spacing"}
+              >
+                Salvar
+              </Button>
             </Grid>
             <Grid item>
-              <Button variant="outlined" startIcon={<DeleteForeverIcon />} className={'btn btn-error btn-spacing'} onClick={handleDelete} >Excluir</Button>
+              <Button
+                variant="outlined"
+                startIcon={<DeleteForeverIcon />}
+                className={"btn btn-error btn-spacing"}
+                onClick={handleDelete}
+              >
+                Excluir
+              </Button>
             </Grid>
             <Grid item>
-              <Button onClick={() => history.push("/funcionarios")} variant="outlined" startIcon={<CloseIcon />} className={'btn btn-error btn-spacing'}>Cancelar</Button>
+              <Button
+                onClick={() => history.push("/funcionarios")}
+                variant="outlined"
+                startIcon={<CloseIcon />}
+                className={"btn btn-error btn-spacing"}
+              >
+                Cancelar
+              </Button>
             </Grid>
           </Grid>
         </form>
-
       </div>
-
     </>
   );
 }

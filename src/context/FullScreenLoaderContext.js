@@ -4,6 +4,7 @@ import loader from "../assets/loader.svg";
 const FullScreenLoaderContext = createContext();
 
 function Loader({ loading }) {
+  
   if (!loading) return null
   return (
     <div className='loader-container' style={{ position: 'absolute', 'top': 0, backgroundColor: 'rgba(0,0,0,0.5)', width: '100%', height: '100%', color: '#fff', zIndex: 1000 }}>

@@ -8,7 +8,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import HelpIcon from '@mui/icons-material/Help';
 import InputMask from "react-input-mask";
-import buscarCep from '../../../services/buscarCep';
+import buscarCep from '../../../services/cep';
 import { useFormik } from 'formik';
 import { transportadoraValidation } from '../../../validators/validationSchema';
 import { infoAlert, successAlert } from '../../../utils/alert';
@@ -68,8 +68,6 @@ function CadastrarTransportadoraPage() {
   }
 
   function handleOnSubmit(values) {
-    console.log(values);
-    fullScreenLoader.setLoading(true);
     api.post('/transportadoras', values)
       .then((response) => {
         successAlert("Sucesso", "Transportadora Cadastrada", () =>
@@ -80,7 +78,7 @@ function CadastrarTransportadoraPage() {
         infoAlert("Atenção", error.response.data.message);
       })
       .finally(() => {
-        fullScreenLoader.setLoading(false);
+        formik.setSubmitting(false);
       })
   }
 
@@ -126,7 +124,6 @@ function CadastrarTransportadoraPage() {
                 <Select
                   className={"input-select"}
                   label="Situação"
-                  value=""
                   name="situacao"
                   value={formik.values.situacao}
                   onChange={formik.handleChange}
@@ -426,6 +423,7 @@ function CadastrarTransportadoraPage() {
                 variant="outlined"
                 startIcon={<CheckIcon />}
                 className={"btn btn-primary btn-spacing"}
+disabled={formik.isSubmitting}
               >
                 Salvar
               </Button>
@@ -436,6 +434,7 @@ function CadastrarTransportadoraPage() {
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
+disabled={formik.isSubmitting}
               >
                 Cancelar
               </Button>

@@ -84,3 +84,14 @@ export function isArrayEqual(arr1, arr2) {
   return _(arr1).differenceWith(arr2, _.isEqual).isEmpty();
 };
 
+export function getBase64FromFile(file, callback = ()=>{}) {
+  let reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = function () {
+      callback(reader.result)
+  };
+  reader.onerror = function (error) {
+      console.log('Error: ', error);
+  };
+}
+

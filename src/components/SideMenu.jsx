@@ -36,6 +36,7 @@ import { useCadastroMenu } from "../context/SideMenuCadastroContext";
 import { useProdutoMenu } from "../context/SideMenuProdutoContext";
 import { useMenu } from "../context/SideMenuContext";
 import { useServicoMenu } from "../context/SideMenuServicoContext copy";
+import AssignmentIcon from '@mui/icons-material/Assignment';
 
 const drawerWidth = 240;
 
@@ -260,11 +261,11 @@ function SideMenu({ children }) {
             </List>
           </Collapse>
 
-          <ListItem button>
+          <ListItem button onClick={() => history.push("/ordens-servicos")} disablePadding>
             <ListItemIcon>
-              <SendIcon className={"sidemenu-text"} />
+              <AssignmentIcon className={"sidemenu-text"} />
             </ListItemIcon>
-            <ListItemText className={"sidemenu-text"} primary="Sent mail" />
+            <ListItemText className={"sidemenu-text"} primary="Ordens de Serviço" />
           </ListItem>
 
           <ListItem button>
@@ -276,7 +277,7 @@ function SideMenu({ children }) {
         </List>
         <Divider />
       </Drawer>
-      <main className={clsx(classes.content, { [classes.contentShift]: openSideMenu })}>
+      <main id="content-container-full"className={clsx(classes.content, { [classes.contentShift]: openSideMenu })}>
         <div className={classes.drawerHeader} />
         {children}
       </main>
