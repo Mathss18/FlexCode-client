@@ -54,6 +54,8 @@ import SideMenu from "../components/SideMenu";
 import Chat from "../pages/Chat/Chat";
 import Ajuda from "../pages/Ajuda/Ajuda"
 import CadastrarOrdemServicoPage from "../pages/OrdensServicos/Cadastrar";
+import ListarPorcentagensLucros from "../pages/Produtos/porcentagens-lucros/Listar";
+import CadastrarPorcentagensLucros from "../pages/Produtos/porcentagens-lucros/Cadastrar";
 
 export default function Routes() {
   return (
@@ -106,6 +108,9 @@ export default function Routes() {
             <Route path="/grades-variacoes" exact component={ListarGradesDeVariacoes}></Route>
             <Route path="/grades-variacoes/novo" exact component={CadastrarGradesDeVariacoes}></Route>
             <Route path="/grades-variacoes/editar/:id" exact component={EditarGradesDeVariacoes}></Route>
+
+            <Route path="/porcentagens-lucros" exact component={ListarPorcentagensLucros}></Route>
+            <Route path="/porcentagens-lucros/novo" exact component={CadastrarPorcentagensLucros}></Route>
 
             <Route path="/produtos" exact component={ListarProdutos}></Route>
             <Route path="/produtos/novo" exact component={CadastrarProdutos}></Route>

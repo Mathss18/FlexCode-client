@@ -65,9 +65,6 @@ function ListarProdutos() {
 
   return (
     <>
-      {grupos.map((grupo, index) => (
-        <h4 key={index}>{grupo.nome}</h4>
-      ))}
       <Button onClick={() => history.push("/produtos/novo")} variant="outlined" startIcon={<AddIcon />} className={"btn btn-primary btn-spacing"}>
         Adicionar
       </Button>

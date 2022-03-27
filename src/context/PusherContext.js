@@ -72,9 +72,9 @@ function PusherContextProvider({ children }) {
 
     console.log('antes',publicChannel);
     publicChannel.unbind("pusher:subscription_succeeded");
-    publicChannel.bind("pusher:subscription_succeeded", (data) => { setarUsuariosOnline(data); console.log('Usuarios Logados:',data); console.clear(); });
+    publicChannel.bind("pusher:subscription_succeeded", (data) => { setarUsuariosOnline(data); console.log('Usuarios Logados:',data);  });
     console.log('depois',publicChannel);
-    console.clear(''); //TODO: remove in production
+    // console.clear(''); //TODO: remove in production
 
 
   }, [privateChannel, publicChannel, callBack])
