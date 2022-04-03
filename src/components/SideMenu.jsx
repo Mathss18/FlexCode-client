@@ -35,8 +35,9 @@ import { useRef } from "react";
 import { useCadastroMenu } from "../context/SideMenuCadastroContext";
 import { useProdutoMenu } from "../context/SideMenuProdutoContext";
 import { useMenu } from "../context/SideMenuContext";
-import { useServicoMenu } from "../context/SideMenuServicoContext copy";
+import { useServicoMenu } from "../context/SideMenuServicoContext";
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import CalculateIcon from '@mui/icons-material/Calculate';
 
 const drawerWidth = 240;
 
@@ -232,12 +233,21 @@ function SideMenu({ children }) {
                 <ListItemText className={"sidemenu-text"} primary="Unidades de Produtos" />
               </ListItem>
             </List>
-            <List onClick={() => history.push("/grades-variacoes")} disablePadding>
+            {/* <List onClick={() => history.push("/grades-variacoes")} disablePadding>
               <ListItem button className={classes.nested}>
                 <ListItemIcon>
                   <SchemaIcon className={"sidemenu-text"} />
                 </ListItemIcon>
                 <ListItemText className={"sidemenu-text"} primary="Grades/Variações" />
+              </ListItem>
+            </List> */}
+            <List onClick={() => history.push("/porcentagens-lucros")} disablePadding>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  {/* <InventoryIcon className={"sidemenu-text"} /> */}
+                  <CalculateIcon className={"sidemenu-text"}/>
+                </ListItemIcon>
+                <ListItemText className={"sidemenu-text"} primary="Porcentagens de lucros" />
               </ListItem>
             </List>
           </Collapse>

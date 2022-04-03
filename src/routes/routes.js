@@ -56,6 +56,9 @@ import Ajuda from "../pages/Ajuda/Ajuda"
 import CadastrarOrdensServicoPage from "../pages/OrdensServicos/Cadastrar";
 import ListarOrdensServicos from "../pages/OrdensServicos/Listar";
 import EditarOrdensServicoPage from "../pages/OrdensServicos/Editar";
+import ListarPorcentagensLucros from "../pages/Produtos/porcentagens-lucros/Listar";
+import CadastrarPorcentagensLucros from "../pages/Produtos/porcentagens-lucros/Cadastrar";
+import OrdensServicosReport from "../reports/OrdensServicos";
 
 export default function Routes() {
   return (
@@ -109,6 +112,9 @@ export default function Routes() {
             <Route path="/grades-variacoes/novo" exact component={CadastrarGradesDeVariacoes}></Route>
             <Route path="/grades-variacoes/editar/:id" exact component={EditarGradesDeVariacoes}></Route>
 
+            <Route path="/porcentagens-lucros" exact component={ListarPorcentagensLucros}></Route>
+            <Route path="/porcentagens-lucros/novo" exact component={CadastrarPorcentagensLucros}></Route>
+
             <Route path="/produtos" exact component={ListarProdutos}></Route>
             <Route path="/produtos/novo" exact component={CadastrarProdutos}></Route>
             <Route path="/produtos/editar/:id" exact component={EditarProdutos} ></Route>
@@ -120,6 +126,8 @@ export default function Routes() {
             <Route path="/ordens-servicos" exact component={ListarOrdensServicos}></Route>
             <Route path="/ordens-servicos/novo" exact component={CadastrarOrdensServicoPage}></Route>
             <Route path="/ordens-servicos/editar/:id" exact component={EditarOrdensServicoPage} ></Route>
+
+            <Route path="/ordens-servicos/relatorio" exact component={OrdensServicosReport}></Route>
 
             <Route path="/chat" exact component={Chat}></Route>
 
