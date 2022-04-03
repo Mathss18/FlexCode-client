@@ -10,7 +10,8 @@ import { config, rowConfig } from "../../config/tablesConfig";
 import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
 import api from "../../services/api";
 import moment from "moment";
-import { createReport } from "../../reports/ordensServicos";
+import ordensServicosReport from "../../reports/OrdensServicos";
+import ordermServicosTemplate from "../../reports/ordermServicosTemplate";
 
 
 function ListarOrdensServicos() {
@@ -50,8 +51,21 @@ function ListarOrdensServicos() {
     history.push("/ordens-servicos/editar/" + id)
   }
 
-  function handleOnClickPdfButton(event, id) {
-    createReport();
+  function handleOnClickPdfButton(event, item) {
+    console.log(item);
+    // window.open('http://localhost:3000/ordens-servicos/relatorio', 'sharer', 'toolbar=0,status=0,width=548,height=325');
+    const html = ordermServicosTemplate('teste')
+    let mywindow = window.open('', '', 'height=650,width=900,top=100,left=150');
+    console.log(document.getElementById('root'));
+    console.log(mywindow);
+
+    mywindow.document.write(html); 
+    // mywindow.document.appendChild(html);
+    // mywindow.document.close(); // necessary for IE >= 10
+    mywindow.focus(); // necessary for IE >= 10*/
+  
+    // mywindow.print();
+    // mywindow.close();
   }
 
   useEffect(() => {
@@ -72,7 +86,7 @@ function ListarOrdensServicos() {
             element["dataSaida"] == null ? '' : moment(element["dataSaida"]).format('DD/MM/YYYY') + " " + element['horaSaida'],
             <>
               <Tooltip title={'Baixar PDF'} arrow>
-                <InsertDriveFileIcon className={'btn btn-lista'} onClick={(event) => handleOnClickPdfButton(event, element['id'])} />
+                <InsertDriveFileIcon className={'btn btn-lista'} onClick={(event) => handleOnClickPdfButton(event, element)} />
               </Tooltip>
               <SearchIcon className={'btn btn-lista'} onClick={(event) => handleOnClickShowButton(event, element['id'])} />
               <EditIcon className={'btn btn-lista'} onClick={(event) => handleOnClickEditButton(event, element['id'])} />

@@ -1,7 +1,7 @@
 import { useState, createContext, useContext } from "react";
 import SideMenuCadastroContextProvider from "./SideMenuCadastroContext";
 import SideMenuProdutoContextProvider from "./SideMenuProdutoContext";
-import SideMenuServicoContextProvider from "./SideMenuServicoContext copy";
+import SideMenuServicoContextProvider from "./SideMenuServicoContext";
 
 const SideMenuContext = createContext();
 

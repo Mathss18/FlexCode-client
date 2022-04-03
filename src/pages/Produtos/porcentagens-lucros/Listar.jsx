@@ -1,62 +1,55 @@
-import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import api from "../../../services/api";
 import MUIDataTable from "mui-datatables";
+import { useEffect, useState } from "react";
 import { config, rowConfig } from "../../../config/tablesConfig";
-import { makeStyles } from "@material-ui/core/styles";
-import { Button } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+import api from "../../../services/api";
 import EditIcon from "@material-ui/icons/Edit";
 import SearchIcon from "@material-ui/icons/Search";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
+import { useHistory } from "react-router-dom";
+import { Button } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
-function ListarUnidadesDeProdutos() {
-  const history = useHistory();
-  const [grupos, setGrupos] = useState([]);
-  const fullScreenLoader = useFullScreenLoader();
-  const columns = [
-    {
-      name: "Nome",
-      options: rowConfig,
-    },
-    {
-      name: "Sigla",
-      options: rowConfig,
-    },
-    {
-      name: "Padrão",
-      options: rowConfig,
-    },
-    {
-      name: "Ações",
-      options: rowConfig,
-    },
-  ];
+const columns = [
+  {
+    name: "Descrição",
+    options: rowConfig,
+  },
+  {
+    name: "Porcentagem",
+    options: rowConfig,
+  },
+  {
+    name: "Ações",
+    options: rowConfig,
+  },
+];
 
-  const data = [];
+const data = [];
+
+function ListarPorcentagensLucros() {
+  const [porcentagensLucros, setPorcentagensLucros] = useState([]);
+  const history = useHistory();
+  const fullScreenLoader = useFullScreenLoader();
 
   function handleOnClickShowButton(event, id) {
-    history.push("/unidades-produtos/mostrar/" + id);
+    history.push("/porcentagens-lucros/mostrar/" + id);
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/unidades-produtos/editar/" + id);
+    history.push("/porcentagens-lucros/editar/" + id);
   }
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
+
     api
-      .get("/unidades-produtos")
+      .get("/porcentagens-lucros")
       .then((response) => {
-        console.log(response);
         if (response != undefined) {
           response.data["data"].forEach((element) => {
             var array = [
-              element["nome"],
-              element["sigla"],
-              element["padrao"] == 1 ? <CheckIcon /> : <CloseIcon />,
+              element["descricao"],
+              element["porcentagem"],
               <>
                 <SearchIcon
                   className={"btn-lista"}
@@ -75,8 +68,11 @@ function ListarUnidadesDeProdutos() {
             data.push(array);
           });
 
-          setGrupos(data);
+          setPorcentagensLucros(data);
         }
+      })
+      .catch((error) => {
+        console.log(error);
       })
       .finally(() => {
         fullScreenLoader.setLoading(false);
@@ -86,22 +82,23 @@ function ListarUnidadesDeProdutos() {
   return (
     <>
       <Button
-        onClick={() => history.push("/unidades-produtos/novo")}
+        onClick={() => history.push("/porcentagens-lucros/novo")}
         variant="outlined"
         startIcon={<AddIcon />}
         className={"btn btn-primary btn-spacing"}
       >
         Adicionar
       </Button>
+
       <MUIDataTable
-        title={"Lista de Unidades de Produtos"}
-        data={grupos}
+        title={"Lista de porcentagens de lucros"}
+        data={porcentagensLucros}
         columns={columns}
         options={config}
         className={"table-background"}
-      />
+      ></MUIDataTable>
     </>
   );
 }
 
-export default ListarUnidadesDeProdutos;
+export default ListarPorcentagensLucros;
