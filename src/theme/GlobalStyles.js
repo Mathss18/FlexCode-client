@@ -327,16 +327,16 @@ export const GlobalStyles = createGlobalStyle`
 
   /* ========= DataGrid ========= */
   .table-data-grid{
-    color: ${({ theme }) => theme.colors.table.header.text}; // cor de texto do data grid
+    color: ${({ theme }) => theme.colors.table.header.text} !important; // cor de texto do data grid
     border: none; // borda do data grid
   }
 
   .MuiDataGrid-columnHeaders{
-    border-bottom: 1px solid ${({ theme }) => theme.colors.table.header.text}; // borda inferior header do data grid 
+    border-bottom: 1px solid ${({ theme }) => theme.colors.table.header.text} !important;; // borda inferior header do data grid 
   }
 
   .MuiDataGrid-checkboxInput {
-    color: ${({ theme }) => theme.colors.table.header.text}; // cor da checkbox do data grid
+    color: ${({ theme }) => theme.colors.table.header.text} !important;; // cor da checkbox do data grid
   }
 
   .MuiDataGrid-cell{

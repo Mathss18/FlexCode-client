@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Grid,
   TextField,
@@ -27,31 +27,25 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
 import {
   deleteFromArrayByIndex,
-  getUniqueArrayOfObjectsByKey,
   isArrayEqual,
   objectToArray,
 } from "../../utils/functions";
-import { TimePicker } from "@material-ui/pickers";
-import { ordemServicoValidation } from "../../validators/validationSchema";
+import { orcamentoValidation } from "../../validators/validationSchema";
 import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
 import { errorAlert, infoAlert, successAlert } from "../../utils/alert";
-import { useParams } from "react-router-dom";
-import { useScrollBlock } from "../../hooks/useScrollBlock";
-
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const initialValues = {
   numero: "",
   cliente_id: { label: "", value: null },
-  funcionarios_id: [{ label: "", value: null }],
+  transportadora_id: { label: "", value: null },
+  // funcionarios_id: [{ label: "", value: null }],
   produtos: [],
   servicos: [],
   situacao: 0,
   dataEntrada: moment().format("YYYY-MM-DD"),
-  horaEntrada: new Date().toLocaleTimeString(),
-  dataSaida: "",
-  horaSaida: null,
+  // horaEntrada: new Date().toLocaleTimeString(),
+  // dataSaida: "",
+  // horaSaida: null,
   frete: 0,
   outros: 0,
   desconto: 0,
@@ -60,28 +54,22 @@ const initialValues = {
   observacaoInterna: "",
 };
 
-function EditarOrcamentosPage() {
+function CadastrarOrcamentosPage() {
   const history = useHistory();
-  const [clientes, setClientes] = useState([]);
-  const [funcionarios, setFuncionarios] = useState([{}]);
+  const [clientes, setClientes] = useState({});
+  const [transportadoras, setTransportadoras] = useState({});
   const [produtos, setProdutos] = useState([]);
   const [servicos, setServicos] = useState([]);
   const [rowsProdutos, setRowsProdutos] = useState([]);
   const [rowsServicos, setRowsServicos] = useState([]);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
-  const { id } = useParams();
-  const i = useRef(0);
-  const fullScreenLoader = useFullScreenLoader();
-  const [blockScroll, allowScroll] = useScrollBlock();
-  
-  
 
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => {
       handleOnSubmit(event);
     },
-    validationSchema: ordemServicoValidation,
+    validationSchema: orcamentoValidation,
   });
 
   const columnsProdutos = [
@@ -94,9 +82,8 @@ function EditarOrcamentosPage() {
         <>
           <Autocomplete
             fullWidth
-            name="produto_id"
             disableClearable={true}
-            value={params.row.produto_id == '' ? { label: "", value: null } : { label: params.row.nome, value: params.row.produto_id }}
+            name="produto_id"
             onChange={(event, value) => handleClienteChange(params, value)}
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
@@ -174,9 +161,8 @@ function EditarOrcamentosPage() {
         <>
           <Autocomplete
             fullWidth
-            name="servico_id"
             disableClearable={true}
-            value={params.row.servico_id == '' ? { label: "", value: null } : { label: params.row.nome, value: params.row.servico_id }}
+            name="servico_id"
             onChange={(event, value) => handleServicoChange(params, value)}
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
@@ -245,82 +231,6 @@ function EditarOrcamentosPage() {
   ];
 
   useEffect(() => {
-    fullScreenLoader.setLoading(true);
-    blockScroll();
-    
-    api
-      .get("/ordens-servicos/" + id)
-      .then((response) => {
-        response.data["data"].cliente_id = {
-          value: response.data["data"].cliente.id,
-          label: response.data["data"].cliente.nome,
-        };
-
-        response.data["data"].funcionarios = response.data[
-          "data"
-        ].funcionarios.map((item) => {
-          return { value: item.id, label: item.nome };
-        });
-
-        const valuesToFillFormik = {
-          numero: response.data["data"].numero,
-          cliente_id: response.data["data"].cliente_id,
-          funcionarios_id: response.data["data"].funcionarios,
-          situacao: response.data["data"].situacao,
-          dataEntrada: response.data["data"].dataEntrada,
-          horaEntrada: response.data["data"].horaEntrada,
-          dataSaida: response.data["data"].dataSaida,
-          horaSaida: response.data["data"].horaSaida,
-          frete: response.data["data"].frete,
-          outros: response.data["data"].outros,
-          desconto: response.data["data"].desconto,
-          total: response.data["data"].total,
-          observacao: response.data["data"].observacao,
-          observacaoInterna: response.data["data"].observacaoInterna,
-        };
-        formik.setValues(valuesToFillFormik);
-
-        var prods = [];
-        response.data["data"].produtos.map((item,index) => {
-          console.log(item);
-          prods.push({
-            id: new Date().getTime() + index,
-            observacao: item.pivot.observacao,
-            preco: item.pivot.preco,
-            produto_id: item.pivot.produto_id,
-            quantidade: item.pivot.quantidade,
-            total: item.pivot.total,
-            nome: item.nome
-          });
-        });
-        setRowsProdutos(prods);
-
-        var servs = [];
-        response.data["data"].servicos.map((item,index) => {
-          console.log(item);
-          servs.push({
-            id: new Date().getTime() + index,
-            observacao: item.pivot.observacao,
-            preco: item.pivot.preco,
-            servico_id: item.pivot.servico_id,
-            quantidade: item.pivot.quantidade,
-            total: item.pivot.total,
-            nome: item.nome
-          });
-        });
-        setRowsServicos(servs);
-        
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        fullScreenLoader.setLoading(false);
-        allowScroll();
-      });
-  }, []);
-
-  useEffect(() => {
     api
       .get("/clientes")
       .then((response) => {
@@ -337,15 +247,17 @@ function EditarOrcamentosPage() {
 
   useEffect(() => {
     api
-      .get("/funcionarios")
+      .get("/transportadoras")
       .then((response) => {
         var array = [];
-        response.data["data"].forEach((funcionario) => {
-          array.push({ label: funcionario.nome, value: funcionario.id });
+        response.data["data"].forEach((transportadora) => {
+          array.push({ label: transportadora.nome, value: transportadora.id });
         });
-        setFuncionarios(array);
+        setTransportadoras(array);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   useEffect(() => {
@@ -392,8 +304,11 @@ function EditarOrcamentosPage() {
     formik.values.desconto,
   ]);
 
+  const fullScreenLoader = useFullScreenLoader();
+
   function handleOnSubmit(values) {
     if (rowsProdutos.length === 0 && rowsServicos.length === 0) {
+      console.log(rowsProdutos.length);
       formik.setSubmitting(false);
       errorAlert("É necessário adicionar pelo menos um produto ou serviço!");
       return;
@@ -450,42 +365,26 @@ function EditarOrcamentosPage() {
     };
 
     fullScreenLoader.setLoading(true);
-    
     api
-      .put("/ordens-servicos/"+ id, params)
+      .post("/orcamentos", params)
       .then((response) => {
-        successAlert("Sucesso", "Ordem de Serviço Editada", () =>
-          history.push("/ordens-servicos")
+        successAlert("Sucesso", "Orcamento Cadastrado", () =>
+          history.push("/orcamentos")
         );
       })
       .catch((error) => {
         infoAlert("Atenção", error.response.data.message);
       })
-      .finally(() => fullScreenLoader.setLoading(false));
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+        formik.setSubmitting(false);
+      });
   }
 
   function handleOnChange(name, value) {
-    if (name === "funcionarios_id") {
-      formik.setFieldValue(name, getUniqueArrayOfObjectsByKey(value, "value")); // Altera o formik
-      return;
-    }
     formik.setFieldValue(name, value); // Altera o formik
     console.log(formik.values);
   }
-
-  const setHoraEntrada = (e) => {
-    formik.setValues({
-      ...formik.values,
-      horaEntrada: new Date(e._d).toLocaleTimeString(),
-    });
-  };
-
-  const setHoraSaida = (e) => {
-    formik.setValues({
-      ...formik.values,
-      horaSaida: new Date(e._d).toLocaleTimeString(),
-    });
-  };
 
   // ==== Funções de produtos ====
   function addProductRow() {
@@ -539,7 +438,6 @@ function EditarOrcamentosPage() {
 
   function handleClienteChange(params, value) {
     params.row.produto_id = value.value;
-    params.row.nome = value.label;
   }
 
   // ==== Funções de serviços ====
@@ -594,7 +492,6 @@ function EditarOrcamentosPage() {
 
   function handleServicoChange(params, value) {
     params.row.servico_id = value.value;
-    params.row.nome = value.label;
   }
 
   function calcularTotalFinal() {
@@ -617,7 +514,6 @@ function EditarOrcamentosPage() {
 
   return (
     <>
-      {console.log(i.current++)}
       <form onSubmit={formik.handleSubmit}>
         <div>
           <Divider />
@@ -625,7 +521,7 @@ function EditarOrcamentosPage() {
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
             <AssignmentIcon />
-            <h3>Dados do Serviço</h3>
+            <h3>Dados do Orçamento</h3>
           </div>
 
           <Grid container spacing={3}>
@@ -665,7 +561,7 @@ function EditarOrcamentosPage() {
               />
             </Grid>
             <Grid item xs={4}>
-              <FormControl variant="outlined" fullWidth name="tipoCliente">
+              <FormControl variant="outlined" fullWidth name="situacao">
                 <InputLabel>Situação</InputLabel>
                 <Select
                   className={"input-select"}
@@ -678,9 +574,9 @@ function EditarOrcamentosPage() {
                     formik.touched.situacao && Boolean(formik.errors.situacao)
                   }
                 >
-                  <MenuItem value={0}>Aberta</MenuItem>
-                  <MenuItem value={1}>Fechada</MenuItem>
-                  <MenuItem value={2}>Cancelada</MenuItem>
+                  <MenuItem value={0}>Aberto</MenuItem>
+                  <MenuItem value={1}>Aprovado</MenuItem>
+                  <MenuItem value={2}>Reprovado</MenuItem>
                 </Select>
                 {formik.touched.situacao && Boolean(formik.errors.situacao) ? (
                   <FormHelperText>{formik.errors.situacao}</FormHelperText>
@@ -691,7 +587,7 @@ function EditarOrcamentosPage() {
             </Grid>
           </Grid>
           <Grid container spacing={3} style={{ marginTop: 8 }}>
-            <Grid item xs={3}>
+            <Grid item xs={4}>
               <TextField
                 variant="outlined"
                 label="Data Entrada"
@@ -710,116 +606,28 @@ function EditarOrcamentosPage() {
                 }
               />
             </Grid>
-            <Grid item xs={3}>
-              <TimePicker
-                clearable={false}
-                ampm={false}
-                fullWidth
-                inputVariant="outlined"
-                minutesStep={5}
-                label="Hora ínicio"
-                value={moment(formik.values.horaEntrada, "hh:mm:ss")}
-                onAccept={setHoraEntrada}
-                onChange={setHoraEntrada}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.horaEntrada &&
-                  Boolean(formik.errors.horaEntrada)
-                }
-                helperText={
-                  formik.touched.horaEntrada && formik.errors.horaEntrada
-                }
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="Data Saída"
-                fullWidth
-                type="text"
-                onFocus={(e) => {
-                  e.currentTarget.type = "date";
-                  e.currentTarget.focus();
-                }}
-                value={formik.values.dataSaida}
-                name="dataSaida"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.dataSaida && Boolean(formik.errors.dataSaida)
-                }
-                helperText={formik.touched.dataSaida && formik.errors.dataSaida}
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <TimePicker
-                clearable={false}
-                ampm={false}
-                fullWidth
-                inputVariant="outlined"
-                minutesStep={5}
-                label="Hora saída"
-                value={
-                  formik.values.horaSaida != null
-                    ? moment(formik.values.horaSaida, "hh:mm:ss")
-                    : null
-                }
-                onAccept={setHoraSaida}
-                onChange={setHoraSaida}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.horaSaida && Boolean(formik.errors.horaSaida)
-                }
-                helperText={formik.touched.horaSaida && formik.errors.horaSaida}
-              />
-            </Grid>
-          </Grid>
-        </div>
-
-        <div style={{ marginTop: 38 }}>
-          <div
-            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
-          >
-            <AssignmentIcon />
-            <h3>Funcionários Responsáveis</h3>
-          </div>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid item xs={8}>
               <Autocomplete
-                multiple
-                value={formik.values.funcionarios_id}
-                name="funcionarios_id"
-                onChange={(event, value) =>
-                  handleOnChange("funcionarios_id", value)
+                value={formik.values.transportadora_id}
+                name="transportadora_id"
+                onChange={(event, value) => handleOnChange("transportadora_id", value)}
+                isOptionEqualToValue={(option, value) =>
+                  option.value === value.value
                 }
-                options={funcionarios}
-                disableCloseOnSelect
-                getOptionLabel={(option) => option.label}
-                renderOption={(props, option, { selected }) => (
-                  <li {...props}>
-                    <Checkbox
-                      icon={icon}
-                      checkedIcon={checkedIcon}
-                      style={{ marginRight: 8 }}
-                      checked={selected}
-                    />
-                    {option.label}
-                  </li>
-                )}
+                disablePortal
+                options={transportadoras}
                 renderInput={(params) => (
                   <TextField
-                    {...params}
-                    label="Funcionários Responsáveis"
-                    fullWidth
                     variant="outlined"
+                    fullWidth
+                    {...params}
+                    label="Transportadora"
                     placeholder="Pesquise..."
                   />
                 )}
               />
             </Grid>
           </Grid>
-
-          <Divider />
         </div>
 
         <div style={{ marginTop: 38 }}>
@@ -1084,18 +892,18 @@ function EditarOrcamentosPage() {
                 variant="outlined"
                 startIcon={<CheckIcon />}
                 className={"btn btn-primary btn-spacing"}
-disabled={formik.isSubmitting}
+                disabled={formik.isSubmitting}
               >
                 Salvar
               </Button>
             </Grid>
             <Grid item>
               <Button
-                onClick={() => history.push("/ordens-servicos")}
+                onClick={() => history.push("/orcamentos")}
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
-disabled={formik.isSubmitting}
+                disabled={formik.isSubmitting}
               >
                 Cancelar
               </Button>
@@ -1107,4 +915,4 @@ disabled={formik.isSubmitting}
   );
 }
 
-export default EditarOrcamentosPage;
+export default CadastrarOrcamentosPage;

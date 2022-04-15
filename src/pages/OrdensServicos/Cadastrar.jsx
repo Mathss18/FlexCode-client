@@ -311,23 +311,27 @@ function CadastrarOrdensServicoPage() {
   function handleOnSubmit(values) {
     if (rowsProdutos.length === 0 && rowsServicos.length === 0) {
       console.log(rowsProdutos.length);
+      formik.setSubmitting(false);
       errorAlert("É necessário adicionar pelo menos um produto ou serviço!");
       return;
     }
 
     if (rowsProdutos.find((produto) => produto.produto_id === "")) {
+      formik.setSubmitting(false);
       errorAlert(
         "Por favor, selecione um produto para cada linha de produtos!"
       );
       return;
     }
     if (rowsProdutos.find((produto) => produto.quantidade <= 0)) {
+      formik.setSubmitting(false);
       errorAlert(
         "Por favor, selecione uma quantidade válida para cada linha de produtos!"
       );
       return;
     }
     if (rowsProdutos.find((produto) => produto.preco < 0)) {
+      formik.setSubmitting(false);
       errorAlert(
         "Por favor, selecione uma preço válido para cada linha de produtos!"
       );
@@ -335,18 +339,21 @@ function CadastrarOrdensServicoPage() {
     }
 
     if (rowsServicos.find((servico) => servico.servico_id === "")) {
+      formik.setSubmitting(false);
       errorAlert(
         "Por favor, selecione um serviço para cada linha de serviços!"
       );
       return;
     }
     if (rowsServicos.find((servico) => servico.preco < 0)) {
+      formik.setSubmitting(false);
       errorAlert(
         "Por favor, selecione uma preço válido para cada linha de serviços!"
       );
       return;
     }
     if (rowsServicos.find((servico) => servico.quantidade <= 0)) {
+      formik.setSubmitting(false);
       errorAlert(
         "Por favor, selecione uma quantidade válida para cada linha de serviços!"
       );
@@ -370,7 +377,10 @@ function CadastrarOrdensServicoPage() {
       .catch((error) => {
         infoAlert("Atenção", error.response.data.message);
       })
-      .finally(() => fullScreenLoader.setLoading(false));
+      .finally(() => {
+        fullScreenLoader.setLoading(false)
+        formik.setSubmitting(false);
+      });
   }
 
   function handleOnChange(name, value) {
@@ -986,7 +996,7 @@ function CadastrarOrdensServicoPage() {
                 variant="outlined"
                 startIcon={<CheckIcon />}
                 className={"btn btn-primary btn-spacing"}
-disabled={formik.isSubmitting}
+                disabled={formik.isSubmitting}
               >
                 Salvar
               </Button>
@@ -997,7 +1007,7 @@ disabled={formik.isSubmitting}
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
-disabled={formik.isSubmitting}
+                disabled={formik.isSubmitting}
               >
                 Cancelar
               </Button>
