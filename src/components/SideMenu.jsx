@@ -271,6 +271,13 @@ function SideMenu({ children }) {
             </List>
           </Collapse>
 
+          <ListItem button onClick={() => history.push("/orcamentos")} disablePadding>
+            <ListItemIcon>
+              <AssignmentIcon className={"sidemenu-text"} />
+            </ListItemIcon>
+            <ListItemText className={"sidemenu-text"} primary="Orçamentos" />
+          </ListItem>
+
           <ListItem button onClick={() => history.push("/ordens-servicos")} disablePadding>
             <ListItemIcon>
               <AssignmentIcon className={"sidemenu-text"} />

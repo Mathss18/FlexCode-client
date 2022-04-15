@@ -12,13 +12,12 @@ import './chat.css';
 import { moveObjectInArray } from '../../utils/functions';
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
-import { Button, IconButton } from '@mui/material';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import { emojiConfig } from '../../config/emojiConfig';
 import toast from 'react-hot-toast';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useFocus } from '../../hooks/useFocus';
+
 
 function Chat() {
   const user = getFromLS('user');

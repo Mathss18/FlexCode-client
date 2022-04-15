@@ -40,6 +40,9 @@ import ListarGradesDeVariacoes from "../pages/Produtos/grades-variacoes/Listar";
 import CadastrarGradesDeVariacoes from "../pages/Produtos/grades-variacoes/Cadastrar";
 import EditarGradesDeVariacoes from "../pages/Produtos/grades-variacoes/Editar";
 
+import ListarPorcentagensLucros from "../pages/Produtos/porcentagens-lucros/Listar";
+import CadastrarPorcentagensLucros from "../pages/Produtos/porcentagens-lucros/Cadastrar";
+
 import ListarProdutos from "../pages/Produtos/gerenciar-produtos/Listar";
 import CadastrarProdutos from "../pages/Produtos/gerenciar-produtos/Cadastrar";
 import EditarProdutos from "../pages/Produtos/gerenciar-produtos/Editar";
@@ -48,17 +51,23 @@ import ListarServicos from "../pages/Servicos/gerenciar-servicos/Listar";
 import CadastrarServicos from "../pages/Servicos/gerenciar-servicos/Cadastrar";
 import EditarServicos from "../pages/Servicos/gerenciar-servicos/Editar";
 
+import ListarOrdensServicos from "../pages/OrdensServicos/Listar";
+import CadastrarOrdensServicoPage from "../pages/OrdensServicos/Cadastrar";
+import EditarOrdensServicoPage from "../pages/OrdensServicos/Editar";
+import OrdensServicosReport from "../reports/OrdensServicos";
+
+import ListarOrcamentosPage from "../pages/Orcamentos/Listar";
+import CadastrarOrcamentosPage from "../pages/Orcamentos/Cadastrar";
+import EditarOrcamentosPage from "../pages/Orcamentos/Editar";
+
 import PrivateRoutes from "./PrivateRoutes";
 import TopBar from "../components/TopBar";
 import SideMenu from "../components/SideMenu";
 import Chat from "../pages/Chat/Chat";
 import Ajuda from "../pages/Ajuda/Ajuda"
-import CadastrarOrdensServicoPage from "../pages/OrdensServicos/Cadastrar";
-import ListarOrdensServicos from "../pages/OrdensServicos/Listar";
-import EditarOrdensServicoPage from "../pages/OrdensServicos/Editar";
-import ListarPorcentagensLucros from "../pages/Produtos/porcentagens-lucros/Listar";
-import CadastrarPorcentagensLucros from "../pages/Produtos/porcentagens-lucros/Cadastrar";
-import OrdensServicosReport from "../reports/OrdensServicos";
+
+
+
 
 export default function Routes() {
   return (
@@ -126,8 +135,14 @@ export default function Routes() {
             <Route path="/ordens-servicos" exact component={ListarOrdensServicos}></Route>
             <Route path="/ordens-servicos/novo" exact component={CadastrarOrdensServicoPage}></Route>
             <Route path="/ordens-servicos/editar/:id" exact component={EditarOrdensServicoPage} ></Route>
-
             <Route path="/ordens-servicos/relatorio" exact component={OrdensServicosReport}></Route>
+
+            <Route path="/orcamentos" exact component={ListarOrcamentosPage}></Route>
+            <Route path="/orcamentos/novo" exact component={CadastrarOrcamentosPage}></Route>
+            <Route path="/orcamentos/editar/:id" exact component={EditarOrcamentosPage} ></Route>
+
+
+
 
             <Route path="/chat" exact component={Chat}></Route>
 

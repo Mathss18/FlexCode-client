@@ -225,4 +225,30 @@ export const ordemServicoValidation = yup.object().shape({
   total: yup.number("").required("O total é obrigatório").min(0,"O valor não pode ser negativo"),
   observacao: yup.string(),
   observacaoInterna: yup.string(),
+
+  
+});
+
+export const orcamentoValidation = yup.object().shape({
+  numero: yup.number("").min(0, "O valor não pode ser negativo"),
+  // cliente_id: yup.object().shape({
+  //   label: yup.string().required(),
+  //   value: yup.number().required(),
+  // }),
+  // funcionarios_id: yup.array().of(
+  //   yup.object().shape({
+  //     label: yup.string().required(),
+  //     value: yup.number().required(),
+  //   })
+  // ),
+  // produtos: [],
+  // servicos: [],
+  situacao: yup.number("").required("A situação é obrigatória").min(0),
+  dataEntrada: yup.string().required("A data de entrada é obrigatória"),
+  frete: yup.number("").required("O frete é obrigatório").min(0, "O valor não pode ser negativo"),
+  outros: yup.number("").required("Outros gastos é obrigatório").min(0,"O valor não pode ser negativo"),
+  desconto: yup.number("").required("O desconto é obrigatório").min(0,"O valor não pode ser negativo"),
+  total: yup.number("").required("O total é obrigatório").min(0,"O valor não pode ser negativo"),
+  observacao: yup.string(),
+  observacaoInterna: yup.string(),
 });
