@@ -1,0 +1,77 @@
+.container {
+  background-color: #fff;
+  color : #000;
+  width: 1000px;
+  font-family: arial, sans-serif;
+  border: solid rgb(187, 186, 186) 1px;
+}
+
+.container .containerImg {
+  width: 150px;
+  height: 150px;
+}
+
+.containerHeader {
+  display: flex;
+}
+
+.headerLeft {
+  padding-left: 20px;
+}
+
+.headerRight {
+  margin-left: auto;
+  padding-right: 10px;
+}
+
+.containerBody {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.containerBody table {
+  width: 100%;
+}
+
+.containerTable {
+  margin-top: 30px;
+  border: solid rgb(187, 186, 186) 1px;
+  border-right: none;
+  border-left: none;
+}
+
+td,
+th {
+  padding: 8px;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+.tableCliente tr {
+  background-color: #fff !important;
+}
+
+.tableCliente > tr > th {
+    width: 1%;
+  }
+
+.assinaturas {
+  display: flex;
+  margin-top: 90px;
+  gap: 100px;
+  justify-content: center;
+}
+
+.linha {
+  width: 350px;
+  border: none;
+  border-top: solid rgb(8, 8, 8) 1px;
+}
+
+.containerFooter {
+  margin-top: 30px;
+  margin-left: 10px
+}

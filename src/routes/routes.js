@@ -54,7 +54,7 @@ import EditarServicos from "../pages/Servicos/gerenciar-servicos/Editar";
 import ListarOrdensServicos from "../pages/OrdensServicos/Listar";
 import CadastrarOrdensServicoPage from "../pages/OrdensServicos/Cadastrar";
 import EditarOrdensServicoPage from "../pages/OrdensServicos/Editar";
-import OrdensServicosReport from "../reports/OrdensServicos";
+import OrdermServicosTemplate from "../reports/OrdermServicosTemplate";
 
 import ListarOrcamentosPage from "../pages/Orcamentos/Listar";
 import CadastrarOrcamentosPage from "../pages/Orcamentos/Cadastrar";
@@ -66,9 +66,6 @@ import SideMenu from "../components/SideMenu";
 import Chat from "../pages/Chat/Chat";
 import Ajuda from "../pages/Ajuda/Ajuda"
 
-
-
-
 export default function Routes() {
   return (
     <BrowserRouter>
@@ -79,6 +76,8 @@ export default function Routes() {
         </Route>
 
         <Route path="/login" exact component={LoginPage}></Route>
+        <Route path="/ordens-servicos/relatorio" exact component={OrdermServicosTemplate}></Route>
+
 
         <PrivateRoutes>
           <TopBar />
@@ -135,7 +134,7 @@ export default function Routes() {
             <Route path="/ordens-servicos" exact component={ListarOrdensServicos}></Route>
             <Route path="/ordens-servicos/novo" exact component={CadastrarOrdensServicoPage}></Route>
             <Route path="/ordens-servicos/editar/:id" exact component={EditarOrdensServicoPage} ></Route>
-            <Route path="/ordens-servicos/relatorio" exact component={OrdensServicosReport}></Route>
+          
 
             <Route path="/orcamentos" exact component={ListarOrcamentosPage}></Route>
             <Route path="/orcamentos/novo" exact component={CadastrarOrcamentosPage}></Route>

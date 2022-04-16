@@ -10,7 +10,7 @@ import { config, rowConfig } from "../../config/tablesConfig";
 import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
 import api from "../../services/api";
 import moment from "moment";
-import ordermServicosTemplate from "../../reports/ordermServicosTemplate";
+import ordermServicosTemplate from "../../reports/OrdermServicosTemplate";
 
 
 function ListarOrcamentos() {
@@ -51,7 +51,7 @@ function ListarOrcamentos() {
   }
 
   function handleOnClickPdfButton(event, item) {
-    
+    console.log(event, item);
   }
 
   useEffect(() => {
