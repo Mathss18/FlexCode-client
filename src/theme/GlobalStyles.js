@@ -1,6 +1,7 @@
 import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyles = createGlobalStyle`
+
   * {
     font-family: ${({ theme }) => theme.font} !important; // fonte de toda a aplicação
   }
@@ -9,6 +10,7 @@ export const GlobalStyles = createGlobalStyle`
     background: ${({ theme }) => theme.colors.body}; // cor de fundo da aplicação
     color: ${({ theme }) => theme.colors.text}; // cor padrao do texto da aplicação
     font-family: ${({ theme }) => theme.font}; // fonte da aplicação
+    -webkit-print-color-adjust: exact; // imprime exatamente as cores que estão na página
   }
 
   a {

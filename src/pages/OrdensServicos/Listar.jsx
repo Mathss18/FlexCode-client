@@ -10,8 +10,7 @@ import { config, rowConfig } from "../../config/tablesConfig";
 import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
 import api from "../../services/api";
 import moment from "moment";
-import ordensServicosReport from "../../reports/OrdensServicos";
-import ordermServicosTemplate from "../../reports/ordermServicosTemplate";
+import OrdermServicosTemplate from "../../reports/OrdermServicosTemplate";
 
 
 function ListarOrdensServicos() {
@@ -53,16 +52,11 @@ function ListarOrdensServicos() {
 
   function handleOnClickPdfButton(event, item) {
     console.log(item);
-    // window.open('http://localhost:3000/ordens-servicos/relatorio', 'sharer', 'toolbar=0,status=0,width=548,height=325');
-    const html = ordermServicosTemplate('teste')
-    let mywindow = window.open('', '', 'height=650,width=900,top=100,left=150');
+    window.open('http://localhost:3000/ordens-servicos/relatorio', 'sharer','toolbar=0,status=0,width=548,height=325');
     console.log(document.getElementById('root'));
-    console.log(mywindow);
-
-    mywindow.document.write(html); 
     // mywindow.document.appendChild(html);
     // mywindow.document.close(); // necessary for IE >= 10
-    mywindow.focus(); // necessary for IE >= 10*/
+    // mywindow.focus(); // necessary for IE >= 10*/
   
     // mywindow.print();
     // mywindow.close();
