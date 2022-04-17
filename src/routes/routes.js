@@ -54,7 +54,6 @@ import EditarServicos from "../pages/Servicos/gerenciar-servicos/Editar";
 import ListarOrdensServicos from "../pages/OrdensServicos/Listar";
 import CadastrarOrdensServicoPage from "../pages/OrdensServicos/Cadastrar";
 import EditarOrdensServicoPage from "../pages/OrdensServicos/Editar";
-import OrdermServicosTemplate from "../reports/OrdermServicosTemplate";
 
 import ListarOrcamentosPage from "../pages/Orcamentos/Listar";
 import CadastrarOrcamentosPage from "../pages/Orcamentos/Cadastrar";
@@ -65,6 +64,7 @@ import TopBar from "../components/TopBar";
 import SideMenu from "../components/SideMenu";
 import Chat from "../pages/Chat/Chat";
 import Ajuda from "../pages/Ajuda/Ajuda"
+import OrdermServicoReport from "../reports/OrdensServicos/OrdermServicoReport";
 
 export default function Routes() {
   return (
@@ -76,7 +76,7 @@ export default function Routes() {
         </Route>
 
         <Route path="/login" exact component={LoginPage}></Route>
-        <Route path="/ordens-servicos/relatorio" exact component={OrdermServicosTemplate}></Route>
+        <Route path="/ordens-servicos/relatorio" exact component={OrdermServicoReport}></Route>
 
 
         <PrivateRoutes>
