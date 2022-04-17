@@ -1,12 +1,22 @@
-.container {
+@media print {
+	.not-printable{
+		display: none !important;
+	}
+}
+@page { size: auto;  margin: 8mm;  }
+
+.containerReport {
   background-color: #fff;
   color : #000;
   width: 1000px;
   font-family: arial, sans-serif;
   border: solid rgb(187, 186, 186) 1px;
+  margin-left: auto; 
+  margin-right: auto;
+  padding: 14px;
 }
 
-.container .containerImg {
+.containerReport .containerImg {
   width: 150px;
   height: 150px;
 }
