@@ -625,6 +625,7 @@ function CadastrarGrupoPage() {
                 variant="outlined"
                 startIcon={<CheckIcon />}
                 className={'btn btn-primary btn-spacing'}
+                disabled={formik.isSubmitting}
               >
                 Salvar
               </Button>
@@ -635,6 +636,7 @@ function CadastrarGrupoPage() {
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={'btn btn-error btn-spacing'}
+                disabled={formik.isSubmitting}
               >
                 Cancelar
               </Button>

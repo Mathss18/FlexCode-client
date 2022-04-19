@@ -70,7 +70,32 @@ function EditarFornecedorPage() {
       });
   }, []);
 
+  function handleCepChange() {
+    const cep = formik.values.cep;
+    const validacep = /^[0-9]{8}$/;
+    if (validacep.test(cep.replace(/\D/g, ""))) {
+      buscarCep(formik.values.cep.replace(/\D/g, "")).then((response) => {
+        formik.setValues({
+          ...formik.values,
+          rua: response.logradouro,
+          estado: response.uf,
+          bairro: response.bairro,
+          cidade: response.localidade,
+          codigoMunicipio: response.ibge,
+        });
+      });
+    } else {
+      infoAlert("Atenção!", "CEP inválido");
+    }
+  }
+
   function handleOnSubmit(values) {
+    // Removendo máscaras antes de enviar dados para API
+    values.cep = values.cep.replace(/[^\d]/g, '');
+    values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, '');
+    values.telefone = values.telefone.replace(/[^\d]/g, '');
+    values.celular = values.celular.replace(/[^\d]/g, '');
+    
     api
       .put("/fornecedores/" + id, values)
       .then((response) => {
@@ -116,7 +141,7 @@ function EditarFornecedorPage() {
           <h3>Dados Pessoais</h3>
         </div>
         <form onSubmit={formik.handleSubmit}>
-          <Grid container spacing={2}>
+        <Grid container spacing={2}>
             <Grid item xs={3}>
               <FormControl variant="outlined" fullWidth name="tipoFornecedor">
                 <InputLabel>Tipo de Fornecedor</InputLabel>
@@ -137,9 +162,7 @@ function EditarFornecedorPage() {
                 </Select>
                 {formik.touched.tipoFornecedor &&
                 Boolean(formik.errors.tipoFornecedor) ? (
-                  <FormHelperText>
-                    {formik.errors.tipoFornecedor}
-                  </FormHelperText>
+                  <FormHelperText>{formik.errors.tipoFornecedor}</FormHelperText>
                 ) : (
                   ""
                 )}
@@ -244,7 +267,11 @@ function EditarFornecedorPage() {
 
             <Grid item xs={3}>
               <InputMask
-                mask={"999.999.999-99"}
+                mask={
+                  formik.values.tipoFornecedor === "pf"
+                    ? "999.999.999-99"
+                    : "99.999.999/9999-99"
+                }
                 value={formik.values.cpfCnpj}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -306,17 +333,27 @@ function EditarFornecedorPage() {
           </div>
           <Grid container spacing={2}>
             <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="CEP"
-                fullWidth
+               <InputMask
+                mask={'99999-999'}
                 value={formik.values.cep}
-                name="cep"
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.cep && Boolean(formik.errors.cep)}
-                helperText={formik.touched.cep && formik.errors.cep}
-              />
+                onBlur={handleCepChange}
+              >
+                {() => (
+                  <TextField
+                    variant="outlined"
+                    label="Cep"
+                    fullWidth
+                    name="cep"
+                    error={
+                      formik.touched.cep && Boolean(formik.errors.cep)
+                    }
+                    helperText={
+                      formik.touched.cep && formik.errors.cep
+                    }
+                  />
+                )}
+              </InputMask>
             </Grid>
             <Grid item xs={3}>
               <TextField
@@ -418,32 +455,50 @@ function EditarFornecedorPage() {
               </FormControl>
             </Grid>
             <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="Telefone"
-                fullWidth
+              <InputMask
+                mask={'(99) 9999-9999'}
                 value={formik.values.telefone}
-                name="telefone"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={
-                  formik.touched.telefone && Boolean(formik.errors.telefone)
-                }
-                helperText={formik.touched.telefone && formik.errors.telefone}
-              />
+              >
+                {() => (
+                  <TextField
+                    variant="outlined"
+                    label="Telefone"
+                    fullWidth
+                    name="telefone"
+                    error={
+                      formik.touched.telefone && Boolean(formik.errors.telefone)
+                    }
+                    helperText={
+                      formik.touched.telefone && formik.errors.telefone
+                    }
+                  />
+                )}
+              </InputMask>
             </Grid>
             <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="Celular"
-                fullWidth
+            <InputMask
+                mask={'(99) 9 9999-9999'}
                 value={formik.values.celular}
-                name="celular"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.celular && Boolean(formik.errors.celular)}
-                helperText={formik.touched.celular && formik.errors.celular}
-              />
+              >
+                {() => (
+                  <TextField
+                    variant="outlined"
+                    label="Celular"
+                    fullWidth
+                    name="celular"
+                    error={
+                      formik.touched.celular && Boolean(formik.errors.celular)
+                    }
+                    helperText={
+                      formik.touched.celular && formik.errors.celular
+                    }
+                  />
+                )}
+              </InputMask>
             </Grid>
             <Grid item xs={3}>
               <TextField

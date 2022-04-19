@@ -1,12 +1,8 @@
-import { useState, useContext } from "react";
-import { Grid, Divider, Button, Box, Tabs, Tab, AppBar } from "@material-ui/core";
+import { useState } from "react";
+import { Divider, Tabs, Tab } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
-import { useProdutoContext } from "../../../context/GerenciarProdutosContext";
-import api from "../../../services/api";
-import CheckIcon from "@material-ui/icons/Check";
-import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import { Dados, Detalhes, Valores, Estoque, Fotos, Fiscal, Fornecedores, Composicao } from "./Tabs/index";
+import { Dados, Detalhes, Valores, Estoque, Fotos, Fiscal, Fornecedores } from "./Tabs/index";
 
 function CadastrarProduto() {
   const history = useHistory();

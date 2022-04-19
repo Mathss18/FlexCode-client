@@ -22,8 +22,6 @@ import InputMask from "react-input-mask";
 import { infoAlert, successAlert } from "../../../utils/alert";
 import { clienteValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
-import { useRef } from "react";
-import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 const initialValues = {
   tipoCliente: "",
@@ -47,7 +45,6 @@ const initialValues = {
 
 function CadastrarClientePage() {
   const history = useHistory();
-  const fullScreenLoader = useFullScreenLoader();
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -58,6 +55,12 @@ function CadastrarClientePage() {
   });
 
   function handleOnSubmit(values) {
+    // Removendo máscaras antes de enviar dados para API
+    values.cep = values.cep.replace(/[^\d]/g, '');
+    values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, '');
+    values.telefone = values.telefone.replace(/[^\d]/g, '');
+    values.celular = values.celular.replace(/[^\d]/g, '');
+
     api
       .post("/clientes", values)
       .then((response) => {
@@ -229,7 +232,11 @@ function CadastrarClientePage() {
 
             <Grid item xs={3}>
               <InputMask
-                mask={"999.999.999-99"}
+                mask={
+                  formik.values.tipoCliente === "pf"
+                    ? "999.999.999-99"
+                    : "99.999.999/9999-99"
+                }
                 value={formik.values.cpfCnpj}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -291,17 +298,27 @@ function CadastrarClientePage() {
           </div>
           <Grid container spacing={2}>
             <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="CEP"
-                fullWidth
+               <InputMask
+                mask={'99999-999'}
                 value={formik.values.cep}
-                name="cep"
                 onChange={formik.handleChange}
                 onBlur={handleCepChange}
-                error={formik.touched.cep && Boolean(formik.errors.cep)}
-                helperText={formik.touched.cep && formik.errors.cep}
-              />
+              >
+                {() => (
+                  <TextField
+                    variant="outlined"
+                    label="Cep"
+                    fullWidth
+                    name="cep"
+                    error={
+                      formik.touched.cep && Boolean(formik.errors.cep)
+                    }
+                    helperText={
+                      formik.touched.cep && formik.errors.cep
+                    }
+                  />
+                )}
+              </InputMask>
             </Grid>
             <Grid item xs={3}>
               <TextField
@@ -403,32 +420,50 @@ function CadastrarClientePage() {
               </FormControl>
             </Grid>
             <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="Telefone"
-                fullWidth
+              <InputMask
+                mask={'(99) 9999-9999'}
                 value={formik.values.telefone}
-                name="telefone"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={
-                  formik.touched.telefone && Boolean(formik.errors.telefone)
-                }
-                helperText={formik.touched.telefone && formik.errors.telefone}
-              />
+              >
+                {() => (
+                  <TextField
+                    variant="outlined"
+                    label="Telefone"
+                    fullWidth
+                    name="telefone"
+                    error={
+                      formik.touched.telefone && Boolean(formik.errors.telefone)
+                    }
+                    helperText={
+                      formik.touched.telefone && formik.errors.telefone
+                    }
+                  />
+                )}
+              </InputMask>
             </Grid>
             <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="Celular"
-                fullWidth
+            <InputMask
+                mask={'(99) 9 9999-9999'}
                 value={formik.values.celular}
-                name="celular"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.celular && Boolean(formik.errors.celular)}
-                helperText={formik.touched.celular && formik.errors.celular}
-              />
+              >
+                {() => (
+                  <TextField
+                    variant="outlined"
+                    label="Celular"
+                    fullWidth
+                    name="celular"
+                    error={
+                      formik.touched.celular && Boolean(formik.errors.celular)
+                    }
+                    helperText={
+                      formik.touched.celular && formik.errors.celular
+                    }
+                  />
+                )}
+              </InputMask>
             </Grid>
             <Grid item xs={3}>
               <TextField

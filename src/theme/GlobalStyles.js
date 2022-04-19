@@ -394,8 +394,6 @@ export const GlobalStyles = createGlobalStyle`
     color: ${({ theme }) => theme.colors.button.secondary.hover.text}; // cor do texto do botao secundario quando o mouse estiver sobre ele
   }
 
-
-
   .btn-success {
     background: ${({ theme }) => theme.colors.button.success.background}; // cor de fundo do botao sucesso 
     color: ${({ theme }) => theme.colors.button.success.text}; // cor do texto do botao sucesso
@@ -472,6 +470,16 @@ export const GlobalStyles = createGlobalStyle`
   .toast-container{
     color: ${({ theme }) => theme.colors.toast.text};
     background: ${({ theme }) => theme.colors.toast.background}
+  }
+
+  /* ========= DIALOG FULLSCREEN ========= */
+  .MuiDialog-paperFullScreen{
+    background: ${({ theme }) => theme.colors.body}; // cor de fundo da aplicação
+    color: ${({ theme }) => theme.colors.text}; // cor padrao do texto da aplicação
+  }
+
+  .MuiListItemText-secondary{
+    color: ${({ theme }) => theme.colors.text}; // cor padrao do texto da aplicação
   }
 
 `;
