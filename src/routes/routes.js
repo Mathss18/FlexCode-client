@@ -65,6 +65,7 @@ import SideMenu from "../components/SideMenu";
 import Chat from "../pages/Chat/Chat";
 import Ajuda from "../pages/Ajuda/Ajuda"
 import OrdermServicoReport from "../reports/OrdensServicos/OrdermServicoReport";
+import ListarOrdensServicosAcompanhamento from "../pages/OrdensServicosAcompanhamento/Listar";
 
 export default function Routes() {
   return (
@@ -77,7 +78,7 @@ export default function Routes() {
 
         <Route path="/login" exact component={LoginPage}></Route>
         <Route path="/ordens-servicos/relatorio" exact component={OrdermServicoReport}></Route>
-
+        <Route path="/ordens-servicos-acompanhamento/listar" exact component={ListarOrdensServicosAcompanhamento}></Route>
 
         <PrivateRoutes>
           <TopBar />
