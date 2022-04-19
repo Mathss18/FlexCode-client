@@ -21,8 +21,9 @@ import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import MouseIcon from "@material-ui/icons/Mouse";
 import FormHelperText from "@mui/material/FormHelperText";
 import buscarCep from "../../../services/cep";
+import InputMask from "react-input-mask";
 import { infoAlert, successAlert } from "../../../utils/alert";
-import { funcionarioValidation } from "../../../validators/validationSchema";
+import { funcionarioValidationCreate } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
@@ -63,13 +64,12 @@ function CadastrarFuncionarioPage() {
   const [grupos, setGrupos] = useState([]);
   const classes = useStyles();
   const history = useHistory();
-  const fullScreenLoader = useFullScreenLoader();
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => {
       handleOnSubmit(event);
     },
-    validationSchema: funcionarioValidation,
+    validationSchema: funcionarioValidationCreate,
   });
 
   useEffect(() => {
@@ -98,6 +98,11 @@ function CadastrarFuncionarioPage() {
   }
 
   function handleOnSubmit(values) {
+    values.cep = values.cep.replace(/[^\d]/g, "");
+    values.cpf = values.cpf.replace(/[^\d]/g, "");
+    values.telefone = values.telefone.replace(/[^\d]/g, "");
+    values.celular = values.celular.replace(/[^\d]/g, "");
+
     api
       .post("/funcionarios", values)
       .then((response) => {
@@ -264,18 +269,23 @@ function CadastrarFuncionarioPage() {
             </Grid>
 
             <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="CPF"
-                fullWidth
-                className={classes.input}
-                name="cpf"
+              <InputMask
+                mask={"999.999.999-99"}
                 value={formik.values.cpf}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.cpf && Boolean(formik.errors.cpf)}
-                helperText={formik.touched.cpf && formik.errors.cpf}
-              />
+              >
+                {() => (
+                  <TextField
+                    variant="outlined"
+                    label="CPF"
+                    fullWidth
+                    name="cpf"
+                    error={formik.touched.cpf && Boolean(formik.errors.cpf)}
+                    helperText={formik.touched.cpf && formik.errors.cpf}
+                  />
+                )}
+              </InputMask>
             </Grid>
 
             <Grid item xs={3}>
@@ -352,18 +362,23 @@ function CadastrarFuncionarioPage() {
           </div>
           <Grid container spacing={2}>
             <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="CEP"
-                fullWidth
-                className={classes.input}
-                name="cep"
+              <InputMask
+                mask={"99999-999"}
                 value={formik.values.cep}
                 onChange={formik.handleChange}
                 onBlur={handleCepChange}
-                error={formik.touched.cep && Boolean(formik.errors.cep)}
-                helperText={formik.touched.cep && formik.errors.cep}
-              />
+              >
+                {() => (
+                  <TextField
+                    variant="outlined"
+                    label="Cep"
+                    fullWidth
+                    name="cep"
+                    error={formik.touched.cep && Boolean(formik.errors.cep)}
+                    helperText={formik.touched.cep && formik.errors.cep}
+                  />
+                )}
+              </InputMask>
             </Grid>
             <Grid item xs={3}>
               <TextField
@@ -473,34 +488,48 @@ function CadastrarFuncionarioPage() {
               </FormControl>
             </Grid>
             <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="Telefone"
-                fullWidth
-                className={classes.input}
-                name="telefone"
+              <InputMask
+                mask={"(99) 9999-9999"}
                 value={formik.values.telefone}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={
-                  formik.touched.telefone && Boolean(formik.errors.telefone)
-                }
-                helperText={formik.touched.telefone && formik.errors.telefone}
-              />
+              >
+                {() => (
+                  <TextField
+                    variant="outlined"
+                    label="Telefone"
+                    fullWidth
+                    name="telefone"
+                    error={
+                      formik.touched.telefone && Boolean(formik.errors.telefone)
+                    }
+                    helperText={
+                      formik.touched.telefone && formik.errors.telefone
+                    }
+                  />
+                )}
+              </InputMask>
             </Grid>
             <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="Celular"
-                fullWidth
-                className={classes.input}
-                name="celular"
+              <InputMask
+                mask={"(99) 9 9999-9999"}
                 value={formik.values.celular}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.celular && Boolean(formik.errors.celular)}
-                helperText={formik.touched.celular && formik.errors.celular}
-              />
+              >
+                {() => (
+                  <TextField
+                    variant="outlined"
+                    label="Celular"
+                    fullWidth
+                    name="celular"
+                    error={
+                      formik.touched.celular && Boolean(formik.errors.celular)
+                    }
+                    helperText={formik.touched.celular && formik.errors.celular}
+                  />
+                )}
+              </InputMask>
             </Grid>
           </Grid>
           <br />
@@ -568,6 +597,7 @@ function CadastrarFuncionarioPage() {
               />
             </Grid>
           </Grid>
+
           <Grid container spacing={0}>
             <Grid item>
               <Button
@@ -596,6 +626,7 @@ function CadastrarFuncionarioPage() {
                 variant="outlined"
                 startIcon={<CheckIcon />}
                 className={"btn btn-primary btn-spacing"}
+                disabled={formik.isSubmitting}
               >
                 Salvar
               </Button>
@@ -606,6 +637,7 @@ function CadastrarFuncionarioPage() {
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
+                disabled={formik.isSubmitting}
               >
                 Cancelar
               </Button>

@@ -708,9 +708,9 @@ function EditarGrupoPage() {
                 variant="outlined"
                 startIcon={<CheckIcon />}
                 className={"btn btn-primary btn-spacing"}
+                disabled={formik.isSubmitting}
               >
-                {" "}
-                Salvar{" "}
+                Salvar
               </Button>
             </Grid>
             <Grid item>
@@ -719,6 +719,7 @@ function EditarGrupoPage() {
                 startIcon={<DeleteForeverIcon />}
                 className={"btn btn-error btn-spacing"}
                 onClick={handleDelete}
+                disabled={formik.isSubmitting}
               >
                 Excluir
               </Button>
@@ -729,9 +730,9 @@ function EditarGrupoPage() {
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
+                disabled={formik.isSubmitting}
               >
-                {" "}
-                Cancelar{" "}
+                Cancelar
               </Button>
             </Grid>
           </Grid>

@@ -65,6 +65,7 @@ import SideMenu from "../components/SideMenu";
 import Chat from "../pages/Chat/Chat";
 import Ajuda from "../pages/Ajuda/Ajuda"
 import OrdermServicoReport from "../reports/OrdensServicos/OrdermServicoReport";
+import ListarOrdensServicosFuncionariosPage from "../pages/OrdensServicosFuncionarios/Listar";
 
 export default function Routes() {
   return (
@@ -134,6 +135,8 @@ export default function Routes() {
             <Route path="/ordens-servicos" exact component={ListarOrdensServicos}></Route>
             <Route path="/ordens-servicos/novo" exact component={CadastrarOrdensServicoPage}></Route>
             <Route path="/ordens-servicos/editar/:id" exact component={EditarOrdensServicoPage} ></Route>
+
+            <Route path="/ordens-servicos-funcionarios/:idUsuario" exact component={ListarOrdensServicosFuncionariosPage} ></Route>
           
 
             <Route path="/orcamentos" exact component={ListarOrcamentosPage}></Route>

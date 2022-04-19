@@ -65,7 +65,6 @@ function EditarOrdensServicoPage() {
   const { id } = useParams();
   const i = useRef(0);
   const fullScreenLoader = useFullScreenLoader();
-  const [blockScroll, allowScroll] = useScrollBlock();
   
   
 
@@ -239,7 +238,6 @@ function EditarOrdensServicoPage() {
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
-    blockScroll();
     
     api
       .get("/orcamentos/" + id)
@@ -306,7 +304,6 @@ function EditarOrdensServicoPage() {
       })
       .finally(() => {
         fullScreenLoader.setLoading(false);
-        allowScroll();
       });
   }, []);
 

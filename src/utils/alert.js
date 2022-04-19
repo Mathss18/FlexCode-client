@@ -25,6 +25,7 @@ export function confirmAlert(title='Tem certeza?', text='',isConfirmed=()=>{}, i
         text: text,
         icon: 'warning',
         showCancelButton: true,
+        cancelButtonText: 'Cancelar',
         confirmButtonColor: '#3f51b5',
         cancelButtonColor: '#f44336',
         confirmButtonText: 'Sim!'

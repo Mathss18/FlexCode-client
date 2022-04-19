@@ -1,42 +1,50 @@
-import { useEffect, useState } from "react";
-import { useParams, useHistory } from 'react-router-dom';
-import { Grid, TextField, Select, MenuItem, FormControl, InputLabel, Divider, Button, FormHelperText, Tooltip } from '@material-ui/core';
-import CheckIcon from '@material-ui/icons/Check';
-import CloseIcon from '@material-ui/icons/Close';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import HelpIcon from '@mui/icons-material/Help';
+import { useEffect } from "react";
+import { useParams, useHistory } from "react-router-dom";
+import {
+  Grid,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Divider,
+  Button,
+  FormHelperText,
+  Tooltip,
+} from "@material-ui/core";
+import CheckIcon from "@material-ui/icons/Check";
+import CloseIcon from "@material-ui/icons/Close";
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
+import HelpIcon from "@mui/icons-material/Help";
 import InputMask from "react-input-mask";
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import api from '../../../services/api';
-import Swal from 'sweetalert2';
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import api from "../../../services/api";
 import { transportadoraValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
-
+import buscarCep from "../../../services/cep";
 
 const initialValues = {
-  tipoTransportadora: '',
-  situacao: '',
-  tipoContribuinte: '',
-  inscricaoEstadual: '',
-  nome: '',
-  cpfCnpj: '',
-  email: '',
-  contato: '',
-  rua: '',
-  cidade: '',
-  numero: '',
-  cep: '',
-  bairro: '',
-  estado: '',
-  telefone: '',
-  celular: '',
-  codigoMunicipio: '',
-
-
-}
+  tipoTransportadora: "",
+  situacao: "",
+  tipoContribuinte: "",
+  inscricaoEstadual: "",
+  nome: "",
+  cpfCnpj: "",
+  email: "",
+  contato: "",
+  rua: "",
+  cidade: "",
+  numero: "",
+  cep: "",
+  bairro: "",
+  estado: "",
+  telefone: "",
+  celular: "",
+  codigoMunicipio: "",
+};
 
 function EditarTransportadoraPage() {
   const history = useHistory();
@@ -44,24 +52,53 @@ function EditarTransportadoraPage() {
   const fullScreenLoader = useFullScreenLoader();
   const formik = useFormik({
     initialValues: initialValues,
-    onSubmit: (event) => { handleOnSubmit(event) },
+    onSubmit: (event) => {
+      handleOnSubmit(event);
+    },
     validationSchema: transportadoraValidation,
-  })
+  });
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
-    api.get('/transportadoras/' + id)
+    api
+      .get("/transportadoras/" + id)
       .then((response) => {
-        formik.setValues(response.data['data']);
+        formik.setValues(response.data["data"]);
       })
       .finally(() => {
         fullScreenLoader.setLoading(false);
-      })
-
+      });
   }, []);
 
+  function handleCepChange() {
+    const cep = formik.values.cep;
+    const validacep = /^[0-9]{8}$/;
+    if (validacep.test(cep.replace(/\D/g, ""))) {
+      buscarCep(formik.values.cep.replace(/\D/g, ""))
+      .then((response) => {
+        formik.setValues({
+          ...formik.values,
+          rua: response.logradouro,
+          estado: response.uf,
+          bairro: response.bairro,
+          cidade: response.localidade,
+          codigoMunicipio: response.ibge,
+        });
+      });
+    } else {
+      infoAlert("Atenção!", "CEP inválido");
+    }
+  }
+
   function handleOnSubmit(values) {
-    api.put('/transportadoras/' + id, values)
+    // Removendo máscaras antes de enviar dados para API
+    values.cep = values.cep.replace(/[^\d]/g, '');
+    values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, '');
+    values.telefone = values.telefone.replace(/[^\d]/g, '');
+    values.celular = values.celular.replace(/[^\d]/g, '');
+
+    api
+      .put("/transportadoras/" + id, values)
       .then((response) => {
         successAlert("Sucesso", "Transportadora Editada", () =>
           history.push("/transportadoras")
@@ -72,7 +109,7 @@ function EditarTransportadoraPage() {
       })
       .finally(() => {
         formik.setSubmitting(false);
-      })
+      });
   }
 
   function handleDelete() {
@@ -94,9 +131,6 @@ function EditarTransportadoraPage() {
       });
   }
 
-
-
-
   return (
     <>
       <div>
@@ -108,7 +142,7 @@ function EditarTransportadoraPage() {
           <h3>Dados Pessoais</h3>
         </div>
         <form onSubmit={formik.handleSubmit}>
-          <Grid container spacing={2}>
+        <Grid container spacing={2}>
             <Grid item xs={3}>
               <FormControl variant="outlined" fullWidth name="tipoTransportadora">
                 <InputLabel>Tipo de Transportadora</InputLabel>
@@ -119,17 +153,20 @@ function EditarTransportadoraPage() {
                   value={formik.values.tipoTransportadora}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.tipoTransportadora && Boolean(formik.errors.tipoTransportadora)}
-
+                  error={
+                    formik.touched.tipoTransportadora &&
+                    Boolean(formik.errors.tipoTransportadora)
+                  }
                 >
                   <MenuItem value={"pf"}>Pessoa Física</MenuItem>
                   <MenuItem value={"pj"}>Pessoa Jurídica</MenuItem>
                 </Select>
-                {formik.touched.tipoTransportadora && Boolean(formik.errors.tipoTransportadora)
-                  ? <FormHelperText>{formik.errors.tipoTransportadora}</FormHelperText>
-                  : ''
-                }
-
+                {formik.touched.tipoTransportadora &&
+                Boolean(formik.errors.tipoTransportadora) ? (
+                  <FormHelperText>{formik.errors.tipoTransportadora}</FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
 
@@ -143,24 +180,23 @@ function EditarTransportadoraPage() {
                   value={formik.values.situacao}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.situacao && Boolean(formik.errors.situacao)}
+                  error={
+                    formik.touched.situacao && Boolean(formik.errors.situacao)
+                  }
                 >
                   <MenuItem value={1}>Ativo</MenuItem>
                   <MenuItem value={0}>Inativo</MenuItem>
                 </Select>
-                {formik.touched.situacao && Boolean(formik.errors.situacao)
-                  ? <FormHelperText>{formik.errors.situacao}</FormHelperText>
-                  : ''
-                }
+                {formik.touched.situacao && Boolean(formik.errors.situacao) ? (
+                  <FormHelperText>{formik.errors.situacao}</FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
 
             <Grid item xs={3}>
-              <FormControl
-                variant="outlined"
-                fullWidth
-                name="tipoContribuinte"
-              >
+              <FormControl variant="outlined" fullWidth name="tipoContribuinte">
                 <InputLabel>Tipo de contribuinte</InputLabel>
                 <Select
                   className={"input-select"}
@@ -169,16 +205,23 @@ function EditarTransportadoraPage() {
                   value={formik.values.tipoContribuinte}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.tipoContribuinte && Boolean(formik.errors.tipoContribuinte)}
+                  error={
+                    formik.touched.tipoContribuinte &&
+                    Boolean(formik.errors.tipoContribuinte)
+                  }
                 >
                   <MenuItem value={1}>Contribuinte ICMS</MenuItem>
                   <MenuItem value={2}>Contribuinte ISENTO</MenuItem>
                   <MenuItem value={9}>Não Contribuinte</MenuItem>
                 </Select>
-                {formik.touched.tipoContribuinte && Boolean(formik.errors.tipoContribuinte)
-                  ? <FormHelperText>{formik.errors.tipoContribuinte}</FormHelperText>
-                  : ''
-                }
+                {formik.touched.tipoContribuinte &&
+                Boolean(formik.errors.tipoContribuinte) ? (
+                  <FormHelperText>
+                    {formik.errors.tipoContribuinte}
+                  </FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
 
@@ -190,16 +233,22 @@ function EditarTransportadoraPage() {
                 value={formik.values.inscricaoEstadual}
                 name="inscricaoEstadual"
                 InputProps={{
-                  endAdornment:
-                    <Tooltip
-                      title="Digite ISENTO caso não haja Inscrição Estadual">
+                  endAdornment: (
+                    <Tooltip title="Digite ISENTO caso não haja Inscrição Estadual">
                       <HelpIcon />
                     </Tooltip>
+                  ),
                 }}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.inscricaoEstadual && Boolean(formik.errors.inscricaoEstadual)}
-                helperText={formik.touched.inscricaoEstadual && formik.errors.inscricaoEstadual}
+                error={
+                  formik.touched.inscricaoEstadual &&
+                  Boolean(formik.errors.inscricaoEstadual)
+                }
+                helperText={
+                  formik.touched.inscricaoEstadual &&
+                  formik.errors.inscricaoEstadual
+                }
               />
             </Grid>
 
@@ -219,11 +268,14 @@ function EditarTransportadoraPage() {
 
             <Grid item xs={3}>
               <InputMask
-                mask={"999.999.999-99"}
+                mask={
+                  formik.values.tipoTransportadora === "pf"
+                    ? "999.999.999-99"
+                    : "99.999.999/9999-99"
+                }
                 value={formik.values.cpfCnpj}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-
               >
                 {() => (
                   <TextField
@@ -231,7 +283,9 @@ function EditarTransportadoraPage() {
                     label="CPF/CNPJ"
                     fullWidth
                     name="cpfCnpj"
-                    error={formik.touched.cpfCnpj && Boolean(formik.errors.cpfCnpj)}
+                    error={
+                      formik.touched.cpfCnpj && Boolean(formik.errors.cpfCnpj)
+                    }
                     helperText={formik.touched.cpfCnpj && formik.errors.cpfCnpj}
                   />
                 )}
@@ -280,17 +334,27 @@ function EditarTransportadoraPage() {
           </div>
           <Grid container spacing={2}>
             <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="CEP"
-                fullWidth
+               <InputMask
+                mask={'99999-999'}
                 value={formik.values.cep}
-                name="cep"
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.cep && Boolean(formik.errors.cep)}
-                helperText={formik.touched.cep && formik.errors.cep}
-              />
+                onBlur={handleCepChange}
+              >
+                {() => (
+                  <TextField
+                    variant="outlined"
+                    label="Cep"
+                    fullWidth
+                    name="cep"
+                    error={
+                      formik.touched.cep && Boolean(formik.errors.cep)
+                    }
+                    helperText={
+                      formik.touched.cep && formik.errors.cep
+                    }
+                  />
+                )}
+              </InputMask>
             </Grid>
             <Grid item xs={3}>
               <TextField
@@ -384,37 +448,58 @@ function EditarTransportadoraPage() {
                   <MenuItem value={"SE"}>Sergipe</MenuItem>
                   <MenuItem value={"TO"}>Tocantins</MenuItem>
                 </Select>
-                {formik.touched.estado && Boolean(formik.errors.estado)
-                  ? <FormHelperText>{formik.errors.estado}</FormHelperText>
-                  : ''
-                }
+                {formik.touched.estado && Boolean(formik.errors.estado) ? (
+                  <FormHelperText>{formik.errors.estado}</FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
             <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="Telefone"
-                fullWidth
+              <InputMask
+                mask={'(99) 9999-9999'}
                 value={formik.values.telefone}
-                name="telefone"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.telefone && Boolean(formik.errors.telefone)}
-                helperText={formik.touched.telefone && formik.errors.telefone}
-              />
+              >
+                {() => (
+                  <TextField
+                    variant="outlined"
+                    label="Telefone"
+                    fullWidth
+                    name="telefone"
+                    error={
+                      formik.touched.telefone && Boolean(formik.errors.telefone)
+                    }
+                    helperText={
+                      formik.touched.telefone && formik.errors.telefone
+                    }
+                  />
+                )}
+              </InputMask>
             </Grid>
             <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="Celular"
-                fullWidth
+            <InputMask
+                mask={'(99) 9 9999-9999'}
                 value={formik.values.celular}
-                name="celular"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.celular && Boolean(formik.errors.celular)}
-                helperText={formik.touched.celular && formik.errors.celular}
-              />
+              >
+                {() => (
+                  <TextField
+                    variant="outlined"
+                    label="Celular"
+                    fullWidth
+                    name="celular"
+                    error={
+                      formik.touched.celular && Boolean(formik.errors.celular)
+                    }
+                    helperText={
+                      formik.touched.celular && formik.errors.celular
+                    }
+                  />
+                )}
+              </InputMask>
             </Grid>
             <Grid item xs={3}>
               <TextField
@@ -425,8 +510,14 @@ function EditarTransportadoraPage() {
                 name="codigoMunicipio"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.codigoMunicipio && Boolean(formik.errors.codigoMunicipio)}
-                helperText={formik.touched.codigoMunicipio && formik.errors.codigoMunicipio}
+                error={
+                  formik.touched.codigoMunicipio &&
+                  Boolean(formik.errors.codigoMunicipio)
+                }
+                helperText={
+                  formik.touched.codigoMunicipio &&
+                  formik.errors.codigoMunicipio
+                }
               />
             </Grid>
           </Grid>
@@ -438,7 +529,7 @@ function EditarTransportadoraPage() {
                 variant="outlined"
                 startIcon={<CheckIcon />}
                 className={"btn btn-primary btn-spacing"}
-disabled={formik.isSubmitting}
+                disabled={formik.isSubmitting}
               >
                 Salvar
               </Button>
@@ -448,7 +539,7 @@ disabled={formik.isSubmitting}
                 variant="outlined"
                 startIcon={<DeleteForeverIcon />}
                 className={"btn btn-error btn-spacing"}
-disabled={formik.isSubmitting}
+                disabled={formik.isSubmitting}
                 onClick={handleDelete}
               >
                 Excluir
@@ -460,7 +551,7 @@ disabled={formik.isSubmitting}
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
-disabled={formik.isSubmitting}
+                disabled={formik.isSubmitting}
               >
                 Cancelar
               </Button>
