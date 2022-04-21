@@ -1,8 +1,8 @@
 export const initialValues = {
     nome: "",
     codigoInterno: "",
-    grupo_produto_id: -1,
-    unidade_produto_id: -1,
+    grupo_produto_id: null,
+    unidade_produto_id: null,
     movimentaEstoque: false,
     habilitaNotaFiscal: false,
     codigoBarras: "",

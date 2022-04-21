@@ -477,9 +477,19 @@ export const GlobalStyles = createGlobalStyle`
     background: ${({ theme }) => theme.colors.body}; // cor de fundo da aplicação
     color: ${({ theme }) => theme.colors.text}; // cor padrao do texto da aplicação
   }
-
+  
   .MuiListItemText-secondary{
     color: ${({ theme }) => theme.colors.text}; // cor padrao do texto da aplicação
   }
+  
+  /* ========= STEPPER ========= */
+  .MuiStepLabel-label{
+    color: ${({ theme }) => theme.colors.text} !important; // cor padrao do texto da aplicação
+  }
+
+  .MuiStepLabel-label.Mui-error{
+    color: #d32f2f !important; // cor padrao do texto da aplicação
+  }
+  
 
 `;

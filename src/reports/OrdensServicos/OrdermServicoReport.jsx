@@ -5,9 +5,12 @@ import moment from "moment";
 import { Fab } from "@material-ui/core";
 import PrintIcon from "@mui/icons-material/Print";
 import { QRCodeSVG } from "qrcode.react";
+import { encrypt } from "../../utils/ctypto";
 
 export default function OrdermServicoReport(texto) {
+  const BASE_URL = window.location.origin;
   const [dados, setDados] = useState(null);
+  const [encrypted, setEncrypted] = useState(null);
   const [totalProdutos, setTotalProdutos] = useState({
     quantidade: 0,
     valor: 0,
@@ -24,6 +27,8 @@ export default function OrdermServicoReport(texto) {
 
   useEffect(() => {
     if (!dados) return;
+    setEncrypted(encrypt(dados.id.toString()));
+
     const quantidadeProdutos = dados?.produtos.reduce(
       (acc, element) => acc + element.pivot.quantidade,
       0
@@ -102,7 +107,9 @@ export default function OrdermServicoReport(texto) {
               {"Data de abertura: " +
                 moment(dados?.dataEntrada).format("DD/MM/YYYY")}
             </p>
-            <QRCodeSVG value="https://google.com/"/>
+            <QRCodeSVG
+              value={`${BASE_URL}/ordens-servicos-acompanhamento/${encrypted}`}
+            />
           </div>
         </div>
 

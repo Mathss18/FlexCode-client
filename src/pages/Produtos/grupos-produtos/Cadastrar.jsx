@@ -103,7 +103,8 @@ function CadastrarGrupoDeProdutos() {
       })
       .catch((error) => {
         infoAlert("Atenção", error.response.data.message);
-      });
+      })
+      .finally(() => formik.setSubmitting(false));
   }
 
   const options = {
@@ -224,6 +225,7 @@ function CadastrarGrupoDeProdutos() {
                 variant="outlined"
                 startIcon={<CheckIcon />}
                 className={"btn btn-primary btn-spacing"}
+                disabled={formik.isSubmitting}
               >
                 Salvar
               </Button>
@@ -234,6 +236,7 @@ function CadastrarGrupoDeProdutos() {
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
+                disabled={formik.isSubmitting}
               >
                 Cancelar
               </Button>

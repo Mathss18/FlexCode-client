@@ -1,13 +1,8 @@
-import { useEffect, useRef, useState } from "react";
 import {
   Grid,
   TextField,
-  Select,
   Divider,
   Button,
-  MenuItem,
-  FormControl,
-  InputLabel,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import api from "../../../services/api";
@@ -15,40 +10,38 @@ import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { useFormik } from "formik";
-import { unidadeProdutoValidation } from "../../../validators/validationSchema";
+import { porcentagemLucroValidation } from "../../../validators/validationSchema";
 import { infoAlert, successAlert } from "../../../utils/alert";
-import AddIcon from "@material-ui/icons/Add";
-import toast from "react-hot-toast";
 
 const initialValues = {
   descricao: "",
   porcentagem: null,
+  favorito: true,
 };
 
 function CadastrarPorcentagensLucros() {
   const history = useHistory();
-  const selectedRows = useRef([]);
 
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => {
-      // handleOnSubmit(event);
+      handleOnSubmit(event);
     },
-    validationSchema: unidadeProdutoValidation,
+    validationSchema: porcentagemLucroValidation,
   });
 
   function handleOnSubmit(values) {
-    console.log('OIA OS VALUES', values);
     api
-      .post("/porcentagens-lucros/novo", values)
+      .post("/porcentagens-lucros", values)
       .then((response) => {
-        successAlert("Sucesso", "Porcentagens de Lucros Cadastrado", () =>
+        successAlert("Sucesso", "Porcentagens de Lucros Cadastrada", () =>
           history.push("/porcentagens-lucros")
         );
       })
       .catch((error) => {
         infoAlert("Atenção", error.response.data.message);
-      });
+      })
+      .finally(() => formik.setSubmitting(false));
   }
 
   return (
@@ -61,7 +54,7 @@ function CadastrarPorcentagensLucros() {
           <AssignmentIcon />
           <h3>Dados da Porcentagem de Lucro</h3>
         </div>
-        <form>
+        <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <TextField
@@ -104,7 +97,7 @@ function CadastrarPorcentagensLucros() {
                 variant="outlined"
                 startIcon={<CheckIcon />}
                 className={"btn btn-primary btn-spacing"}
-                onClick={ handleOnSubmit }
+                disabled={formik.isSubmitting}
               >
                 Salvar
               </Button>
@@ -115,6 +108,7 @@ function CadastrarPorcentagensLucros() {
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
+                disabled={formik.isSubmitting}
               >
                 Cancelar
               </Button>

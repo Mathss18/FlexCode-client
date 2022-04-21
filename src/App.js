@@ -13,6 +13,7 @@ import { GlobalStyles } from './theme/GlobalStyles';
 import { useTheme } from './theme/useTheme';
 import MomentUtils from '@date-io/moment';
 import FullScreenLoaderProvider from './context/FullScreenLoaderContext';
+import ThemeSelector from './components/ThemeSelector';
 
 function App() {
   const { theme, themeLoaded, getFonts } = useTheme();
@@ -41,7 +42,7 @@ function App() {
             <GerenciarProdutosContextProvider>
               <MuiPickersUtilsProvider utils={MomentUtils}>
                 <FullScreenLoaderProvider>
-                  <Routes />
+                  <Routes themeSetter={setSelectedTheme}/>
                 </FullScreenLoaderProvider>
               </MuiPickersUtilsProvider>
             </GerenciarProdutosContextProvider>

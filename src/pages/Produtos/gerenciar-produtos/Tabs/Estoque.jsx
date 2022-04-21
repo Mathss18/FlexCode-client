@@ -85,7 +85,7 @@ export function Estoque() {
               onBlur={produtoContext.formik.handleBlur}
               error={produtoContext.formik.touched.unidade_produto_id && Boolean(produtoContext.formik.errors.unidade_produto_id)}
             >
-              <MenuItem value={-1}> Nenhum</MenuItem>
+              <MenuItem value={null}> Nenhum</MenuItem>
               {unidadesProdutos &&
                 unidadesProdutos.map((item) => {
                   return <MenuItem value={item.id} key={item.id}>{`${item.nome} (${item.sigla})`}</MenuItem>

@@ -91,7 +91,7 @@ export function Dados() {
               onBlur={produtoContext.formik.handleBlur}
               error={produtoContext.formik.touched.grupo_produto_id && Boolean(produtoContext.formik.errors.grupo_produto_id)}
             >
-              <MenuItem value={-1}> Nenhum</MenuItem>
+              <MenuItem value={null}> Nenhum</MenuItem>
               {grupoProdutos &&
                 grupoProdutos.map((grupo) => {
                   return <MenuItem value={grupo.id} key={grupo.id}>{grupo.nome}</MenuItem>

@@ -10,44 +10,32 @@ import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import api from "../../services/api";
-import { red } from "@material-ui/core/colors";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import TakeoutDiningIcon from "@mui/icons-material/TakeoutDining";
+import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import BuildIcon from "@mui/icons-material/Build";
+import moment from "moment";
+import { useParams } from "react-router-dom";
+import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
+import { decrypt } from "../../utils/ctypto"
 
-//Onde 0:realizado, 1:emAndamento, 2:finalizado
-const dados = [
-  {
-    numero: "0001",
-    nomeCliente: "Matheus Bezerra",
-    situacao: 0,
-    observacao: "Obs",
-  },
-  {
-    numero: "0002",
-    nomeCliente: "Cleide Soares",
-    situacao: 2,
-    observacao: "O seu pedido vai ser entregue antes do prazo!",
-  },
-  {
-    numero: "0003",
-    nomeCliente: "Allanda Soares",
-    situacao: 1,
-    observacao: "O seu pedido irá atrasar 2 dias",
-  },
-  {
-    numero: "0004",
-    nomeCliente: "Arthur Soares",
-    situacao: 0,
-    observacao: "O seu pedido vai ser entregue antes do prazo!",
-  },
-];
+//Onde 0:realizado, 1:emAndamento, 2:finalizado, 3:cancelado
 
 export default function ListarOrdensServicosAcompanhamento() {
-  const idCliente = "0002";
-  const [dadosAcompanhamento, setDadosAcompanhamento] = useState({});
+  const fullScreenLoader = useFullScreenLoader();
+  const { encrypted } = useParams();
+  const [decrypted, setDecrypted] = useState(null);
+  
+  const [dadosAcompanhamento, setDadosAcompanhamento] = useState(null);
 
   const steps = [
-    "Pedido Realizado",
-    "Pedido em Andamento",
-    "Pedido Finalizado",
+    "Realizado",
+    "Em Andamento",
+    "Finalizado",
   ];
 
   // Linha de conexão
@@ -101,7 +89,12 @@ export default function ListarOrdensServicosAcompanhamento() {
 
     const icons = {
       1: <ContentPasteIcon />,
-      2: <PendingOutlinedIcon />,
+      2:
+        dadosAcompanhamento?.situacao === 3 ? (
+          <ErrorOutlineIcon style={{ fill: "#d32f2f" }} />
+        ) : (
+          <PendingOutlinedIcon />
+        ),
       3: <CheckCircleOutlinedIcon />,
     };
 
@@ -117,38 +110,120 @@ export default function ListarOrdensServicosAcompanhamento() {
 
   //Faz uma "request" para trazer os dados da ordem de serviço
   useEffect(() => {
+    setDecrypted(decrypt(encrypted));
+  }, []);
+
+  useEffect(() => {
+    if(decrypted===null) return;
+    fullScreenLoader.setLoading(true);
     api
-      .get("/ordens-servicos")
-      .then(() => {
-        dados.map((item) => {
-          if (idCliente === item.numero) {
-            setDadosAcompanhamento(item);
-          }
-        });
+      .get("/ordens-servicos-acompanhar/"+decrypted)
+      .then((response) => {
+        setDadosAcompanhamento(response.data["data"]);
       })
       .catch((error) => {
         console.log(error);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
       });
-  }, []);
+  },[decrypted]);
 
   return (
-    <>
-      <h1>Olá {dadosAcompanhamento.nomeCliente}!</h1>
-      <p>Acompanhe seu pedido aqui.</p>
+    <div style={{display: !dadosAcompanhamento ? 'none' : 'block'}}>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static" style={{ background: "#0796e7" }}>
+          <Toolbar variant="dense">
+            <Typography variant="h6" style={{ marginLeft: "1%" }}>
+              Acompanhamento do Pedido nº{" "}
+              {dadosAcompanhamento?.numero}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      </Box>
 
-      <Stepper
-        alternativeLabel
-        activeStep={dadosAcompanhamento.situacao}
-        connector={<ColorlibConnector />}
-      >
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+      <div style={{ textAlign: "center" }}>
+        <Typography style={{ margin: 8, fontSize: 24 }}>
+          Olá, {dadosAcompanhamento?.cliente?.nome}! 
+        </Typography>
+          <br/>
+        <Typography style={{ marginBottom: 12 }}>
+          Acompanhe o andamento de seu pedido abaixo.
+        </Typography>
 
-      <p>{dadosAcompanhamento.observacao}</p>
-    </>
+        <Stepper
+          alternativeLabel
+          activeStep={
+            dadosAcompanhamento?.situacao === 3
+              ? 1
+              : dadosAcompanhamento?.situacao
+          }
+          connector={<ColorlibConnector />}
+        >
+          {steps.map((label, index) => (
+            <Step key={index}>
+              <StepLabel
+                error={
+                  index === 1 && dadosAcompanhamento?.situacao === 3
+                    ? true
+                    : false
+                }
+                StepIconComponent={ColorlibStepIcon}
+              >
+                {index === 1 && dadosAcompanhamento?.situacao === 3
+                  ? "Pedido cancelado"
+                  : label}
+                <br />
+                <small>
+                  {index === 0
+                    ? `${moment(dadosAcompanhamento?.dataEntrada).format(
+                        "DD/MM/YYYY"
+                      )}  ${dadosAcompanhamento?.horaEntrada}`
+                    : ""}
+                </small>
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+
+        <div style={{ display: "inline-block" }}>
+          <h4>Produtos</h4>
+          {dadosAcompanhamento &&
+            dadosAcompanhamento?.produtos.map((produto,index) => (
+              <List key={index}>
+                <ListItem>
+                  <ListItemIcon>
+                    <TakeoutDiningIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`${produto.pivot.quantidade}x ${produto.nome}`}
+                    secondary={produto.pivot.observacao}
+                  />
+                </ListItem>
+              </List>
+            ))}
+
+          <h4>Servicos</h4>
+          {dadosAcompanhamento &&
+            dadosAcompanhamento?.servicos.map((servico,index) => (
+              <List key={index}>
+                <ListItem>
+                  <ListItemIcon>
+                    <BuildIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`${servico.pivot.quantidade}x ${servico.nome}`}
+                    secondary={servico.pivot.observacao}
+                  />
+                </ListItem>
+              </List>
+            ))}
+
+          <p style={{ maxWidth: 1000 }}>
+            <b>Observações: </b>{dadosAcompanhamento?.observacao}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
