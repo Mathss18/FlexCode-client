@@ -5,7 +5,7 @@
       "id": "T_001",
       "name": "Light",
       "colors": {
-        "body": "#FFFFFF",
+        "body": "#e9e8ec",
         "text": "#000000",
         "border": "#e0e0e0",
         "input": {
@@ -23,12 +23,12 @@
         },
         "button": {
           "primary": {
-            "background": "#1976d2",
+            "background": "#118dda ",
             "text": "#FFFFFF",
-            "border": "#42a5f5",
+            "border": "#2fa5ed",
             "hover": {
               "text": "#FFFFFF",
-              "background": "#1565c0"
+              "background": "#2fa5ed"
             }
           },
           "secondary": {
@@ -64,7 +64,7 @@
             "border": "#ef5350",
             "hover": {
               "text": "#FFFFFF",
-              "background": "#c62828"
+              "background": "#ef5350"
             }
           }
         },
@@ -260,8 +260,5 @@
       },
       "font": "Poppins"
     }
-
-
-
   }
 }

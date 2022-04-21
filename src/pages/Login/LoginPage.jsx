@@ -7,6 +7,7 @@ import { setToLS } from "../../utils/storage";
 import { useHistory } from "react-router-dom";
 import { usePusherContext } from "../../context/PusherContext";
 import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
+import { infoAlert } from "../../utils/alert";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -41,7 +42,9 @@ function LoginPage() {
         redirecionar(response);
       })
       .catch((error) => {
-        console.log(error);
+        if(error.response.data.code === 403){
+          infoAlert("Não autorizado!", "Usuário ou senha inválidos");
+        }
       })
       .finally(() => {
         fullScreenLoader.setLoading(false);

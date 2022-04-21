@@ -67,8 +67,9 @@ import Ajuda from "../pages/Ajuda/Ajuda"
 import OrdermServicoReport from "../reports/OrdensServicos/OrdermServicoReport";
 import ListarOrdensServicosFuncionariosPage from "../pages/OrdensServicosFuncionarios/Listar";
 import ListarOrdensServicosAcompanhamento from "../pages/OrdensServicosAcompanhamento/Listar";
+import ThemeSelector from "../components/ThemeSelector";
 
-export default function Routes() {
+export default function Routes({themeSetter}) {
   return (
     <BrowserRouter>
       <Switch>
@@ -79,12 +80,13 @@ export default function Routes() {
 
         <Route path="/login" exact component={LoginPage}></Route>
         <Route path="/ordens-servicos/relatorio" exact component={OrdermServicoReport}></Route>
-        <Route path="/ordens-servicos-acompanhamento/listar" exact component={ListarOrdensServicosAcompanhamento}></Route>
+        <Route path="/ordens-servicos-acompanhamento/:encrypted" exact component={ListarOrdensServicosAcompanhamento}></Route>
 
         <PrivateRoutes>
           <TopBar />
           <SideMenu>
             <Route path="/home" exact component={Home}></Route>
+            <Route path="/trocar-tema" exact component={()=>{return <ThemeSelector setter={themeSetter} />}}></Route>
 
             <Route path="/clientes" exact component={ListarClientePage}></Route>
             <Route path="/clientes/novo" exact component={CadastrarClientePage}></Route>

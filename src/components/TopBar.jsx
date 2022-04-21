@@ -9,6 +9,8 @@ import UserMenu from "./UserMenu";
 import { Toaster } from "react-hot-toast";
 import { usePusherContext } from "../context/PusherContext";
 import logoEmpresa from "../assets/logoEmpresa.svg";
+import PaletteIcon from "@mui/icons-material/Palette";
+import { Tooltip } from "chart.js";
 
 function TopBar() {
   const [openSideMenu, setOpenSideMenu] = useMenu();
@@ -45,8 +47,15 @@ function TopBar() {
         >
           <MenuIcon />
         </IconButton>
-        <div style={{ width: "100px", height: "50px", cursor:' pointer' }}>
-            <img src={logoEmpresa} alt="logo" style={{marginTop: -24}} onClick={()=> {history.push('/')}} />
+        <div style={{ width: "100px", height: "50px", cursor: " pointer" }}>
+          <img
+            src={logoEmpresa}
+            alt="logo"
+            style={{ marginTop: -24 }}
+            onClick={() => {
+              history.push("/");
+            }}
+          />
         </div>
         <div className={"topbar-spacing"}></div>
 
@@ -64,6 +73,18 @@ function TopBar() {
             color="secondary"
           >
             <MailIcon />
+          </Badge>
+        </IconButton>
+
+        <IconButton
+          className={"topbar-icon"}
+          color="inherit"
+          onClick={() => {
+            history.push("/trocar-tema");
+          }}
+        >
+          <Badge color="secondary">
+            <PaletteIcon />
           </Badge>
         </IconButton>
 

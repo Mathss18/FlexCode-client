@@ -190,7 +190,7 @@ export function Fazendo() {
                 <ListItemText
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={"Observações: " + element.pivot.observacao ?? ""}
+                  secondary={"Observações: " + element.pivot.observacao}
                 />
               </ListItem>
             );
@@ -223,7 +223,7 @@ export function Fazendo() {
                 <ListItemText
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={"Observações: " + element.pivot.observacao ?? ""}
+                  secondary={"Observações: " + element.pivot.observacao}
                 />
               </ListItem>
             );

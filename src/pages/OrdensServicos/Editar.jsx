@@ -676,8 +676,9 @@ function EditarOrcamentosPage() {
                   }
                 >
                   <MenuItem value={0}>Aberta</MenuItem>
-                  <MenuItem value={1}>Fechada</MenuItem>
-                  <MenuItem value={2}>Cancelada</MenuItem>
+                  <MenuItem disabled value={1}>Fazendo</MenuItem>
+                  <MenuItem value={2}>Finalizada</MenuItem>
+                  <MenuItem value={3}>Cancelada</MenuItem>
                 </Select>
                 {formik.touched.situacao && Boolean(formik.errors.situacao) ? (
                   <FormHelperText>{formik.errors.situacao}</FormHelperText>

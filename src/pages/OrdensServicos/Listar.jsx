@@ -69,10 +69,16 @@ function ListarOrdensServicos() {
       .then((response) => {
         response.data['data'].forEach(element => {
           if (element['situacao'] === 0) {
-            element['situacao'] = "Aberto"
+            element['situacao'] = "Aberta"
           }
           else if (element['situacao'] === 1) {
-            element['situacao'] = "Fechado"
+            element['situacao'] = "Fazendo"
+          }
+          else if (element['situacao'] === 2) {
+            element['situacao'] = "Finalizada"
+          }
+          else if (element['situacao'] === 3) {
+            element['situacao'] = "Cancelada"
           }
           var array = [
             element['numero'],

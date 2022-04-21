@@ -310,7 +310,6 @@ function CadastrarOrdensServicoPage() {
 
   function handleOnSubmit(values) {
     if (rowsProdutos.length === 0 && rowsServicos.length === 0) {
-      console.log(rowsProdutos.length);
       formik.setSubmitting(false);
       errorAlert("É necessário adicionar pelo menos um produto ou serviço!");
       return;
@@ -591,8 +590,9 @@ function CadastrarOrdensServicoPage() {
                   }
                 >
                   <MenuItem value={0}>Aberta</MenuItem>
-                  <MenuItem value={1}>Fechada</MenuItem>
-                  <MenuItem value={2}>Cancelada</MenuItem>
+                  <MenuItem disabled value={1}>Fazendo</MenuItem>
+                  <MenuItem value={2}>Finalizada</MenuItem>
+                  <MenuItem value={3}>Cancelada</MenuItem>
                 </Select>
                 {formik.touched.situacao && Boolean(formik.errors.situacao) ? (
                   <FormHelperText>{formik.errors.situacao}</FormHelperText>
