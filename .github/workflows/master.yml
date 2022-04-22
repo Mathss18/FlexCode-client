@@ -1,8 +1,8 @@
 on: 
   push:
     branches:
-      -dev
-name: 🚀 Deploy test website on push
+      -master
+name: 🚀 Deploy website on push
 jobs:
   web-deploy:
     name: 🎉 Deploy
@@ -17,8 +17,4 @@ jobs:
         server: ftp.allmacoding.com
         username: allmac88
         password: ${{ secrets.ftp_password }}
-<<<<<<< HEAD
-        server-dir: /public_html/
-=======
-        server-dir: /public_html/
->>>>>>> master
+        server-dir: public_html/
