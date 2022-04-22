@@ -6,7 +6,7 @@ export function successAlert(title='Sucesso', text='', callback=()=>{}){
         html: text,
         position: 'center',
         icon: 'success',
-        timer: 1800,
+        timer: 18009,
         timerProgressBar: true,
     }).then((result) => {
         if (result.dismiss === Swal.DismissReason.timer) {
