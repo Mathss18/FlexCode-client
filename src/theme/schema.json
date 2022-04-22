@@ -15,11 +15,11 @@
         },
         "topbar": {
           "background": "#FFFFFF",
-          "text": "#000000"
+          "text": "#757575"
         },
         "sidemenu": {
           "background": "#FFFFFF",
-          "text": "#000000"
+          "text": "#757575"
         },
         "button": {
           "primary": {
@@ -80,12 +80,12 @@
           "row": {
             "hover": "#e0e0e0",
             "impar": {
-              "background": "#fafafa",
+              "background": "#FFFFFF",
               "text": "#000000",
               "hover": "#e0e0e0"
             },
             "par": {
-              "background": "#FFFFFF",
+              "background": "#f0f0f0",
               "text": "#000000",
               "hover": "#e0e0e0"
             },
@@ -102,13 +102,13 @@
           "text": "#000000"
         },
         "popup": {
-          "background": "#2d3035",
-          "text": "#e6e6e7",
+          "background": "#ffffff",
+          "text": "#242424",
           "button": {
             "confirm": {
-              "background": "#3fc3ee",
+              "background": "#118dda",
               "text": "#FFFFFF",
-              "border": "#857dcc"
+              "border": "#2fa5ed"
             },
             "deny": {
               "background": "#9c27b0",
@@ -116,9 +116,9 @@
               "border": "#9c27b0"
             },
             "cancel": {
-              "background": "#9c27b0",
+              "background": "#d32f2f",
               "text": "#FFFFFF",
-              "border": "#9c27b0"
+              "border": "#ef5350"
             }
           }
           

@@ -60,7 +60,7 @@ export default function OrdermServicoReport(texto) {
 
   function print() {
     window.print("Ordem Serviço - " + dados?.numero);
-    window.close();
+    // window.close();
   }
 
   return (

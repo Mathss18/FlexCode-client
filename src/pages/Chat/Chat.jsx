@@ -185,11 +185,6 @@ function Chat() {
 
   return (
     <div>
-      <Grid container>
-        <Grid item xs={12} >
-          <Typography variant="h5" className="header-message">Chat</Typography>
-        </Grid>
-      </Grid>
       <Grid container component={Paper} className={'chat-box-container'}>
         <Grid item xs={3} className={'chat-box-contacts'}>
           <List>

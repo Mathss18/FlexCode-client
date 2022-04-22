@@ -254,7 +254,15 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   .sidemenu-text{
-    color: ${({ theme }) => theme.colors.sidemenu.text}; // cor do texto do sidemenu
+    color: ${({ theme }) => theme.colors.sidemenu.text}; // cor do texto dos itens do sidemenu
+  }
+
+  .sidemenu-text path{
+    color: ${({ theme }) => theme.colors.sidemenu.text}; // cor dos icones do sidemenu
+  }
+
+  .topbar-icon{
+    color: ${({ theme }) => theme.colors.topbar.text}; // cor dos icones da topbar
   }
 
   #nested-list-subheader{
