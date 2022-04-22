@@ -1,66 +1,103 @@
-import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Button, Toolbar, IconButton } from '@material-ui/core/';
-import MenuIcon from '@material-ui/icons/Menu';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import Badge from '@material-ui/core/Badge';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import { AppBar, Toolbar, IconButton } from "@material-ui/core/";
+import MenuIcon from "@material-ui/icons/Menu";
+import Badge from "@material-ui/core/Badge";
+import MailIcon from "@material-ui/icons/Mail";
+import NotificationsIcon from "@material-ui/icons/Notifications";
 import { useMenu } from "../context/SideMenuContext";
-import { Link } from 'react-router-dom';
-
-
-const useStyles = makeStyles((theme) => ({
-    grow: {
-        flexGrow: 1,
-    },
-    appBar: {
-        zIndex: 999,
-        boxShadow: 'none',
-        borderBottom: '1px solid #e7e7e7'
-        //backgroundColor: theme.palette.background.dark,
-    },
-    iconButton: {
-        paddingRight: theme.spacing(2),
-    },
-    leaveButton: {
-        color: theme.palette.error.main,
-        borderColor: theme.palette.error.main,
-        marginLeft: theme.spacing(2),
-    }
-
-}));
-
+import { Link, useHistory } from "react-router-dom";
+import UserMenu from "./UserMenu";
+import { Toaster } from "react-hot-toast";
+import { usePusherContext } from "../context/PusherContext";
+import logoEmpresa from "../assets/logoEmpresa.svg";
+import PaletteIcon from "@mui/icons-material/Palette";
+import { Tooltip } from "chart.js";
 
 function TopBar() {
-    const classes = useStyles();
-    const [openSideMenu, setOpenSideMenu] = useMenu();
+  const [openSideMenu, setOpenSideMenu] = useMenu();
+  const pusherContext = usePusherContext();
+  const history = useHistory();
 
-    return (
-        <AppBar color="inherit" className={classes.appBar}>
-            <Toolbar>
-                <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => setOpenSideMenu(!openSideMenu)}>
-                    <MenuIcon />
-                </IconButton>
-                <Link to='/'>[LOGO]</Link>
-                <div className={classes.grow}></div>
+  return (
+    <AppBar color="inherit" className={"topbar"}>
+      <Toaster
+        position="top-right"
+        gutter={8}
+        containerClassName="toast-container-all"
+        containerStyle={{}}
+        toastOptions={{
+          // Define default options
+          className: "toast-container",
+          duration: 5000,
+          // Default options for specific types
+          success: {
+            duration: 3000,
+            theme: {
+              primary: "green",
+              secondary: "black",
+            },
+          },
+        }}
+      />
+      <Toolbar>
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          onClick={() => setOpenSideMenu(!openSideMenu)}
+        >
+          <MenuIcon />
+        </IconButton>
+        <div style={{ width: "100px", height: "50px", cursor: " pointer" }}>
+          <img
+            src={logoEmpresa}
+            alt="logo"
+            style={{ marginTop: -24 }}
+            onClick={() => {
+              history.push("/");
+            }}
+          />
+        </div>
+        <div className={"topbar-spacing"}></div>
 
-                <IconButton color="inherit" className={classes.iconButton}>
-                    <Badge badgeContent={4} color="secondary">
-                        <MailIcon />
-                    </Badge>
-                </IconButton>
+        <IconButton
+          className={"topbar-icon"}
+          color="inherit"
+          onClick={() => {
+            history.push("/chat");
+          }}
+        >
+          <Badge
+            badgeContent={
+              pusherContext.useMensagensNaoLidas.mensagensNaoLidas.length
+            }
+            color="secondary"
+          >
+            <MailIcon />
+          </Badge>
+        </IconButton>
 
-                <IconButton color="inherit" className={classes.iconButton}>
-                    <Badge badgeContent={10} color="secondary">
-                        <NotificationsIcon />
-                    </Badge>
-                </IconButton>
+        <IconButton
+          className={"topbar-icon"}
+          color="inherit"
+          onClick={() => {
+            history.push("/trocar-tema");
+          }}
+        >
+          <Badge color="secondary">
+            <PaletteIcon />
+          </Badge>
+        </IconButton>
 
-                <Button variant="outlined" className={classes.leaveButton} startIcon={<ExitToAppIcon />}>Sair</Button>
-            </Toolbar>
-        </AppBar>
-    );
+        <IconButton className={"topbar-icon"} color="inherit">
+          <Badge badgeContent={10} color="secondary">
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
 
+        <UserMenu />
+      </Toolbar>
+    </AppBar>
+  );
 }
 
 export default TopBar;

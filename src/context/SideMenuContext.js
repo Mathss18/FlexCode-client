@@ -1,20 +1,26 @@
 import { useState, createContext, useContext } from "react";
 import SideMenuCadastroContextProvider from "./SideMenuCadastroContext";
+import SideMenuProdutoContextProvider from "./SideMenuProdutoContext";
+import SideMenuServicoContextProvider from "./SideMenuServicoContext";
 
 const SideMenuContext = createContext();
 
 function SideMenuContextProvider({ children }) {
     const [openMenu, setOpenMenu] = useState(true);
     return (
-        <SideMenuContext.Provider value={[ openMenu, setOpenMenu ]}>
+        <SideMenuContext.Provider value={[openMenu, setOpenMenu]}>
             <SideMenuCadastroContextProvider>
-                {children}
+                <SideMenuProdutoContextProvider>
+                    <SideMenuServicoContextProvider>
+                        {children}
+                    </SideMenuServicoContextProvider>
+                </SideMenuProdutoContextProvider>
             </SideMenuCadastroContextProvider>
         </SideMenuContext.Provider>
     );
 }
 
-export function useMenu(){
+export function useMenu() {
     return useContext(SideMenuContext);
 }
 

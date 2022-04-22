@@ -1,0 +1,264 @@
+{
+  "data": {
+
+    "light": {
+      "id": "T_001",
+      "name": "Light",
+      "colors": {
+        "body": "#e9e8ec",
+        "text": "#000000",
+        "border": "#e0e0e0",
+        "input": {
+          "border": "#e0e0e0",
+          "background": "#FFFFFF",
+          "text": "#000000"
+        },
+        "topbar": {
+          "background": "#FFFFFF",
+          "text": "#757575"
+        },
+        "sidemenu": {
+          "background": "#FFFFFF",
+          "text": "#757575"
+        },
+        "button": {
+          "primary": {
+            "background": "#118dda ",
+            "text": "#FFFFFF",
+            "border": "#2fa5ed",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#2fa5ed"
+            }
+          },
+          "secondary": {
+            "background": "#9c27b0",
+            "text": "#FFFFFF",
+            "border": "#ba68c8",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#7b1fa2"
+            }
+          },
+          "success": {
+            "background": "#2e7d32",
+            "text": "#FFFFFF",
+            "border": "#4caf50",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#1b5e20"
+            }
+          },
+          "info": {
+            "background": "#0288d1",
+            "text": "#FFFFFF",
+            "border": "#03a9f4",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#01579b"
+            }
+          },
+          "error": {
+            "background": "#d32f2f",
+            "text": "#FFFFFF",
+            "border": "#ef5350",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#ef5350"
+            }
+          }
+        },
+        "table": {
+          "header": {
+            "background": "#FFFFFF",
+            "text": "#212121"
+          },
+          "footer": {
+            "background": "#2d3035",
+            "text": "#8a8d93"
+          },
+          "row": {
+            "hover": "#e0e0e0",
+            "impar": {
+              "background": "#FFFFFF",
+              "text": "#000000",
+              "hover": "#e0e0e0"
+            },
+            "par": {
+              "background": "#f0f0f0",
+              "text": "#000000",
+              "hover": "#e0e0e0"
+            },
+            "background": "#FFFFFF",
+            "text": "#000000"
+          }
+        },
+        "link": {
+          "text": "teal",
+          "opacity": 1
+        },
+        "chart": {
+          "background": "#FFFFFF",
+          "text": "#000000"
+        },
+        "popup": {
+          "background": "#ffffff",
+          "text": "#242424",
+          "button": {
+            "confirm": {
+              "background": "#118dda",
+              "text": "#FFFFFF",
+              "border": "#2fa5ed"
+            },
+            "deny": {
+              "background": "#9c27b0",
+              "text": "#FFFFFF",
+              "border": "#9c27b0"
+            },
+            "cancel": {
+              "background": "#d32f2f",
+              "text": "#FFFFFF",
+              "border": "#ef5350"
+            }
+          }
+          
+        },
+        "toast":{
+          "background":"#363636",
+          "text":"#ffffff"
+        }
+      },
+      "font": "Roboto"
+    },
+
+    "dark": {
+      "id": "T_003",
+      "name": "Dark",
+      "colors": {
+        "body": "#22252a",
+        "text": "#FFFFFF",
+        "border": "#34373d",
+        "input": {
+          "border": "#e0e0e0",
+          "background": "#44454e",
+          "text": "#b4b5b8"
+        },
+        "topbar": {
+          "background": "#2d3035",
+          "text": "#8a8d93"
+        },
+        "sidemenu": {
+          "background": "#2d3035",
+          "text": "#8a8d93"
+        },
+        "button": {
+          "primary": {
+            "background": "#857dcc",
+            "text": "#FFFFFF",
+            "border": "#857dcc",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#9d97d6"
+            }
+          },
+          "secondary": {
+            "background": "#9c27b0",
+            "text": "#FFFFFF",
+            "border": "#9c27b0",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#50af54"
+            }
+          },
+          "success": {
+            "background": "#2e7d32",
+            "text": "#FFFFFF",
+            "border": "#2e7d32",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#55c25b"
+            }
+          },
+          "info": {
+            "background": "#4f5d73",
+            "text": "#FFFFFF",
+            "border": "#4f5d73",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#727d8f"
+            }
+          },
+          "error": {
+            "background": "#c77171",
+            "text": "#FFFFFF",
+            "border": "#c77171",
+            "hover": {
+              "text": "#FFFFFF",
+              "background": "#d28d8d"
+            }
+          }
+        },
+        "table": {
+          "header": {
+            "background": "#2d3035",
+            "text": "#a9b5b8"
+          },
+          "footer": {
+            "background": "#2d3035",
+            "text": "#8a8d93"
+          },
+          "row": {
+            "hover": "#26292d",
+            "impar": {
+              "background": "#2d3035",
+              "text": "#e6e6e7",
+              "hover": "#26292d"
+            },
+            "par": {
+              "background": "#282b2f",
+              "text": "#e6e6e7",
+              "hover": "#26292d"
+            },
+            "background": "#FFFFFF",
+            "text": "#000000"
+          }
+        },
+        "link": {
+          "text": "#4797e5",
+          "opacity": 0.8
+        },
+        "chart": {
+          "background": "#2d3035",
+          "text": "#8a8d93"
+        },
+        "popup": {
+          "background": "#2d3035",
+          "text": "#e6e6e7",
+          "button": {
+            "confirm": {
+              "background": "#3fc3ee",
+              "text": "#FFFFFF",
+              "border": "#857dcc"
+            },
+            "deny": {
+              "background": "#9c27b0",
+              "text": "#FFFFFF",
+              "border": "#9c27b0"
+            },
+            "cancel": {
+              "background": "#9c27b0",
+              "text": "#FFFFFF",
+              "border": "#9c27b0"
+            }
+          }
+          
+        },
+        "toast":{
+          "background":"#363636",
+          "text":"#ffffff"
+        }
+      },
+      "font": "Poppins"
+    }
+  }
+}

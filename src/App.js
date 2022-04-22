@@ -1,34 +1,58 @@
-import Routes from "./routes";
-import { ThemeProvider, createTheme } from "@material-ui/core/styles";
+import { useState, useEffect } from 'react';
+// Rotas
+import Routes from "./routes/routes";
+// Providers
+import { ThemeProvider } from "styled-components";
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import GerenciarProdutosContextProvider from './context/GerenciarProdutosContext';
 import SideMenuContextProvider from "./context/SideMenuContext";
+import PusherContextProvider from './context/PusherContext';
+// Temas
+import WebFont from 'webfontloader';
+import { GlobalStyles } from './theme/GlobalStyles';
+import { useTheme } from './theme/useTheme';
+import MomentUtils from '@date-io/moment';
+import FullScreenLoaderProvider from './context/FullScreenLoaderContext';
+import ThemeSelector from './components/ThemeSelector';
 
 function App() {
-  const theme = createTheme({
-    palette: {
-      primary: {
-        main: "#3f51b5",
-      },
-      secondary: {
-        main: "#2196f3",
-      },
-      error: {
-        main: "#f44336",
-      },
-      background: {
-        main: "#f4f8fb",
-        dark: "#202634",
-        lightDark: "#293042",
-      },
-    },
+  const { theme, themeLoaded, getFonts } = useTheme();
+  const [selectedTheme, setSelectedTheme] = useState(theme);
+
+  useEffect(() => {
+    setSelectedTheme(theme);
+  }, [themeLoaded]);
+
+  useEffect(() => {
+    WebFont.load({
+      google: {
+        families: getFonts()
+      }
+    });
   });
 
+
+
   return (
-    <ThemeProvider theme={theme}>
-        <SideMenuContextProvider>
-          <Routes />
-        </SideMenuContextProvider>
-    </ThemeProvider>
+    <>
+      {themeLoaded && <ThemeProvider theme={selectedTheme}>
+        <GlobalStyles />
+        <PusherContextProvider>
+          <SideMenuContextProvider>
+            <GerenciarProdutosContextProvider>
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <FullScreenLoaderProvider>
+                  <Routes themeSetter={setSelectedTheme}/>
+                </FullScreenLoaderProvider>
+              </MuiPickersUtilsProvider>
+            </GerenciarProdutosContextProvider>
+          </SideMenuContextProvider>
+        </PusherContextProvider>
+      </ThemeProvider>
+      }
+    </>
   );
+
 }
 
 export default App;
