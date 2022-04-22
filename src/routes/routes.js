@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import Home from "../pages/Home";
@@ -78,6 +78,7 @@ export default function Routes({themeSetter}) {
           <Redirect to="/home" />
         </Route>
 
+        {/*======== Rotas sem TopBar e SideMenu ========*/}
         <Route path="/login" exact component={LoginPage}></Route>
         <Route path="/ordens-servicos/relatorio" exact component={OrdermServicoReport}></Route>
         <Route path="/ordens-servicos-acompanhamento/:encrypted" exact component={ListarOrdensServicosAcompanhamento}></Route>
