@@ -20,6 +20,8 @@ jobs:
       run: |
         npm install
         npm run build
+      env:
+        CI: false
     
     - name: List output files
       run: find build/ -print
