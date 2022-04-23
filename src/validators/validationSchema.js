@@ -112,30 +112,32 @@ export const funcionarioValidationCreate = yup.object().shape({
 export const funcionarioValidation = yup.object().shape({
   situacao: yup.number("").required("A situação é obrigatória"),
   nome: yup.string().required("O nome é obrigatório"),
-  cpf: yup.string().required("O CPF é obrigatório"),
-  rg: yup.string().required("O RG é obrigatório"),
-  dataNascimento: yup.string().required("A data de nascimento é obrigatória"),
+  cpf: yup.string(),
+  rg: yup.string(),
+  dataNascimento: yup.string(),
   sexo: yup.string().required("O sexo é obrigatório"),
-  grupo_id: yup.number("").required("O grupo é obrigatório"),
+  grupo_id: yup.number(""),
   email: yup
     .string()
     .email("Digite o e-mail corretamente")
-    .required("O email é obrigatório"),
-  senha: yup.string().min(6, "A senha deve ter no mínimo 6 caracteres"),
-  comissao: yup.number("").required("A comissão é obrigatória").min(0),
-  foto: yup.string().required("A foto é obrigatória"),
-  rua: yup.string().required("A rua é obrigatória"),
-  cidade: yup.string().required("A cidade é obrigatória"),
-  numero: yup.string().required("O número é obrigatório"),
-  cep: yup.string().required("O CEP é obrigatório"),
-  bairro: yup.string().required("O bairro é obrigatório"),
-  estado: yup.string().required("O estado é obrigatório"),
-  telefone: yup.string().required("O telefone é obrigatório"),
-  celular: yup.string().required("O celular é obrigatório"),
-  emailPessoal: yup
+    .required("O e-mail é obrigatório"),
+  senha: yup
     .string()
-    .email("Digite o e-mail corretamente")
-    .required("O email pessoal é obrigatório"),
+    .min(6, "A senha deve ter no mínimo 6 caracteres"),
+  comissao: yup
+    .number("")
+    .min(0, "A comissão deve ser maior que 0")
+    .required("A comissão é obrigatória"),
+  foto: yup.string(),
+  rua: yup.string(),
+  cidade: yup.string(),
+  numero: yup.string(),
+  cep: yup.string(),
+  bairro: yup.string(),
+  estado: yup.string(),
+  telefone: yup.string(),
+  celular: yup.string(),
+  emailPessoal: yup.string().email("Digite o e-mail corretamente"),
 });
 
 export const grupoValidation = yup.object().shape({
