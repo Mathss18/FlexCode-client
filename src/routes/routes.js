@@ -1,6 +1,6 @@
 import React from "react";
 
-import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import Home from "../pages/Home";
 import LoginPage from "../pages/Login/LoginPage";
 
@@ -71,7 +71,7 @@ import ThemeSelector from "../components/ThemeSelector";
 
 export default function Routes({themeSetter}) {
   return (
-    <BrowserRouter>
+    <Router>
       <Switch>
 
         <Route exact path="/">
@@ -163,6 +163,6 @@ export default function Routes({themeSetter}) {
 
 
       </Switch>
-    </BrowserRouter>
+    </Router>
   );
 }

@@ -54,7 +54,7 @@ function ListarServicos() {
             element["valor"].toLocaleString('pt-br', {minimumFractionDigits: 2}),
             new Date(element["created_at"]).toLocaleString(),
             <>
-              <SearchIcon className={'btn-lista'} onClick={(event) => handleOnClickShowButton(event, element["id"])} />
+              {/* <SearchIcon className={'btn-lista'} onClick={(event) => handleOnClickShowButton(event, element["id"])} /> */}
               <EditIcon className={'btn-lista'} onClick={(event) => handleOnClickEditButton(event, element["id"])} />
             </>,
           ];

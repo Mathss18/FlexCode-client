@@ -51,12 +51,12 @@ function ListarPorcentagensLucros() {
               element["descricao"],
               element["porcentagem"],
               <>
-                <SearchIcon
+                {/* <SearchIcon
                   className={"btn-lista"}
                   onClick={(event) =>
                     handleOnClickShowButton(event, element["id"])
                   }
-                />
+                /> */}
                 <EditIcon
                   className={"btn-lista"}
                   onClick={(event) =>

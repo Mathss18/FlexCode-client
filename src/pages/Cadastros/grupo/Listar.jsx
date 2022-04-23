@@ -47,7 +47,7 @@ function ListarGrupoPage() {
             element["nome"],
             new Date(element["created_at"]).toLocaleString(),
             <>
-              <SearchIcon className={'btn btn-lista'} onClick={(event) => handleOnClickShowButton(event, element["id"])} />
+              {/* <SearchIcon className={'btn btn-lista'} onClick={(event) => handleOnClickShowButton(event, element["id"])} /> */}
               <EditIcon className={'btn btn-lista'} onClick={(event) => handleOnClickEditButton(event, element["id"])} />
             </>,
           ];
