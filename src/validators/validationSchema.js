@@ -6,23 +6,23 @@ export const clienteValidation = yup.object().shape({
   tipoContribuinte: yup
     .number("")
     .required("O tipo de contribuinte é obrigatório"),
-  inscricaoEstadual: yup.string(),
+  inscricaoEstadual: yup.string().nullable(),
   nome: yup.string().required("O nome do cliente é obrigatório"),
   cpfCnpj: yup.string().required("O CPF/CNPJ é obrigatório"),
   email: yup
     .string()
     .email("Digite o e-mail corretamente")
     .required("O e-mail é obrigatório"),
-  contato: yup.string(),
-  rua: yup.string(),
-  cidade: yup.string(),
-  numero: yup.string(),
-  cep: yup.string(),
-  bairro: yup.string(),
-  estado: yup.string(),
-  telefone: yup.string(),
-  celular: yup.string(),
-  codigoMunicipio: yup.string(),
+  contato: yup.string().nullable(),
+  rua: yup.string().nullable(),
+  cidade: yup.string().nullable(),
+  numero: yup.string().nullable(),
+  cep: yup.string().nullable(),
+  bairro: yup.string().nullable(),
+  estado: yup.string().nullable(),
+  telefone: yup.string().nullable(),
+  celular: yup.string().nullable(),
+  codigoMunicipio: yup.string().nullable(),
 });
 
 export const transportadoraValidation = yup.object().shape({
@@ -33,23 +33,23 @@ export const transportadoraValidation = yup.object().shape({
   tipoContribuinte: yup
     .number("")
     .required("O tipo de contribuinte é obrigatório"),
-  inscricaoEstadual: yup.string(),
+  inscricaoEstadual: yup.string().nullable(),
   nome: yup.string().required("O nome da transportadora é obrigatório"),
   cpfCnpj: yup.string().required("O CPF/CNPJ é obrigatório"),
   email: yup
     .string()
     .email("Digite o e-mail corretamente")
     .required("O e-mail é obrigatório"),
-  contato: yup.string(),
-  rua: yup.string(),
-  cidade: yup.string(),
-  numero: yup.string(),
-  cep: yup.string(),
-  bairro: yup.string(),
-  estado: yup.string(),
-  telefone: yup.string(),
-  celular: yup.string(),
-  codigoMunicipio: yup.string(),
+  contato: yup.string().nullable(),
+  rua: yup.string().nullable(),
+  cidade: yup.string().nullable(),
+  numero: yup.string().nullable(),
+  cep: yup.string().nullable(),
+  bairro: yup.string().nullable(),
+  estado: yup.string().nullable(),
+  telefone: yup.string().nullable(),
+  celular: yup.string().nullable(),
+  codigoMunicipio: yup.string().nullable(),
 });
 
 export const fornecedorValidation = yup.object().shape({
@@ -58,33 +58,33 @@ export const fornecedorValidation = yup.object().shape({
   tipoContribuinte: yup
     .number("")
     .required("O tipo de contribuinte é obrigatório"),
-  inscricaoEstadual: yup.string(),
+  inscricaoEstadual: yup.string().nullable(),
   nome: yup.string().required("O nome do fornecedor é obrigatório"),
   cpfCnpj: yup.string().required("O CPF/CNPJ é obrigatório"),
   email: yup
     .string()
     .email("Digite o e-mail corretamente")
     .required("O e-mail é obrigatório"),
-  contato: yup.string(),
-  rua: yup.string(),
-  cidade: yup.string(),
-  numero: yup.string(),
-  cep: yup.string(),
-  bairro: yup.string(),
-  estado: yup.string(),
-  telefone: yup.string(),
-  celular: yup.string(),
-  codigoMunicipio: yup.string(),
+  contato: yup.string().nullable(),
+  rua: yup.string().nullable(),
+  cidade: yup.string().nullable(),
+  numero: yup.string().nullable(),
+  cep: yup.string().nullable(),
+  bairro: yup.string().nullable(),
+  estado: yup.string().nullable(),
+  telefone: yup.string().nullable(),
+  celular: yup.string().nullable(),
+  codigoMunicipio: yup.string().nullable(),
 });
 
 export const funcionarioValidationCreate = yup.object().shape({
   situacao: yup.number("").required("A situação é obrigatória"),
   nome: yup.string().required("O nome é obrigatório"),
-  cpf: yup.string(),
-  rg: yup.string(),
-  dataNascimento: yup.string(),
+  cpf: yup.string().nullable(),
+  rg: yup.string().nullable(),
+  dataNascimento: yup.string().nullable(),
   sexo: yup.string().required("O sexo é obrigatório"),
-  grupo_id: yup.number(""),
+  grupo_id: yup.number("").required('O usuario deve ter um grupo'),
   email: yup
     .string()
     .email("Digite o e-mail corretamente")
@@ -97,26 +97,26 @@ export const funcionarioValidationCreate = yup.object().shape({
     .number("")
     .min(0, "A comissão deve ser maior que 0")
     .required("A comissão é obrigatória"),
-  foto: yup.string(),
-  rua: yup.string(),
-  cidade: yup.string(),
-  numero: yup.string(),
-  cep: yup.string(),
-  bairro: yup.string(),
-  estado: yup.string(),
-  telefone: yup.string(),
-  celular: yup.string(),
+  foto: yup.string().nullable(),
+  rua: yup.string().nullable(),
+  cidade: yup.string().nullable(),
+  numero: yup.string().nullable(),
+  cep: yup.string().nullable(),
+  bairro: yup.string().nullable(),
+  estado: yup.string().nullable(),
+  telefone: yup.string().nullable(),
+  celular: yup.string().nullable(),
   emailPessoal: yup.string().email("Digite o e-mail corretamente"),
 });
 
 export const funcionarioValidation = yup.object().shape({
   situacao: yup.number("").required("A situação é obrigatória"),
   nome: yup.string().required("O nome é obrigatório"),
-  cpf: yup.string(),
-  rg: yup.string(),
-  dataNascimento: yup.string(),
+  cpf: yup.string().nullable(),
+  rg: yup.string().nullable(),
+  dataNascimento: yup.string().nullable(),
   sexo: yup.string().required("O sexo é obrigatório"),
-  grupo_id: yup.number(""),
+  grupo_id: yup.number("").required('O usuario deve ter um grupo'),
   email: yup
     .string()
     .email("Digite o e-mail corretamente")
@@ -128,15 +128,15 @@ export const funcionarioValidation = yup.object().shape({
     .number("")
     .min(0, "A comissão deve ser maior que 0")
     .required("A comissão é obrigatória"),
-  foto: yup.string(),
-  rua: yup.string(),
-  cidade: yup.string(),
-  numero: yup.string(),
-  cep: yup.string(),
-  bairro: yup.string(),
-  estado: yup.string(),
-  telefone: yup.string(),
-  celular: yup.string(),
+  foto: yup.string().nullable(),
+  rua: yup.string().nullable(),
+  cidade: yup.string().nullable(),
+  numero: yup.string().nullable(),
+  cep: yup.string().nullable(),
+  bairro: yup.string().nullable(),
+  estado: yup.string().nullable(),
+  telefone: yup.string().nullable(),
+  celular: yup.string().nullable(),
   emailPessoal: yup.string().email("Digite o e-mail corretamente"),
 });
 
@@ -172,21 +172,18 @@ export const gradeVariacoesValidation = yup.object().shape({
 export const produtoValidation = yup.object().shape({
   nome: yup.string().required("O nome é obrigatório"),
   codigoInterno: yup.string().required("O código interno é obrigatório"),
-  grupo_produto_id: yup.number()
-    .required("O grupo é obrigatório")
-    .min(0, "O grupo de produto é obrigatório"),
+  grupo_produto_id: yup.number().required("O grupo é obrigatório"),
   movimentaEstoque: yup
     .boolean()
     .required("É nescessario informar se o produto movimenta estoque"),
   habilitaNotaFiscal: yup
     .boolean()
     .required("É nescessario informar se o produto habilita nota fiscal"),
-  codigoBarras: yup
-    .string(),
-  peso: yup.number("").min(0, "O peso não pode ser negativo"),
-  largura: yup.number("").min(0, "A largura não pode ser negativa"),
-  altura: yup.number("").min(0, "A altura não pode ser negativa"),
-  comprimento: yup.number("").min(0, "O comprimento não pode ser negativo"),
+  codigoBarras: yup.string().nullable(),
+  peso: yup.number("").min(0, "O peso não pode ser negativo").nullable(),
+  largura: yup.number("").min(0, "A largura não pode ser negativa").nullable(),
+  altura: yup.number("").min(0, "A altura não pode ser negativa").nullable(),
+  comprimento: yup.number("").min(0, "O comprimento não pode ser negativo").nullable(),
   comissao: yup
     .number("")
     .required("A comissão é obrigatória")
@@ -208,9 +205,9 @@ export const produtoValidation = yup.object().shape({
     .number("")
     .required("O custo final é obrigatório")
     .min(0, "O custo final não pode ser negativo"),
-  estoqueMinimo: yup.number("").min(0, "O valor não pode ser negativo"),
-  estoqueMaximo: yup.number("").min(0, "O valor não pode ser negativo"),
-  quantidadeAtual: yup.number("").min(0, "O valor não pode ser negativo"),
+  estoqueMinimo: yup.number("").min(0, "O valor não pode ser negativo").nullable(),
+  estoqueMaximo: yup.number("").min(0, "O valor não pode ser negativo").nullable(),
+  quantidadeAtual: yup.number("").min(0, "O valor não pode ser negativo").nullable(),
   // foto: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
   // ncm: "",
   // cest: "",
@@ -229,13 +226,13 @@ export const produtoValidation = yup.object().shape({
 export const servicoValidation = yup.object().shape({
   nome: yup.string().required("O nome é obrigatório"),
   codigoInterno: yup.string().required("O código interno é obrigatório"),
-  valor: yup.number("").min(0, "O valor não pode ser negativo"),
+  valor: yup.number("").required().min(0, "O valor não pode ser negativo"),
   comissao: yup.number("").required("A comissão é obrigatória").min(0),
   descricao: yup.string().required('A descrição é obrigatória'),
 });
 
 export const ordemServicoValidation = yup.object().shape({
-  numero: yup.number("").min(0, "O valor não pode ser negativo"),
+  numero: yup.number("").required().min(0, "O valor não pode ser negativo"),
   // cliente_id: yup.object().shape({
   //   label: yup.string().required(),
   //   value: yup.number().required(),
@@ -251,8 +248,8 @@ export const ordemServicoValidation = yup.object().shape({
   situacao: yup.number("").required("A situação é obrigatória").min(0),
   dataEntrada: yup.string().required("A data de entrada é obrigatória"),
   horaEntrada: yup.string().required("A hora de entrada é obrigatória"),
-  dataSaida: yup.string().nullable(),
-  horaSaida: yup.string().nullable(),
+  dataSaida: yup.string().required('A data de saída é obrigatoria'),
+  horaSaida: yup.string().required('A hora de saída é obrigatoria'),
   frete: yup
     .number("")
     .required("O frete é obrigatório")
@@ -269,12 +266,12 @@ export const ordemServicoValidation = yup.object().shape({
     .number("")
     .required("O total é obrigatório")
     .min(0, "O valor não pode ser negativo"),
-  observacao: yup.string(),
-  observacaoInterna: yup.string(),
+  observacao: yup.string().nullable(),
+  observacaoInterna: yup.string().nullable(),
 });
 
 export const orcamentoValidation = yup.object().shape({
-  numero: yup.number("").min(0, "O valor não pode ser negativo"),
+  numero: yup.number("").required().min(0, "O valor não pode ser negativo"),
   // cliente_id: yup.object().shape({
   //   label: yup.string().required(),
   //   value: yup.number().required(),
@@ -305,6 +302,6 @@ export const orcamentoValidation = yup.object().shape({
     .number("")
     .required("O total é obrigatório")
     .min(0, "O valor não pode ser negativo"),
-  observacao: yup.string(),
-  observacaoInterna: yup.string(),
+  observacao: yup.string().nullable(),
+  observacaoInterna: yup.string().nullable(),
 });
