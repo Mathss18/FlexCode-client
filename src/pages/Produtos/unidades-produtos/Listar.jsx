@@ -58,12 +58,12 @@ function ListarUnidadesDeProdutos() {
               element["sigla"],
               element["padrao"] == 1 ? <CheckIcon /> : <CloseIcon />,
               <>
-                <SearchIcon
+                {/* <SearchIcon
                   className={"btn-lista"}
                   onClick={(event) =>
                     handleOnClickShowButton(event, element["id"])
                   }
-                />
+                /> */}
                 <EditIcon
                   className={"btn-lista"}
                   onClick={(event) =>

@@ -50,10 +50,11 @@ function ListarOrdensServicos() {
   }
 
   function handleOnClickPdfButton(event, item) {
+    const BASE_URL = window.location.origin;
     const data = btoa(JSON.stringify(item));
     localStorage.setItem("ordemServicoReport", data);
 
-    window.open(`http://localhost:3000/ordens-servicos/relatorio`, '_blank');
+    window.open(`${BASE_URL}/ordens-servicos/relatorio`, '_blank');
     // window.print();
     // mywindow.document.appendChild(html);
     // mywindow.document.close(); // necessary for IE >= 10
@@ -89,7 +90,7 @@ function ListarOrdensServicos() {
               <Tooltip title={'Baixar PDF'} arrow>
                 <InsertDriveFileIcon className={'btn btn-lista'} onClick={(event) => handleOnClickPdfButton(event, element)} />
               </Tooltip>
-              <SearchIcon className={'btn btn-lista'} onClick={(event) => handleOnClickShowButton(event, element['id'])} />
+              {/* <SearchIcon className={'btn btn-lista'} onClick={(event) => handleOnClickShowButton(event, element['id'])} /> */}
               <EditIcon className={'btn btn-lista'} onClick={(event) => handleOnClickEditButton(event, element['id'])} />
             </>
           ]
