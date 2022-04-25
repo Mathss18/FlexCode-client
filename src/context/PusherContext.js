@@ -47,7 +47,7 @@ function PusherContextProvider({ children }) {
     }
     setCallBack(() => (data) => notificate(data));
 
-  }, [isLogged]);
+  }, [isLogged, updateUserStatus]);
 
   // Use effect para se inscrever nos canais 
   useEffect(() => {
@@ -59,7 +59,7 @@ function PusherContextProvider({ children }) {
     // Se inscreve no canal publico 
     setPublicChannel(pusher.subscribe('presence-chat'));
 
-  }, [pusher,updateUserStatus])
+  }, [pusher])
 
   // Use effect para se inscrever nos eventos e setar o callback
   useEffect(() => {
