@@ -47,7 +47,7 @@ function PusherContextProvider({ children }) {
     }
     setCallBack(() => (data) => notificate(data));
 
-  }, [isLogged, updateUserStatus]);
+  }, [isLogged]);
 
   // Use effect para se inscrever nos canais 
   useEffect(() => {
