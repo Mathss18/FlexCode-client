@@ -59,7 +59,7 @@ function PusherContextProvider({ children }) {
     // Se inscreve no canal publico 
     setPublicChannel(pusher.subscribe('presence-chat'));
 
-  }, [pusher])
+  }, [pusher,updateUserStatus])
 
   // Use effect para se inscrever nos eventos e setar o callback
   useEffect(() => {
@@ -72,7 +72,7 @@ function PusherContextProvider({ children }) {
     publicChannel.bind("pusher:subscription_succeeded", (data) => { setarUsuariosOnline(data); console.log('Usuarios Logados:',data);  });
     // console.clear(''); //TODO: remove in production
 
-  }, [privateChannel, publicChannel, callBack, updateUserStatus])
+  }, [privateChannel, publicChannel, callBack])
 
   // Use effect atualizar se usuarios estão no sistema ou não, em tempo real
   useEffect(() => {
