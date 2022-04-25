@@ -59,8 +59,6 @@ function PusherContextProvider({ children }) {
     // Se inscreve no canal publico 
     setPublicChannel(pusher.subscribe('presence-chat'));
 
-    console.log(pusher);
-
   }, [pusher])
 
   // Use effect para se inscrever nos eventos e setar o callback
@@ -70,14 +68,11 @@ function PusherContextProvider({ children }) {
     privateChannel.unbind("App\\Events\\PrivateMessageSent");
     privateChannel.bind("App\\Events\\PrivateMessageSent", (data) => callBack(data));
 
-    console.log('antes',publicChannel);
     publicChannel.unbind("pusher:subscription_succeeded");
     publicChannel.bind("pusher:subscription_succeeded", (data) => { setarUsuariosOnline(data); console.log('Usuarios Logados:',data);  });
-    console.log('depois',publicChannel);
     // console.clear(''); //TODO: remove in production
 
-
-  }, [privateChannel, publicChannel, callBack])
+  }, [privateChannel, publicChannel, callBack, updateUserStatus])
 
   // Use effect atualizar se usuarios estão no sistema ou não, em tempo real
   useEffect(() => {
@@ -87,7 +82,7 @@ function PusherContextProvider({ children }) {
 
       publicChannel.unbind("pusher:member_removed");
       publicChannel.bind("pusher:member_removed", (member) => { console.log('Removido: ', member); usuarioSaiu(member.info); });
-  }, [usuariosOnline,updateUserStatus]);
+  }, [usuariosOnline, updateUserStatus]);
 
   // Use effect atualizar a lista de mensagens não lidas
   useEffect(() => {
@@ -104,7 +99,7 @@ function PusherContextProvider({ children }) {
   }, [updateMensagensNaoLidas, isLogged])
 
   function notificate(data) {
-    if (user['chat-status'] == 'online')
+    if (user['chat-status'] === 'online')
       notification(`${data.message.usuario.nome} diz:`, data.message.message, userPicture); // exibe a notificação de nova mensagem
     setUpdateMensagensNaoLidas((value) => !value); // atualiza o contador de messages nao lidas
   }
