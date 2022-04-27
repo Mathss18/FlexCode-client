@@ -8,6 +8,7 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import SearchIcon from '@material-ui/icons/Search';
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
+import { changeFavicon } from "../../../utils/faviconNotification";
 
 
 function ListarClientePage() {
