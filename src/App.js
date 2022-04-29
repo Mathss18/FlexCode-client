@@ -13,6 +13,7 @@ import { GlobalStyles } from "./theme/GlobalStyles";
 import { useTheme } from "./theme/useTheme";
 import MomentUtils from "@date-io/moment";
 import FullScreenLoaderProvider from "./context/FullScreenLoaderContext";
+import FaviconNotificationContextProvider from "react-favicon-notification";
 
 function App() {
   const { theme, themeLoaded, getFonts } = useTheme();
@@ -35,17 +36,19 @@ function App() {
       {themeLoaded && (
         <ThemeProvider theme={selectedTheme}>
           <GlobalStyles />
-          <PusherContextProvider>
-            <SideMenuContextProvider>
-              <GerenciarProdutosContextProvider>
-                <MuiPickersUtilsProvider utils={MomentUtils}>
-                  <FullScreenLoaderProvider>
-                    <Routes themeSetter={setSelectedTheme} />
-                  </FullScreenLoaderProvider>
-                </MuiPickersUtilsProvider>
-              </GerenciarProdutosContextProvider>
-            </SideMenuContextProvider>
-          </PusherContextProvider>
+          <FaviconNotificationContextProvider>
+            <PusherContextProvider>
+              <SideMenuContextProvider>
+                <GerenciarProdutosContextProvider>
+                  <MuiPickersUtilsProvider utils={MomentUtils}>
+                    <FullScreenLoaderProvider>
+                      <Routes themeSetter={setSelectedTheme} />
+                    </FullScreenLoaderProvider>
+                  </MuiPickersUtilsProvider>
+                </GerenciarProdutosContextProvider>
+              </SideMenuContextProvider>
+            </PusherContextProvider>
+          </FaviconNotificationContextProvider>
         </ThemeProvider>
       )}
     </>

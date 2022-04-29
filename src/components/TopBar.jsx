@@ -10,27 +10,11 @@ import { Toaster } from "react-hot-toast";
 import { usePusherContext } from "../context/PusherContext";
 import logoEmpresa from "../assets/logoEmpresa.svg";
 import PaletteIcon from "@mui/icons-material/Palette";
-import { Tooltip } from "chart.js";
-import { changeFavicon } from "../utils/faviconNotification";
-import { useEffect } from "react";
 
 function TopBar() {
   const [openSideMenu, setOpenSideMenu] = useMenu();
   const pusherContext = usePusherContext();
   const history = useHistory();
-
-  useEffect(()=>{
-    changeFavicon({
-      radius:
-        pusherContext.useMensagensNaoLidas.mensagensNaoLidas.length === 0
-          ? 0
-          : 14,
-      counter:
-        pusherContext.useMensagensNaoLidas.mensagensNaoLidas.length === 0
-          ? null
-          : pusherContext.useMensagensNaoLidas.mensagensNaoLidas.length,
-    })
-  },[pusherContext.useMensagensNaoLidas.mensagensNaoLidas])
 
   return (
     <AppBar color="inherit" className={"topbar"}>
