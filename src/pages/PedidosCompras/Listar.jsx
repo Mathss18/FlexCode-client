@@ -12,9 +12,9 @@ import api from "../../services/api";
 import moment from "moment";
 
 
-function ListarOrcamentos() {
+function ListarPedidosCompras() {
   const history = useHistory();
-  const [orcamentos, setOrcamentos] = useState([]);
+  const [pedidosCompras, setPedidosCompras] = useState([]);
   const fullScreenLoader = useFullScreenLoader();
   const columns = [
     {
@@ -46,20 +46,20 @@ function ListarOrcamentos() {
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/orcamentos/editar/" + id)
+    history.push("/pedidos-compras/editar/" + id)
   }
 
   function handleOnClickPdfButton(event, item) {
     const BASE_URL = window.location.origin;
     const data = btoa(JSON.stringify(item));
-    localStorage.setItem("orcamentoReport", data);
+    localStorage.setItem("pedidoCompraReport", data);
 
-    window.open(`${BASE_URL}/orcamentos/relatorio`, '_blank');
+    window.open(`${BASE_URL}/pedidos-compras/relatorio`, '_blank');
   }
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
-    api.get('/orcamentos')
+    api.get('/pedidos-compras')
       .then((response) => {
         response.data['data'].forEach(element => {
           if (element['situacao'] === 0) {
@@ -89,7 +89,7 @@ function ListarOrcamentos() {
 
 
         });
-        setOrcamentos(data)
+        setPedidosCompras(data)
 
       })
       .finally(() => {
@@ -100,10 +100,10 @@ function ListarOrcamentos() {
 
   return (
     <>
-        <Button onClick={() => history.push("/orcamentos/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
+        <Button onClick={() => history.push("/pedidos-compras/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
         <MUIDataTable
-          title={"Lista de Orçamentos"}
-          data={orcamentos}
+          title={"Lista de Pedidos de Compras"}
+          data={pedidosCompras}
           columns={columns}
           options={config}
           className={'table-background'}
@@ -112,4 +112,4 @@ function ListarOrcamentos() {
   );
 }
 
-export default ListarOrcamentos;
+export default ListarPedidosCompras;

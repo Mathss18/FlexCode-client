@@ -75,7 +75,7 @@ export function Detalhes() {
           <TextField variant="outlined" 
           style={{ marginBottom: 24 }}
           type="number" 
-          label="Comissão (%)" 
+          label="Comissão (%) *" 
           fullWidth 
           value={produtoContext.useValues.values.comissao}
            name="comissao" 

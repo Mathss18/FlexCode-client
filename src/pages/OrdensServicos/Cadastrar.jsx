@@ -59,14 +59,14 @@ const initialValues = {
 
 function CadastrarOrdensServicoPage() {
   const history = useHistory();
-  const [clientes, setClientes] = useState({});
+  const [clientes, setClientes] = useState([]);
   const [funcionarios, setFuncionarios] = useState([{}]);
   const [produtos, setProdutos] = useState([]);
   const [servicos, setServicos] = useState([]);
   const [rowsProdutos, setRowsProdutos] = useState([]);
   const [rowsServicos, setRowsServicos] = useState([]);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
-  
+
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => {
@@ -377,7 +377,7 @@ function CadastrarOrdensServicoPage() {
         infoAlert("Atenção", error.response.data.message);
       })
       .finally(() => {
-        fullScreenLoader.setLoading(false)
+        fullScreenLoader.setLoading(false);
         formik.setSubmitting(false);
       });
   }
@@ -590,7 +590,9 @@ function CadastrarOrdensServicoPage() {
                   }
                 >
                   <MenuItem value={0}>Aberta</MenuItem>
-                  <MenuItem disabled value={1}>Fazendo</MenuItem>
+                  <MenuItem disabled value={1}>
+                    Fazendo
+                  </MenuItem>
                   <MenuItem value={2}>Finalizada</MenuItem>
                   <MenuItem value={3}>Cancelada</MenuItem>
                 </Select>
