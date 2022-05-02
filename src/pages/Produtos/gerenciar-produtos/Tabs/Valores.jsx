@@ -52,7 +52,7 @@ export function Valores() {
             type="number"
             min="0"
             step="0.0001"
-            label="Valor de Custo"
+            label="Valor de Custo *"
             fullWidth
             value={produtoContext.useValues.values.valorCusto}
             name="valorCusto"
@@ -67,7 +67,7 @@ export function Valores() {
             type="number"
             min="0"
             step="0.0001"
-            label="Despesas adicionais"
+            label="Despesas adicionais *"
             fullWidth
             value={produtoContext.useValues.values.despesasAdicionais}
             name="despesasAdicionais"
@@ -82,7 +82,7 @@ export function Valores() {
             type="number"
             min="0"
             step="0.0001"
-            label="Outras despesas"
+            label="Outras despesas *"
             fullWidth
             value={produtoContext.useValues.values.outrasDespesas}
             name="outrasDespesas"
@@ -93,7 +93,7 @@ export function Valores() {
           />
           <TextField
             variant="outlined"
-            label="Custo final"
+            label="Custo final *"
             type="number"
             fullWidth
             value={(

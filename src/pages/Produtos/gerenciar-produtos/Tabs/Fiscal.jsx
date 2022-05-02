@@ -15,6 +15,14 @@ export function Fiscal() {
 
   return (
     <>
+    {produtoContext.useValues.values.habilitaNotaFiscal
+        ? ""
+        : <h2 style={{textAlign: 'center'}}>Este produto não habilita nota fiscal!</h2>}
+    <div style={{
+      display: produtoContext.useValues.values.habilitaNotaFiscal
+        ? "block"
+        : "none",
+    }}>
       <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
         <OpenWithIcon />
         <h3>Detalhes</h3>
@@ -172,6 +180,7 @@ export function Fiscal() {
           />
         </Grid>
       </Grid>
+    </div>
     </>
   );
 }

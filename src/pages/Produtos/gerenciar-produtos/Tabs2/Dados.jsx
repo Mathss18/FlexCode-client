@@ -56,7 +56,7 @@ export function Dados() {
           ? response.data['data'].fornecedores.map((item) => {
             return { value: item.id, label: item.nome };
           })
-          : [{ label: '', value: '' }];
+          : [];
 
         produtoContext.useValues.setValues(response.data['data']);
 
