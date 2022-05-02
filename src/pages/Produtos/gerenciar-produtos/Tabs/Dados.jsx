@@ -56,7 +56,7 @@ export function Dados() {
         <Grid item xs={4}>
           <TextField
             variant="outlined"
-            label="Nome do produto"
+            label="Nome do produto *"
             fullWidth
             value={produtoContext.useValues.values.nome}
             name="nome"
@@ -69,7 +69,7 @@ export function Dados() {
         <Grid item xs={4}>
           <TextField
             variant="outlined"
-            label="Código interno"
+            label="Código interno *"
             fullWidth
             value={produtoContext.useValues.values.codigoInterno}
             name="codigoInterno"
@@ -81,10 +81,10 @@ export function Dados() {
         </Grid>
         <Grid item xs={4}>
           <FormControl variant="outlined" fullWidth name="grupo_produto_id">
-            <InputLabel>Grupo de Produtos</InputLabel>
+            <InputLabel>Grupo de Produtos *</InputLabel>
             <Select
               className={"input-select"}
-              label="Grupo de Produtos"
+              label="Grupo de Produtos *"
               name="grupo_produto_id"
               value={produtoContext.useValues.values.grupo_produto_id}
               onChange={handleOnChange}
@@ -105,10 +105,10 @@ export function Dados() {
         </Grid>
         <Grid item xs={4}>
           <FormControl variant="outlined" fullWidth name="movimentaEstoque">
-            <InputLabel>Movimenta Estoque?</InputLabel>
+            <InputLabel>Movimenta Estoque? *</InputLabel>
             <Select
               className={"input-select"}
-              label="Movimenta Estoque?"
+              label="Movimenta Estoque? *"
               name="movimentaEstoque"
               value={produtoContext.useValues.values.movimentaEstoque}
               onChange={handleOnChange}

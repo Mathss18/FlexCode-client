@@ -18,7 +18,7 @@ export const initialValues = {
     custoFinal: 0,
     estoqueMinimo: '',
     estoqueMaximo: '',
-    quantidadeAtual: '',
+    quantidadeAtual: 0,
     foto_produto: [],
     fotoPrincipal: [],
     ncm: "",
@@ -33,6 +33,6 @@ export const initialValues = {
     valorFixoCofins: '',
     valorFixoCofinsSt: '',
     porcentagem_lucro_produto: [],
-    cliente_id: {label: '', value: null},
-    fornecedores_id: [{ label: '', value: null }]
+    cliente_id: null,
+    fornecedores_id: []
   };
