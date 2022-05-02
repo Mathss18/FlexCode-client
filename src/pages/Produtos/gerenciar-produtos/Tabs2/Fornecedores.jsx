@@ -8,6 +8,7 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { useParams } from "react-router-dom";
 import { getUniqueArrayOfObjectsByKey } from "../../../../utils/functions";
+import { infoAlert, successAlert } from "../../../../utils/alert";
 
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -22,11 +23,14 @@ export function Fornecedores() {
   function handleEditarProduto() {
     api.put("/produtos/"+id, produtoContext.formik.values)
     .then(response => {
-      console.log(response);
+      successAlert("Sucesso", "Produto cadastrado com sucesso!", () => {
+        history.push("/produtos");
+      });
     })
-    .catch(error => {
-      console.log(error);
-    });
+    .catch((error) => {
+      infoAlert("Atenção", error.response.data.message);
+    })
+    .finally(() => produtoContext.formik.setSubmitting(false));
   }
 
   // Calcula o custoFinal
