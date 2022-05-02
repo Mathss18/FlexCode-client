@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Autocomplete } from "@mui/material";
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { getUniqueArrayOfObjectsByKey } from "../../../../utils/functions";
 import { infoAlert, successAlert } from "../../../../utils/alert";
 
@@ -18,12 +18,13 @@ export function Fornecedores() {
   const produtoContext = useProdutoContext();
   const [clientes, setClientes] = useState([]);
   const [fornecedores, setFornecedores] = useState([]);
+  const history = useHistory();
   const { id } = useParams();
 
   function handleEditarProduto() {
     api.put("/produtos/"+id, produtoContext.formik.values)
     .then(response => {
-      successAlert("Sucesso", "Produto cadastrado com sucesso!", () => {
+      successAlert("Sucesso", "Produto editado com sucesso!", () => {
         history.push("/produtos");
       });
     })

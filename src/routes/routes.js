@@ -65,9 +65,11 @@ import SideMenu from "../components/SideMenu";
 import Chat from "../pages/Chat/Chat";
 import Ajuda from "../pages/Ajuda/Ajuda"
 import OrdermServicoReport from "../reports/OrdensServicos/OrdermServicoReport";
-import ListarOrdensServicosFuncionariosPage from "../pages/OrdensServicosFuncionarios/Listar";
-import ListarOrdensServicosAcompanhamento from "../pages/OrdensServicosAcompanhamento/Listar";
+import ListarOrdensServicosFuncionariosPage from "../pages/OrdensServicos/OrdensServicosFuncionarios/Listar";
+import ListarOrdensServicosAcompanhamento from "../pages/OrdensServicos/OrdensServicosAcompanhamento/Listar";
 import ThemeSelector from "../components/ThemeSelector";
+import OrcamentoReport from "../reports/Orcamentos/OrcamentoReport";
+import ListarPedidosCompras from "../pages/PedidosCompras/Listar";
 
 export default function Routes({themeSetter}) {
   return (
@@ -82,6 +84,8 @@ export default function Routes({themeSetter}) {
         <Route path="/login" exact component={LoginPage}></Route>
         <Route path="/ordens-servicos/relatorio" exact component={OrdermServicoReport}></Route>
         <Route path="/ordens-servicos-acompanhamento/:encrypted" exact component={ListarOrdensServicosAcompanhamento}></Route>
+
+        <Route path="/orcamentos/relatorio" exact component={OrcamentoReport}></Route>
 
         <PrivateRoutes>
           <TopBar />
@@ -142,10 +146,13 @@ export default function Routes({themeSetter}) {
 
             <Route path="/ordens-servicos-funcionarios/:idUsuario" exact component={ListarOrdensServicosFuncionariosPage} ></Route>
           
-
             <Route path="/orcamentos" exact component={ListarOrcamentosPage}></Route>
             <Route path="/orcamentos/novo" exact component={CadastrarOrcamentosPage}></Route>
             <Route path="/orcamentos/editar/:id" exact component={EditarOrcamentosPage} ></Route>
+
+            <Route path="/pedidos-compras" exact component={ListarPedidosCompras}></Route>
+            <Route path="/pedidos-compras/novo" exact component={CadastrarOrcamentosPage}></Route>
+            <Route path="/pedidos-compras/editar/:id" exact component={EditarOrcamentosPage} ></Route>
 
 
 

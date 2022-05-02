@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import { useHistory } from "react-router-dom";
-import api from "../../../services/api";
-import { config, rowConfig } from "../../../config/tablesConfig";
-import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
+import api from "../../../../services/api";
+import { config, rowConfig } from "../../../../config/tablesConfig";
+import { useFullScreenLoader } from "../../../../context/FullScreenLoaderContext";
 import CheckIcon from "@mui/icons-material/Check";
 import moment from "moment";
-import FullScreenDialog from "../../../components/dialog/FullScreenDialog";
+import FullScreenDialog from "../../../../components/dialog/FullScreenDialog";
 import {
   AppBar,
   Avatar,
@@ -26,7 +26,7 @@ import BubbleChartIcon from "@mui/icons-material/BubbleChart";
 import PhotoIcon from "@mui/icons-material/Photo";
 import BuildIcon from "@mui/icons-material/Build";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { confirmAlert, infoAlert } from "../../../utils/alert";
+import { confirmAlert, infoAlert } from "../../../../utils/alert";
 
 export function Abertas() {
   const { idUsuario } = useParams();

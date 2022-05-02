@@ -305,3 +305,27 @@ export const orcamentoValidation = yup.object().shape({
   observacao: yup.string().nullable(),
   observacaoInterna: yup.string().nullable(),
 });
+
+export const pedidoCompraValidation = yup.object().shape({
+  numero: yup.number("").required().min(0, "O valor não pode ser negativo"),
+  // cliente_id: yup.object().shape({
+  //   label: yup.string().required(),
+  //   value: yup.number().required(),
+  // }),
+  // funcionarios_id: yup.array().of(
+  //   yup.object().shape({
+  //     label: yup.string().required(),
+  //     value: yup.number().required(),
+  //   })
+  // ),
+  // produtos: [],
+  // servicos: [],
+  situacao: yup.number("").required("A situação é obrigatória").min(0),
+  dataEntrada: yup.string().required("A data de entrada é obrigatória"),
+  total: yup
+    .number("")
+    .required("O total é obrigatório")
+    .min(0, "O valor não pode ser negativo"),
+  observacao: yup.string().nullable(),
+  observacaoInterna: yup.string().nullable(),
+});
