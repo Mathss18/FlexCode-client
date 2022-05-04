@@ -115,6 +115,7 @@ function EditarOrdensServicoPage() {
     {
       field: "quantidade",
       headerName: "Quantidade",
+      type: 'number',
       editable: true,
       sortable: false,
       flex: 1,
@@ -122,6 +123,7 @@ function EditarOrdensServicoPage() {
     {
       field: "preco",
       headerName: "Preço Unitário",
+      type: 'number',
       editable: true,
       sortable: false,
       flex: 1,
@@ -129,6 +131,7 @@ function EditarOrdensServicoPage() {
     {
       field: "total",
       headerName: "Total",
+      type: 'number',
       editable: false,
       sortable: false,
       flex: 1,
@@ -199,6 +202,7 @@ function EditarOrdensServicoPage() {
     {
       field: "quantidade",
       headerName: "Quantidade",
+      type: 'number',
       editable: true,
       sortable: false,
       flex: 1,
@@ -206,6 +210,7 @@ function EditarOrdensServicoPage() {
     {
       field: "preco",
       headerName: "Preço Unitário",
+      type: 'number',
       editable: true,
       sortable: false,
       flex: 1,
@@ -213,6 +218,7 @@ function EditarOrdensServicoPage() {
     {
       field: "total",
       headerName: "Total",
+      type: 'number',
       editable: false,
       sortable: false,
       flex: 1,

@@ -7,40 +7,36 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UploadIcon from '@mui/icons-material/Upload';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 import './drag.css';
-import { deleteFromArrayByIndex, moveObjectInArray } from '../utils/functions';
+import { deleteFromArrayByIndex, formatBytes, moveObjectInArray } from '../utils/functions';
 import { useRef } from 'react';
 import toast from 'react-hot-toast';
-import { Button } from '@material-ui/core';
+import { Button, List, ListItem, ListItemIcon, ListItemText, Tooltip } from '@material-ui/core';
 
-function DragAndDrop({ state, fileType }) {
+function DragAndDrop({ state, fileType, listFiles, listImages, maxSize = 5242880 }) {
   const [files, setFiles] = state; // Faz uma cópia do state passado, e quando se altera esse state, o state pai também é alterado
   const inputFileRef = useRef();
-  const isAllowedFileType = useRef(() => { });
-  
-  switch (fileType) {
-    case 'imagem':
-      isAllowedFileType.current = (file) => {
-        return file && file.type && file.type.match(/^image\//) && file.type != '';
-      }
-      break
-    case 'pdf':
-      isAllowedFileType.current = (file) => {
-        return file && file.type && file.type.match(/^application\/pdf/) && file.type != '';
-      }
-      break
-      case 'pdf3':
+  const isAllowedFileType = useRef(() => { return true });
+
+  if (fileType !== undefined) {
+    switch (fileType) {
+      case 'imagem':
+        isAllowedFileType.current = (file) => {
+          return file && file.type && file.type.match(/^image\//) && file.type != '';
+        }
+        break
+      case 'pdf':
         isAllowedFileType.current = (file) => {
           return file && file.type && file.type.match(/^application\/pdf/) && file.type != '';
         }
         break
-    default:
-      isAllowedFileType.current = (file) => {
-        return file && file.type && file.type.match(/^image\//) && file.type != '';
-      }
-      break
+      default:
+        return true;
+    }
   }
+
 
 
   function fileSelected(event) {
@@ -53,8 +49,13 @@ function DragAndDrop({ state, fileType }) {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        const foto = reader.result
-        const imagem = { nome:name, tamanho:size, foto:foto }
+        const url = reader.result
+        const imagem = { nome: name, tamanho: size, url: url }
+        if (imagem.tamanho > maxSize) {
+          toast.error(`O arquivo ${imagem.nome} é muito grande. O tamanho máximo é de ${formatBytes(maxSize)}`)
+          return;
+        }
+
         if (isAllowedFileType.current(file))
           setFiles((prevImages) => [...prevImages, imagem])
         else
@@ -74,14 +75,14 @@ function DragAndDrop({ state, fileType }) {
     setFiles([...newArray]);
   }
 
-  function deleteImage(index) {
+  function deleteFile(index) {
     let newArray = deleteFromArrayByIndex(files, index)
     setFiles([...newArray]);
   }
 
 
 
-  
+
   const dragEvents = {
     onDragEnter: (event) => {
       event.preventDefault()
@@ -102,8 +103,8 @@ function DragAndDrop({ state, fileType }) {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = () => {
-          const foto = reader.result
-          const imagem = { nome:name, tamanho:size, foto:foto }
+          const url = reader.result
+          const imagem = { nome: name, tamanho: size, url: url }
           if (isAllowedFileType.current(file))
             setFiles((prevImages) => [...prevImages, imagem])
           else
@@ -147,8 +148,7 @@ function DragAndDrop({ state, fileType }) {
         </div>
       </div>
 
-      <div className="imageList">
-
+      {listImages && (<div className="imageList">
 
         <ImageList
           sx={{
@@ -169,7 +169,7 @@ function DragAndDrop({ state, fileType }) {
                 <img
                   style={{ height: '100%' }}
                   className="imageItem"
-                  src={item.foto}
+                  src={item.url}
                   alt={item.nome}
                   loading="lazy"
                 />
@@ -177,7 +177,7 @@ function DragAndDrop({ state, fileType }) {
                   className="dragDropIconDelete"
                   fontSize="large"
                   sx={{ color: 'white' }}
-                  onClick={() => deleteImage(index)}
+                  onClick={() => deleteFile(index)}
                 />
                 <ImageListItemBar
                   sx={{
@@ -202,7 +202,37 @@ function DragAndDrop({ state, fileType }) {
           })}
         </ImageList>
 
-      </div>
+      </div>)}
+
+      {listFiles && (
+        <List style={{
+          display: 'flex',
+          flexDirection: 'row',
+          padding: 0,
+        }} dense={true}>
+          {files.map((item, index) => {
+            return (
+              <ListItem key={index}>
+                <Tooltip title="Clique para remover" arrow>
+                  <ListItemIcon
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => deleteFile(index)}
+                  >
+                    <AttachFileIcon
+                    />
+                  </ListItemIcon>
+                </Tooltip>
+                <ListItemText
+                  primary={item.nome}
+                  secondary={formatBytes(item.tamanho)}
+                />
+              </ListItem>
+            )
+          })}
+
+
+        </List>)}
+
 
 
     </div>

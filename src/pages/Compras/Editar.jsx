@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Grid,
   TextField,
@@ -27,25 +27,23 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
 import {
   deleteFromArrayByIndex,
+  getUniqueArrayOfObjectsByKey,
   isArrayEqual,
   objectToArray,
 } from "../../utils/functions";
-import { orcamentoValidation } from "../../validators/validationSchema";
 import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
 import { errorAlert, infoAlert, successAlert } from "../../utils/alert";
+import { useParams } from "react-router-dom";
+import { orcamentoValidation } from "../../validators/validationSchema";
 
 const initialValues = {
   numero: "",
   cliente_id: { label: "", value: null },
   transportadora_id: { label: "", value: null },
-  // funcionarios_id: [{ label: "", value: null }],
   produtos: [],
   servicos: [],
   situacao: 0,
   dataEntrada: moment().format("YYYY-MM-DD"),
-  // horaEntrada: new Date().toLocaleTimeString(),
-  // dataSaida: "",
-  // horaSaida: null,
   frete: 0,
   outros: 0,
   desconto: 0,
@@ -54,15 +52,17 @@ const initialValues = {
   observacaoInterna: "",
 };
 
-function CadastrarOrcamentosPage() {
+function EditarComprasPage() {
   const history = useHistory();
   const [clientes, setClientes] = useState([]);
-  const [transportadoras, setTransportadoras] = useState([]);
+  const [transportadoras, setTransportadoras] = useState([{}]);
   const [produtos, setProdutos] = useState([]);
   const [servicos, setServicos] = useState([]);
   const [rowsProdutos, setRowsProdutos] = useState([]);
   const [rowsServicos, setRowsServicos] = useState([]);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+  const { id } = useParams();
+  const fullScreenLoader = useFullScreenLoader();
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -82,8 +82,13 @@ function CadastrarOrcamentosPage() {
         <>
           <Autocomplete
             fullWidth
-            disableClearable={true}
             name="produto_id"
+            disableClearable={true}
+            value={
+              params.row.produto_id == ""
+                ? { label: "", value: null }
+                : { label: params.row.nome, value: params.row.produto_id }
+            }
             onChange={(event, value) => handleClienteChange(params, value)}
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
@@ -161,8 +166,13 @@ function CadastrarOrcamentosPage() {
         <>
           <Autocomplete
             fullWidth
-            disableClearable={true}
             name="servico_id"
+            disableClearable={true}
+            value={
+              params.row.servico_id == ""
+                ? { label: "", value: null }
+                : { label: params.row.nome, value: params.row.servico_id }
+            }
             onChange={(event, value) => handleServicoChange(params, value)}
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
@@ -229,6 +239,80 @@ function CadastrarOrcamentosPage() {
       ),
     },
   ];
+
+  useEffect(() => {
+    fullScreenLoader.setLoading(true);
+
+    api
+      .get("/orcamentos/" + id)
+      .then((response) => {
+        
+        if (response.data["data"].cliente_id) {
+          response.data["data"].cliente_id = {
+            value: response.data["data"].cliente.id,
+            label: response.data["data"].cliente.nome,
+          };
+        }
+
+        if (response.data["data"].transportadora_id) {
+          response.data["data"].transportadora_id = {
+            value: response.data["data"].transportadora.id,
+            label: response.data["data"].transportadora.nome,
+          };
+        }
+
+        const valuesToFillFormik = {
+          numero: response.data["data"].numero,
+          cliente_id: response.data["data"].cliente_id,
+          transportadora_id: response.data["data"].transportadora_id,
+          situacao: response.data["data"].situacao,
+          dataEntrada: response.data["data"].dataEntrada,
+          frete: response.data["data"].frete,
+          outros: response.data["data"].outros,
+          desconto: response.data["data"].desconto,
+          total: response.data["data"].total,
+          observacao: response.data["data"].observacao,
+          observacaoInterna: response.data["data"].observacaoInterna,
+        };
+        formik.setValues(valuesToFillFormik);
+
+        var prods = [];
+        response.data["data"].produtos.map((item, index) => {
+          console.log(item);
+          prods.push({
+            id: new Date().getTime() + index,
+            observacao: item.pivot.observacao,
+            preco: item.pivot.preco,
+            produto_id: item.pivot.produto_id,
+            quantidade: item.pivot.quantidade,
+            total: item.pivot.total,
+            nome: item.nome,
+          });
+        });
+        setRowsProdutos(prods);
+
+        var servs = [];
+        response.data["data"].servicos.map((item, index) => {
+          console.log(item);
+          servs.push({
+            id: new Date().getTime() + index,
+            observacao: item.pivot.observacao,
+            preco: item.pivot.preco,
+            servico_id: item.pivot.servico_id,
+            quantidade: item.pivot.quantidade,
+            total: item.pivot.total,
+            nome: item.nome,
+          });
+        });
+        setRowsServicos(servs);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
     api
@@ -304,32 +388,26 @@ function CadastrarOrcamentosPage() {
     formik.values.desconto,
   ]);
 
-  const fullScreenLoader = useFullScreenLoader();
-
   function handleOnSubmit(values) {
     if (rowsProdutos.length === 0 && rowsServicos.length === 0) {
       console.log(rowsProdutos.length);
-      formik.setSubmitting(false);
       errorAlert("É necessário adicionar pelo menos um produto ou serviço!");
       return;
     }
 
     if (rowsProdutos.find((produto) => produto.produto_id === "")) {
-      formik.setSubmitting(false);
       errorAlert(
         "Por favor, selecione um produto para cada linha de produtos!"
       );
       return;
     }
     if (rowsProdutos.find((produto) => produto.quantidade <= 0)) {
-      formik.setSubmitting(false);
       errorAlert(
         "Por favor, selecione uma quantidade válida para cada linha de produtos!"
       );
       return;
     }
     if (rowsProdutos.find((produto) => produto.preco < 0)) {
-      formik.setSubmitting(false);
       errorAlert(
         "Por favor, selecione uma preço válido para cada linha de produtos!"
       );
@@ -337,21 +415,18 @@ function CadastrarOrcamentosPage() {
     }
 
     if (rowsServicos.find((servico) => servico.servico_id === "")) {
-      formik.setSubmitting(false);
       errorAlert(
         "Por favor, selecione um serviço para cada linha de serviços!"
       );
       return;
     }
     if (rowsServicos.find((servico) => servico.preco < 0)) {
-      formik.setSubmitting(false);
       errorAlert(
         "Por favor, selecione uma preço válido para cada linha de serviços!"
       );
       return;
     }
     if (rowsServicos.find((servico) => servico.quantidade <= 0)) {
-      formik.setSubmitting(false);
       errorAlert(
         "Por favor, selecione uma quantidade válida para cada linha de serviços!"
       );
@@ -365,23 +440,25 @@ function CadastrarOrcamentosPage() {
     };
 
     fullScreenLoader.setLoading(true);
+
     api
-      .post("/orcamentos", params)
+      .put("/orcamentos/" + id, params)
       .then((response) => {
-        successAlert("Sucesso", "Orcamento Cadastrado", () =>
+        successAlert("Sucesso", "Orçamento Editado", () =>
           history.push("/orcamentos")
         );
       })
       .catch((error) => {
         infoAlert("Atenção", error.response.data.message);
       })
-      .finally(() => {
-        fullScreenLoader.setLoading(false);
-        formik.setSubmitting(false);
-      });
+      .finally(() => fullScreenLoader.setLoading(false));
   }
 
   function handleOnChange(name, value) {
+    if (name === "funcionarios_id") {
+      formik.setFieldValue(name, getUniqueArrayOfObjectsByKey(value, "value")); // Altera o formik
+      return;
+    }
     formik.setFieldValue(name, value); // Altera o formik
     console.log(formik.values);
   }
@@ -438,6 +515,7 @@ function CadastrarOrcamentosPage() {
 
   function handleClienteChange(params, value) {
     params.row.produto_id = value.value;
+    params.row.nome = value.label;
   }
 
   // ==== Funções de serviços ====
@@ -492,6 +570,7 @@ function CadastrarOrcamentosPage() {
 
   function handleServicoChange(params, value) {
     params.row.servico_id = value.value;
+    params.row.nome = value.label;
   }
 
   function calcularTotalFinal() {
@@ -561,7 +640,7 @@ function CadastrarOrcamentosPage() {
               />
             </Grid>
             <Grid item xs={4}>
-              <FormControl variant="outlined" fullWidth name="situacao">
+              <FormControl variant="outlined" fullWidth name="tipoCliente">
                 <InputLabel>Situação</InputLabel>
                 <Select
                   className={"input-select"}
@@ -917,4 +996,4 @@ function CadastrarOrcamentosPage() {
   );
 }
 
-export default CadastrarOrcamentosPage;
+export default EditarComprasPage;
