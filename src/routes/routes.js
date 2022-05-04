@@ -54,22 +54,26 @@ import EditarServicos from "../pages/Servicos/gerenciar-servicos/Editar";
 import ListarOrdensServicos from "../pages/OrdensServicos/Listar";
 import CadastrarOrdensServicoPage from "../pages/OrdensServicos/Cadastrar";
 import EditarOrdensServicoPage from "../pages/OrdensServicos/Editar";
+import ListarOrdensServicosFuncionariosPage from "../pages/OrdensServicos/OrdensServicosFuncionarios/Listar";
+import ListarOrdensServicosAcompanhamento from "../pages/OrdensServicos/OrdensServicosAcompanhamento/Listar";
+import OrdermServicoReport from "../reports/OrdensServicos/OrdermServicoReport";
 
 import ListarOrcamentosPage from "../pages/Orcamentos/Listar";
 import CadastrarOrcamentosPage from "../pages/Orcamentos/Cadastrar";
 import EditarOrcamentosPage from "../pages/Orcamentos/Editar";
+
+import ListarCompras from "../pages/Compras/Listar";
+import CadastrarComprasPage from "../pages/Compras/Cadastrar";
+import EditarComprasPage from "../pages/Compras/Editar";
 
 import PrivateRoutes from "./PrivateRoutes";
 import TopBar from "../components/TopBar";
 import SideMenu from "../components/SideMenu";
 import Chat from "../pages/Chat/Chat";
 import Ajuda from "../pages/Ajuda/Ajuda"
-import OrdermServicoReport from "../reports/OrdensServicos/OrdermServicoReport";
-import ListarOrdensServicosFuncionariosPage from "../pages/OrdensServicos/OrdensServicosFuncionarios/Listar";
-import ListarOrdensServicosAcompanhamento from "../pages/OrdensServicos/OrdensServicosAcompanhamento/Listar";
 import ThemeSelector from "../components/ThemeSelector";
 import OrcamentoReport from "../reports/Orcamentos/OrcamentoReport";
-import ListarPedidosCompras from "../pages/PedidosCompras/Listar";
+
 
 export default function Routes({themeSetter}) {
   return (
@@ -150,9 +154,9 @@ export default function Routes({themeSetter}) {
             <Route path="/orcamentos/novo" exact component={CadastrarOrcamentosPage}></Route>
             <Route path="/orcamentos/editar/:id" exact component={EditarOrcamentosPage} ></Route>
 
-            <Route path="/pedidos-compras" exact component={ListarPedidosCompras}></Route>
-            <Route path="/pedidos-compras/novo" exact component={CadastrarOrcamentosPage}></Route>
-            <Route path="/pedidos-compras/editar/:id" exact component={EditarOrcamentosPage} ></Route>
+            <Route path="/compras" exact component={ListarCompras}></Route>
+            <Route path="/compras/novo" exact component={CadastrarComprasPage}></Route>
+            <Route path="/compras/editar/:id" exact component={EditarComprasPage} ></Route>
 
 
 

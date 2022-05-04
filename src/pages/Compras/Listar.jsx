@@ -12,9 +12,9 @@ import api from "../../services/api";
 import moment from "moment";
 
 
-function ListarPedidosCompras() {
+function ListarCompras() {
   const history = useHistory();
-  const [pedidosCompras, setPedidosCompras] = useState([]);
+  const [compras, setCompras] = useState([]);
   const fullScreenLoader = useFullScreenLoader();
   const columns = [
     {
@@ -46,34 +46,34 @@ function ListarPedidosCompras() {
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/pedidos-compras/editar/" + id)
+    history.push("/compras/editar/" + id)
   }
 
   function handleOnClickPdfButton(event, item) {
     const BASE_URL = window.location.origin;
     const data = btoa(JSON.stringify(item));
-    localStorage.setItem("pedidoCompraReport", data);
+    localStorage.setItem("compraReport", data);
 
-    window.open(`${BASE_URL}/pedidos-compras/relatorio`, '_blank');
+    window.open(`${BASE_URL}/compras/relatorio`, '_blank');
   }
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
-    api.get('/pedidos-compras')
+    api.get('/compras')
       .then((response) => {
         response.data['data'].forEach(element => {
           if (element['situacao'] === 0) {
-            element['situacao'] = "Aberto"
+            element['situacao'] = "Aberta"
           }
           else if (element['situacao'] === 1) {
-            element['situacao'] = "Aprovado"
+            element['situacao'] = "Recebida"
           }
           else if (element['situacao'] === 2) {
-            element['situacao'] = "Reprovado"
+            element['situacao'] = "Cancelada"
           }
           var array = [
             element['numero'],
-            element['cliente']['nome'],
+            element['fornecedor']['nome'],
             element['situacao'],
             moment(element["dataEntrada"]).format('DD/MM/YYYY'),
             <>
@@ -89,7 +89,7 @@ function ListarPedidosCompras() {
 
 
         });
-        setPedidosCompras(data)
+        setCompras(data)
 
       })
       .finally(() => {
@@ -100,10 +100,10 @@ function ListarPedidosCompras() {
 
   return (
     <>
-        <Button onClick={() => history.push("/pedidos-compras/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
+        <Button onClick={() => history.push("/compras/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
         <MUIDataTable
-          title={"Lista de Pedidos de Compras"}
-          data={pedidosCompras}
+          title={"Lista de Compras"}
+          data={compras}
           columns={columns}
           options={config}
           className={'table-background'}
@@ -112,4 +112,4 @@ function ListarPedidosCompras() {
   );
 }
 
-export default ListarPedidosCompras;
+export default ListarCompras;
