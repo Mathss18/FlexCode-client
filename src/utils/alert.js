@@ -61,7 +61,7 @@ export function errorAlert(title='Erro', text='',callback=()=>{}){
         html: text,
         position: 'center',
         icon: 'error',
-        timer: 5000,
+        timer: 15000,
         timerProgressBar: true,
     }).then((result) => {
         if (result.dismiss === Swal.DismissReason.timer) {

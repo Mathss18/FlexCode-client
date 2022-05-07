@@ -1,8 +1,8 @@
 export const initialValues = {
     nome: "",
     codigoInterno: "",
-    grupo_produto_id: null,
-    unidade_produto_id: null,
+    grupo_produto_id: '',
+    unidade_produto_id: '',
     movimentaEstoque: false,
     habilitaNotaFiscal: false,
     codigoBarras: "",
@@ -33,6 +33,6 @@ export const initialValues = {
     valorFixoCofins: '',
     valorFixoCofinsSt: '',
     porcentagem_lucro_produto: [],
-    cliente_id: null,
+    cliente_id: '',
     fornecedores_id: []
   };

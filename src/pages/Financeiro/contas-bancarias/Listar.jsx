@@ -11,14 +11,14 @@ import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 
 
-function ListarPorcentagensLucros() {
+function ListarContasBancariasPage() {
   const columns = [
     {
-      name: "Descrição",
+      name: "Nome",
       options: rowConfig,
     },
     {
-      name: "Porcentagem",
+      name: "Saldo",
       options: rowConfig,
     },
     {
@@ -29,29 +29,29 @@ function ListarPorcentagensLucros() {
 
   const data = [];
   
-  const [porcentagensLucros, setPorcentagensLucros] = useState([]);
+  const [contasBancarias, setContasBancarias] = useState([]);
   const history = useHistory();
   const fullScreenLoader = useFullScreenLoader();
 
   function handleOnClickShowButton(event, id) {
-    history.push("/porcentagens-lucros/mostrar/" + id);
+    history.push("/contas-bancarias/mostrar/" + id);
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/porcentagens-lucros/editar/" + id);
+    history.push("/contas-bancarias/editar/" + id);
   }
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
 
     api
-      .get("/porcentagens-lucros")
+      .get("/contas-bancarias")
       .then((response) => {
         if (response != undefined) {
           response.data["data"].forEach((element) => {
             var array = [
-              element["descricao"],
-              element["porcentagem"],
+              element["nome"],
+              `R$: ${element['saldo'].toFixed(2)}`,
               <>
                 {/* <SearchIcon
                   className={"btn-lista"}
@@ -70,7 +70,7 @@ function ListarPorcentagensLucros() {
             data.push(array);
           });
 
-          setPorcentagensLucros(data);
+          setContasBancarias(data);
         }
       })
       .catch((error) => {
@@ -84,7 +84,7 @@ function ListarPorcentagensLucros() {
   return (
     <>
       <Button
-        onClick={() => history.push("/porcentagens-lucros/novo")}
+        onClick={() => history.push("/contas-bancarias/novo")}
         variant="outlined"
         startIcon={<AddIcon />}
         className={"btn btn-primary btn-spacing"}
@@ -93,8 +93,8 @@ function ListarPorcentagensLucros() {
       </Button>
 
       <MUIDataTable
-        title={"Lista de porcentagens de lucros"}
-        data={porcentagensLucros}
+        title={"Lista de contas bancárias"}
+        data={contasBancarias}
         columns={columns}
         options={config}
         className={"table-background"}
@@ -103,4 +103,4 @@ function ListarPorcentagensLucros() {
   );
 }
 
-export default ListarPorcentagensLucros;
+export default ListarContasBancariasPage;

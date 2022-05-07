@@ -63,8 +63,7 @@ function ListarGruposDeProdutos() {
                 <Chip
                   className="table-tag"
                   label={item.descricao + " " + item.porcentagem + "%"}
-                  color="primary"
-                  variant="outlined"
+                  color="secondary"
                 />
               );
             }),

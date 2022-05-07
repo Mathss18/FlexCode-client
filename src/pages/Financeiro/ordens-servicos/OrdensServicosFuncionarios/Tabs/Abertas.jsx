@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
-import api from "../../../../services/api";
-import { config, rowConfig } from "../../../../config/tablesConfig";
-import { useFullScreenLoader } from "../../../../context/FullScreenLoaderContext";
+import { useHistory } from "react-router-dom";
+import api from "../../../../../services/api";
+
+import { useFullScreenLoader } from "../../../../../context/FullScreenLoaderContext";
 import CheckIcon from "@mui/icons-material/Check";
 import moment from "moment";
-import FullScreenDialog from "../../../../components/dialog/FullScreenDialog";
+import FullScreenDialog from "../../../../../components/dialog/FullScreenDialog";
 import {
   AppBar,
   Avatar,
@@ -23,12 +24,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useParams } from "react-router-dom";
 import BubbleChartIcon from "@mui/icons-material/BubbleChart";
 import PhotoIcon from "@mui/icons-material/Photo";
-import BuildIcon from '@mui/icons-material/Build';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { confirmAlert } from "../../../../utils/alert";
+import BuildIcon from "@mui/icons-material/Build";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { config, rowConfig } from "../../../../../config/tablesConfig";
+import { confirmAlert, infoAlert } from "../../../../../utils/alert";
 
-export function Finalizadas() {
+export function Abertas() {
   const { idUsuario } = useParams();
+  const history = useHistory();
   const [ordensServicosFuncionarios, setOrdensServicosFuncionarios] = useState(
     []
   );
@@ -66,43 +69,78 @@ export function Finalizadas() {
     setOpen(true);
   }
 
-  function search(){
+  function handleOnClickEditButton(event, element) {
+    confirmAlert(
+      "Deseja iniciar essa tarefa?",
+      "Após iniciar, não será possivel desfazer essa ação",
+      () => moveToFazendo(element)
+    );
+  }
+
+  function moveToFazendo(element) {
+    fullScreenLoader.setLoading(true);
     api
-    .get("/ordens-servicos-funcionarios/" + idUsuario + "/finalizadas")
-    .then((response) => {
-      response.data["data"].forEach((element) => {
-        var array = [
-          element["ordem_servico"].numero,
-          element["ordem_servico"].cliente.nome,
-          moment(element["ordem_servico"].dataEntrada).format("DD/MM/YYYY") +
-            " " +
-            element["ordem_servico"].horaEntrada,
-          moment(element["ordem_servico"].dataSaida).format("DD/MM/YYYY") +
-            " " +
-            element["ordem_servico"].horaSaida,
-          <>
-            <MoreHorizIcon
-              className={"btn btn-lista"}
-              onClick={(event) => {
-                handleOnClickShowButton(event, element);
-              }}
-            />
-          </>,
-        ];
-        data.push(array);
+      .put("/ordens-servicos-funcionarios/" + element.id, {
+        ...element,
+        status: 1,
+        dataFinalizado: moment().format("YYYY-MM-DD"),
+      })
+      .then((response) => {
+        search();
+      })
+      .catch((error) => {
+        infoAlert("Atenção", error.response.data.message);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
       });
-      setOrdensServicosFuncionarios(data);
-    })
-    .finally(() => {
-      fullScreenLoader.setLoading(false);
-    });
+  }
+
+  function search() {
+    fullScreenLoader.setLoading(true);
+    api
+      .get("/ordens-servicos-funcionarios/" + idUsuario + "/abertas")
+      .then((response) => {
+        response.data["data"].forEach((element) => {
+          var array = [
+            element["ordem_servico"].numero,
+            element["ordem_servico"].cliente.nome,
+            moment(element["ordem_servico"].dataEntrada).format("DD/MM/YYYY") +
+              " " +
+              element["ordem_servico"].horaEntrada,
+            moment(element["ordem_servico"].dataSaida).format("DD/MM/YYYY") +
+              " " +
+              element["ordem_servico"].horaSaida,
+            <>
+              <MoreHorizIcon
+                className={"btn btn-lista"}
+                onClick={(event) => {
+                  handleOnClickShowButton(event, element);
+                }}
+              />
+              <CheckIcon
+                className={"btn btn-lista"}
+                onClick={(event) => handleOnClickEditButton(event, element)}
+              />
+            </>,
+          ];
+          data.push(array);
+        });
+        console.log(response.data["data"], data);
+        setOrdensServicosFuncionarios(data);
+
+        if(response.data["data"].length === 0){
+            setOrdensServicosFuncionarios([]);
+        }
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      });
   }
 
   useEffect(() => {
-    fullScreenLoader.setLoading(true);
     search();
   }, []);
-
 
   const DialogHeader = () => {
     return (
@@ -132,9 +170,10 @@ export function Finalizadas() {
       <div>
         <List>
           <h3 style={{ textAlign: "center" }}>Produtos</h3>
-          {dados["ordem_servico"].produtos.map((element) => {
+          {dados["ordem_servico"].produtos.map((element, index) => {
             return (
               <ListItem
+                key={index}
                 button
                 secondaryAction={
                   <IconButton edge="end" aria-label="delete">
@@ -165,9 +204,10 @@ export function Finalizadas() {
 
         <List>
           <h3 style={{ textAlign: "center" }}>Serviços</h3>
-          {dados["ordem_servico"].servicos.map((element) => {
+          {dados["ordem_servico"].servicos.map((element, index) => {
             return (
               <ListItem
+                key={index}
                 button
                 secondaryAction={
                   <IconButton edge="end" aria-label="delete">
@@ -214,7 +254,7 @@ export function Finalizadas() {
       />
 
       <MUIDataTable
-        title={"Minhas Ordens de Serviços - Finalizadas"}
+        title={"Minhas Ordens de Serviços - Abertas"}
         data={ordensServicosFuncionarios}
         columns={columns}
         options={config}

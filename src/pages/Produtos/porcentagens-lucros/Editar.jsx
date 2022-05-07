@@ -4,7 +4,7 @@ import {
   Divider,
   Button,
 } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import api from "../../../services/api";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
@@ -12,6 +12,7 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 import { useFormik } from "formik";
 import { porcentagemLucroValidation } from "../../../validators/validationSchema";
 import { infoAlert, successAlert } from "../../../utils/alert";
+import { useEffect } from "react";
 
 const initialValues = {
   descricao: "",
@@ -19,8 +20,9 @@ const initialValues = {
   favorito: true,
 };
 
-function CadastrarPorcentagensLucros() {
+function EditarPorcentagensLucros() {
   const history = useHistory();
+  const {id} = useParams();
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -30,11 +32,22 @@ function CadastrarPorcentagensLucros() {
     validationSchema: porcentagemLucroValidation,
   });
 
+  useEffect(() => {
+    api
+      .get("/porcentagens-lucros/" + id)
+      .then((response) => {
+        formik.setValues(response.data["data"]);
+      })
+      .catch((error) => {
+        console.log("Erro:" + error);
+      });
+  }, []);
+
   function handleOnSubmit(values) {
     api
-      .post("/porcentagens-lucros", values)
+      .put("/porcentagens-lucros/" + id, values)
       .then((response) => {
-        successAlert("Sucesso", "Porcentagens de Lucros Cadastrada", () =>
+        successAlert("Sucesso", "Porcentagens de Lucros Editada", () =>
           history.push("/porcentagens-lucros")
         );
       })
@@ -120,4 +133,4 @@ function CadastrarPorcentagensLucros() {
   );
 }
 
-export default CadastrarPorcentagensLucros;
+export default EditarPorcentagensLucros;

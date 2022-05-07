@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
-import DashboardCard from "../components/DashboardCard";
-import DashboardChart from "../components/DashboardChart";
+import DashboardCard from "../components/dashboard//DashboardCard";
+import DashboardChart from "../components/dashboard/DashboardChart";
 
 const useStyles = makeStyles((theme) => ({
   card_conteiner: {

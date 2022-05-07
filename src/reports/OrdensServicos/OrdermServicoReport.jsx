@@ -5,7 +5,7 @@ import moment from "moment";
 import { Fab } from "@material-ui/core";
 import PrintIcon from "@mui/icons-material/Print";
 import { QRCodeSVG } from "qrcode.react";
-import { encrypt } from "../../utils/ctypto";
+import { encrypt } from "../../utils/crypto";
 
 export default function OrdermServicoReport(texto) {
   const BASE_URL = window.location.origin;

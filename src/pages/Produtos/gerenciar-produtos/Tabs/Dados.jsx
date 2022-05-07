@@ -12,18 +12,14 @@ import {
 } from "@material-ui/core";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
 import { useParams } from "react-router-dom";
-import { initialValues } from "../../../../constants/produtosInitialValues";
 
 export function Dados() {
   const produtoContext = useProdutoContext();
   const [grupoProdutos, setGrupoProdutos] = useState([]);
-  const parametros = useParams();
 
   function handleOnChange(event) {
     const { name, value } = event.target;
-    produtoContext.useValues.setValues({ ...produtoContext.useValues.values, [name]: value }); // Altera o State 
     produtoContext.formik.setFieldValue(name, value); // Altera o formik
-    console.log(produtoContext.formik.values);
   }
 
   useEffect(() => {
@@ -35,15 +31,6 @@ export function Dados() {
       .catch((error) => {
         console.log("Erro:" + error);
       });
-  }, []);
-
-  useEffect(() => {
-
-    produtoContext.useValues.setValues(initialValues); // Reseta o State 
-    produtoContext.formik.resetForm(); // Reseta o formik
-
-
-
   }, []);
 
   return (
@@ -58,7 +45,7 @@ export function Dados() {
             variant="outlined"
             label="Nome do produto *"
             fullWidth
-            value={produtoContext.useValues.values.nome}
+            value={produtoContext.formik.values.nome}
             name="nome"
             onChange={handleOnChange}
             onBlur={produtoContext.formik.handleBlur}
@@ -71,7 +58,7 @@ export function Dados() {
             variant="outlined"
             label="Código interno *"
             fullWidth
-            value={produtoContext.useValues.values.codigoInterno}
+            value={produtoContext.formik.values.codigoInterno}
             name="codigoInterno"
             onChange={handleOnChange}
             onBlur={produtoContext.formik.handleBlur}
@@ -86,7 +73,7 @@ export function Dados() {
               className={"input-select"}
               label="Grupo de Produtos *"
               name="grupo_produto_id"
-              value={produtoContext.useValues.values.grupo_produto_id}
+              value={produtoContext.formik.values.grupo_produto_id}
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
               error={produtoContext.formik.touched.grupo_produto_id && Boolean(produtoContext.formik.errors.grupo_produto_id)}
@@ -110,7 +97,7 @@ export function Dados() {
               className={"input-select"}
               label="Movimenta Estoque? *"
               name="movimentaEstoque"
-              value={produtoContext.useValues.values.movimentaEstoque}
+              value={produtoContext.formik.values.movimentaEstoque}
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
               error={produtoContext.formik.touched.movimentaEstoque && Boolean(produtoContext.formik.errors.movimentaEstoque)}
@@ -131,7 +118,7 @@ export function Dados() {
               className={"input-select"}
               label="Habilitar Nota Fiscal?"
               name="habilitaNotaFiscal"
-              value={produtoContext.useValues.values.habilitaNotaFiscal}
+              value={produtoContext.formik.values.habilitaNotaFiscal}
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
               error={produtoContext.formik.touched.habilitaNotaFiscal && Boolean(produtoContext.formik.errors.habilitaNotaFiscal)}
@@ -150,7 +137,7 @@ export function Dados() {
             variant="outlined"
             label="Código de Barras"
             fullWidth
-            value={produtoContext.useValues.values.codigoBarras}
+            value={produtoContext.formik.values.codigoBarras}
             name="codigoBarras"
             onChange={handleOnChange}
             onBlur={produtoContext.formik.handleBlur}

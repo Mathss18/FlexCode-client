@@ -10,7 +10,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 import './drag.css';
-import { deleteFromArrayByIndex, formatBytes, moveObjectInArray } from '../utils/functions';
+import { deleteFromArrayByIndex, formatBytes, moveObjectInArray } from '../../utils/functions';
 import { useRef } from 'react';
 import toast from 'react-hot-toast';
 import { Button, List, ListItem, ListItemIcon, ListItemText, Tooltip } from '@material-ui/core';
@@ -75,9 +75,24 @@ function DragAndDrop({ state, fileType, listFiles, listImages, maxSize = 5242880
     setFiles([...newArray]);
   }
 
-  function deleteFile(index) {
+  function deleteFile(index,event) {
+    event.stopPropagation();
     let newArray = deleteFromArrayByIndex(files, index)
     setFiles([...newArray]);
+  }
+
+  function openFileInNewTab(item) {
+    if(item.hasOwnProperty('url'))
+      window.open(item.url, '_blank');
+    else if(item.hasOwnProperty('anexo')){
+      window.open(item.anexo, '_blank');
+    }
+    else if(item.hasOwnProperty('foto')){
+      window.open(item.foto, '_blank');
+    }
+    else{
+      toast.error('Não foi possível abrir o arquivo')
+    }
   }
 
 
@@ -177,7 +192,7 @@ function DragAndDrop({ state, fileType, listFiles, listImages, maxSize = 5242880
                   className="dragDropIconDelete"
                   fontSize="large"
                   sx={{ color: 'white' }}
-                  onClick={() => deleteFile(index)}
+                  onClick={(event) => deleteFile(index, event)}
                 />
                 <ImageListItemBar
                   sx={{
@@ -209,24 +224,35 @@ function DragAndDrop({ state, fileType, listFiles, listImages, maxSize = 5242880
           display: 'flex',
           flexDirection: 'row',
           padding: 0,
+          gap: 18
         }} dense={true}>
           {files.map((item, index) => {
             return (
-              <ListItem key={index}>
-                <Tooltip title="Clique para remover" arrow>
-                  <ListItemIcon
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => deleteFile(index)}
-                  >
-                    <AttachFileIcon
-                    />
-                  </ListItemIcon>
-                </Tooltip>
-                <ListItemText
-                  primary={item.nome}
-                  secondary={formatBytes(item.tamanho)}
-                />
-              </ListItem>
+              <Tooltip title="Clique para visualizar" arrow>
+                <ListItem
+                  onClick={() => openFileInNewTab(item)}
+                  key={index}
+                  style={{
+                    cursor: 'pointer',
+                    border: '2px solid grey',
+                    borderRadius: 100,
+                  }}>
+                  <Tooltip title="Clique para remover" arrow>
+                    <ListItemIcon
+                      style={{ cursor: 'pointer' }}
+                      onClick={(event) => deleteFile(index,event)}
+                    >
+                      <AttachFileIcon
+                      />
+                    </ListItemIcon>
+                  </Tooltip>
+                  <ListItemText
+                    primary={item.nome}
+                    secondary={formatBytes(item.tamanho)}
+                  />
+                </ListItem>
+              </Tooltip>
+
             )
           })}
 

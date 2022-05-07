@@ -22,7 +22,6 @@ function GerenciarProdutosContextProvider(props) {
   return (
     <GerenciarProdutosContext.Provider value={
       {
-        useValues: {values, setValues},
         formik: formik
       }
     }>

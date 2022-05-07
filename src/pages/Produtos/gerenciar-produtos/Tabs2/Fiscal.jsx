@@ -8,17 +8,12 @@ export function Fiscal() {
 
   function handleOnChange(event) {
     const { name, value } = event.target;
-    produtoContext.useValues.setValues({
-      ...produtoContext.useValues.values,
-      [name]: value,
-    }); // Altera o State
     produtoContext.formik.setFieldValue(name, value); // Altera o formik
-    console.log(produtoContext.formik.values);
   }
 
   return (
     <>
-      {produtoContext.useValues.values.habilitaNotaFiscal ? (
+      {produtoContext.formik.values.habilitaNotaFiscal ? (
         ""
       ) : (
         <h2 style={{ textAlign: "center" }}>
@@ -27,7 +22,7 @@ export function Fiscal() {
       )}
       <div
         style={{
-          display: produtoContext.useValues.values.habilitaNotaFiscal
+          display: produtoContext.formik.values.habilitaNotaFiscal
             ? "block"
             : "none",
         }}
@@ -44,7 +39,7 @@ export function Fiscal() {
               variant="outlined"
               label="NCM"
               fullWidth
-              value={produtoContext.useValues.values.ncm}
+              value={produtoContext.formik.values.ncm}
               name="ncm"
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
@@ -63,7 +58,7 @@ export function Fiscal() {
               variant="outlined"
               label="CEST"
               fullWidth
-              value={produtoContext.useValues.values.cest}
+              value={produtoContext.formik.values.cest}
               name="cest"
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
@@ -82,7 +77,7 @@ export function Fiscal() {
               variant="outlined"
               label="Origem"
               fullWidth
-              value={produtoContext.useValues.values.origem}
+              value={produtoContext.formik.values.origem}
               name="origem"
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
@@ -101,7 +96,7 @@ export function Fiscal() {
               variant="outlined"
               label="Peso líquido"
               fullWidth
-              value={produtoContext.useValues.values.pesoLiquido}
+              value={produtoContext.formik.values.pesoLiquido}
               name="pesoLiquido"
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
@@ -120,7 +115,7 @@ export function Fiscal() {
               variant="outlined"
               label="Peso bruto"
               fullWidth
-              value={produtoContext.useValues.values.pesoBruto}
+              value={produtoContext.formik.values.pesoBruto}
               name="pesoBruto"
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
@@ -139,7 +134,7 @@ export function Fiscal() {
               variant="outlined"
               label="Número FCI"
               fullWidth
-              value={produtoContext.useValues.values.numeroFci}
+              value={produtoContext.formik.values.numeroFci}
               name="numeroFci"
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
@@ -158,7 +153,7 @@ export function Fiscal() {
               variant="outlined"
               label="% Vr. aprox. tribut."
               fullWidth
-              value={produtoContext.useValues.values.valorAproxTribut}
+              value={produtoContext.formik.values.valorAproxTribut}
               name="valorAproxTribut"
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
@@ -187,7 +182,7 @@ export function Fiscal() {
               variant="outlined"
               label="Valor fixo PIS"
               fullWidth
-              value={produtoContext.useValues.values.valorPixoPis}
+              value={produtoContext.formik.values.valorPixoPis}
               name="valorPixoPis"
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
@@ -206,7 +201,7 @@ export function Fiscal() {
               variant="outlined"
               label="Valor fixo PIS ST"
               fullWidth
-              value={produtoContext.useValues.values.valorFixoPisSt}
+              value={produtoContext.formik.values.valorFixoPisSt}
               name="valorFixoPisSt"
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
@@ -225,7 +220,7 @@ export function Fiscal() {
               variant="outlined"
               label="Valor fixo COFINS"
               fullWidth
-              value={produtoContext.useValues.values.valorFixoCofins}
+              value={produtoContext.formik.values.valorFixoCofins}
               name="valorFixoCofins"
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
@@ -244,7 +239,7 @@ export function Fiscal() {
               variant="outlined"
               label="Valor fixo COFINS ST"
               fullWidth
-              value={produtoContext.useValues.values.valorFixoCofinsSt}
+              value={produtoContext.formik.values.valorFixoCofinsSt}
               name="valorFixoCofinsSt"
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
