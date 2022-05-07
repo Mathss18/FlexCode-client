@@ -6,15 +6,16 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import SearchIcon from '@material-ui/icons/Search';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import { config, rowConfig } from "../../config/tablesConfig";
-import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
-import api from "../../services/api";
+import { config, rowConfig } from "../../../config/tablesConfig";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
+import api from "../../../services/api";
 import moment from "moment";
+import { Chip } from "@mui/material";
 
 
-function ListarOrcamentos() {
+function ListarVendas() {
   const history = useHistory();
-  const [orcamentos, setOrcamentos] = useState([]);
+  const [vendas, setVendas] = useState([]);
   const fullScreenLoader = useFullScreenLoader();
   const columns = [
     {
@@ -27,6 +28,10 @@ function ListarOrcamentos() {
     },
     {
       name: 'Situacao',
+      options: rowConfig
+    },
+    {
+      name: 'Valor da compra',
       options: rowConfig
     },
     {
@@ -46,35 +51,42 @@ function ListarOrcamentos() {
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/orcamentos/editar/" + id)
+    history.push("/vendas/editar/" + id)
   }
 
   function handleOnClickPdfButton(event, item) {
     const BASE_URL = window.location.origin;
     const data = btoa(JSON.stringify(item));
-    localStorage.setItem("orcamentoReport", data);
+    localStorage.setItem("compraReport", data);
 
-    window.open(`${BASE_URL}/orcamentos/relatorio`, '_blank');
+    window.open(`${BASE_URL}/vendas/relatorio`, '_blank');
   }
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
-    api.get('/orcamentos')
+    api.get('/vendas')
       .then((response) => {
         response.data['data'].forEach(element => {
           if (element['situacao'] === 0) {
-            element['situacao'] = "Aberto"
+            element['situacao'] = "Aberta"
           }
           else if (element['situacao'] === 1) {
-            element['situacao'] = "Aprovado"
+            element['situacao'] = "Realizada"
           }
           else if (element['situacao'] === 2) {
-            element['situacao'] = "Reprovado"
+            element['situacao'] = "Cancelada"
           }
           var array = [
             element['numero'],
             element['cliente']['nome'],
-            element['situacao'],
+            <Chip
+                  className="table-tag"
+                  label={element['situacao']}
+                  color={element['situacao'] === "Aberta" ? "primary" : element['situacao'] === "Realizada" ? "secondary" : "error"}
+                  size="small"
+                  style={{width: "90px"}}
+            />,
+            `R$: ${element['total'].toFixed(2)}`,
             moment(element["dataEntrada"]).format('DD/MM/YYYY'),
             <>
               <Tooltip title={'Baixar PDF'} arrow>
@@ -89,7 +101,7 @@ function ListarOrcamentos() {
 
 
         });
-        setOrcamentos(data)
+        setVendas(data)
 
       })
       .finally(() => {
@@ -100,10 +112,10 @@ function ListarOrcamentos() {
 
   return (
     <>
-        <Button onClick={() => history.push("/orcamentos/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
+        <Button onClick={() => history.push("/vendas/novo")} variant="outlined" startIcon={<AddIcon />} className={'btn btn-primary btn-spacing'}>Adicionar</Button>
         <MUIDataTable
-          title={"Lista de Orçamentos"}
-          data={orcamentos}
+          title={"Lista de Vendas"}
+          data={vendas}
           columns={columns}
           options={config}
           className={'table-background'}
@@ -112,4 +124,4 @@ function ListarOrcamentos() {
   );
 }
 
-export default ListarOrcamentos;
+export default ListarVendas;

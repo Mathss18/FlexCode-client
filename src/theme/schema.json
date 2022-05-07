@@ -5,20 +5,21 @@
       "id": "T_001",
       "name": "Light",
       "colors": {
-        "body": "#e9e8ec",
+        "body": "#f3f8fd",
         "text": "#000000",
         "border": "#e0e0e0",
         "input": {
           "border": "#e0e0e0",
           "background": "#FFFFFF",
-          "text": "#000000"
+          "text": "#000000",
+          "label": "#CCCCCC"
         },
         "topbar": {
-          "background": "#FFFFFF",
+          "background": "#FFF",
           "text": "#757575"
         },
         "sidemenu": {
-          "background": "#FFFFFF",
+          "background": "#FFF",
           "text": "#757575"
         },
         "button": {
@@ -89,6 +90,12 @@
               "text": "#000000",
               "hover": "#e0e0e0"
             },
+            "entrada":{
+              "background": "#8fd0b5"
+            },
+            "saida":{
+              "background": "#fbb0b0"
+            },
             "background": "#FFFFFF",
             "text": "#000000"
           }
@@ -126,6 +133,17 @@
         "toast":{
           "background":"#363636",
           "text":"#ffffff"
+        },
+        "chip": {
+          "primary": {
+            "background": "#2e7d32"
+          },
+          "secondary": {
+            "background": "#1976d2"
+          },
+          "error": {
+            "background": "#c55959"
+          }
         }
       },
       "font": "Roboto"
@@ -141,7 +159,8 @@
         "input": {
           "border": "#e0e0e0",
           "background": "#44454e",
-          "text": "#b4b5b8"
+          "text": "#F4F4F4",
+          "label": "#b4b5b8"
         },
         "topbar": {
           "background": "#2d3035",
@@ -219,6 +238,12 @@
               "text": "#e6e6e7",
               "hover": "#26292d"
             },
+            "entrada":{
+              "background": "#3d895d"
+            },
+            "saida":{
+              "background": "#984a4a"
+            },
             "background": "#FFFFFF",
             "text": "#000000"
           }
@@ -252,6 +277,17 @@
             }
           }
           
+        },
+        "chip": {
+          "primary": {
+            "background": "#2e7d32"
+          },
+          "secondary": {
+            "background": "#1976d2"
+          },
+          "error": {
+            "background": "#c55959"
+          }
         },
         "toast":{
           "background":"#363636",

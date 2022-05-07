@@ -7,8 +7,8 @@ import { Autocomplete } from "@mui/material";
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { useHistory, useParams } from "react-router-dom";
-import { getUniqueArrayOfObjectsByKey } from "../../../../utils/functions";
-import { infoAlert, successAlert } from "../../../../utils/alert";
+import { getUniqueArrayOfObjectsByKey, objectToArray } from "../../../../utils/functions";
+import { errorAlert, infoAlert, successAlert } from "../../../../utils/alert";
 
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -21,7 +21,43 @@ export function Fornecedores() {
   const history = useHistory();
   const { id } = useParams();
 
+  function canSubmit(){
+    var errorsMessages = '';
+    produtoContext.formik.setSubmitting(true);
+    objectToArray(produtoContext.formik.errors).forEach((item)=>{
+      errorsMessages += '• '+item + '<br>';
+    })
+    if(produtoContext.formik.values.movimentaEstoque ){
+      if(produtoContext.formik.values.estoqueMaximo === '' || produtoContext.formik.values.estoqueMinimo === ''){
+        errorsMessages += '• '+"Para movimentar o estoque, é necessário informar o estoque mínimo e máximo!" + '<br>';
+        produtoContext.formik.setSubmitting(false)
+      }
+      if(produtoContext.formik.values.estoqueMinimo > produtoContext.formik.values.estoqueMaximo){
+        errorsMessages += '• '+"O estoque mínimo não pode ser maior que o estoque máximo!" + '<br>';
+        produtoContext.formik.setSubmitting(false)
+      }
+      if(produtoContext.formik.values.estoqueMinimo === produtoContext.formik.values.estoqueMaximo){
+        errorsMessages += '• '+"O estoque mínimo não pode ser igual ao estoque máximo!" + '<br>';
+        produtoContext.formik.setSubmitting(false)
+      }
+      if(produtoContext.formik.values.unidade_produto_id === ''){
+        errorsMessages += '• '+"Para movimentar o estoque, é necessário informar a unidade do produto!" + '<br>';
+        produtoContext.formik.setSubmitting(false)
+      }
+    }
+
+    if(errorsMessages.length > 0){
+      console.log(errorsMessages)
+      errorAlert("Atenção", errorsMessages);
+      produtoContext.formik.setSubmitting(false)
+      return false;
+    }
+    return true;
+  }
+
   function handleEditarProduto() {
+    if(!canSubmit()) return;
+
     api.put("/produtos/"+id, produtoContext.formik.values)
     .then(response => {
       successAlert("Sucesso", "Produto editado com sucesso!", () => {
@@ -38,12 +74,11 @@ export function Fornecedores() {
   useEffect(() => {
     var soma =
       (
-        parseFloat(...[produtoContext.useValues.values.valorCusto]) +
-        parseFloat(...[produtoContext.useValues.values.despesasAdicionais]) +
-        parseFloat(...[produtoContext.useValues.values.outrasDespesas])
+        parseFloat(...[produtoContext.formik.values.valorCusto]) +
+        parseFloat(...[produtoContext.formik.values.despesasAdicionais]) +
+        parseFloat(...[produtoContext.formik.values.outrasDespesas])
       ).toFixed(4)
 
-    produtoContext.useValues.setValues({ ...produtoContext.formik.values, custoFinal: soma }); // Altera o State
     produtoContext.formik.setFieldValue('custoFinal', soma); // Altera o formik
 
   }, []);
@@ -78,15 +113,11 @@ export function Fornecedores() {
 
   function handleOnChange(name, value) {
     if(name === "fornecedores_id"){
-      produtoContext.useValues.setValues({ ...produtoContext.useValues.values, [name]: getUniqueArrayOfObjectsByKey(value, 'value') }); // Altera o State 
       produtoContext.formik.setFieldValue(name, getUniqueArrayOfObjectsByKey(value, 'value')); // Altera o formik
     }
     else{
-      produtoContext.useValues.setValues({ ...produtoContext.useValues.values, [name]: value }); // Altera o State 
       produtoContext.formik.setFieldValue(name, value); // Altera o formik
     }
-    console.log(produtoContext.useValues.values);
-
   }
 
 
@@ -100,7 +131,7 @@ export function Fornecedores() {
       <Grid container spacing={3}>
         <Grid item xs={6}>
           <Autocomplete
-            value={produtoContext.useValues.values.cliente_id}
+            value={produtoContext.formik.values.cliente_id}
             name="cliente_id"
             onChange={(event, value) => handleOnChange("cliente_id", value)}
             disablePortal
@@ -111,7 +142,7 @@ export function Fornecedores() {
         <Grid item xs={6}>
           <Autocomplete
             multiple
-            value={produtoContext.useValues.values.fornecedores_id}
+            value={produtoContext.formik.values.fornecedores_id}
             name="fornecedores_id"
             onChange={(event, value) => handleOnChange("fornecedores_id", value)}
             options={fornecedores}

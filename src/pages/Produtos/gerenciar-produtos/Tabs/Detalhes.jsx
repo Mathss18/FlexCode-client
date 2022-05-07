@@ -7,9 +7,7 @@ export function Detalhes() {
 
   function handleOnChange(event) {
     const { name, value } = event.target;
-    produtoContext.useValues.setValues({ ...produtoContext.useValues.values, [name]: value }); // Altera o State 
     produtoContext.formik.setFieldValue(name, value); // Altera o formik
-    console.log(produtoContext.formik.values);
   }
 
   return (
@@ -25,7 +23,7 @@ export function Detalhes() {
             style={{ marginBottom: 24 }}
             type="number"
             label="Peso (kg)" fullWidth
-            value={produtoContext.useValues.values.peso}
+            value={produtoContext.formik.values.peso}
             name="peso"
             onChange={handleOnChange}
             onBlur={produtoContext.formik.handleBlur}
@@ -36,7 +34,7 @@ export function Detalhes() {
             style={{ marginBottom: 24 }}
             type="number"
             label="Largura (m)" fullWidth
-            value={produtoContext.useValues.values.largura}
+            value={produtoContext.formik.values.largura}
             name="largura"
             onChange={handleOnChange}
             onBlur={produtoContext.formik.handleBlur}
@@ -47,7 +45,7 @@ export function Detalhes() {
             style={{ marginBottom: 24 }}
             type="number"
             label="Altura (m)" fullWidth
-            value={produtoContext.useValues.values.altura}
+            value={produtoContext.formik.values.altura}
             name="altura"
             onChange={handleOnChange}
             onBlur={produtoContext.formik.handleBlur}
@@ -59,7 +57,7 @@ export function Detalhes() {
             type="number"
             label="Comprimento (m)" 
             fullWidth
-            value={produtoContext.useValues.values.comprimento}
+            value={produtoContext.formik.values.comprimento}
             name="comprimento"
             onChange={handleOnChange}
             onBlur={produtoContext.formik.handleBlur}
@@ -74,7 +72,7 @@ export function Detalhes() {
           type="number" 
           label="Comissão (%) *" 
           fullWidth 
-          value={produtoContext.useValues.values.comissao}
+          value={produtoContext.formik.values.comissao}
            name="comissao" 
            onChange={handleOnChange} 
            onBlur={produtoContext.formik.handleBlur}
@@ -87,7 +85,7 @@ export function Detalhes() {
           variant="outlined"
           label="Descrição do Produto"
           fullWidth
-          value={produtoContext.useValues.values.descricao}
+          value={produtoContext.formik.values.descricao}
           rows={5}
           name="descricao"
           onChange={handleOnChange} 

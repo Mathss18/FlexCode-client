@@ -170,9 +170,9 @@ export const gradeVariacoesValidation = yup.object().shape({
 });
 
 export const produtoValidation = yup.object().shape({
-  nome: yup.string().required("O nome é obrigatório"),
-  codigoInterno: yup.string().required("O código interno é obrigatório"),
-  grupo_produto_id: yup.number().required("O grupo é obrigatório"),
+  nome: yup.string().required("O nome do produto é obrigatório"),
+  codigoInterno: yup.string().required("O código interno do produto é obrigatório"),
+  grupo_produto_id: yup.number().required("O grupo do produto é obrigatório"),
   movimentaEstoque: yup
     .boolean()
     .required("É nescessario informar se o produto movimenta estoque"),
@@ -204,7 +204,7 @@ export const produtoValidation = yup.object().shape({
   custoFinal: yup
     .number("")
     .required("O custo final é obrigatório")
-    .min(0, "O custo final não pode ser negativo"),
+    .moreThan(0, "O custo final não pode zero"),
   estoqueMinimo: yup.number("").min(0, "O valor não pode ser negativo").nullable(),
   estoqueMaximo: yup.number("").min(0, "O valor não pode ser negativo").nullable(),
   quantidadeAtual: yup.number("").min(0, "O valor não pode ser negativo").nullable(),
@@ -302,6 +302,59 @@ export const comprasValidation = yup.object().shape({
   })
   .nullable()
   .required('Fornecedor é obrigatorio'),
+  dataEntrada: yup.string().required("A data de entrada é obrigatória"),
+  situacao: yup.number("").required("A situação é obrigatória").min(0),
+  frete: yup
+  .number("")
+  .required("O frete é obrigatório")
+  .min(0, "O valor não pode ser negativo"),
+  impostos: yup
+  .number("")
+  .required("Impotos são obrigatórios")
+  .min(0, "O valor não pode ser negativo"),
+  desconto: yup
+  .number("")
+  .required("O desconto é obrigatório")
+  .min(0, "O valor não pode ser negativo"),
+  total: yup
+  .number("")
+  .required("O total é obrigatório")
+  .min(0, "O valor não pode ser negativo"),
+  forma_pagamento_id: yup.object().shape({
+    label: yup.string().required(""),
+    value: yup.number().required("")
+  })
+  .nullable()
+  .required('Forma de pagamento é obrigatorio'),
+  tipoFormaPagamento: yup.string("").required("O tipo de pagamento é obrigatório"),
+  intervaloParcelas: yup.number("").required("O intervalo de parcelas é obrigatório"),
+  quantidadeParcelas: yup.number("").required("A quantidade de parcelas é obrigatória"),
+  dataPrimeiraParcela: yup.string("").required("A data da primeira parcela obrigatória"),
+
+  observacao: yup.string().nullable(),
+  observacaoInterna: yup.string().nullable(),
+});
+
+export const formasPagamentoValidation = yup.object().shape({
+  nome: yup.string("").required('O Nome é obrigatório'),
+  conta_bancaria_id: yup.number("").required("").min(0, 'Conta bancaria é obrigatória'),
+  numeroMaximoParcelas: yup.number("").required("Número máximo de parcelas é obrigatório").min(1, 'Deve ser maior que 0'),
+  intervaloParcelas: yup.number("").required("Intervalo de parcelas é obrigatório").min(1, 'Deve ser maior que 0'),
+});
+
+export const contasBancariasValidation = yup.object().shape({
+  nome: yup.string("").required('O Nome é obrigatório'),
+  saldoInicial: yup.number("").required("").min(0, 'Saldo Inicial é obrigatório'),
+});
+
+export const vendasValidation = yup.object().shape({
+  numero: yup.number("").required('O Número é obrigatório').min(0, "O valor não pode ser negativo"),
+  cliente_id: yup.object().shape({
+    label: yup.string().required(""),
+    value: yup.number().required("")
+  })
+  .nullable()
+  .required('O cliente é obrigatorio'),
   dataEntrada: yup.string().required("A data de entrada é obrigatória"),
   situacao: yup.number("").required("A situação é obrigatória").min(0),
   frete: yup

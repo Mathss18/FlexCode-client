@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Grid,
   TextField,
   Select,
-  Divider,
   Button,
   MenuItem,
   FormControl,
@@ -11,89 +10,91 @@ import {
   FormHelperText,
   Checkbox,
   InputAdornment,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  IconButton,
-  Tooltip,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { useFormik } from "formik";
-import { Autocomplete } from "@mui/material";
-import api from "../../services/api";
+import { Autocomplete, Stack } from "@mui/material";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import api from "../../../services/api";
 import { DataGrid } from "@mui/x-data-grid";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import moment from "moment";
 import {
   deleteFromArrayByIndex,
+  getUniqueArrayOfObjectsByKey,
   isArrayEqual,
   objectToArray,
-} from "../../utils/functions";
-import { comprasValidation } from "../../validators/validationSchema";
-import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
-import { errorAlert, infoAlert, successAlert } from "../../utils/alert";
-import DragAndDrop from "../../components/DragAndDrop";
+} from "../../../utils/functions";
+import { TimePicker } from "@material-ui/pickers";
+import { ordemServicoValidation } from "../../../validators/validationSchema";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
+import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
+import { useParams } from "react-router-dom";
+
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const initialValues = {
   numero: "",
-  fornecedor_id: null,
-  transportadora_id: null,
-  forma_pagamento_id: null,
-  numeroNF: "",
-  quantidadeParcelas: 1,
-  intervaloParcelas: 0,
-  tipoFormaPagamento: '0', // 0 - À vista, 1 - A prazo
-  somarFreteAoTotal: false,
+  cliente_id: { label: "", value: null },
+  funcionarios_id: [{ label: "", value: null }],
   produtos: [],
-  parcelas: [],
-  anexos: [],
+  servicos: [],
   situacao: 0,
   dataEntrada: moment().format("YYYY-MM-DD"),
-  dataPrimeiraParcela: moment().format("YYYY-MM-DD"),
+  horaEntrada: new Date().toLocaleTimeString(),
+  dataSaida: "",
+  horaSaida: null,
   frete: 0,
-  impostos: 0,
+  outros: 0,
   desconto: 0,
   total: 0,
   observacao: "",
   observacaoInterna: "",
 };
 
-function CadastrarComprasPage() {
+function EditarOrcamentosPage() {
   const history = useHistory();
-  const [fornecedores, setFornecedores] = useState([]);
-  const [formasPagamentos, setFormasPagamentos] = useState([]);
-  const [transportadoras, setTransportadoras] = useState([]);
+  const [clientes, setClientes] = useState([]);
+  const [funcionarios, setFuncionarios] = useState([{}]);
   const [produtos, setProdutos] = useState([]);
+  const [servicos, setServicos] = useState([]);
   const [rowsProdutos, setRowsProdutos] = useState([]);
-  const [rowsParcelas, setRowsParcelas] = useState([]);
+  const [rowsServicos, setRowsServicos] = useState([]);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
-  const [files, setFiles] = useState([]);
+  const { id } = useParams();
+  const i = useRef(0);
+  const fullScreenLoader = useFullScreenLoader();
+  
+  
 
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => {
       handleOnSubmit(event);
     },
-    validationSchema: comprasValidation,
+    validationSchema: ordemServicoValidation,
   });
 
   const columnsProdutos = [
     {
       field: "produto_id",
       headerName: "Produto",
-      flex: 4,
+      flex: 2,
       sortable: false,
+      headerAlign: 'letf',
       renderCell: (params) => (
         <>
           <Autocomplete
             fullWidth
-            disableClearable={true}
             name="produto_id"
+            disableClearable={true}
+            value={params.row.produto_id == '' ? { label: "", value: null } : { label: params.row.nome, value: params.row.produto_id }}
             onChange={(event, value) => handleClienteChange(params, value)}
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
@@ -123,6 +124,7 @@ function CadastrarComprasPage() {
       type: 'number',
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -131,6 +133,7 @@ function CadastrarComprasPage() {
       type: 'number',
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -139,6 +142,7 @@ function CadastrarComprasPage() {
       type: 'number',
       editable: false,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -146,12 +150,15 @@ function CadastrarComprasPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Excluir",
       sortable: false,
+      headerAlign: 'letf',
+      // flex: 1,
       renderCell: (params) => (
         <>
           <DeleteIcon
@@ -163,43 +170,26 @@ function CadastrarComprasPage() {
     },
   ];
 
-  const columnsParcelas = [
+  const columnsServicos = [
     {
-      field: "dataVencimento",
-      headerName: "Data Vencimento",
-      flex: 1,
-      type: "date",
-      editable: true,
+      field: "servico_id",
+      headerName: "Serviço",
+      flex: 2,
       sortable: false,
-    },
-    {
-      field: "valorParcela",
-      headerName: "Valor Parcela",
-      editable: true,
-      sortable: false,
-      type: "number",
-      flex: 1,
-    },
-    {
-      field: "forma_pagamento_id",
-      headerName: "Forma Pagamento",
-      flex: 3,
+      headerAlign: 'letf',
       renderCell: (params) => (
         <>
           <Autocomplete
             fullWidth
+            name="servico_id"
             disableClearable={true}
-            value={
-              params.row.forma_pagamento_id == ""
-                ? { label: "", value: null }
-                : { label: params.row.nome, value: params.row.forma_pagamento_id }
-            }
-            name="forma_pagamento_id"
-            onChange={(event, value) => handleFormaPagamentoChange(params, value)}
+            value={params.row.servico_id == '' ? { label: "", value: null } : { label: params.row.nome, value: params.row.servico_id }}
+            onChange={(event, value) => handleServicoChange(params, value)}
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            options={formasPagamentos}
+            disablePortal
+            options={servicos}
             renderInput={(params) => (
               <TextField
                 variant="outlined"
@@ -218,37 +208,142 @@ function CadastrarComprasPage() {
       ),
     },
     {
+      field: "quantidade",
+      headerName: "Quantidade",
+      type: 'number',
+      editable: true,
+      sortable: false,
+      headerAlign: 'letf',
+      flex: 1,
+    },
+    {
+      field: "preco",
+      headerName: "Preço Unitário",
+      type: 'number',
+      editable: true,
+      sortable: false,
+      headerAlign: 'letf',
+      flex: 1,
+    },
+    {
+      field: "total",
+      headerName: "Total",
+      type: 'number',
+      editable: false,
+      sortable: false,
+      headerAlign: 'letf',
+      flex: 1,
+    },
+    {
       field: "observacao",
       headerName: "Observação",
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 2,
     },
-    // {
-    //   field: "excluir",
-    //   headerName: "Excluir",
-    //   sortable: false,
-    //   renderCell: (params) => (
-    //     <>
-    //       <DeleteIcon
-    //         className={"btn btn-lista"}
-    //         onClick={() => removeParcelaRow(params)}
-    //       />
-    //     </>
-    //   ),
-    // },
+    {
+      field: "excluir",
+      headerName: "Excluir",
+      sortable: false,
+      headerAlign: 'letf',
+      // flex: 1,
+      renderCell: (params) => (
+        <>
+          <DeleteIcon
+            className={"btn btn-lista"}
+            onClick={() => removeServicoRow(params)}
+          />
+        </>
+      ),
+    },
   ];
 
+  useEffect(() => {
+    fullScreenLoader.setLoading(true);
+    
+    api
+      .get("/ordens-servicos/" + id)
+      .then((response) => {
+        response.data["data"].cliente_id = {
+          value: response.data["data"].cliente.id,
+          label: response.data["data"].cliente.nome,
+        };
+
+        response.data["data"].funcionarios = response.data[
+          "data"
+        ].funcionarios.map((item) => {
+          return { value: item.id, label: item.nome };
+        });
+
+        const valuesToFillFormik = {
+          numero: response.data["data"].numero,
+          cliente_id: response.data["data"].cliente_id,
+          funcionarios_id: response.data["data"].funcionarios,
+          situacao: response.data["data"].situacao,
+          dataEntrada: response.data["data"].dataEntrada,
+          horaEntrada: response.data["data"].horaEntrada,
+          dataSaida: response.data["data"].dataSaida,
+          horaSaida: response.data["data"].horaSaida,
+          frete: response.data["data"].frete,
+          outros: response.data["data"].outros,
+          desconto: response.data["data"].desconto,
+          total: response.data["data"].total,
+          observacao: response.data["data"].observacao,
+          observacaoInterna: response.data["data"].observacaoInterna,
+        };
+        formik.setValues(valuesToFillFormik);
+
+        var prods = [];
+        response.data["data"].produtos.map((item,index) => {
+          console.log(item);
+          prods.push({
+            id: new Date().getTime() + index,
+            observacao: item.pivot.observacao,
+            preco: item.pivot.preco,
+            produto_id: item.pivot.produto_id,
+            quantidade: item.pivot.quantidade,
+            total: item.pivot.total,
+            nome: item.nome
+          });
+        });
+        setRowsProdutos(prods);
+
+        var servs = [];
+        response.data["data"].servicos.map((item,index) => {
+          console.log(item);
+          servs.push({
+            id: new Date().getTime() + index,
+            observacao: item.pivot.observacao,
+            preco: item.pivot.preco,
+            servico_id: item.pivot.servico_id,
+            quantidade: item.pivot.quantidade,
+            total: item.pivot.total,
+            nome: item.nome
+          });
+        });
+        setRowsServicos(servs);
+        
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
     api
-      .get("/fornecedores")
+      .get("/clientes")
       .then((response) => {
         var array = [];
-        response.data["data"].forEach((fornecedor) => {
-          array.push({ label: fornecedor.nome, value: fornecedor.id });
+        response.data["data"].forEach((cliente) => {
+          if(cliente.situacao === 1){
+            array.push({ label: cliente.nome, value: cliente.id });
+          }
         });
-        setFornecedores(array);
+        setClientes(array);
       })
       .catch((error) => {
         console.log(error);
@@ -257,32 +352,17 @@ function CadastrarComprasPage() {
 
   useEffect(() => {
     api
-      .get("/formas-pagamentos")
+      .get("/funcionarios")
       .then((response) => {
         var array = [];
-        response.data["data"].forEach((formaPagamento) => {
-          array.push({ label: formaPagamento.nome, value: formaPagamento.id });
+        response.data["data"].forEach((funcionario) => {
+          if(funcionario.situacao === 1){
+            array.push({ label: funcionario.nome, value: funcionario.id });
+          }
         });
-        setFormasPagamentos(array);
+        setFuncionarios(array);
       })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    api
-      .get("/transportadoras")
-      .then((response) => {
-        var array = [];
-        response.data["data"].forEach((transportadora) => {
-          array.push({ label: transportadora.nome, value: transportadora.id });
-        });
-        setTransportadoras(array);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   }, []);
 
   useEffect(() => {
@@ -299,36 +379,43 @@ function CadastrarComprasPage() {
         });
         setProdutos(array);
       })
-      .catch((error) => { });
+      .catch((error) => {});
+  }, []);
+
+  useEffect(() => {
+    api
+      .get("/servicos")
+      .then((response) => {
+        var array = [];
+        response.data["data"].forEach((servico) => {
+          array.push({
+            label: servico.nome,
+            value: servico.id,
+            preco: servico.valor,
+          });
+        });
+        setServicos(array);
+      })
+      .catch((error) => {});
   }, []);
 
   useEffect(() => {
     calcularTotalFinal();
   }, [
     rowsProdutos,
+    rowsServicos,
     formik.values.frete,
-    formik.values.impostos,
+    formik.values.outros,
     formik.values.desconto,
-    formik.values.somarFreteAoTotal,
   ]);
 
-  useEffect(() => {
-    if (!formik.values.tipoFormaPagamento) return;
-    // Se for a vista, seta a quantidade de parcelas como 1 e o intervalo como 0
-    if (formik.values.tipoFormaPagamento == 0) {
-      formik.setFieldValue("quantidadeParcelas", 1);
-      formik.setFieldValue("intervaloParcelas", 0);
-    }
-  }, [formik.values.tipoFormaPagamento]);
-
-  const fullScreenLoader = useFullScreenLoader();
-
   function handleOnSubmit(values) {
-    if (rowsProdutos.length === 0) {
+    if (rowsProdutos.length === 0 && rowsServicos.length === 0) {
       formik.setSubmitting(false);
-      errorAlert("É necessário adicionar pelo menos um produto!");
+      errorAlert("É necessário adicionar pelo menos um produto ou serviço!");
       return;
     }
+
     if (rowsProdutos.find((produto) => produto.produto_id === "")) {
       formik.setSubmitting(false);
       errorAlert(
@@ -350,75 +437,72 @@ function CadastrarComprasPage() {
       );
       return;
     }
-    if (rowsParcelas.length <= 0) {
-      formik.setSubmitting(false);
-      errorAlert(
-        "A compra deve ter pelo menos uma parcela!"
-      );
-      return;
-    }
-    if (rowsParcelas.find((parcela) => Number(parcela.valorParcela) < 0)) {
-      formik.setSubmitting(false);
-      errorAlert(
-        "Por favor, selecione uma valor válido para cada parcela!"
-      );
-      return;
-    }
-    const totalParcelas = rowsParcelas.reduce((acc, item) => acc + Number(item.valorParcela), 0);
-    if (totalParcelas != formik.values.total) {
-      formik.setSubmitting(false);
-      errorAlert(
-        "Erro no calculo das parcelas!",
-        "A soma das parcelas deve ser igual ao valor final da compra"
-      );
-      return;
-    }
 
-    if (formik.values.tipoFormaPagamento == 0 && rowsParcelas.length != 1) {
+    if (rowsServicos.find((servico) => servico.servico_id === "")) {
       formik.setSubmitting(false);
       errorAlert(
-        "Erro no calculo das parcelas!",
-        "Compras à vista devem ter apenas uma parcela!"
+        "Por favor, selecione um serviço para cada linha de serviços!"
       );
       return;
     }
-
-    const rowParcelasSanitezed = rowsParcelas.map((parcela) => {
-      return {
-        ...parcela,
-        valorParcela: Number(parcela.valorParcela),
-        dataVencimento: moment(parcela.dataVencimento).format("DD/MM/YYYY"),
-      };
-    });
+    if (rowsServicos.find((servico) => servico.preco < 0)) {
+      formik.setSubmitting(false);
+      errorAlert(
+        "Por favor, selecione uma preço válido para cada linha de serviços!"
+      );
+      return;
+    }
+    if (rowsServicos.find((servico) => servico.quantidade <= 0)) {
+      formik.setSubmitting(false);
+      errorAlert(
+        "Por favor, selecione uma quantidade válida para cada linha de serviços!"
+      );
+      return;
+    }
 
     const params = {
       ...formik.values,
       produtos: rowsProdutos,
-      parcelas: rowParcelasSanitezed,
-      anexos: files
+      servicos: rowsServicos,
     };
 
-
     fullScreenLoader.setLoading(true);
+    
     api
-      .post("/compras", params)
+      .put("/ordens-servicos/"+ id, params)
       .then((response) => {
-        successAlert("Sucesso", "Compra Cadastrado", () =>
-          history.push("/compras")
+        successAlert("Sucesso", "Ordem de Serviço Editada", () =>
+          history.push("/ordens-servicos")
         );
       })
       .catch((error) => {
         infoAlert("Atenção", error.response.data.message);
       })
-      .finally(() => {
-        fullScreenLoader.setLoading(false);
-        formik.setSubmitting(false);
-      });
+      .finally(() => fullScreenLoader.setLoading(false));
   }
 
   function handleOnChange(name, value) {
+    if (name === "funcionarios_id") {
+      formik.setFieldValue(name, getUniqueArrayOfObjectsByKey(value, "value")); // Altera o formik
+      return;
+    }
     formik.setFieldValue(name, value); // Altera o formik
+    console.log(formik.values);
   }
+
+  const setHoraEntrada = (e) => {
+    formik.setValues({
+      ...formik.values,
+      horaEntrada: new Date(e._d).toLocaleTimeString(),
+    });
+  };
+
+  const setHoraSaida = (e) => {
+    formik.setValues({
+      ...formik.values,
+      horaSaida: new Date(e._d).toLocaleTimeString(),
+    });
+  };
 
   // ==== Funções de produtos ====
   function addProductRow() {
@@ -470,81 +554,63 @@ function CadastrarComprasPage() {
     setRowsProdutos(objectToArray(dataGrid.rows.idRowsLookup));
   }
 
-  function handleParcelaRowStateChange(dataGrid) {
-    if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsParcelas))
-      return;
-    if (objectToArray(dataGrid.rows.idRowsLookup).length != rowsParcelas.length)
-      return;
-
-    const total = formik.values.total;
-    const parcelas = formik.values.quantidadeParcelas;
-
-    var acumulador = 0;
-    var resto = 0;
-    objectToArray(dataGrid.rows.idRowsLookup).forEach((row, index) => {
-      if (objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela != rowsParcelas[index].valorParcela) {
-
-        // console.log("Preço original MUDADO "+index);
-        resto = Number(total) - (Number(acumulador) + Number(objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela));
-        console.log('resto para distribuir entra as parcelas restantes: '+resto);
-
-        console.log('===================================');
-        console.log('VALOR TROCADO: '+objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela);
-        console.log('ACUMULADOR: '+acumulador);
-        console.log('TOTAL: '+total);
-        console.log('RESTO: '+resto);
-        console.log('===================================');
-
-      } else {
-        // console.log("Preço original MANTIDO "+index);
-        acumulador = acumulador + Number(rowsParcelas[index].valorParcela);
-
-      }
-
-    });
-
-    setRowsParcelas(objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
-      row.valorParcela = Number(row.valorParcela).toFixed(2);
-      return row;
-    }));
-  }
-
   function handleClienteChange(params, value) {
     params.row.produto_id = value.value;
+    params.row.nome = value.label;
   }
 
-  // ==== Funções de parcelas ====
-
-  function refreshParcelas() {
-    if (!formik.values.forma_pagamento_id) {
-      errorAlert("Por favor, selecione uma forma de pagamento!");
-      return;
-    }
-    var aux = [];
-
-    var diferenca = formik.values.total / formik.values.quantidadeParcelas;
-    diferenca = (formik.values.total - (diferenca.toFixed(2) * formik.values.quantidadeParcelas)).toFixed(2);
-
-    for (let i = 0; i < formik.values.quantidadeParcelas; i++) {
-      aux.push({
-        id: new Date().getTime() + i,
-        dataVencimento: moment(formik.values.dataPrimeiraParcela).add(formik.values.intervaloParcelas * i, 'days').format("DD/MM/YYYY"),
-        valorParcela: Number((Number(formik.values.total) / Number(formik.values.quantidadeParcelas))).toFixed(2),
-        forma_pagamento_id: formik.values.forma_pagamento_id.value,
-        nome: formik.values.forma_pagamento_id.label,
+  // ==== Funções de serviços ====
+  function addServicoRow() {
+    setRowsServicos([
+      ...rowsServicos,
+      {
+        id: new Date().getTime(),
+        servico_id: "",
+        quantidade: 0,
+        preco: 0,
+        total: 0,
         observacao: "",
-      });
-    }
-    // Se houver diferência, adiciona a última parcela com o valor da diferença
-    if (Number(diferenca) !== 0) {
-      aux[aux.length - 1].valorParcela = Number(aux[aux.length - 1].valorParcela) + Number(diferenca);
-    }
-    setRowsParcelas(aux);
+      },
+    ]);
   }
 
+  function removeServicoRow(params) {
+    var indexToBeDeleted = rowsServicos.map((row, index) => {
+      if (row.id === params.id) return index;
+    });
+    indexToBeDeleted = indexToBeDeleted.filter((row) => row !== undefined);
+    setRowsServicos(deleteFromArrayByIndex(rowsServicos, ...indexToBeDeleted));
+  }
 
-  function handleFormaPagamentoChange(params, value) {
-    params.row.forma_pagamento_id = value.value;
+  function handleServicoRowStateChange(dataGrid) {
+    if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsServicos))
+      return;
+    if (objectToArray(dataGrid.rows.idRowsLookup).length != rowsServicos.length)
+      return;
+
+    objectToArray(dataGrid.rows.idRowsLookup).forEach((row, index) => {
+      const selectdServico = servicos.find(
+        (servico) => servico.value === row.servico_id
+      );
+      if (selectdServico) {
+        if (objectToArray(dataGrid.rows.idRowsLookup)[index].preco <= 0) {
+          objectToArray(dataGrid.rows.idRowsLookup)[index].preco =
+            selectdServico.preco;
+        } else {
+          console.log("Preço original mudado");
+        }
+
+        objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
+          objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
+          Number(row.quantidade)
+        ).toFixed(2);
+      }
+    });
+    setRowsServicos(objectToArray(dataGrid.rows.idRowsLookup));
+  }
+
+  function handleServicoChange(params, value) {
+    params.row.servico_id = value.value;
     params.row.nome = value.label;
   }
 
@@ -553,11 +619,13 @@ function CadastrarComprasPage() {
     rowsProdutos.forEach((row) => {
       total = total + Number(row.total);
     });
+    rowsServicos.forEach((row) => {
+      total = total + Number(row.total);
+      console.log("total", typeof total);
+    });
 
-    if (formik.values.somarFreteAoTotal) {
-      total = total + Number(formik.values.frete);
-    }
-    total = total + Number(formik.values.impostos);
+    total = total + Number(formik.values.frete);
+    total = total + Number(formik.values.outros);
     total = total - Number(formik.values.desconto);
 
     formik.setFieldValue("total", total);
@@ -566,21 +634,21 @@ function CadastrarComprasPage() {
 
   return (
     <>
+      {console.log(i.current++)}
       <form onSubmit={formik.handleSubmit}>
-        <div>
-          <Divider />
+        <div style={{ marginTop: 0, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
             <AssignmentIcon />
-            <h3>Dados da Compra</h3>
+            <h3>Dados do Serviço</h3>
           </div>
 
           <Grid container spacing={3}>
             <Grid item xs={4}>
               <TextField
                 variant="outlined"
-                label="Número *"
+                label="Número"
                 fullWidth
                 type="text"
                 value={formik.values.numero}
@@ -593,34 +661,31 @@ function CadastrarComprasPage() {
             </Grid>
             <Grid item xs={4}>
               <Autocomplete
-                value={formik.values.fornecedor_id}
-                name="fornecedor_id"
-                onChange={(event, value) => handleOnChange("fornecedor_id", value)}
-                onBlur={formik.handleBlur}
+                value={formik.values.cliente_id}
+                name="cliente_id"
+                onChange={(event, value) => handleOnChange("cliente_id", value)}
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
                 disablePortal
-                options={fornecedores}
+                options={clientes}
                 renderInput={(params) => (
                   <TextField
                     variant="outlined"
                     fullWidth
                     {...params}
-                    label="Fornecedor *"
+                    label="Cliente"
                     placeholder="Pesquise..."
-                    error={formik.touched.fornecedor_id && Boolean(formik.errors.fornecedor_id)}
-                    helperText={formik.touched.fornecedor_id && formik.errors.fornecedor_id}
                   />
                 )}
               />
             </Grid>
             <Grid item xs={4}>
-              <FormControl variant="outlined" fullWidth name="situacao">
-                <InputLabel>Situação *</InputLabel>
+              <FormControl variant="outlined" fullWidth name="tipoCliente">
+                <InputLabel>Situação</InputLabel>
                 <Select
                   className={"input-select"}
-                  label="Situação *"
+                  label="Situação"
                   name="situacao"
                   value={formik.values.situacao}
                   onChange={formik.handleChange}
@@ -630,8 +695,9 @@ function CadastrarComprasPage() {
                   }
                 >
                   <MenuItem value={0}>Aberta</MenuItem>
-                  <MenuItem value={1}>Recebida</MenuItem>
-                  <MenuItem value={2}>Cancelada</MenuItem>
+                  <MenuItem disabled value={1}>Fazendo</MenuItem>
+                  <MenuItem value={2}>Finalizada</MenuItem>
+                  <MenuItem value={3}>Cancelada</MenuItem>
                 </Select>
                 {formik.touched.situacao && Boolean(formik.errors.situacao) ? (
                   <FormHelperText>{formik.errors.situacao}</FormHelperText>
@@ -642,10 +708,10 @@ function CadastrarComprasPage() {
             </Grid>
           </Grid>
           <Grid container spacing={3} style={{ marginTop: 8 }}>
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <TextField
                 variant="outlined"
-                label="Data Entrada *"
+                label="Data Entrada"
                 fullWidth
                 type="date"
                 value={formik.values.dataEntrada}
@@ -661,53 +727,117 @@ function CadastrarComprasPage() {
                 }
               />
             </Grid>
-            <Grid item xs={4}>
-              <Autocomplete
-                value={formik.values.transportadora_id}
-                name="transportadora_id"
-                onChange={(event, value) =>
-                  handleOnChange("transportadora_id", value)
+            <Grid item xs={3}>
+              <TimePicker
+                clearable={false}
+                ampm={false}
+                fullWidth
+                inputVariant="outlined"
+                minutesStep={5}
+                label="Hora ínicio"
+                value={moment(formik.values.horaEntrada, "hh:mm:ss")}
+                onAccept={setHoraEntrada}
+                onChange={setHoraEntrada}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.horaEntrada &&
+                  Boolean(formik.errors.horaEntrada)
                 }
-                isOptionEqualToValue={(option, value) =>
-                  option.value === value.value
+                helperText={
+                  formik.touched.horaEntrada && formik.errors.horaEntrada
                 }
-                disablePortal
-                options={transportadoras}
-                renderInput={(params) => (
-                  <TextField
-                    variant="outlined"
-                    fullWidth
-                    {...params}
-                    label="Transportadora"
-                    placeholder="Pesquise..."
-                  />
-                )}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <TextField
                 variant="outlined"
-                label="Número Nota Fiscal"
+                label="Data Saída"
                 fullWidth
                 type="text"
-                value={formik.values.numeroNF}
-                name="numeroNF"
+                onFocus={(e) => {
+                  e.currentTarget.type = "date";
+                  e.currentTarget.focus();
+                }}
+                value={formik.values.dataSaida}
+                name="dataSaida"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.numeroNF &&
-                  Boolean(formik.errors.numeroNF)
+                  formik.touched.dataSaida && Boolean(formik.errors.dataSaida)
                 }
-                helperText={
-                  formik.touched.numeroNF && formik.errors.numeroNF
+                helperText={formik.touched.dataSaida && formik.errors.dataSaida}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TimePicker
+                clearable={false}
+                ampm={false}
+                fullWidth
+                inputVariant="outlined"
+                minutesStep={5}
+                label="Hora saída"
+                value={
+                  formik.values.horaSaida != null
+                    ? moment(formik.values.horaSaida, "hh:mm:ss")
+                    : null
                 }
+                onAccept={setHoraSaida}
+                onChange={setHoraSaida}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.horaSaida && Boolean(formik.errors.horaSaida)
+                }
+                helperText={formik.touched.horaSaida && formik.errors.horaSaida}
               />
             </Grid>
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+          <div
+            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+          >
+            <AssignmentIcon />
+            <h3>Funcionários Responsáveis</h3>
+          </div>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Autocomplete
+                multiple
+                value={formik.values.funcionarios_id}
+                name="funcionarios_id"
+                onChange={(event, value) =>
+                  handleOnChange("funcionarios_id", value)
+                }
+                options={funcionarios}
+                disableCloseOnSelect
+                getOptionLabel={(option) => option.label}
+                renderOption={(props, option, { selected }) => (
+                  <li {...props}>
+                    <Checkbox
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={selected}
+                    />
+                    {option.label}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Funcionários Responsáveis"
+                    fullWidth
+                    variant="outlined"
+                    placeholder="Pesquise..."
+                  />
+                )}
+              />
+            </Grid>
+          </Grid>
+        </div>
+
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -759,149 +889,36 @@ function CadastrarComprasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, border: '1px solid red', padding: 8 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
             <AssignmentIcon />
-            <h3>Pagamento</h3>
-            <div style={{ marginLeft: 'auto' }}>
-              <FormControl>
-                <RadioGroup
-                  value={formik.values.tipoFormaPagamento}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  name="tipoFormaPagamento"
-                  row>
-                  <FormControlLabel value={'0'} control={<Radio />} label="À vista" />
-                  <FormControlLabel value={'1'} control={<Radio />} label="A prazo" />
-                </RadioGroup>
-                <FormHelperText>{formik.touched.tipoFormaPagamento && formik.errors.tipoFormaPagamento}</FormHelperText>
-              </FormControl>
-              {rowsParcelas.length <= 0 ?
-                <Button
-                  style={{ height: 28, fontSize: 12, marginTop: 8 }}
-                  className={"btn btn-primary"}
-                  startIcon={<AddIcon />}
-                  onClick={refreshParcelas}
-                  disabled={isBtnDisabled}
-                >
-                  Parcelas
-                </Button>
-                :
-                <Button
-                  style={{ height: 28, fontSize: 12, marginTop: 8 }}
-                  className={"btn btn-primary"}
-                  startIcon={<CleaningServicesIcon />}
-                  onClick={() => setRowsParcelas([])}
-                  disabled={isBtnDisabled}
-                >
-                  Limpar
-                </Button>}
-
-
-            </div>
-
+            <h3>Adicionar Serviços</h3>
+            <Button
+              style={{ marginLeft: "auto", height: 28, fontSize: 12 }}
+              className={"btn btn-primary"}
+              startIcon={<AddIcon />}
+              onClick={addServicoRow}
+              disabled={isBtnDisabled}
+            >
+              Serviço
+            </Button>
           </div>
 
           <Grid container spacing={3}>
-            <Grid item xs={4}>
-              <Autocomplete
-                value={formik.values.forma_pagamento_id}
-                name="forma_pagamento_id"
-                onChange={(event, value) => handleOnChange("forma_pagamento_id", value)}
-                isOptionEqualToValue={(option, value) =>
-                  option.value === value.value
-                }
-                disablePortal
-                options={formasPagamentos}
-                renderInput={(params) => (
-                  <TextField
-                    variant="outlined"
-                    fullWidth
-                    {...params}
-                    label="Forma de pagamento *"
-                    placeholder="Pesquise..."
-                    error={formik.touched.forma_pagamento_id && Boolean(formik.errors.forma_pagamento_id)}
-                    helperText={formik.touched.forma_pagamento_id && formik.errors.forma_pagamento_id}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={2}>
-              <TextField
-                variant="outlined"
-                label="Qtde Parcelas *"
-                fullWidth
-                type="number"
-                value={formik.values.quantidadeParcelas}
-                disabled={formik.values.tipoFormaPagamento == 0}
-                name="quantidadeParcelas"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.quantidadeParcelas &&
-                  Boolean(formik.errors.quantidadeParcelas)
-                }
-                helperText={
-                  formik.touched.quantidadeParcelas && formik.errors.quantidadeParcelas
-                }
-              />
-            </Grid>
-            <Grid item xs={2}>
-              <TextField
-                variant="outlined"
-                label="Intervalo (dias) *"
-                fullWidth
-                type="number"
-                value={formik.values.intervaloParcelas}
-                disabled={formik.values.tipoFormaPagamento == 0}
-                name="intervaloParcelas"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.intervaloParcelas &&
-                  Boolean(formik.errors.intervaloParcelas)
-                }
-                helperText={
-                  formik.touched.intervaloParcelas && formik.errors.intervaloParcelas
-                }
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                variant="outlined"
-                label="Data 1ª parcela *"
-                fullWidth
-                type="date"
-                value={formik.values.dataPrimeiraParcela}
-                name="dataPrimeiraParcela"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.dataPrimeiraParcela &&
-                  Boolean(formik.errors.dataPrimeiraParcela)
-                }
-                helperText={
-                  formik.touched.dataPrimeiraParcela && formik.errors.dataPrimeiraParcela
-                }
-              />
-            </Grid>
             <Grid item xs={12}>
               <div
                 style={{
-                  height: 100 + rowsParcelas.length * 55,
+                  height: 100 + rowsServicos.length * 55,
                   width: "100%",
                   color: "#fff",
                 }}
               >
                 <DataGrid
                   className={"table-data-grid"}
-                  rows={rowsParcelas}
-                  columns={columnsParcelas}
-                  onStateChange={handleParcelaRowStateChange}
-                  disableVirtualization
+                  rows={rowsServicos}
+                  columns={columnsServicos}
                   hideFooter={true}
                   disableColumnMenu={true}
                   components={{
@@ -911,6 +928,7 @@ function CadastrarComprasPage() {
                       </div>
                     ),
                   }}
+                  onStateChange={handleServicoRowStateChange}
                   onCellEditStart={() => {
                     setIsBtnDisabled(true);
                   }}
@@ -923,8 +941,7 @@ function CadastrarComprasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -942,29 +959,7 @@ function CadastrarComprasPage() {
                   startAdornment: (
                     <InputAdornment position="start">R$:</InputAdornment>
                   ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Tooltip title="Somar frete ao total" arrow>
-                        <Checkbox
-                          checked={formik.values.somarFreteAoTotal}
-                          onChange={formik.handleChange}
-                          name="somarFreteAoTotal"
-                          inputProps={{ 'aria-label': 'controlled' }}
-                        />
-                      </Tooltip>
-                    </InputAdornment>
-                  ),
                 }}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => { }}
-                      edge="end"
-                    >
-                      {<CloseIcon />}
-                    </IconButton>
-                  </InputAdornment>
-                }
                 type="number"
                 value={formik.values.frete}
                 name="frete"
@@ -977,7 +972,7 @@ function CadastrarComprasPage() {
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
-                label="Impostos"
+                label="Outros Custos"
                 fullWidth
                 InputProps={{
                   startAdornment: (
@@ -985,12 +980,12 @@ function CadastrarComprasPage() {
                   ),
                 }}
                 type="number"
-                value={formik.values.impostos}
-                name="impostos"
+                value={formik.values.outros}
+                name="outros"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.impostos && Boolean(formik.errors.impostos)}
-                helperText={formik.touched.impostos && formik.errors.impostos}
+                error={formik.touched.outros && Boolean(formik.errors.outros)}
+                helperText={formik.touched.outros && formik.errors.outros}
               />
             </Grid>
             <Grid item xs={3}>
@@ -1037,28 +1032,7 @@ function CadastrarComprasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Divider />
-          <div
-            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
-          >
-            <AssignmentIcon />
-            <h3>Anexos</h3>
-          </div>
-
-          <Grid container spacing={3}>
-            <>
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <DragAndDrop state={[files, setFiles]} listFiles></DragAndDrop>
-                </Grid>
-              </Grid>
-            </>
-          </Grid>
-        </div>
-
-        <div style={{ marginTop: 38 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1121,18 +1095,18 @@ function CadastrarComprasPage() {
                 variant="outlined"
                 startIcon={<CheckIcon />}
                 className={"btn btn-primary btn-spacing"}
-                disabled={formik.isSubmitting}
+disabled={formik.isSubmitting}
               >
                 Salvar
               </Button>
             </Grid>
             <Grid item>
               <Button
-                onClick={() => history.push("/orcamentos")}
+                onClick={() => history.push("/ordens-servicos")}
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
-                disabled={formik.isSubmitting}
+disabled={formik.isSubmitting}
               >
                 Cancelar
               </Button>
@@ -1144,4 +1118,4 @@ function CadastrarComprasPage() {
   );
 }
 
-export default CadastrarComprasPage;
+export default EditarOrcamentosPage;

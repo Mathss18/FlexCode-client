@@ -42,6 +42,7 @@ import EditarGradesDeVariacoes from "../pages/Produtos/grades-variacoes/Editar";
 
 import ListarPorcentagensLucros from "../pages/Produtos/porcentagens-lucros/Listar";
 import CadastrarPorcentagensLucros from "../pages/Produtos/porcentagens-lucros/Cadastrar";
+import EditarPorcentagensLucros from "../pages/Produtos/porcentagens-lucros/Editar";
 
 import ListarProdutos from "../pages/Produtos/gerenciar-produtos/Listar";
 import CadastrarProdutos from "../pages/Produtos/gerenciar-produtos/Cadastrar";
@@ -51,20 +52,20 @@ import ListarServicos from "../pages/Servicos/gerenciar-servicos/Listar";
 import CadastrarServicos from "../pages/Servicos/gerenciar-servicos/Cadastrar";
 import EditarServicos from "../pages/Servicos/gerenciar-servicos/Editar";
 
-import ListarOrdensServicos from "../pages/OrdensServicos/Listar";
-import CadastrarOrdensServicoPage from "../pages/OrdensServicos/Cadastrar";
-import EditarOrdensServicoPage from "../pages/OrdensServicos/Editar";
-import ListarOrdensServicosFuncionariosPage from "../pages/OrdensServicos/OrdensServicosFuncionarios/Listar";
-import ListarOrdensServicosAcompanhamento from "../pages/OrdensServicos/OrdensServicosAcompanhamento/Listar";
+import ListarOrdensServicos from "../pages/Financeiro/ordens-servicos/Listar";
+import CadastrarOrdensServicoPage from "../pages/Financeiro/ordens-servicos/Cadastrar";
+import EditarOrdensServicoPage from "../pages/Financeiro/ordens-servicos/Editar";
+import ListarOrdensServicosFuncionariosPage from "../pages/Financeiro/ordens-servicos/OrdensServicosFuncionarios/Listar";
+import ListarOrdensServicosAcompanhamento from "../pages/Financeiro/ordens-servicos/OrdensServicosAcompanhamento/Listar";
 import OrdermServicoReport from "../reports/OrdensServicos/OrdermServicoReport";
 
-import ListarOrcamentosPage from "../pages/Orcamentos/Listar";
-import CadastrarOrcamentosPage from "../pages/Orcamentos/Cadastrar";
-import EditarOrcamentosPage from "../pages/Orcamentos/Editar";
+import ListarOrcamentosPage from "../pages/Financeiro/orcamentos/Listar";
+import CadastrarOrcamentosPage from "../pages/Financeiro/orcamentos/Cadastrar";
+import EditarOrcamentosPage from "../pages/Financeiro/orcamentos/Editar";
 
-import ListarCompras from "../pages/Compras/Listar";
-import CadastrarComprasPage from "../pages/Compras/Cadastrar";
-import EditarComprasPage from "../pages/Compras/Editar";
+import ListarCompras from "../pages/Financeiro/compras/Listar";
+import CadastrarComprasPage from "../pages/Financeiro/compras/Cadastrar";
+import EditarComprasPage from "../pages/Financeiro/compras/Editar";
 
 import PrivateRoutes from "./PrivateRoutes";
 import TopBar from "../components/TopBar";
@@ -73,6 +74,17 @@ import Chat from "../pages/Chat/Chat";
 import Ajuda from "../pages/Ajuda/Ajuda"
 import ThemeSelector from "../components/ThemeSelector";
 import OrcamentoReport from "../reports/Orcamentos/OrcamentoReport";
+import CadastrarFormasPagamentosPage from "../pages/Financeiro/formas-pagamentos/Cadastrar";
+import ListarFormasPagamentosPage from "../pages/Financeiro/formas-pagamentos/Listar";
+import EditarFormasPagamentosPage from "../pages/Financeiro/formas-pagamentos/Editar";
+import ListarContasBancariasPage from "../pages/Financeiro/contas-bancarias/Listar";
+import CadastrarContasBancariasPage from "../pages/Financeiro/contas-bancarias/Cadastrar";
+import EditarContasBancariasPage from "../pages/Financeiro/contas-bancarias/Editar";
+import CadastrarVendasPage from "../pages/Financeiro/vendas/Cadastrar";
+import ListarVendas from "../pages/Financeiro/vendas/Listar";
+import EditarVendasPage from "../pages/Financeiro/vendas/Editar";
+import ListarEstoques from "../pages/Estoque/Listar";
+import MovimentacoesPage from "../pages/Estoque/Movimentacoes";
 
 
 export default function Routes({themeSetter}) {
@@ -135,6 +147,7 @@ export default function Routes({themeSetter}) {
 
             <Route path="/porcentagens-lucros" exact component={ListarPorcentagensLucros}></Route>
             <Route path="/porcentagens-lucros/novo" exact component={CadastrarPorcentagensLucros}></Route>
+            <Route path="/porcentagens-lucros/editar/:id" exact component={EditarPorcentagensLucros}></Route>
 
             <Route path="/produtos" exact component={ListarProdutos}></Route>
             <Route path="/produtos/novo" exact component={CadastrarProdutos}></Route>
@@ -158,6 +171,21 @@ export default function Routes({themeSetter}) {
             <Route path="/compras/novo" exact component={CadastrarComprasPage}></Route>
             <Route path="/compras/editar/:id" exact component={EditarComprasPage} ></Route>
 
+            <Route path="/formas-pagamentos" exact component={ListarFormasPagamentosPage}></Route>
+            <Route path="/formas-pagamentos/novo" exact component={CadastrarFormasPagamentosPage}></Route>
+            <Route path="/formas-pagamentos/editar/:id" exact component={EditarFormasPagamentosPage} ></Route>
+            
+            <Route path="/contas-bancarias" exact component={ListarContasBancariasPage}></Route>
+            <Route path="/contas-bancarias/novo" exact component={CadastrarContasBancariasPage}></Route>
+            <Route path="/contas-bancarias/editar/:id" exact component={EditarContasBancariasPage} ></Route>
+
+            <Route path="/vendas" exact component={ListarVendas}></Route>
+            <Route path="/vendas/novo" exact component={CadastrarVendasPage}></Route>
+            <Route path="/vendas/editar/:id" exact component={EditarVendasPage} ></Route>
+
+            <Route path="/estoques" exact component={ListarEstoques}></Route>
+            <Route path="/estoques/movimentacoes/:id" exact component={MovimentacoesPage}></Route>
+           
 
 
 

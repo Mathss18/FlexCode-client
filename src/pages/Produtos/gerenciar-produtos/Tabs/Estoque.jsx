@@ -18,12 +18,7 @@ export function Estoque() {
 
   function handleOnChange(event) {
     const { name, value } = event.target;
-    produtoContext.useValues.setValues({
-      ...produtoContext.useValues.values,
-      [name]: value,
-    }); // Altera o State
     produtoContext.formik.setFieldValue(name, value); // Altera o formik
-    console.log(produtoContext.formik.values);
   }
 
   useEffect(() => {
@@ -39,12 +34,12 @@ export function Estoque() {
 
   return (
     <>
-      {produtoContext.useValues.values.movimentaEstoque
+      {produtoContext.formik.values.movimentaEstoque
         ? ""
         : <h2 style={{textAlign: 'center'}}>Este produto não movimenta estoque!</h2>}
       <div
         style={{
-          display: produtoContext.useValues.values.movimentaEstoque
+          display: produtoContext.formik.values.movimentaEstoque
             ? "block"
             : "none",
         }}
@@ -59,10 +54,10 @@ export function Estoque() {
           <Grid item xs={3}>
             <TextField
               variant="outlined"
-              label="Estoque mínimo (UN)"
+              label="Estoque mínimo"
               fullWidth
               type="number"
-              value={produtoContext.useValues.values.estoqueMinimo}
+              value={produtoContext.formik.values.estoqueMinimo}
               name="estoqueMinimo"
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
@@ -79,10 +74,10 @@ export function Estoque() {
           <Grid item xs={3}>
             <TextField
               variant="outlined"
-              label="Estoque máximo (UN)"
+              label="Estoque máximo"
               fullWidth
               type="number"
-              value={produtoContext.useValues.values.estoqueMaximo}
+              value={produtoContext.formik.values.estoqueMaximo}
               name="estoqueMaximo"
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
@@ -99,10 +94,10 @@ export function Estoque() {
           <Grid item xs={3}>
             <TextField
               variant="outlined"
-              label="Quantidade atual (UN)"
+              label="Quantidade atual"
               fullWidth
               type="number"
-              value={produtoContext.useValues.values.quantidadeAtual}
+              value={produtoContext.formik.values.quantidadeAtual}
               name="quantidadeAtual"
               onChange={handleOnChange}
               onBlur={produtoContext.formik.handleBlur}
@@ -123,7 +118,7 @@ export function Estoque() {
                 className={"input-select"}
                 label="Unidade do Produto"
                 name="unidade_produto_id"
-                value={produtoContext.useValues.values.unidade_produto_id}
+                value={produtoContext.formik.values.unidade_produto_id}
                 onChange={handleOnChange}
                 onBlur={produtoContext.formik.handleBlur}
                 error={

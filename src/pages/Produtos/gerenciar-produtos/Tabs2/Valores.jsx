@@ -19,14 +19,13 @@ export function Valores() {
 
   function handleOnChange(event) {
     const { name, value } = event.target;
-    produtoContext.useValues.setValues({ ...produtoContext.useValues.values, [name]: value }); // Altera o State
     produtoContext.formik.setFieldValue(name, value); // Altera o formik
 
     console.log(produtoContext.formik.values);
   }
 
   useEffect(() => {
-    api.get("/grupos-produtos/" + produtoContext.useValues.values.grupo_produto_id)
+    api.get("/grupos-produtos/" + produtoContext.formik.values.grupo_produto_id)
       .then((response) => {
         console.log(response.data.data);
         setInfoGrupo(response.data.data);
@@ -53,7 +52,7 @@ export function Valores() {
             step="0.0001"
             label="Valor de Custo *"
             fullWidth
-            value={produtoContext.useValues.values.valorCusto}
+            value={produtoContext.formik.values.valorCusto}
             name="valorCusto"
             onChange={handleOnChange}
             onBlur={produtoContext.formik.handleBlur}
@@ -68,7 +67,7 @@ export function Valores() {
             step="0.0001"
             label="Despesas adicionais *"
             fullWidth
-            value={produtoContext.useValues.values.despesasAdicionais}
+            value={produtoContext.formik.values.despesasAdicionais}
             name="despesasAdicionais"
             onChange={handleOnChange}
             onBlur={produtoContext.formik.handleBlur}
@@ -83,7 +82,7 @@ export function Valores() {
             step="0.0001"
             label="Outras despesas *"
             fullWidth
-            value={produtoContext.useValues.values.outrasDespesas}
+            value={produtoContext.formik.values.outrasDespesas}
             name="outrasDespesas"
             onChange={handleOnChange}
             onBlur={produtoContext.formik.handleBlur}
@@ -97,9 +96,9 @@ export function Valores() {
             fullWidth
             readOnly
             value={(
-              parseFloat(produtoContext.useValues.values.valorCusto) +
-              parseFloat(produtoContext.useValues.values.despesasAdicionais) +
-              parseFloat(produtoContext.useValues.values.outrasDespesas)
+              parseFloat(produtoContext.formik.values.valorCusto) +
+              parseFloat(produtoContext.formik.values.despesasAdicionais) +
+              parseFloat(produtoContext.formik.values.outrasDespesas)
             ).toFixed(4)}
             InputProps={{
               endAdornment: (
@@ -137,16 +136,16 @@ export function Valores() {
                   </Typography>
                   <Typography variant="body2">
                     Preço final: R$ {((
-                      parseFloat(produtoContext.useValues.values.valorCusto) +
-                      parseFloat(produtoContext.useValues.values.despesasAdicionais) +
-                      parseFloat(produtoContext.useValues.values.outrasDespesas)
+                      parseFloat(produtoContext.formik.values.valorCusto) +
+                      parseFloat(produtoContext.formik.values.despesasAdicionais) +
+                      parseFloat(produtoContext.formik.values.outrasDespesas)
                     ).toFixed(4) * (1 + (item.porcentagem / 100))).toLocaleString('pt-br', {minimumFractionDigits: 2})}
                     <br />
                     Comissão do vendedor: R$ {(((
-                      parseFloat(produtoContext.useValues.values.valorCusto) +
-                      parseFloat(produtoContext.useValues.values.despesasAdicionais) +
-                      parseFloat(produtoContext.useValues.values.outrasDespesas)
-                    ).toFixed(4) * (1 + (item.porcentagem / 100))).toFixed(2) * (produtoContext.useValues.values.comissao / 100).toFixed(2)).toLocaleString('pt-br', {minimumFractionDigits: 2})}
+                      parseFloat(produtoContext.formik.values.valorCusto) +
+                      parseFloat(produtoContext.formik.values.despesasAdicionais) +
+                      parseFloat(produtoContext.formik.values.outrasDespesas)
+                    ).toFixed(4) * (1 + (item.porcentagem / 100))).toFixed(2) * (produtoContext.formik.values.comissao / 100).toFixed(2)).toLocaleString('pt-br', {minimumFractionDigits: 2})}
                   </Typography>
                 </CardContent>
               </Card>

@@ -3,7 +3,6 @@ import {
   Grid,
   TextField,
   Select,
-  Divider,
   Button,
   MenuItem,
   FormControl,
@@ -20,7 +19,7 @@ import { useFormik } from "formik";
 import { Autocomplete, Stack } from "@mui/material";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import api from "../../services/api";
+import api from "../../../services/api";
 import { DataGrid } from "@mui/x-data-grid";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -30,11 +29,11 @@ import {
   getUniqueArrayOfObjectsByKey,
   isArrayEqual,
   objectToArray,
-} from "../../utils/functions";
-import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
-import { errorAlert, infoAlert, successAlert } from "../../utils/alert";
+} from "../../../utils/functions";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
+import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import { useParams } from "react-router-dom";
-import { orcamentoValidation } from "../../validators/validationSchema";
+import { orcamentoValidation } from "../../../validators/validationSchema";
 
 const initialValues = {
   numero: "",
@@ -52,7 +51,7 @@ const initialValues = {
   observacaoInterna: "",
 };
 
-function EditarComprasPage() {
+function EditarOrdensServicoPage() {
   const history = useHistory();
   const [clientes, setClientes] = useState([]);
   const [transportadoras, setTransportadoras] = useState([{}]);
@@ -76,8 +75,9 @@ function EditarComprasPage() {
     {
       field: "produto_id",
       headerName: "Produto",
-      flex: 4,
+      flex: 2,
       sortable: false,
+      headerAlign: 'letf',
       renderCell: (params) => (
         <>
           <Autocomplete
@@ -115,22 +115,28 @@ function EditarComprasPage() {
     {
       field: "quantidade",
       headerName: "Quantidade",
+      type: 'number',
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
       field: "preco",
       headerName: "Preço Unitário",
+      type: 'number',
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
       field: "total",
       headerName: "Total",
+      type: 'number',
       editable: false,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -138,12 +144,14 @@ function EditarComprasPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Excluir",
       sortable: false,
+      headerAlign: 'letf',
       // flex: 1,
       renderCell: (params) => (
         <>
@@ -160,8 +168,9 @@ function EditarComprasPage() {
     {
       field: "servico_id",
       headerName: "Serviço",
-      flex: 4,
+      flex: 2,
       sortable: false,
+      headerAlign: 'letf',
       renderCell: (params) => (
         <>
           <Autocomplete
@@ -199,22 +208,28 @@ function EditarComprasPage() {
     {
       field: "quantidade",
       headerName: "Quantidade",
+      type: 'number',
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
       field: "preco",
       headerName: "Preço Unitário",
+      type: 'number',
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
       field: "total",
       headerName: "Total",
+      type: 'number',
       editable: false,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -222,12 +237,14 @@ function EditarComprasPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Excluir",
       sortable: false,
+      headerAlign: 'letf',
       // flex: 1,
       renderCell: (params) => (
         <>
@@ -320,7 +337,9 @@ function EditarComprasPage() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((cliente) => {
-          array.push({ label: cliente.nome, value: cliente.id });
+          if(cliente.situacao === 1){
+            array.push({ label: cliente.nome, value: cliente.id });
+          }
         });
         setClientes(array);
       })
@@ -335,7 +354,9 @@ function EditarComprasPage() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((transportadora) => {
-          array.push({ label: transportadora.nome, value: transportadora.id });
+          if(transportadora.situacao === 1){
+            array.push({ label: transportadora.nome, value: transportadora.id });
+          }
         });
         setTransportadoras(array);
       })
@@ -594,8 +615,7 @@ function EditarComprasPage() {
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
-        <div>
-          <Divider />
+        <div style={{ marginTop: 0, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -711,8 +731,7 @@ function EditarComprasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -764,8 +783,7 @@ function EditarComprasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -817,8 +835,7 @@ function EditarComprasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -909,8 +926,7 @@ function EditarComprasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -996,4 +1012,4 @@ function EditarComprasPage() {
   );
 }
 
-export default EditarComprasPage;
+export default EditarOrdensServicoPage;

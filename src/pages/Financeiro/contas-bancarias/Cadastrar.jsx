@@ -10,32 +10,34 @@ import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { useFormik } from "formik";
-import { porcentagemLucroValidation } from "../../../validators/validationSchema";
+import { contasBancariasValidation } from "../../../validators/validationSchema";
 import { infoAlert, successAlert } from "../../../utils/alert";
+import { useEffect, useState } from "react";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 const initialValues = {
-  descricao: "",
-  porcentagem: 0,
-  favorito: true,
+  nome: "",
+  saldoInicial: 0,
 };
 
-function CadastrarPorcentagensLucros() {
+function CadastrarContasBancariasPage() {
   const history = useHistory();
+  const fullScreenLoader = useFullScreenLoader();
 
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => {
       handleOnSubmit(event);
     },
-    validationSchema: porcentagemLucroValidation,
+    validationSchema: contasBancariasValidation,
   });
 
   function handleOnSubmit(values) {
     api
-      .post("/porcentagens-lucros", values)
+      .post("/contas-bancarias", values)
       .then((response) => {
-        successAlert("Sucesso", "Porcentagens de Lucros Cadastrada", () =>
-          history.push("/porcentagens-lucros")
+        successAlert("Sucesso", "Conta Bancária Cadastrada", () =>
+          history.push("/contas-bancarias")
         );
       })
       .catch((error) => {
@@ -52,38 +54,38 @@ function CadastrarPorcentagensLucros() {
           style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
         >
           <AssignmentIcon />
-          <h3>Dados da Porcentagem de Lucro</h3>
+          <h3>Dados da Conta Bancária</h3>
         </div>
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <TextField
                 variant="outlined"
-                label="Descrição"
+                label="Nome *"
                 fullWidth
                 type="text"
-                value={formik.values.descricao}
-                name="descricao"
+                value={formik.values.nome}
+                name="nome"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.descricao && Boolean(formik.errors.descricao)
+                  formik.touched.nome && Boolean(formik.errors.nome)
                 }
-                helperText={formik.touched.descricao && formik.errors.descricao}
+                helperText={formik.touched.nome && formik.errors.nome}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
                 variant="outlined"
-                label="Porcentagem"
+                label="Saldo Inicial *"
                 fullWidth
                 type="text"
-                value={formik.values.porcentagem}
-                name="porcentagem"
+                value={formik.values.saldoInicial}
+                name="saldoInicial"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.porcentagem && Boolean(formik.errors.porcentagem)}
-                helperText={formik.touched.porcentagem && formik.errors.porcentagem}
+                error={formik.touched.saldoInicial && Boolean(formik.errors.saldoInicial)}
+                helperText={formik.touched.saldoInicial && formik.errors.saldoInicial}
               />
             </Grid>
           </Grid>
@@ -104,7 +106,7 @@ function CadastrarPorcentagensLucros() {
             </Grid>
             <Grid item>
               <Button
-                onClick={() => history.push("/porcentagens-lucros")}
+                onClick={() => history.push("/contas-bancarias")}
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
@@ -120,4 +122,4 @@ function CadastrarPorcentagensLucros() {
   );
 }
 
-export default CadastrarPorcentagensLucros;
+export default CadastrarContasBancariasPage;

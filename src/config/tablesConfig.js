@@ -40,12 +40,25 @@ export const config = {
     separator: ',',
   },
   setRowProps: (row, dataIndex, rowIndex) => {
+    var classRow = '';
+    if (row[2] === "entrada" || row[2] === "saida") {
+      if(row[2] === "entrada"){
+        classRow = 'row row-entrada'
+      }
+      else{
+        classRow = 'row row-saida'
+      }
+    }
+    else {
+      if (rowIndex % 2 === 0) {
+        classRow = 'row row-par';
+      }
+      else {
+        classRow = 'row row-impar';
+      }
+    }
     return {
-      className: rowIndex % 2 == 0 ? 'row row-par' : 'row row-impar',
-      style: {
-        fontSize: 30,
-        color: 'red'
-      },
+      className: classRow,
     };
   },
   setCellProps: (value) => {

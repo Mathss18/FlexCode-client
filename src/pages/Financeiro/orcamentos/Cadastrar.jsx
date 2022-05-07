@@ -3,7 +3,6 @@ import {
   Grid,
   TextField,
   Select,
-  Divider,
   Button,
   MenuItem,
   FormControl,
@@ -18,9 +17,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { useFormik } from "formik";
 import { Autocomplete, Stack } from "@mui/material";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import api from "../../services/api";
+import api from "../../../services/api";
 import { DataGrid } from "@mui/x-data-grid";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -29,26 +26,23 @@ import {
   deleteFromArrayByIndex,
   isArrayEqual,
   objectToArray,
-} from "../../utils/functions";
-import { TimePicker } from "@material-ui/pickers";
-import { ordemServicoValidation } from "../../validators/validationSchema";
-import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
-import { errorAlert, infoAlert, successAlert } from "../../utils/alert";
-
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
+} from "../../../utils/functions";
+import { orcamentoValidation } from "../../../validators/validationSchema";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
+import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 
 const initialValues = {
   numero: "",
   cliente_id: { label: "", value: null },
-  funcionarios_id: [{ label: "", value: null }],
+  transportadora_id: { label: "", value: null },
+  // funcionarios_id: [{ label: "", value: null }],
   produtos: [],
   servicos: [],
   situacao: 0,
   dataEntrada: moment().format("YYYY-MM-DD"),
-  horaEntrada: new Date().toLocaleTimeString(),
-  dataSaida: "",
-  horaSaida: null,
+  // horaEntrada: new Date().toLocaleTimeString(),
+  // dataSaida: "",
+  // horaSaida: null,
   frete: 0,
   outros: 0,
   desconto: 0,
@@ -57,10 +51,10 @@ const initialValues = {
   observacaoInterna: "",
 };
 
-function CadastrarOrdensServicoPage() {
+function CadastrarOrcamentosPage() {
   const history = useHistory();
   const [clientes, setClientes] = useState([]);
-  const [funcionarios, setFuncionarios] = useState([{}]);
+  const [transportadoras, setTransportadoras] = useState([]);
   const [produtos, setProdutos] = useState([]);
   const [servicos, setServicos] = useState([]);
   const [rowsProdutos, setRowsProdutos] = useState([]);
@@ -72,15 +66,16 @@ function CadastrarOrdensServicoPage() {
     onSubmit: (event) => {
       handleOnSubmit(event);
     },
-    validationSchema: ordemServicoValidation,
+    validationSchema: orcamentoValidation,
   });
 
   const columnsProdutos = [
     {
       field: "produto_id",
       headerName: "Produto",
-      flex: 4,
+      flex: 2,
       sortable: false,
+      headerAlign: 'letf',
       renderCell: (params) => (
         <>
           <Autocomplete
@@ -116,6 +111,7 @@ function CadastrarOrdensServicoPage() {
       type: 'number',
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -124,6 +120,7 @@ function CadastrarOrdensServicoPage() {
       type: 'number',
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -132,6 +129,7 @@ function CadastrarOrdensServicoPage() {
       type: 'number',
       editable: false,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -139,12 +137,14 @@ function CadastrarOrdensServicoPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Excluir",
       sortable: false,
+      headerAlign: 'letf',
       // flex: 1,
       renderCell: (params) => (
         <>
@@ -161,8 +161,9 @@ function CadastrarOrdensServicoPage() {
     {
       field: "servico_id",
       headerName: "Serviço",
-      flex: 4,
+      flex: 2,
       sortable: false,
+      headerAlign: 'letf',
       renderCell: (params) => (
         <>
           <Autocomplete
@@ -198,6 +199,7 @@ function CadastrarOrdensServicoPage() {
       type: 'number',
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -206,6 +208,7 @@ function CadastrarOrdensServicoPage() {
       type: 'number',
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -214,6 +217,7 @@ function CadastrarOrdensServicoPage() {
       type: 'number',
       editable: false,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -221,12 +225,14 @@ function CadastrarOrdensServicoPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Excluir",
       sortable: false,
+      headerAlign: 'letf',
       // flex: 1,
       renderCell: (params) => (
         <>
@@ -245,7 +251,9 @@ function CadastrarOrdensServicoPage() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((cliente) => {
-          array.push({ label: cliente.nome, value: cliente.id });
+          if(cliente.situacao === 1){
+            array.push({ label: cliente.nome, value: cliente.id });
+          }
         });
         setClientes(array);
       })
@@ -256,16 +264,19 @@ function CadastrarOrdensServicoPage() {
 
   useEffect(() => {
     api
-      .get("/funcionarios")
+      .get("/transportadoras")
       .then((response) => {
         var array = [];
-        response.data["data"].forEach((funcionario) => {
-          array.push({ label: funcionario.nome, value: funcionario.id });
+        response.data["data"].forEach((transportadora) => {
+          if(transportadora.situacao === 1){
+            array.push({ label: transportadora.nome, value: transportadora.id });
+          }
         });
-        formik.setFieldValue("funcionarios_id", []); // Altera o formik
-        setFuncionarios(array);
+        setTransportadoras(array);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   useEffect(() => {
@@ -316,6 +327,7 @@ function CadastrarOrdensServicoPage() {
 
   function handleOnSubmit(values) {
     if (rowsProdutos.length === 0 && rowsServicos.length === 0) {
+      console.log(rowsProdutos.length);
       formik.setSubmitting(false);
       errorAlert("É necessário adicionar pelo menos um produto ou serviço!");
       return;
@@ -373,10 +385,10 @@ function CadastrarOrdensServicoPage() {
 
     fullScreenLoader.setLoading(true);
     api
-      .post("/ordens-servicos", params)
+      .post("/orcamentos", params)
       .then((response) => {
-        successAlert("Sucesso", "Ordem de Serviço Cadastrada", () =>
-          history.push("/ordens-servicos")
+        successAlert("Sucesso", "Orcamento Cadastrado", () =>
+          history.push("/orcamentos")
         );
       })
       .catch((error) => {
@@ -392,20 +404,6 @@ function CadastrarOrdensServicoPage() {
     formik.setFieldValue(name, value); // Altera o formik
     console.log(formik.values);
   }
-
-  const setHoraEntrada = (e) => {
-    formik.setValues({
-      ...formik.values,
-      horaEntrada: new Date(e._d).toLocaleTimeString(),
-    });
-  };
-
-  const setHoraSaida = (e) => {
-    formik.setValues({
-      ...formik.values,
-      horaSaida: new Date(e._d).toLocaleTimeString(),
-    });
-  };
 
   // ==== Funções de produtos ====
   function addProductRow() {
@@ -536,13 +534,12 @@ function CadastrarOrdensServicoPage() {
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
-        <div>
-          <Divider />
+        <div style={{ marginTop: 0, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
             <AssignmentIcon />
-            <h3>Dados do Serviço</h3>
+            <h3>Dados do Orçamento</h3>
           </div>
 
           <Grid container spacing={3}>
@@ -582,7 +579,7 @@ function CadastrarOrdensServicoPage() {
               />
             </Grid>
             <Grid item xs={4}>
-              <FormControl variant="outlined" fullWidth name="tipoCliente">
+              <FormControl variant="outlined" fullWidth name="situacao">
                 <InputLabel>Situação</InputLabel>
                 <Select
                   className={"input-select"}
@@ -595,12 +592,9 @@ function CadastrarOrdensServicoPage() {
                     formik.touched.situacao && Boolean(formik.errors.situacao)
                   }
                 >
-                  <MenuItem value={0}>Aberta</MenuItem>
-                  <MenuItem disabled value={1}>
-                    Fazendo
-                  </MenuItem>
-                  <MenuItem value={2}>Finalizada</MenuItem>
-                  <MenuItem value={3}>Cancelada</MenuItem>
+                  <MenuItem value={0}>Aberto</MenuItem>
+                  <MenuItem value={1}>Aprovado</MenuItem>
+                  <MenuItem value={2}>Reprovado</MenuItem>
                 </Select>
                 {formik.touched.situacao && Boolean(formik.errors.situacao) ? (
                   <FormHelperText>{formik.errors.situacao}</FormHelperText>
@@ -611,7 +605,7 @@ function CadastrarOrdensServicoPage() {
             </Grid>
           </Grid>
           <Grid container spacing={3} style={{ marginTop: 8 }}>
-            <Grid item xs={3}>
+            <Grid item xs={4}>
               <TextField
                 variant="outlined"
                 label="Data Entrada"
@@ -630,120 +624,33 @@ function CadastrarOrdensServicoPage() {
                 }
               />
             </Grid>
-            <Grid item xs={3}>
-              <TimePicker
-                clearable={false}
-                ampm={false}
-                fullWidth
-                inputVariant="outlined"
-                minutesStep={5}
-                label="Hora ínicio"
-                value={moment(formik.values.horaEntrada, "hh:mm:ss")}
-                onAccept={setHoraEntrada}
-                onChange={setHoraEntrada}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.horaEntrada &&
-                  Boolean(formik.errors.horaEntrada)
-                }
-                helperText={
-                  formik.touched.horaEntrada && formik.errors.horaEntrada
-                }
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="Data Saída"
-                fullWidth
-                type="text"
-                onFocus={(e) => {
-                  e.currentTarget.type = "date";
-                  e.currentTarget.focus();
-                }}
-                value={formik.values.dataSaida}
-                name="dataSaida"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.dataSaida && Boolean(formik.errors.dataSaida)
-                }
-                helperText={formik.touched.dataSaida && formik.errors.dataSaida}
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <TimePicker
-                clearable={false}
-                ampm={false}
-                fullWidth
-                inputVariant="outlined"
-                minutesStep={5}
-                label="Hora saída"
-                value={
-                  formik.values.horaSaida != null
-                    ? moment(formik.values.horaSaida, "hh:mm:ss")
-                    : null
-                }
-                onAccept={setHoraSaida}
-                onChange={setHoraSaida}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.horaSaida && Boolean(formik.errors.horaSaida)
-                }
-                helperText={formik.touched.horaSaida && formik.errors.horaSaida}
-              />
-            </Grid>
-          </Grid>
-        </div>
-
-        <div style={{ marginTop: 38 }}>
-          <div
-            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
-          >
-            <AssignmentIcon />
-            <h3>Funcionários Responsáveis</h3>
-          </div>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid item xs={8}>
               <Autocomplete
-                multiple
-                value={formik.values.funcionarios_id}
-                name="funcionarios_id"
+                value={formik.values.transportadora_id}
+                name="transportadora_id"
                 onChange={(event, value) =>
-                  handleOnChange("funcionarios_id", value)
+                  handleOnChange("transportadora_id", value)
                 }
-                options={funcionarios}
-                disableCloseOnSelect
-                getOptionLabel={(option) => option.label}
-                renderOption={(props, option, { selected }) => (
-                  <li {...props}>
-                    <Checkbox
-                      icon={icon}
-                      checkedIcon={checkedIcon}
-                      style={{ marginRight: 8 }}
-                      checked={selected}
-                    />
-                    {option.label}
-                  </li>
-                )}
+                isOptionEqualToValue={(option, value) =>
+                  option.value === value.value
+                }
+                disablePortal
+                options={transportadoras}
                 renderInput={(params) => (
                   <TextField
-                    {...params}
-                    label="Funcionários Responsáveis"
-                    fullWidth
                     variant="outlined"
+                    fullWidth
+                    {...params}
+                    label="Transportadora"
                     placeholder="Pesquise..."
                   />
                 )}
               />
             </Grid>
           </Grid>
-
-          <Divider />
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -795,8 +702,7 @@ function CadastrarOrdensServicoPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -848,8 +754,7 @@ function CadastrarOrdensServicoPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -940,8 +845,7 @@ function CadastrarOrdensServicoPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1011,7 +915,7 @@ function CadastrarOrdensServicoPage() {
             </Grid>
             <Grid item>
               <Button
-                onClick={() => history.push("/ordens-servicos")}
+                onClick={() => history.push("/orcamentos")}
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
@@ -1027,4 +931,4 @@ function CadastrarOrdensServicoPage() {
   );
 }
 
-export default CadastrarOrdensServicoPage;
+export default CadastrarOrcamentosPage;

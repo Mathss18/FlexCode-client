@@ -59,12 +59,20 @@ export const GlobalStyles = createGlobalStyle`
 
   input {
     background: ${({ theme }) => theme.colors.input.background} !important; // cor de fundo dos inputs
-    color: ${({ theme }) => theme.colors.input.text} !important; // cor do texto dentro dos inputs (usuario)
+    color: ${({ theme }) => theme.colors.input.text} !important; // cor do texto dentro dos inputs (textfield)
     border-radius: 5px !important;
   }
 
-  .MuiFormControl-root > * {
-    color: ${({ theme }) => theme.colors.input.text} !important; // cor do texto dentro dos inputs (label)
+  .MuiSelect-selectMenu{
+    color: ${({ theme }) => theme.colors.input.text} !important; // cor do texto dentro dos inputs (select)
+  }
+  
+  textarea{
+    color: ${({ theme }) => theme.colors.input.text} !important; // cor do texto dentro dos inputs (textarea)
+  }
+
+  .MuiInputLabel-root {
+    color: ${({ theme }) => theme.colors.input.label} !important; // cor do texto dentro dos inputs (label)
   }
 
   .MuiFormHelperText-root{
@@ -275,6 +283,18 @@ export const GlobalStyles = createGlobalStyle`
     background: ${({ theme }) => theme.colors.table.header.background}; // cor de fundo header e footer tabela
     color: ${({ theme }) => theme.colors.table.header.text}; // titulo tabela
   }
+
+  div[class*="MUIDataTableFilter-root"] {
+    background: ${({ theme }) => theme.colors.table.header.background}; // cor de fundo do filtro da tabela
+  }
+
+  fieldset[class*="MUIDataTableViewCol-root"] {
+    background: ${({ theme }) => theme.colors.table.header.background}; // cor de fundo do filtro da tabela
+  }
+
+  fieldset[class*="MUIDataTableViewCol-root"] span{
+    color: ${({ theme }) => theme.colors.table.header.text}; //  cor do texto do filtro da tabela
+  }
   
   .table-background span{
     color: ${({ theme }) => theme.colors.table.header.text}; // icones header tabela
@@ -311,6 +331,10 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   // -* Row Par *- //
+  .row > *{
+    color: ${({ theme }) => theme.colors.table.row.par.text}; ; // cor de texto da linha da tabela quando a linha for par
+  }
+
   .row-par > *{ 
     background: ${({ theme }) => theme.colors.table.row.par.background}; // cor de fundo da linha da tabela quando a linha for par
     color: ${({ theme }) => theme.colors.table.row.par.text}; ; // cor de texto da linha da tabela quando a linha for par
@@ -334,6 +358,14 @@ export const GlobalStyles = createGlobalStyle`
     background: ${({ theme }) => theme.colors.table.row.impar.hover} !important; // cor de fundo da linha da tabela quando a linha for impar e o mouse estiver sobre ela
   }
 
+  .row-entrada> *{
+    background: ${({ theme }) => theme.colors.table.row.entrada.background};;
+  }
+  
+  .row-saida> *{
+    background: ${({ theme }) => theme.colors.table.row.saida.background};;
+  }
+
 
   /* ========= DataGrid ========= */
   .table-data-grid{
@@ -346,7 +378,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   .MuiDataGrid-checkboxInput {
-    color: ${({ theme }) => theme.colors.table.header.text} !important;; // cor da checkbox do data grid
+    color: ${({ theme }) => theme.colors.table.header.text} !important; // cor da checkbox do data grid
   }
 
   .MuiDataGrid-cell{
@@ -361,16 +393,40 @@ export const GlobalStyles = createGlobalStyle`
   .MuiDataGrid-cell{
     background: ${({ theme }) => theme.colors.body} !important; // cor de fundo da celula do data grid quando for editavel
   }
+
+  .MuiDataGrid-columnSeparator{
+    display: none !important;
+  }
+
+  .MuiDataGrid-cell{
+    text-align: left !important;
+  }
   
+
 
   /* ========= Card ========= */
   .card-valores{
     background: ${({ theme }) => theme.colors.topbar.background}; // cor de fundo do card da aba valores
     color: ${({ theme }) => theme.colors.button.primary.text}; // cor de texto do card da aba de valores
   }
-
+  
   .MuiAutocomplete-tag span {
     color: ${({ theme }) => theme.colors.button.primary.text}; // cor da tag do multiple select (aba de fornecedores cadastro de produtos)
+  }
+  
+  
+  /* ========= CHIP ========= */
+  .MuiChip-label{
+    color: ${({ theme }) => theme.colors.input.text} !important;
+  }
+  .MuiChip-colorPrimary{
+    background: ${({ theme }) => theme.colors.chip.primary.background} !important; // cor de fundo do chip (Primary)
+  }
+  .MuiChip-colorSecondary{
+    background: ${({ theme }) => theme.colors.chip.secondary.background}; !important; // cor de fundo do chip (Secondary)
+  }
+  .MuiChip-colorError{
+    background: ${({ theme }) => theme.colors.chip.error.background} !important; // cor de fundo do chip (Error)
   }
 
 

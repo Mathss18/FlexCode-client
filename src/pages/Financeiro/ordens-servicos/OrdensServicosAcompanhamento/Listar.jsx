@@ -9,7 +9,7 @@ import StepConnector, {
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import api from "../../../services/api";
+import api from "../../../../services/api";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -20,8 +20,8 @@ import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
 import BuildIcon from "@mui/icons-material/Build";
 import moment from "moment";
 import { useParams } from "react-router-dom";
-import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
-import { decrypt } from "../../../utils/ctypto"
+import { useFullScreenLoader } from "../../../../context/FullScreenLoaderContext";
+import { decrypt } from "../../../../utils/crypto"
 
 //Onde 0:realizado, 1:emAndamento, 2:finalizado, 3:cancelado
 

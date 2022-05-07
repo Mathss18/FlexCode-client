@@ -8,14 +8,40 @@ import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import SearchIcon from "@material-ui/icons/Search";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
+import { useProdutoContext } from "../../../context/GerenciarProdutosContext";
 
 function ListarProdutos() {
   const history = useHistory();
   const [grupos, setGrupos] = useState([]);
   const fullScreenLoader = useFullScreenLoader();
+  const produtoContext = useProdutoContext();
   const columns = [
     {
       name: "Nome",
+      options: rowConfig,
+    },
+    {
+      name: "Código Interno",
+      options: rowConfig,
+    },
+    {
+      name: "Grupo",
+      options: rowConfig,
+    },
+    {
+      name: "Valor Custo",
+      options: rowConfig,
+    },
+    {
+      name: "Estoque",
+      options: rowConfig,
+    },
+    {
+      name: "Cliente",
+      options: rowConfig,
+    },
+    {
+      name: "Fornecedores",
       options: rowConfig,
     },
     {
@@ -41,26 +67,48 @@ function ListarProdutos() {
   useEffect(() => {
     fullScreenLoader.setLoading(true);
     api.get("/produtos")
-    .then((response) => {
-      if (response != undefined) {
-        response.data["data"].forEach((element) => {
-          var array = [
-            element["nome"],
-            new Date(element["created_at"]).toLocaleString(),
-            <>
-              {/* <SearchIcon className={"btn-lista"} onClick={(event) => handleOnClickShowButton(event, element["id"])} /> */}
-              <EditIcon className={"btn-lista"} onClick={(event) => handleOnClickEditButton(event, element["id"])} />
-            </>,
-          ];
-          data.push(array);
-        });
+      .then((response) => {
+          response.data["data"].forEach((element) => {
+            var array = [
+              element["nome"],
+              element["codigoInterno"],
+              element["grupo_produto"]["nome"],
+              `R$: ${element['valorCusto'].toFixed(2)}`,
+              `${element["quantidadeAtual"]} ${element["unidade_produto"]?.sigla ?? ''}`,
+              element?.cliente?.nome,
+              element["fornecedores"].map((item,index)=>{
+                if(element["fornecedores"].length > 3){
+                  let string = '';
+                  if(index < 3){
+                    string += item["nome"] + ', ';
+                    if(index === 2){
+                      string += '... + ' + (element["fornecedores"].length - 3) + ' fornecedores';
+                    }
+                    return string;
+                  }
+                }
+                else{
+                  return item["nome"] + ', ';
+                }
+              }),
+              new Date(element["created_at"]).toLocaleString(),
+              <>
+                {/* <SearchIcon className={"btn-lista"} onClick={(event) => handleOnClickShowButton(event, element["id"])} /> */}
+                <EditIcon className={"btn-lista"} onClick={(event) => handleOnClickEditButton(event, element["id"])} />
+              </>,
+            ];
+            data.push(array);
+          });
 
-        setGrupos(data);
-      }
-    })
-    .finally(() => {
-      fullScreenLoader.setLoading(false);
-    })
+          setGrupos(data);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      })
+  }, []);
+
+  useEffect(() => {
+    produtoContext.formik.resetForm(); // Reseta o formik
   }, []);
 
   return (

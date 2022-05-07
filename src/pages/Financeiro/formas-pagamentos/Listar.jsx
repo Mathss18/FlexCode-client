@@ -11,14 +11,22 @@ import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 
 
-function ListarPorcentagensLucros() {
+function ListarFormasPagamentosPage() {
   const columns = [
     {
-      name: "Descrição",
+      name: "Nome",
       options: rowConfig,
     },
     {
-      name: "Porcentagem",
+      name: "Número Máximo de Parcelas",
+      options: rowConfig,
+    },
+    {
+      name: "Intervalo de Parcelas",
+      options: rowConfig,
+    },
+    {
+      name: "Banco",
       options: rowConfig,
     },
     {
@@ -29,29 +37,31 @@ function ListarPorcentagensLucros() {
 
   const data = [];
   
-  const [porcentagensLucros, setPorcentagensLucros] = useState([]);
+  const [formasPagamentos, setFormasPagamento] = useState([]);
   const history = useHistory();
   const fullScreenLoader = useFullScreenLoader();
 
   function handleOnClickShowButton(event, id) {
-    history.push("/porcentagens-lucros/mostrar/" + id);
+    history.push("/formas-pagamentos/mostrar/" + id);
   }
 
   function handleOnClickEditButton(event, id) {
-    history.push("/porcentagens-lucros/editar/" + id);
+    history.push("/formas-pagamentos/editar/" + id);
   }
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
 
     api
-      .get("/porcentagens-lucros")
+      .get("/formas-pagamentos")
       .then((response) => {
         if (response != undefined) {
           response.data["data"].forEach((element) => {
             var array = [
-              element["descricao"],
-              element["porcentagem"],
+              element["nome"],
+              element["numeroMaximoParcelas"],
+              element["intervaloParcelas"],
+              element["conta_bancaria"]["nome"],
               <>
                 {/* <SearchIcon
                   className={"btn-lista"}
@@ -70,7 +80,7 @@ function ListarPorcentagensLucros() {
             data.push(array);
           });
 
-          setPorcentagensLucros(data);
+          setFormasPagamento(data);
         }
       })
       .catch((error) => {
@@ -84,7 +94,7 @@ function ListarPorcentagensLucros() {
   return (
     <>
       <Button
-        onClick={() => history.push("/porcentagens-lucros/novo")}
+        onClick={() => history.push("/formas-pagamentos/novo")}
         variant="outlined"
         startIcon={<AddIcon />}
         className={"btn btn-primary btn-spacing"}
@@ -93,8 +103,8 @@ function ListarPorcentagensLucros() {
       </Button>
 
       <MUIDataTable
-        title={"Lista de porcentagens de lucros"}
-        data={porcentagensLucros}
+        title={"Lista de formas de pagamentos"}
+        data={formasPagamentos}
         columns={columns}
         options={config}
         className={"table-background"}
@@ -103,4 +113,4 @@ function ListarPorcentagensLucros() {
   );
 }
 
-export default ListarPorcentagensLucros;
+export default ListarFormasPagamentosPage;

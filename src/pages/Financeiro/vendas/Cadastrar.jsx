@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Grid,
   TextField,
   Select,
-  Divider,
   Button,
   MenuItem,
   FormControl,
@@ -11,73 +10,90 @@ import {
   FormHelperText,
   Checkbox,
   InputAdornment,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  IconButton,
+  Tooltip,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { useFormik } from "formik";
-import { Autocomplete, Stack } from "@mui/material";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import api from "../../services/api";
+import { Autocomplete } from "@mui/material";
+import api from "../../../services/api";
 import { DataGrid } from "@mui/x-data-grid";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import moment from "moment";
 import {
   deleteFromArrayByIndex,
   isArrayEqual,
   objectToArray,
-} from "../../utils/functions";
-import { orcamentoValidation } from "../../validators/validationSchema";
-import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
-import { errorAlert, infoAlert, successAlert } from "../../utils/alert";
+} from "../../../utils/functions";
+import { vendasValidation } from "../../../validators/validationSchema";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
+import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
+import DragAndDrop from "../../../components/dragdrop/DragAndDrop";
+import toast from "react-hot-toast";
 
 const initialValues = {
   numero: "",
-  cliente_id: { label: "", value: null },
-  transportadora_id: { label: "", value: null },
-  // funcionarios_id: [{ label: "", value: null }],
+  cliente_id: null,
+  transportadora_id: null,
+  forma_pagamento_id: null,
+  quantidadeParcelas: 1,
+  intervaloParcelas: 0,
+  tipoFormaPagamento: '0', // 0 - À vista, 1 - A prazo
+  somarFreteAoTotal: false,
   produtos: [],
   servicos: [],
+  parcelas: [],
+  anexos: [],
   situacao: 0,
   dataEntrada: moment().format("YYYY-MM-DD"),
-  // horaEntrada: new Date().toLocaleTimeString(),
-  // dataSaida: "",
-  // horaSaida: null,
+  dataPrimeiraParcela: moment().format("YYYY-MM-DD"),
   frete: 0,
-  outros: 0,
+  impostos: 0,
   desconto: 0,
   total: 0,
   observacao: "",
   observacaoInterna: "",
+
+  qtdeMaximaParcelas: Infinity // Para não permitir que o usuário digite uma quantidade de parcelas maior que o permitido (Não faz parte do formulário em sí)
 };
 
-function CadastrarOrcamentosPage() {
+function CadastrarVendasPage() {
   const history = useHistory();
   const [clientes, setClientes] = useState([]);
+  const [formasPagamentos, setFormasPagamentos] = useState([]);
   const [transportadoras, setTransportadoras] = useState([]);
   const [produtos, setProdutos] = useState([]);
   const [servicos, setServicos] = useState([]);
   const [rowsProdutos, setRowsProdutos] = useState([]);
   const [rowsServicos, setRowsServicos] = useState([]);
+  const [rowsParcelas, setRowsParcelas] = useState([]);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+  const [files, setFiles] = useState([]);
+  const formasPagamentosOriginal = useRef([]);
 
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => {
       handleOnSubmit(event);
     },
-    validationSchema: orcamentoValidation,
+    validationSchema: vendasValidation,
   });
 
   const columnsProdutos = [
     {
       field: "produto_id",
       headerName: "Produto",
-      flex: 4,
+      flex: 2,
       sortable: false,
+      headerAlign: 'letf',
       renderCell: (params) => (
         <>
           <Autocomplete
@@ -113,6 +129,7 @@ function CadastrarOrcamentosPage() {
       type: 'number',
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -121,6 +138,7 @@ function CadastrarOrcamentosPage() {
       type: 'number',
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -129,6 +147,7 @@ function CadastrarOrcamentosPage() {
       type: 'number',
       editable: false,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -136,13 +155,14 @@ function CadastrarOrcamentosPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Excluir",
       sortable: false,
-      // flex: 1,
+      headerAlign: 'letf',
       renderCell: (params) => (
         <>
           <DeleteIcon
@@ -158,8 +178,9 @@ function CadastrarOrcamentosPage() {
     {
       field: "servico_id",
       headerName: "Serviço",
-      flex: 4,
+      flex: 2,
       sortable: false,
+      headerAlign: 'letf',
       renderCell: (params) => (
         <>
           <Autocomplete
@@ -195,6 +216,7 @@ function CadastrarOrcamentosPage() {
       type: 'number',
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -203,6 +225,7 @@ function CadastrarOrcamentosPage() {
       type: 'number',
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -211,6 +234,7 @@ function CadastrarOrcamentosPage() {
       type: 'number',
       editable: false,
       sortable: false,
+      headerAlign: 'letf',
       flex: 1,
     },
     {
@@ -218,12 +242,14 @@ function CadastrarOrcamentosPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
+      headerAlign: 'letf',
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Excluir",
       sortable: false,
+      headerAlign: 'letf',
       // flex: 1,
       renderCell: (params) => (
         <>
@@ -236,15 +262,116 @@ function CadastrarOrcamentosPage() {
     },
   ];
 
+  const columnsParcelas = [
+    {
+      field: "dataVencimento",
+      headerName: "Data Vencimento",
+      flex: 1,
+      type: "date",
+      editable: true,
+      sortable: false,
+      headerAlign: 'letf',
+    },
+    {
+      field: "valorParcela",
+      headerName: "Valor Parcela",
+      editable: true,
+      sortable: false,
+      headerAlign: 'letf',
+      type: "number",
+      flex: 1,
+    },
+    {
+      field: "forma_pagamento_id",
+      headerName: "Forma Pagamento",
+      sortable: false,
+      headerAlign: 'letf',
+      flex: 1,
+      renderCell: (params) => (
+        <>
+          <Autocomplete
+            fullWidth
+            disableClearable={true}
+            value={
+              params.row.forma_pagamento_id == ""
+                ? { label: "", value: null }
+                : { label: params.row.nome, value: params.row.forma_pagamento_id }
+            }
+            name="forma_pagamento_id"
+            onChange={(event, value) => handleFormaPagamentoChange(params, value)}
+            isOptionEqualToValue={(option, value) =>
+              option.value === value.value
+            }
+            options={formasPagamentos}
+            renderInput={(params) => (
+              <TextField
+                variant="outlined"
+                fullWidth
+                {...params}
+                placeholder="Pesquise..."
+                style={{
+                  backgroundColor: "transparent",
+                  paddingTop: 8,
+                  paddingBottom: 8,
+                }}
+              />
+            )}
+          />
+        </>
+      ),
+    },
+    {
+      field: "observacao",
+      headerName: "Observação",
+      editable: true,
+      sortable: false,
+      headerAlign: 'letf',
+      flex: 2,
+    },
+    // {
+    //   field: "excluir",
+    //   headerName: "Excluir",
+    //   sortable: false,
+    //   headerAlign: 'letf',
+    //   renderCell: (params) => (
+    //     <>
+    //       <DeleteIcon
+    //         className={"btn btn-lista"}
+    //         onClick={() => removeParcelaRow(params)}
+    //       />
+    //     </>
+    //   ),
+    // },
+  ];
+
+
   useEffect(() => {
     api
       .get("/clientes")
       .then((response) => {
         var array = [];
         response.data["data"].forEach((cliente) => {
-          array.push({ label: cliente.nome, value: cliente.id });
+          if(cliente.situacao === 1){
+            array.push({ label: cliente.nome, value: cliente.id });
+          }
         });
         setClientes(array);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    api
+      .get("/formas-pagamentos")
+      .then((response) => {
+        formasPagamentosOriginal.current = response.data["data"];
+        var array = [];
+        response.data["data"].forEach((formaPagamento) => {
+          array.push({ label: formaPagamento.nome, value: formaPagamento.id });
+        });
+        setFormasPagamentos(array);
       })
       .catch((error) => {
         console.log(error);
@@ -257,7 +384,9 @@ function CadastrarOrcamentosPage() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((transportadora) => {
-          array.push({ label: transportadora.nome, value: transportadora.id });
+          if(transportadora.situacao === 1){
+            array.push({ label: transportadora.nome, value: transportadora.id });
+          }
         });
         setTransportadoras(array);
       })
@@ -280,7 +409,7 @@ function CadastrarOrcamentosPage() {
         });
         setProdutos(array);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }, []);
 
   useEffect(() => {
@@ -306,9 +435,34 @@ function CadastrarOrcamentosPage() {
     rowsProdutos,
     rowsServicos,
     formik.values.frete,
-    formik.values.outros,
+    formik.values.impostos,
     formik.values.desconto,
+    formik.values.somarFreteAoTotal,
   ]);
+
+  useEffect(() => {
+    if (!formik.values.tipoFormaPagamento) return;
+    // Se for a vista, seta a quantidade de parcelas como 1 e o intervalo como 0
+    if (formik.values.tipoFormaPagamento == '0') {
+      formik.setFieldValue("quantidadeParcelas", 1);
+      formik.setFieldValue("intervaloParcelas", 0);
+    }
+  }, [formik.values.tipoFormaPagamento]);
+
+  useEffect(() => {
+    if (formik.values.tipoFormaPagamento == '0') return
+    var formaPaga = formasPagamentosOriginal.current.filter((formaPagamento) => {
+      return formaPagamento.id == formik.values.forma_pagamento_id.value;
+    });
+    if(formaPaga.length == 1){
+      formik.setFieldValue("intervaloParcelas", formaPaga[0].intervaloParcelas);
+      formik.setFieldValue("qtdeMaximaParcelas", formaPaga[0].numeroMaximoParcelas);
+    }
+    if(formik.values.quantidadeParcelas > formik.values.qtdeMaximaParcelas){
+      toast("A quantidade máxima de parcelas para essa forma de pagamento é "+formik.values.qtdeMaximaParcelas, { type: "error" });
+    }
+    
+  }, [formik.values.forma_pagamento_id, formik.isSubmitting]);
 
   const fullScreenLoader = useFullScreenLoader();
 
@@ -341,7 +495,6 @@ function CadastrarOrcamentosPage() {
       );
       return;
     }
-
     if (rowsServicos.find((servico) => servico.servico_id === "")) {
       formik.setSubmitting(false);
       errorAlert(
@@ -363,19 +516,62 @@ function CadastrarOrcamentosPage() {
       );
       return;
     }
+    if (rowsParcelas.length <= 0) {
+      formik.setSubmitting(false);
+      errorAlert(
+        "A venda deve ter pelo menos uma parcela!"
+      );
+      return;
+    }
+    if (rowsParcelas.find((parcela) => Number(parcela.valorParcela) < 0)) {
+      formik.setSubmitting(false);
+      errorAlert(
+        "Por favor, selecione uma valor válido para cada parcela!"
+      );
+      return;
+    }
+    const totalParcelas = rowsParcelas.reduce((acc, item) => acc + Number(item.valorParcela), 0);
+    if (Number(totalParcelas.toFixed(2)) != Number(formik.values.total.toFixed(2))) {
+      formik.setSubmitting(false);
+      errorAlert(
+        "Erro no calculo das parcelas!",
+        "A soma das parcelas deve ser igual ao valor final da venda"
+      );
+      return;
+    }
+
+    if (formik.values.tipoFormaPagamento == '0' && rowsParcelas.length != 1) {
+      formik.setSubmitting(false);
+      errorAlert(
+        "Erro no calculo das parcelas!",
+        "Vendas à vista devem ter apenas uma parcela!"
+      );
+      return;
+    }
+
+    const rowParcelasSanitezed = rowsParcelas.map((parcela) => {
+      return {
+        ...parcela,
+        valorParcela: Number(parcela.valorParcela),
+        dataVencimento: moment(parcela.dataVencimento).format("DD/MM/YYYY"),
+      };
+    });
 
     const params = {
       ...formik.values,
       produtos: rowsProdutos,
       servicos: rowsServicos,
+      parcelas: rowParcelasSanitezed,
+      anexos: files
     };
+
 
     fullScreenLoader.setLoading(true);
     api
-      .post("/orcamentos", params)
+      .post("/vendas", params)
       .then((response) => {
-        successAlert("Sucesso", "Orcamento Cadastrado", () =>
-          history.push("/orcamentos")
+        successAlert("Sucesso", "Venda Cadastrada", () =>
+          history.push("/vendas")
         );
       })
       .catch((error) => {
@@ -389,7 +585,6 @@ function CadastrarOrcamentosPage() {
 
   function handleOnChange(name, value) {
     formik.setFieldValue(name, value); // Altera o formik
-    console.log(formik.values);
   }
 
   // ==== Funções de produtos ====
@@ -442,63 +637,149 @@ function CadastrarOrcamentosPage() {
     setRowsProdutos(objectToArray(dataGrid.rows.idRowsLookup));
   }
 
+  function handleParcelaRowStateChange(dataGrid) {
+    if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsParcelas))
+      return;
+    if (objectToArray(dataGrid.rows.idRowsLookup).length != rowsParcelas.length)
+      return;
+
+    const total = formik.values.total;
+    const parcelas = formik.values.quantidadeParcelas;
+    var acumulador = 0;
+    var resto = 0;
+    var totalParcelas = 0;
+
+    objectToArray(dataGrid.rows.idRowsLookup).forEach((row, index) => {
+      // Caso o preço daquela row tenha sido alterado, entrara no if
+      if (objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela != rowsParcelas[index].valorParcela) {
+        resto = Number(total) - (Number(acumulador) + Number(objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela)); // Calcula o restante TOTAL para ser dividido entra as parcelas restantes
+        var restoCadaParcela = resto / (parcelas - (index + 1)); // Calcula o restante INDIVIDUAL para ser dividido entre as parcelas restantes
+
+        // Para cada parcela restante, altera o valor da parcela (se o valor restante for negativo, o valor da parcela será 0)
+        for (let i = index + 1; i < parcelas; i++) {
+          if (restoCadaParcela > 0) {
+            objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = restoCadaParcela.toFixed(2);
+          } 
+          else {
+            objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = 0;
+          }
+        }
+
+      }
+      else {
+        acumulador = acumulador + Number(rowsParcelas[index].valorParcela); // Acumula o valor das parcelas que não foram alteradas
+      }
+
+      totalParcelas += Number(objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela); // Soma os valores de todas as parcelas (usado somente para calcular a diferença)
+
+    });
+
+    var diferenca = total - totalParcelas;
+    diferenca = Number(diferenca.toFixed(2));
+
+    // se hover diferença, adiciona a diferença na ultima parcela
+    if (Number(diferenca) !== 0) {
+      objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela = Number(objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela) + Number(diferenca.toFixed(2));
+    }
+
+    setRowsParcelas(objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
+      row.valorParcela = row.valorParcela > 0 ? Number(row.valorParcela).toFixed(2) : 0;
+      return row;
+    }));
+  }
+
   function handleClienteChange(params, value) {
     params.row.produto_id = value.value;
   }
 
-  // ==== Funções de serviços ====
-  function addServicoRow() {
-    setRowsServicos([
-      ...rowsServicos,
-      {
-        id: new Date().getTime(),
-        servico_id: "",
-        quantidade: 0,
-        preco: 0,
-        total: 0,
+  // ==== Funções de parcelas ====
+
+  function refreshParcelas() {
+    if (!formik.values.forma_pagamento_id) {
+      errorAlert("Por favor, selecione uma forma de pagamento!");
+      return;
+    }
+    var aux = [];
+
+    var diferenca = formik.values.total / formik.values.quantidadeParcelas;
+    diferenca = (formik.values.total - (diferenca.toFixed(2) * formik.values.quantidadeParcelas)).toFixed(2);
+
+    for (let i = 0; i < formik.values.quantidadeParcelas; i++) {
+      aux.push({
+        id: new Date().getTime() + i,
+        dataVencimento: moment(formik.values.dataPrimeiraParcela).add(formik.values.intervaloParcelas * i, 'days').format("DD/MM/YYYY"),
+        valorParcela: Number((Number(formik.values.total) / Number(formik.values.quantidadeParcelas))).toFixed(2),
+        forma_pagamento_id: formik.values.forma_pagamento_id.value,
+        nome: formik.values.forma_pagamento_id.label,
         observacao: "",
-      },
-    ]);
+      });
+    }
+    // Se houver diferência, adiciona a última parcela com o valor da diferença
+    if (Number(diferenca) !== 0) {
+      aux[aux.length - 1].valorParcela = Number(aux[aux.length - 1].valorParcela) + Number(diferenca);
+    }
+    setRowsParcelas(aux);
   }
 
-  function removeServicoRow(params) {
-    var indexToBeDeleted = rowsServicos.map((row, index) => {
-      if (row.id === params.id) return index;
-    });
-    indexToBeDeleted = indexToBeDeleted.filter((row) => row !== undefined);
-    setRowsServicos(deleteFromArrayByIndex(rowsServicos, ...indexToBeDeleted));
+
+  function handleFormaPagamentoChange(params, value) {
+    params.row.forma_pagamento_id = value.value;
+    params.row.nome = value.label;
   }
 
-  function handleServicoRowStateChange(dataGrid) {
-    if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsServicos))
-      return;
-    if (objectToArray(dataGrid.rows.idRowsLookup).length != rowsServicos.length)
-      return;
-
-    objectToArray(dataGrid.rows.idRowsLookup).forEach((row, index) => {
-      const selectdServico = servicos.find(
-        (servico) => servico.value === row.servico_id
-      );
-      if (selectdServico) {
-        if (objectToArray(dataGrid.rows.idRowsLookup)[index].preco <= 0) {
-          objectToArray(dataGrid.rows.idRowsLookup)[index].preco =
-            selectdServico.preco;
-        } else {
-          console.log("Preço original mudado");
+    // ==== Funções de serviços ====
+    function addServicoRow() {
+      setRowsServicos([
+        ...rowsServicos,
+        {
+          id: new Date().getTime(),
+          servico_id: "",
+          quantidade: 0,
+          preco: 0,
+          total: 0,
+          observacao: "",
+        },
+      ]);
+    }
+  
+    function removeServicoRow(params) {
+      var indexToBeDeleted = rowsServicos.map((row, index) => {
+        if (row.id === params.id) return index;
+      });
+      indexToBeDeleted = indexToBeDeleted.filter((row) => row !== undefined);
+      setRowsServicos(deleteFromArrayByIndex(rowsServicos, ...indexToBeDeleted));
+    }
+  
+    function handleServicoRowStateChange(dataGrid) {
+      if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsServicos))
+        return;
+      if (objectToArray(dataGrid.rows.idRowsLookup).length != rowsServicos.length)
+        return;
+  
+      objectToArray(dataGrid.rows.idRowsLookup).forEach((row, index) => {
+        const selectdServico = servicos.find(
+          (servico) => servico.value === row.servico_id
+        );
+        if (selectdServico) {
+          if (objectToArray(dataGrid.rows.idRowsLookup)[index].preco <= 0) {
+            objectToArray(dataGrid.rows.idRowsLookup)[index].preco =
+              selectdServico.preco;
+          } else {
+            console.log("Preço original mudado");
+          }
+  
+          objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
+            objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
+            Number(row.quantidade)
+          ).toFixed(2);
         }
-
-        objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
-          objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
-          Number(row.quantidade)
-        ).toFixed(2);
-      }
-    });
-    setRowsServicos(objectToArray(dataGrid.rows.idRowsLookup));
-  }
-
-  function handleServicoChange(params, value) {
-    params.row.servico_id = value.value;
-  }
+      });
+      setRowsServicos(objectToArray(dataGrid.rows.idRowsLookup));
+    }
+  
+    function handleServicoChange(params, value) {
+      params.row.servico_id = value.value;
+    }
 
   function calcularTotalFinal() {
     var total = 0;
@@ -507,11 +788,12 @@ function CadastrarOrcamentosPage() {
     });
     rowsServicos.forEach((row) => {
       total = total + Number(row.total);
-      console.log("total", typeof total);
     });
 
-    total = total + Number(formik.values.frete);
-    total = total + Number(formik.values.outros);
+    if (formik.values.somarFreteAoTotal) {
+      total = total + Number(formik.values.frete);
+    }
+    total = total + Number(formik.values.impostos);
     total = total - Number(formik.values.desconto);
 
     formik.setFieldValue("total", total);
@@ -521,20 +803,19 @@ function CadastrarOrcamentosPage() {
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
-        <div>
-          <Divider />
+        <div style={{ marginTop: 0, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
             <AssignmentIcon />
-            <h3>Dados do Orçamento</h3>
+            <h3>Dados da Venda</h3>
           </div>
 
           <Grid container spacing={3}>
             <Grid item xs={4}>
               <TextField
                 variant="outlined"
-                label="Número"
+                label="Número *"
                 fullWidth
                 type="text"
                 value={formik.values.numero}
@@ -550,6 +831,7 @@ function CadastrarOrcamentosPage() {
                 value={formik.values.cliente_id}
                 name="cliente_id"
                 onChange={(event, value) => handleOnChange("cliente_id", value)}
+                onBlur={formik.handleBlur}
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
@@ -560,18 +842,20 @@ function CadastrarOrcamentosPage() {
                     variant="outlined"
                     fullWidth
                     {...params}
-                    label="Cliente"
+                    label="Cliente *"
                     placeholder="Pesquise..."
+                    error={formik.touched.cliente_id && Boolean(formik.errors.cliente_id)}
+                    helperText={formik.touched.cliente_id && formik.errors.cliente_id}
                   />
                 )}
               />
             </Grid>
             <Grid item xs={4}>
               <FormControl variant="outlined" fullWidth name="situacao">
-                <InputLabel>Situação</InputLabel>
+                <InputLabel>Situação *</InputLabel>
                 <Select
                   className={"input-select"}
-                  label="Situação"
+                  label="Situação *"
                   name="situacao"
                   value={formik.values.situacao}
                   onChange={formik.handleChange}
@@ -580,9 +864,9 @@ function CadastrarOrcamentosPage() {
                     formik.touched.situacao && Boolean(formik.errors.situacao)
                   }
                 >
-                  <MenuItem value={0}>Aberto</MenuItem>
-                  <MenuItem value={1}>Aprovado</MenuItem>
-                  <MenuItem value={2}>Reprovado</MenuItem>
+                  <MenuItem value={0}>Aberta</MenuItem>
+                  <MenuItem value={1}>Realizada</MenuItem>
+                  <MenuItem value={2}>Cancelada</MenuItem>
                 </Select>
                 {formik.touched.situacao && Boolean(formik.errors.situacao) ? (
                   <FormHelperText>{formik.errors.situacao}</FormHelperText>
@@ -596,7 +880,7 @@ function CadastrarOrcamentosPage() {
             <Grid item xs={4}>
               <TextField
                 variant="outlined"
-                label="Data Entrada"
+                label="Data Entrada *"
                 fullWidth
                 type="date"
                 value={formik.values.dataEntrada}
@@ -635,11 +919,11 @@ function CadastrarOrcamentosPage() {
                 )}
               />
             </Grid>
+            
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -691,8 +975,7 @@ function CadastrarOrcamentosPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -744,13 +1027,12 @@ function CadastrarOrcamentosPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
             <AssignmentIcon />
-            <h3>Valores e Precificação</h3>
+            <h3>Frete, Impostos e Descontos</h3>
           </div>
 
           <Grid container spacing={3}>
@@ -763,7 +1045,29 @@ function CadastrarOrcamentosPage() {
                   startAdornment: (
                     <InputAdornment position="start">R$:</InputAdornment>
                   ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Tooltip title="Somar frete ao total" arrow>
+                        <Checkbox
+                          checked={formik.values.somarFreteAoTotal}
+                          onChange={formik.handleChange}
+                          name="somarFreteAoTotal"
+                          inputProps={{ 'aria-label': 'controlled' }}
+                        />
+                      </Tooltip>
+                    </InputAdornment>
+                  ),
                 }}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => { }}
+                      edge="end"
+                    >
+                      {<CloseIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                }
                 type="number"
                 value={formik.values.frete}
                 name="frete"
@@ -776,7 +1080,7 @@ function CadastrarOrcamentosPage() {
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
-                label="Outros Custos"
+                label="Impostos"
                 fullWidth
                 InputProps={{
                   startAdornment: (
@@ -784,12 +1088,12 @@ function CadastrarOrcamentosPage() {
                   ),
                 }}
                 type="number"
-                value={formik.values.outros}
-                name="outros"
+                value={formik.values.impostos}
+                name="impostos"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.outros && Boolean(formik.errors.outros)}
-                helperText={formik.touched.outros && formik.errors.outros}
+                error={formik.touched.impostos && Boolean(formik.errors.impostos)}
+                helperText={formik.touched.impostos && formik.errors.impostos}
               />
             </Grid>
             <Grid item xs={3}>
@@ -836,8 +1140,190 @@ function CadastrarOrcamentosPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Divider />
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+          <div
+            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+          >
+            <AssignmentIcon />
+            <h3>Pagamento</h3>
+            <div style={{ marginLeft: 'auto' }}>
+              <FormControl>
+                <RadioGroup
+                  value={formik.values.tipoFormaPagamento}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  name="tipoFormaPagamento"
+                  row>
+                  <FormControlLabel value={'0'} control={<Radio />} label="À vista" />
+                  <FormControlLabel value={'1'} control={<Radio />} label="A prazo" />
+                </RadioGroup>
+                <FormHelperText>{formik.touched.tipoFormaPagamento && formik.errors.tipoFormaPagamento}</FormHelperText>
+              </FormControl>
+              {rowsParcelas.length <= 0 ?
+                <Button
+                  style={{ height: 28, fontSize: 12, marginTop: 8 }}
+                  className={"btn btn-primary"}
+                  startIcon={<AddIcon />}
+                  onClick={refreshParcelas}
+                  disabled={isBtnDisabled}
+                >
+                  Parcelas
+                </Button>
+                :
+                <Button
+                  style={{ height: 28, fontSize: 12, marginTop: 8 }}
+                  className={"btn btn-primary"}
+                  startIcon={<CleaningServicesIcon />}
+                  onClick={() => setRowsParcelas([])}
+                  disabled={isBtnDisabled}
+                >
+                  Limpar
+                </Button>}
+
+
+            </div>
+
+          </div>
+
+          <Grid container spacing={3}>
+            <Grid item xs={3}>
+              <Autocomplete
+                value={formik.values.forma_pagamento_id}
+                name="forma_pagamento_id"
+                onChange={(event, value) => handleOnChange("forma_pagamento_id", value)}
+                isOptionEqualToValue={(option, value) =>
+                  option.value === value.value
+                }
+                disablePortal
+                options={formasPagamentos}
+                renderInput={(params) => (
+                  <TextField
+                    variant="outlined"
+                    fullWidth
+                    {...params}
+                    label="Forma de pagamento *"
+                    placeholder="Pesquise..."
+                    error={formik.touched.forma_pagamento_id && Boolean(formik.errors.forma_pagamento_id)}
+                    helperText={formik.touched.forma_pagamento_id && formik.errors.forma_pagamento_id}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                max={formik.values.qtdeMaximaParcelas}
+                variant="outlined"
+                label="Qtde Parcelas *"
+                fullWidth
+                type="number"
+                value={formik.values.quantidadeParcelas}
+                disabled={formik.values.tipoFormaPagamento == 0}
+                name="quantidadeParcelas"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.quantidadeParcelas &&
+                  Boolean(formik.errors.quantidadeParcelas)
+                }
+                helperText={
+                  formik.touched.quantidadeParcelas && formik.errors.quantidadeParcelas
+                }
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                variant="outlined"
+                label="Intervalo (dias) *"
+                fullWidth
+                type="number"
+                value={formik.values.intervaloParcelas}
+                disabled={formik.values.tipoFormaPagamento == 0}
+                name="intervaloParcelas"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.intervaloParcelas &&
+                  Boolean(formik.errors.intervaloParcelas)
+                }
+                helperText={
+                  formik.touched.intervaloParcelas && formik.errors.intervaloParcelas
+                }
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                variant="outlined"
+                label="Data 1ª parcela *"
+                fullWidth
+                type="date"
+                value={formik.values.dataPrimeiraParcela}
+                name="dataPrimeiraParcela"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.dataPrimeiraParcela &&
+                  Boolean(formik.errors.dataPrimeiraParcela)
+                }
+                helperText={
+                  formik.touched.dataPrimeiraParcela && formik.errors.dataPrimeiraParcela
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <div
+                style={{
+                  height: 100 + rowsParcelas.length * 55,
+                  width: "100%",
+                  color: "#fff",
+                }}
+              >
+                <DataGrid
+                  className={"table-data-grid"}
+                  rows={rowsParcelas}
+                  columns={columnsParcelas}
+                  onStateChange={handleParcelaRowStateChange}
+                  disableVirtualization
+                  hideFooter={true}
+                  disableColumnMenu={true}
+                  components={{
+                    NoRowsOverlay: () => (
+                      <div style={{ marginTop: 55, textAlign: "center" }}>
+                        <h3>Nenhum serviço adicionado</h3>
+                      </div>
+                    ),
+                  }}
+                  onCellEditStart={() => {
+                    setIsBtnDisabled(true);
+                  }}
+                  onCellEditStop={() => {
+                    setIsBtnDisabled(false);
+                  }}
+                />
+              </div>
+            </Grid>
+          </Grid>
+        </div>
+
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+          <div
+            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+          >
+            <AssignmentIcon />
+            <h3>Anexos</h3>
+          </div>
+
+          <Grid container spacing={3}>
+            <>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <DragAndDrop state={[files, setFiles]} listFiles></DragAndDrop>
+                </Grid>
+              </Grid>
+            </>
+          </Grid>
+        </div>
+
+        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -923,4 +1409,4 @@ function CadastrarOrcamentosPage() {
   );
 }
 
-export default CadastrarOrcamentosPage;
+export default CadastrarVendasPage;
