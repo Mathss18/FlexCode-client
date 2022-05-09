@@ -18,6 +18,7 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import PeopleIcon from '@mui/icons-material/People';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import StorageIcon from '@mui/icons-material/Storage';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 export const menu = [
   {
@@ -172,6 +173,16 @@ export const menu = [
     state: ['openFinanceiroList', 'setOpenFinanceiroList'],
     collapse: true,
     children: [
+      {
+        title: 'Money',
+        path: '/money',
+        icon: <CalendarMonthIcon className={"sidemenu-text"} />,
+        className: 'sidemenu-text',
+        click: '()=>{}',
+        state: null,
+        collapse: false,
+        children: [],
+      },
       {
         title: 'Compras',
         path: '/compras',
