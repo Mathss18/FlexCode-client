@@ -78,16 +78,17 @@ export const GlobalStyles = createGlobalStyle`
   .MuiFormHelperText-root{
     color: ${({ theme }) => theme.colors.button.error.background} !important; // cor do texto helper do input quando está com erro
   }
-
+  
   .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline{
     border-color: ${({ theme }) => theme.colors.button.error.background} !important; // cor da borda do input com erro
   }
-
+  
   .MuiTypography-colorTextSecondary{
     color: ${({ theme }) => theme.colors.input.text} !important; // cor do texto helper do input
   }
   
   .input-select{
+    color: ${({ theme }) => theme.colors.input.text} !important; // cor do texto dentro dos inputs (select)
     background: ${({ theme }) => theme.colors.input.background} !important; // cor de fundo input select
     border-radius: 5px;
   }
@@ -536,6 +537,14 @@ export const GlobalStyles = createGlobalStyle`
     background: ${({ theme }) => theme.colors.toast.background}
   }
 
+  /* ========= DIALOG ========= */
+  .dialogTitle{
+    color: ${({ theme }) => theme.colors.text}; // cor padrao do texto da aplicação
+  }
+  .dialogBackground{
+    background: ${({ theme }) => theme.colors.topbar.background}; // cor do hearder do calendario
+  }
+
   /* ========= DIALOG FULLSCREEN ========= */
   .MuiDialog-paperFullScreen{
     background: ${({ theme }) => theme.colors.body}; // cor de fundo da aplicação
@@ -550,10 +559,38 @@ export const GlobalStyles = createGlobalStyle`
   .MuiStepLabel-label{
     color: ${({ theme }) => theme.colors.text} !important; // cor padrao do texto da aplicação
   }
-
+  
   .MuiStepLabel-label.Mui-error{
     color: #d32f2f !important; // cor padrao do texto da aplicação
   }
   
+  /* ========= CALENDAR ========= */
+  .fc .fc-daygrid-day-frame{
+    background: ${({ theme }) => theme.colors.body}; // cor de fundo do calendario
+  }
+
+  .fc-scrollgrid-sync-inner{
+    background: ${({ theme }) => theme.colors.topbar.background}; // cor do hearder do calendario
+  }
+  
+  .fc-popover-header{
+    color: #000 // texto do ver mais
+  }
+
+  .fc-daygrid-event{
+    margin: 3px;
+  }
+
+  .fc-day-today{
+    background: 'lime';
+  }
+
+  .fc-daygrid-day-frame{
+    max-height: 100px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+
 
 `;

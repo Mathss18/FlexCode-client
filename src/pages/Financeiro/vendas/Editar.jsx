@@ -79,7 +79,7 @@ function EditarVendasPage() {
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const [files, setFiles] = useState([]);
   const formasPagamentosOriginal = useRef([]);
-  const isRecebida = useRef(false);
+  const isRealizada = useRef(false);
   const isCancelada = useRef(false);
 
   const formik = useFormik({
@@ -449,15 +449,15 @@ function EditarVendasPage() {
       .get("/vendas/" + id)
       .then((response) => {
         if (response.data["data"].situacao == 1) {
-          isRecebida.current = true;
+          isRealizada.current = true;
         }
         else if(response.data["data"].situacao == 2){
           toast("Venda cancelada!, não é possivel fazer alterações", { type: "error" });
           isCancelada.current = true;
-          isRecebida.current = true;
+          isRealizada.current = true;
         }
         else{
-          isRecebida.current = false;
+          isRealizada.current = false;
           isCancelada.current = false;
         }
 
@@ -949,6 +949,7 @@ function EditarVendasPage() {
           <Grid container spacing={3}>
             <Grid item xs={4}>
               <TextField
+                disabled
                 variant="outlined"
                 label="Número *"
                 fullWidth
@@ -963,6 +964,7 @@ function EditarVendasPage() {
             </Grid>
             <Grid item xs={4}>
               <Autocomplete
+                disabled={isRealizada.current}
                 value={formik.values.cliente_id}
                 name="cliente_id"
                 onChange={(event, value) => handleOnChange("cliente_id", value)}
@@ -1058,7 +1060,7 @@ function EditarVendasPage() {
           </Grid>
         </div>
 
-        <div style={{ pointerEvents: isRecebida.current ? 'none' : 'auto', marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div style={{ pointerEvents: isRealizada.current ? 'none' : 'auto', marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1110,7 +1112,7 @@ function EditarVendasPage() {
           </Grid>
         </div>
 
-        <div style={{ pointerEvents: isRecebida.current ? 'none' : 'auto', marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div style={{ pointerEvents: isRealizada.current ? 'none' : 'auto', marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1162,7 +1164,7 @@ function EditarVendasPage() {
           </Grid>
         </div>
 
-        <div style={{ pointerEvents: isRecebida.current ? 'none' : 'auto', marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div style={{ pointerEvents: isRealizada.current ? 'none' : 'auto', marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1275,7 +1277,7 @@ function EditarVendasPage() {
           </Grid>
         </div>
 
-        <div style={{ pointerEvents: isRecebida.current ? 'none' : 'auto', marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div style={{ pointerEvents: isRealizada.current ? 'none' : 'auto', marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >

@@ -387,3 +387,30 @@ export const vendasValidation = yup.object().shape({
   observacao: yup.string().nullable(),
   observacaoInterna: yup.string().nullable(),
 });
+
+export const ajusteEstoqueValidation = yup.object().shape({
+  quantidade: yup.number("").required('A quantidade é obrigatória').moreThan(0, "A quantidade deve ser maior que 0"),
+  valorUnitario: yup.number("").required('O Valor unitário é obrigatório').min(0, "O valor não pode ser negativo"),
+  tipo: yup.number("").required('O Tipo é obrigatório'),
+  observacao: yup.string().required('O motivo do reajuste é obrigatório'),
+});
+
+export const transacaoValidation = yup.object().shape({
+  data: yup.string().required('A data é obrigatória'),
+  valor: yup.number("").required('O Valor é obrigatório').min(0, "O valor não pode ser negativo"),
+  tipo: yup.string().required('O tipo é obrigatório'),
+  situacao: yup.string().required('A situação é obrigatória'),
+  favorecido_id: yup.object().shape({
+    label: yup.string().required(""),
+    value: yup.number().required("")
+  })
+  .nullable()
+  .required('O favorecido é obrigatorio'),
+  tipoFavorecido:  yup.string().required('A situação é obrigatória'),
+  conta_bancaria_id: yup.object().shape({
+    label: yup.string().required(""),
+    value: yup.number().required("")
+  })
+  .nullable()
+  .required('A conta bancária é obrigatoria'),
+});

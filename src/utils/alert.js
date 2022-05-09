@@ -22,7 +22,7 @@ export function successAlert(title='Sucesso', text='', callback=()=>{}){
 export function confirmAlert(title='Tem certeza?', text='',isConfirmed=()=>{}, isDenied = ()=>{}){
     Swal.fire({
         title: title,
-        text: text,
+        html: text,
         icon: 'warning',
         showCancelButton: true,
         cancelButtonText: 'Cancelar',

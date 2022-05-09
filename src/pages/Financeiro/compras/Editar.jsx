@@ -757,6 +757,7 @@ function EditarComprasPage() {
             </Grid>
             <Grid item xs={4}>
               <Autocomplete
+                disabled={isRecebida.current}
                 value={formik.values.fornecedor_id}
                 name="fornecedor_id"
                 onChange={(event, value) => handleOnChange("fornecedor_id", value)}

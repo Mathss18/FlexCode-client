@@ -11,13 +11,17 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import { addDays } from "date-fns";
 import { DateRangePicker } from "react-date-range";
 import * as locales from "react-date-range/dist/locale";
-import { defaultStaticRanges } from "./range";
+import {
+  defaultInputRanges,
+  defaultStaticRanges,
+} from "../../config/dateRangeConfig";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import moment from "moment";
+import { Tooltip } from "@material-ui/core";
 
 function MovimentacoesPage() {
   const history = useHistory();
@@ -78,11 +82,17 @@ function MovimentacoesPage() {
   useEffect(() => {
     console.log(state);
     if (!produto || !clientes || !fornecedores || !usuarios) return;
-    if(open) return;
+    if (open) return;
 
     fullScreenLoader.setLoading(true);
     api
-      .get(`/estoques/movimentacoes/${id}?startDate=${moment(state[0].startDate).format('YYYY-MM-DD')}&endDate=${moment(state[0].endDate).format('YYYY-MM-DD')}`)
+      .get(
+        `/estoques/movimentacoes/${id}?startDate=${moment(
+          state[0].startDate
+        ).format("YYYY-MM-DD")}&endDate=${moment(state[0].endDate).format(
+          "YYYY-MM-DD"
+        )}`
+      )
       .then((response) => {
         response.data["data"].forEach((element) => {
           if (element["tipoCliente"] === "pf") {
@@ -95,23 +105,43 @@ function MovimentacoesPage() {
             element["fornecedor_id"] !== null
               ? fornecedores.map((item) => {
                   if (item.id === element["fornecedor_id"]) {
-                    return item.nome;
+                    return (
+                      <Tooltip title="Fornecedor" arrow>
+                        <div>{item.nome}</div>
+                      </Tooltip>
+                    );
                   }
                 })
               : element["cliente_id"] !== null
               ? clientes.map((item) => {
                   if (item.id === element["cliente_id"]) {
-                    return item.nome;
+                    return (
+                      <Tooltip title="Cliente" arrow>
+                        <div>{item.nome}</div>
+                      </Tooltip>
+                    );
                   }
                 })
               : usuarios.map((item) => {
                   if (item.id === element["usuario_id"]) {
-                    return item.nome;
+                    return (
+                      <Tooltip title="Usuário" arrow>
+                        <div>{item.nome}</div>
+                      </Tooltip>
+                    );
                   }
                 }),
             element["tipo"],
-            element["tipo"]==='entrada' ? `${element["quantidade"]} ${produto.unidade_produto?.sigla ?? ""}` : `-${element["quantidade"]} ${produto.unidade_produto?.sigla ?? ""}`,
-            `${element["quantidadeMomento"]} ${produto.unidade_produto?.sigla ?? ""}`,
+            element["tipo"] === "entrada"
+              ? `${element["quantidade"]} ${
+                  produto.unidade_produto?.sigla ?? ""
+                }`
+              : `-${element["quantidade"]} ${
+                  produto.unidade_produto?.sigla ?? ""
+                }`,
+            `${element["quantidadeMomento"]} ${
+              produto.unidade_produto?.sigla ?? ""
+            }`,
             `R$: ${element["preco"].toFixed(2)}`,
             `R$: ${(element["quantidade"] * element["preco"]).toFixed(2)}`,
             element["observacao"],
@@ -173,9 +203,8 @@ function MovimentacoesPage() {
       });
   }, []);
 
-  function handleClose(){
+  function handleClose() {
     setOpen(false);
-
   }
 
   return (
@@ -186,7 +215,7 @@ function MovimentacoesPage() {
         open={open}
         onClose={handleClose}
       >
-        <DialogTitle>Optional sizes</DialogTitle>
+        <DialogTitle>Selecione um intervalo personalizado</DialogTitle>
         <DialogContent>
           <DateRangePicker
             onChange={(item) => setState([item.selection])}
@@ -198,15 +227,12 @@ function MovimentacoesPage() {
             locale={locales.pt}
             dateDisplayFormat={"dd/MM/yyyy"}
             staticRanges={defaultStaticRanges}
+            inputRanges={defaultInputRanges}
             showMonthAndYearPickers={true}
           />
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={handleClose}
-          >
-            Fechar
-          </Button>
+          <Button onClick={handleClose}>Fechar</Button>
         </DialogActions>
       </Dialog>
 

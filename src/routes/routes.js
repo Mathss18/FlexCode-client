@@ -85,6 +85,7 @@ import ListarVendas from "../pages/Financeiro/vendas/Listar";
 import EditarVendasPage from "../pages/Financeiro/vendas/Editar";
 import ListarEstoques from "../pages/Estoque/Listar";
 import MovimentacoesPage from "../pages/Estoque/Movimentacoes";
+import CalendarioPage from "../pages/Financeiro/money/Calendario";
 
 
 export default function Routes({themeSetter}) {
@@ -98,14 +99,15 @@ export default function Routes({themeSetter}) {
 
         {/*======== Rotas sem TopBar e SideMenu ========*/}
         <Route path="/login" exact component={LoginPage}></Route>
-        <Route path="/ordens-servicos/relatorio" exact component={OrdermServicoReport}></Route>
         <Route path="/ordens-servicos-acompanhamento/:encrypted" exact component={ListarOrdensServicosAcompanhamento}></Route>
-
+        <Route path="/ordens-servicos/relatorio" exact component={OrdermServicoReport}></Route>
         <Route path="/orcamentos/relatorio" exact component={OrcamentoReport}></Route>
+
 
         <PrivateRoutes>
           <TopBar />
           <SideMenu>
+            <Route path="/money" exact component={CalendarioPage}></Route>
             <Route path="/home" exact component={Home}></Route>
             <Route path="/trocar-tema" exact component={()=>{return <ThemeSelector setter={themeSetter} />}}></Route>
 
