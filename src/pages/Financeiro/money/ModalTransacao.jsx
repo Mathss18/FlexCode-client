@@ -35,9 +35,9 @@ const initialValues = {
   data: "",
   observacao: "",
   valor: "",
-  situacao: "aberta",
+  situacao: "",
   favorecido_id: "",
-  tipoFavorecido: "clientes",
+  tipoFavorecido: "",
   conta_bancaria_id: "",
 
   isRecorrente: false,
@@ -202,7 +202,7 @@ function ModalTransacao({
             }}
             id="free-solo-dialog-demo"
             options={
-              tipoTransacao.current === "Rendimento"
+              tipoTransacao.current === "rendimento"
                 ? outrosFavorecidosRendimentos
                 : outrosFavorecidosDespesas
             }
@@ -266,8 +266,7 @@ function ModalTransacao({
 
   useEffect(() => {
     if (!open) return;
-    console.log("initialValues", initialValues);
-    console.log("editTransacao", editTransacao);
+
     if (editTransacao) {
       var editInitialValues = {
         data: editTransacao.start,
@@ -285,108 +284,104 @@ function ModalTransacao({
       tipoTransacao.current = editTransacao.tipo;
 
       formik.setValues(editInitialValues);
+    } else {
+      formik.setFieldValue("data", dataSelecionada);
+      if (tipoTransacao.current === "rendimento") {
+        formik.setFieldValue("tipo", "rendimento");
+        formik.setFieldValue("tipoFavorecido", "clientes");
+        formik.setFieldValue('situacao', 'aberta')
+      }
+      if (tipoTransacao.current === "despesa") {
+        formik.setFieldValue("tipo", "despesa");
+        formik.setFieldValue("tipoFavorecido", "fornecedores");
+        formik.setFieldValue('situacao', 'registrada')
+      }
     }
   }, [open]);
-
-  useEffect(() => {
-    if (!open) return;
-
-    if (tipoTransacao.current === "rendimento") {
-      formik.setFieldValue("tipo", "rendimento");
-    }
-    if (tipoTransacao.current === "despesa") {
-      formik.setFieldValue("tipo", "despesa");
-    }
-  }, [open]);
-
-  useEffect(() => {
-    formik.setFieldValue("data", dataSelecionada);
-  }, [dataSelecionada]);
-
-  useEffect(() => {
-    formik.setFieldValue("favorecido_id", "");
-  }, [formik.values.tipoFavorecido]);
 
   function handleOnSubmit() {
     setOpen(false);
-    if(editTransacao){
+    if (editTransacao) {
       api
-      .put("/transacoes/"+editTransacao.id, {
-        ...formik.values,
-        title: formik.values.favorecido_id.label,
-      })
-      .then((response) => {
-        formik.resetForm(initialValues);
-        setOpen(false);
-        toast("Transação editada com sucesso!", { type: "success" });
-        
-      })
-      .catch((error) => {
-        toast("Erro ao cadastrar transação!", { type: "error" });
-        errorAlert("Erro ao cadastrar transação!", error.response.data.message);
-      })
-      .finally(() => {
-        formik.setSubmitting(false);
-      });
-    }
-    else{
+        .put("/transacoes/" + editTransacao.id, {
+          ...formik.values,
+          title: formik.values.favorecido_id.label,
+        })
+        .then((response) => {
+          formik.resetForm(initialValues);
+          setOpen(false);
+          toast("Transação editada com sucesso!", { type: "success" });
+        })
+        .catch((error) => {
+          toast("Erro ao cadastrar transação!", { type: "error" });
+          errorAlert(
+            "Erro ao cadastrar transação!",
+            error.response.data.message
+          );
+        })
+        .finally(() => {
+          formik.setSubmitting(false);
+        });
+    } else {
       api
-      .post("/transacoes", {
-        ...formik.values,
-        title: formik.values.favorecido_id.label,
-      })
-      .then((response) => {
-        formik.resetForm(initialValues);
-        setOpen(false);
-        toast("Transação cadastrada com sucesso!", { type: "success" });
-        setTransacoes([
-          ...transacoes,
-          {
-            id: response.data["data"].id,
-            title: response.data["data"].title,
-            start: response.data["data"].data,
-            end: response.data["data"].data,
-            allDay: true,
-            backgroundColor:
-              response.data["data"].tipo === "rendimento"
-                ? "#00a65a"
-                : "#f56954",
-            borderColor:
-              response.data["data"].tipo === "rendimento"
-                ? "#00a65a"
-                : "#f56954",
-            fontSize: "12px",
+        .post("/transacoes", {
+          ...formik.values,
+          title: formik.values.favorecido_id.label,
+        })
+        .then((response) => {
+          formik.resetForm(initialValues);
+          setOpen(false);
+          toast("Transação cadastrada com sucesso!", { type: "success" });
+          setTransacoes([
+            ...transacoes,
+            {
+              id: response.data["data"].id,
+              title: response.data["data"].title,
+              start: response.data["data"].data,
+              end: response.data["data"].data,
+              allDay: true,
+              backgroundColor:
+                response.data["data"].tipo === "rendimento"
+                  ? "#00a65a"
+                  : "#f56954",
+              borderColor:
+                response.data["data"].tipo === "rendimento"
+                  ? "#00a65a"
+                  : "#f56954",
+              fontSize: "12px",
 
-            data: response.data["data"].data,
-            observacao: response.data["data"].observacao,
-            valor: response.data["data"].valor,
-            situacao: response.data["data"].situacao,
-            tipo: response.data["data"].tipo,
-            favorecido_id: {
-              value: response.data["data"].favorecido_id,
-              label: response.data["data"].favorecido_nome,
+              data: response.data["data"].data,
+              observacao: response.data["data"].observacao,
+              valor: response.data["data"].valor,
+              situacao: response.data["data"].situacao,
+              tipo: response.data["data"].tipo,
+              favorecido_id: {
+                value: response.data["data"].favorecido_id,
+                label: response.data["data"].favorecido_nome,
+              },
+              tipoFavorecido: "clientes",
+              conta_bancaria: {
+                id: response.data["data"].conta_bancaria_id,
+                nome: formik.values.conta_bancaria_id.label,
+              },
+              conta_bancaria_id: {
+                id: response.data["data"].conta_bancaria_id,
+                nome: formik.values.conta_bancaria_id.label,
+              },
             },
-            tipoFavorecido: "clientes",
-            conta_bancaria: {
-              id: response.data["data"].conta_bancaria_id,
-              nome: formik.values.conta_bancaria_id.label,
-            },
-            conta_bancaria_id: {
-              id: response.data["data"].conta_bancaria_id,
-              nome: formik.values.conta_bancaria_id.label,
-            },
-          },
-        ]);
-      })
-      .catch((error) => {
-        toast("Erro ao cadastrar transação!", { type: "error" });
-        errorAlert("Erro ao cadastrar transação!", error.response.data.message);
-      })
-      .finally(() => {
-        formik.setSubmitting(false);
-      });
+          ]);
+        })
+        .catch((error) => {
+          toast("Erro ao cadastrar transação!", { type: "error" });
+          errorAlert(
+            "Erro ao cadastrar transação!",
+            error.response.data.message
+          );
+        })
+        .finally(() => {
+          formik.setSubmitting(false);
+        });
     }
-   
   }
 
   return (
@@ -450,45 +445,27 @@ function ModalTransacao({
                     label="Tipo de Favorecido *"
                     name="tipoFavorecido"
                     value={formik.values.tipoFavorecido}
-                    onChange={formik.handleChange}
+                    onChange={(e)=>{formik.handleChange(e); formik.setFieldValue('favorecido_id', '')}}
                     onBlur={formik.handleBlur}
                     error={
                       formik.touched.tipoFavorecido &&
                       Boolean(formik.errors.tipoFavorecido)
                     }
                   >
-                    <MenuItem
-                      disabled={
-                        formik.values.tipo === "rendimento" ? false : true
-                      }
-                      value={"clientes"}
-                    >
-                      Cliente
-                    </MenuItem>
-                    <MenuItem
-                      disabled={
-                        formik.values.tipo === "rendimento" ? true : false
-                      }
-                      value={"fornecedores"}
-                    >
-                      Fornecedores
-                    </MenuItem>
-                    <MenuItem
-                      disabled={
-                        formik.values.tipo === "rendimento" ? true : false
-                      }
-                      value={"funcionarios"}
-                    >
-                      Funcionários
-                    </MenuItem>
-                    <MenuItem
-                      disabled={
-                        formik.values.tipo === "rendimento" ? true : false
-                      }
-                      value={"transportadoras"}
-                    >
-                      Transportadoras
-                    </MenuItem>
+                    {formik.values.tipo === "rendimento" && (
+                      <MenuItem value={"clientes"}>Cliente</MenuItem>
+                    )}
+                    {formik.values.tipo === "despesa" && (
+                      <MenuItem value={"fornecedores"}>Fornecedores</MenuItem>
+                    )}
+                    {formik.values.tipo === "despesa" && (
+                      <MenuItem value={"funcionarios"}>Funcionários</MenuItem>
+                    )}
+                    {formik.values.tipo === "despesa" && (
+                      <MenuItem value={"transportadoras"}>
+                        Transportadoras
+                      </MenuItem>
+                    )}
                     <MenuItem value={"outros_favorecidos"}>Outros</MenuItem>
                   </Select>
                   {formik.touched.tipoFavorecido &&
@@ -525,6 +502,7 @@ function ModalTransacao({
                 <FormControl variant="outlined" fullWidth name="aaaa">
                   <InputLabel>Tipo</InputLabel>
                   <Select
+                    readOnly
                     className={"input-select"}
                     label="Tipo"
                     name="tipo"
