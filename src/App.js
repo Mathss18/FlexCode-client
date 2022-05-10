@@ -50,7 +50,7 @@ function App() {
         "%c=== Atualização de tema disponível! === ",
         "color:red;font-size:3rem;-webkit-text-stroke: 1px black;font-weight:bold"
       );
-      window.location.reload();
+      // window.location.reload();
     }
   }
 
