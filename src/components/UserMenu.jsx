@@ -13,13 +13,14 @@ import { Tooltip } from '@material-ui/core';
 import { useHistory } from "react-router-dom";
 import { usePusherContext } from '../context/PusherContext';
 import api from '../services/api';
+import statuses from '../constants/userStatus';
 
 
 
 function UserMenu() {
   const [open, setOpen] = useState(false);
   const [status, setSataus] = useState(getFromLS('user-status'));
-  const [currentStatus, setCurrentStatus] = useState(status.find(item => item.selected === true));
+  const [currentStatus, setCurrentStatus] = useState(status ? status.find(item => item.selected === true) : statuses[0]);
   const pusherContext = usePusherContext();
   const user = getFromLS('user');
   const history = useHistory();

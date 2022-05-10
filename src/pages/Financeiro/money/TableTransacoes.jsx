@@ -31,6 +31,7 @@ function TableTransacoes({
   setModalTransacaoOpen,
   editTransacao,
   setEditTransacao,
+  renderTransicoes
 
 }) {
   const tipoTrans = useRef('');
@@ -148,8 +149,6 @@ function TableTransacoes({
       <ModalTransacao
         open={modalTransacaoOpen}
         setOpen={setModalTransacaoOpen}
-        transacoes={transacoes}
-        setTransacoes={setTransacoes}
         clientes={clientes}
         fornecedores={fornecedores}
         transportadoras={transportadoras}
@@ -158,6 +157,7 @@ function TableTransacoes({
         dataSelecionada={dataSelecionada}
         contasBancarias={contasBancarias}
         editTransacao={editTransacao}
+        renderTransicoes={renderTransicoes}
       />
     </>
   );
