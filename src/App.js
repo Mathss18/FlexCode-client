@@ -14,12 +14,14 @@ import { useTheme } from "./theme/useTheme";
 import MomentUtils from "@date-io/moment";
 import FullScreenLoaderProvider from "./context/FullScreenLoaderContext";
 import FaviconNotificationContextProvider from "react-favicon-notification";
+import _ from 'lodash';
 
 function App() {
   const { theme, themeLoaded, getFonts } = useTheme();
   const [selectedTheme, setSelectedTheme] = useState(theme);
 
   useEffect(() => {
+    checkIfThemeHasChanged()
     setSelectedTheme(theme);
   }, [themeLoaded]);
 
@@ -30,6 +32,23 @@ function App() {
       },
     });
   });
+
+  function checkIfThemeHasChanged(){
+    const allThemes = JSON.parse(localStorage.getItem("all-themes")).data
+    const useSelectedTheme = theme;
+    if(!theme) return;
+
+    var romoveThemeFromLs = true
+    for (const key in allThemes) {
+      if(_.isEqual(allThemes[key], useSelectedTheme)){
+        romoveThemeFromLs = false
+      }
+    }
+    if(romoveThemeFromLs){
+      localStorage.removeItem("theme")
+      console.log('removendo theme')
+    }
+  }
 
   return (
     <>
