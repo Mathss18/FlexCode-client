@@ -9,6 +9,7 @@ import listPlugin from "@fullcalendar/list";
 import TableTransacoes from "./TableTransacoes";
 import api from "../../../services/api";
 import moment from "moment";
+import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 function CalendarioPage() {
   const data = [];
@@ -23,6 +24,8 @@ function CalendarioPage() {
   const [tableData, setTableData] = useState([]);
   const [editTransacao, setEditTransacao] = useState([]);
   const [modalTransacaoOpen, setModalTransacaoOpen] = useState(false);
+  const fullScreenLoader = useFullScreenLoader();
+  const [datasView, setDatasView] = useState(null);
 
   function getInitialView() {
     if (window.screen.width < 500) {
@@ -33,10 +36,9 @@ function CalendarioPage() {
   }
 
   function renderEventContent(eventInfo) {
-    // console.log(eventInfo);
     return (
       <>
-        <span>{eventInfo.event.title}</span>
+        <span>{`${eventInfo.event.title} - R$: ${eventInfo.event.extendedProps.valor.toFixed(2)}`}</span>
       </>
     );
   }
@@ -56,10 +58,9 @@ function CalendarioPage() {
   }
 
   function test(event, element) {
-    setEditTransacao(element)
+    setEditTransacao(element);
     setModalTableOpen(false);
     setModalTransacaoOpen(true);
-    
   }
 
   function showTransacoesFromSelectedDay() {
@@ -167,9 +168,15 @@ function CalendarioPage() {
       });
   }, []);
 
-  function renderTransicoes(dataInicio, dataFim) {
+  useEffect(() => {
+    if(!datasView) return
+    renderTransicoes();
+  }, [datasView]);
+
+  function renderTransicoes() {
+    fullScreenLoader.setLoading(true);
     api
-      .get(`/transacoes?dataInicio=${dataInicio}&dataFim=${dataFim}`)
+      .get(`/transacoes?dataInicio=${datasView.start}&dataFim=${datasView.end}`)
       .then((response) => {
         console.log(response.data["data"]);
         var array = [];
@@ -180,16 +187,29 @@ function CalendarioPage() {
             start: transacao.data,
             end: transacao.data,
             allDay: true,
-            backgroundColor:
-              transacao.tipo === "rendimento" ? "#00a65a" : "#f56954",
-            borderColor:
-              transacao.tipo === "rendimento" ? "#00a65a" : "#f56954",
+            backgroundColor:(() => {
+              if(transacao.situacao === "aberta"){
+                if(transacao.tipo === "rendimento"){
+                  return "#007f45";
+                }
+                else{
+                  return "#c62b2b";
+                }
+              }
+              else {
+                return "transparent";
+              }
+            })(),
+            borderColor: transacao.tipo === "rendimento" ? "#007f45" : "#c62b2b",
             fontSize: "12px",
 
             conta_bancaria: transacao.conta_bancaria,
             valor: transacao.valor,
             situacao: transacao.situacao,
-            favorecido_id: {value: transacao.favorecido_id, label: transacao.favorecido_nome},
+            favorecido_id: {
+              value: transacao.favorecido_id,
+              label: transacao.favorecido_nome,
+            },
             favorecido_nome: transacao.favorecido_nome,
             tipoFavorecido: transacao.tipoFavorecido,
             tipo: transacao.tipo,
@@ -200,8 +220,10 @@ function CalendarioPage() {
       })
       .catch((error) => {
         console.log(error);
-      });
+      })
+      .finally(() => fullScreenLoader.setLoading(false));
   }
+
 
   return (
     <div>
@@ -222,6 +244,7 @@ function CalendarioPage() {
         setModalTransacaoOpen={setModalTransacaoOpen}
         editTransacao={editTransacao}
         setEditTransacao={setEditTransacao}
+        renderTransicoes={renderTransicoes}
       />
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
@@ -236,10 +259,10 @@ function CalendarioPage() {
         eventContent={renderEventContent}
         dayCellDidMount={(dayCell) => {
           if (dayCell.dayNumberText === "1") {
-            renderTransicoes(
-              dayCell.view.activeStart.toISOString().replace(/T.*$/, ""),
-              dayCell.view.activeEnd.toISOString().replace(/T.*$/, "")
-            );
+            setDatasView({
+              start: dayCell.view.activeStart.toISOString().replace(/T.*$/, ""),
+              end: dayCell.view.activeEnd.toISOString().replace(/T.*$/, ""),
+            });
           }
         }}
         events={transacoes}

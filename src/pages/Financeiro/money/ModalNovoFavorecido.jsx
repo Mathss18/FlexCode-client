@@ -11,19 +11,42 @@ import {
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import { useState } from "react";
+import api from "../../../services/api";
 
-function ModalNovoFavorecido({ open, setOpen, tipoTransacao }) {
+function ModalNovoFavorecido({ open, setOpen, tipoTransacao, setTransacaoOpen }) {
   const [dialogValue, setDialogValue] = useState({
-    favorecido: "",
+    nome: "",
+    tipo: "",
   });
+
+  function handleOnSubmit(event) {
+    event.preventDefault();
+    api.post("/outros-favorecidos", dialogValue)
+    .then((response) => {
+      console.log(response)
+      setOpen(false);
+      window.location.reload();
+    })
+    .catch((error)=>{})
+    .finally(()=>{
+      setDialogValue({
+        nome: "",
+        tipo: "",
+      });
+    })
+  }
   return (
     <Dialog
       open={open}
       onClose={() => {
         setOpen(false);
+        setDialogValue({
+          nome: "",
+          tipo: "",
+        });
       }}
     >
-      <form onSubmit={() => {}} className="dialogBackground">
+      <form onSubmit={handleOnSubmit} className="dialogBackground">
         <DialogTitle className="dialogTitle">
           Novo Favorecido - {tipoTransacao}
         </DialogTitle>
@@ -32,15 +55,17 @@ function ModalNovoFavorecido({ open, setOpen, tipoTransacao }) {
             Precisa de um novo favorecido? Adicione aqui.
           </DialogContentText>
           <TextField
+            required
             autoFocus
             margin="dense"
             id="name"
             fullWidth
-            value={dialogValue.favorecido}
+            value={dialogValue.nome}
             onChange={(event) =>
               setDialogValue({
                 ...dialogValue,
-                favorecido: event.target.value,
+                nome: event.target.value,
+                tipo: tipoTransacao,
               })
             }
             label="Favorecido"
@@ -65,6 +90,10 @@ function ModalNovoFavorecido({ open, setOpen, tipoTransacao }) {
                 <Button
                   onClick={() => {
                     setOpen(false);
+                    setDialogValue({
+                      nome: "",
+                      tipo: "",
+                    });
                   }}
                   variant="outlined"
                   startIcon={<CloseIcon />}

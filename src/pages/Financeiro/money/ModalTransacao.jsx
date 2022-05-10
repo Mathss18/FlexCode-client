@@ -44,8 +44,6 @@ const initialValues = {
 };
 
 function ModalTransacao({
-  transacoes,
-  setTransacoes,
   open,
   setOpen,
   clientes,
@@ -56,6 +54,7 @@ function ModalTransacao({
   dataSelecionada,
   contasBancarias,
   editTransacao,
+  renderTransicoes
 }) {
   const [outroOpen, setOutroOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -73,7 +72,7 @@ function ModalTransacao({
     onSubmit: (event) => {
       handleOnSubmit(event);
     },
-    validationSchema: transacaoValidation,
+    
   });
 
   function ChooseFavorecidoSelect() {
@@ -171,6 +170,7 @@ function ModalTransacao({
           <Autocomplete
             value={formik.values.favorecido_id}
             onChange={(event, newValue) => {
+              handleOnChange("favorecido_id", newValue)
               if (typeof newValue === "string") {
                 // timeout to avoid instant validation of the dialog's form.
                 setTimeout(() => {
@@ -191,7 +191,10 @@ function ModalTransacao({
             filterOptions={(options, params) => {
               const filtered = filter(options, params);
 
-              if (params.inputValue !== "") {
+              var exists = options.find(option => option.label === params.inputValue)
+
+              if (params.inputValue !== "" && !exists) {
+               
                 filtered.push({
                   inputValue: params.inputValue,
                   label: `Adicionar "${params.inputValue}"`,
@@ -217,7 +220,6 @@ function ModalTransacao({
               return option.label;
             }}
             selectOnFocus
-            clearOnBlur
             handleHomeEndKeys
             renderOption={(props, option) => <li {...props}>{option.label}</li>}
             freeSolo
@@ -250,9 +252,9 @@ function ModalTransacao({
         var arrayRendimentos = [];
         var arrayDespesas = [];
         response.data["data"].forEach((outros) => {
-          if (outros.tipo === "rendimentos") {
+          if (outros.tipo === "rendimento") {
             arrayRendimentos.push({ label: outros.nome, value: outros.id });
-          } else if (outros.tipo === "despesas") {
+          } else if (outros.tipo === "despesa") {
             arrayDespesas.push({ label: outros.nome, value: outros.id });
           }
         });
@@ -268,6 +270,7 @@ function ModalTransacao({
     if (!open) return;
 
     if (editTransacao) {
+      console.log(editTransacao);
       var editInitialValues = {
         data: editTransacao.start,
         observacao: editTransacao.observacao ?? "",
@@ -289,12 +292,12 @@ function ModalTransacao({
       if (tipoTransacao.current === "rendimento") {
         formik.setFieldValue("tipo", "rendimento");
         formik.setFieldValue("tipoFavorecido", "clientes");
-        formik.setFieldValue('situacao', 'aberta')
+        formik.setFieldValue("situacao", "aberta");
       }
       if (tipoTransacao.current === "despesa") {
         formik.setFieldValue("tipo", "despesa");
         formik.setFieldValue("tipoFavorecido", "fornecedores");
-        formik.setFieldValue('situacao', 'registrada')
+        formik.setFieldValue("situacao", "registrada");
       }
     }
   }, [open]);
@@ -308,16 +311,14 @@ function ModalTransacao({
           title: formik.values.favorecido_id.label,
         })
         .then((response) => {
+          renderTransicoes();
           formik.resetForm(initialValues);
           setOpen(false);
           toast("Transação editada com sucesso!", { type: "success" });
         })
         .catch((error) => {
-          toast("Erro ao cadastrar transação!", { type: "error" });
-          errorAlert(
-            "Erro ao cadastrar transação!",
-            error.response.data.message
-          );
+          toast("Erro ao cadastrar ou editar transação!", { type: "error" });
+          errorAlert("Erro ao cadastrar ou editar transação!");
         })
         .finally(() => {
           formik.setSubmitting(false);
@@ -332,44 +333,7 @@ function ModalTransacao({
           formik.resetForm(initialValues);
           setOpen(false);
           toast("Transação cadastrada com sucesso!", { type: "success" });
-          setTransacoes([
-            ...transacoes,
-            {
-              id: response.data["data"].id,
-              title: response.data["data"].title,
-              start: response.data["data"].data,
-              end: response.data["data"].data,
-              allDay: true,
-              backgroundColor:
-                response.data["data"].tipo === "rendimento"
-                  ? "#00a65a"
-                  : "#f56954",
-              borderColor:
-                response.data["data"].tipo === "rendimento"
-                  ? "#00a65a"
-                  : "#f56954",
-              fontSize: "12px",
-
-              data: response.data["data"].data,
-              observacao: response.data["data"].observacao,
-              valor: response.data["data"].valor,
-              situacao: response.data["data"].situacao,
-              tipo: response.data["data"].tipo,
-              favorecido_id: {
-                value: response.data["data"].favorecido_id,
-                label: response.data["data"].favorecido_nome,
-              },
-              tipoFavorecido: "clientes",
-              conta_bancaria: {
-                id: response.data["data"].conta_bancaria_id,
-                nome: formik.values.conta_bancaria_id.label,
-              },
-              conta_bancaria_id: {
-                id: response.data["data"].conta_bancaria_id,
-                nome: formik.values.conta_bancaria_id.label,
-              },
-            },
-          ]);
+          renderTransicoes();
         })
         .catch((error) => {
           toast("Erro ao cadastrar transação!", { type: "error" });
@@ -390,6 +354,7 @@ function ModalTransacao({
         open={outroOpen}
         setOpen={setOutroOpen}
         tipoTransacao={tipoTransacao.current}
+        setTransacaoOpen={setOpen}
       />
       <Dialog
         open={open}
@@ -445,7 +410,10 @@ function ModalTransacao({
                     label="Tipo de Favorecido *"
                     name="tipoFavorecido"
                     value={formik.values.tipoFavorecido}
-                    onChange={(e)=>{formik.handleChange(e); formik.setFieldValue('favorecido_id', '')}}
+                    onChange={(e) => {
+                      formik.handleChange(e);
+                      formik.setFieldValue("favorecido_id", "");
+                    }}
                     onBlur={formik.handleBlur}
                     error={
                       formik.touched.tipoFavorecido &&
