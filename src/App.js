@@ -14,14 +14,14 @@ import { useTheme } from "./theme/useTheme";
 import MomentUtils from "@date-io/moment";
 import FullScreenLoaderProvider from "./context/FullScreenLoaderContext";
 import FaviconNotificationContextProvider from "react-favicon-notification";
-import _ from 'lodash';
+import _ from "lodash";
 
 function App() {
   const { theme, themeLoaded, getFonts } = useTheme();
   const [selectedTheme, setSelectedTheme] = useState(theme);
 
   useEffect(() => {
-    checkIfThemeHasChanged()
+    checkIfThemeHasChanged();
     setSelectedTheme(theme);
   }, [themeLoaded]);
 
@@ -33,20 +33,24 @@ function App() {
     });
   });
 
-  function checkIfThemeHasChanged(){
-    const allThemes = JSON.parse(localStorage.getItem("all-themes")).data
+  function checkIfThemeHasChanged() {
+    const allThemes = JSON.parse(localStorage.getItem("all-themes")).data;
     const useSelectedTheme = theme;
-    if(!theme) return;
+    if (!useSelectedTheme) return;
 
-    var romoveThemeFromLs = true
+    var romoveThemeFromLs = true;
     for (const key in allThemes) {
-      if(_.isEqual(allThemes[key], useSelectedTheme)){
-        romoveThemeFromLs = false
+      if (_.isEqual(allThemes[key], useSelectedTheme)) {
+        romoveThemeFromLs = false;
       }
     }
-    if(romoveThemeFromLs){
-      localStorage.removeItem("theme")
-      console.log('removendo theme')
+    if (romoveThemeFromLs) {
+      localStorage.removeItem("theme");
+      console.log(
+        "%c=== Atualização de tema disponível! === ",
+        "color:red;font-size:3rem;-webkit-text-stroke: 1px black;font-weight:bold"
+      );
+      window.location.reload();
     }
   }
 
