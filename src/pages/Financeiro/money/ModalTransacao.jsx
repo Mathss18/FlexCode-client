@@ -27,9 +27,15 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import api from "../../../services/api";
 import { transacaoValidation } from "../../../validators/validationSchema";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import toast from "react-hot-toast";
 import ModalNovoFavorecido from "./ModalNovoFavorecido";
-import { errorAlert } from "../../../utils/alert";
+import {
+  confirmAlert,
+  errorAlert,
+  infoAlert,
+  successAlert,
+} from "../../../utils/alert";
 
 const initialValues = {
   data: "",
@@ -54,7 +60,7 @@ function ModalTransacao({
   dataSelecionada,
   contasBancarias,
   editTransacao,
-  renderTransicoes
+  renderTransicoes,
 }) {
   const [outroOpen, setOutroOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -72,7 +78,7 @@ function ModalTransacao({
     onSubmit: (event) => {
       handleOnSubmit(event);
     },
-    
+    validationSchema: transacaoValidation
   });
 
   function ChooseFavorecidoSelect() {
@@ -170,7 +176,7 @@ function ModalTransacao({
           <Autocomplete
             value={formik.values.favorecido_id}
             onChange={(event, newValue) => {
-              handleOnChange("favorecido_id", newValue)
+              handleOnChange("favorecido_id", newValue);
               if (typeof newValue === "string") {
                 // timeout to avoid instant validation of the dialog's form.
                 setTimeout(() => {
@@ -191,10 +197,11 @@ function ModalTransacao({
             filterOptions={(options, params) => {
               const filtered = filter(options, params);
 
-              var exists = options.find(option => option.label === params.inputValue)
+              var exists = options.find(
+                (option) => option.label === params.inputValue
+              );
 
               if (params.inputValue !== "" && !exists) {
-               
                 filtered.push({
                   inputValue: params.inputValue,
                   label: `Adicionar "${params.inputValue}"`,
@@ -243,6 +250,27 @@ function ModalTransacao({
 
   function handleOnChange(name, value) {
     formik.setFieldValue(name, value); // Altera o formik
+  }
+
+  function handleDelete() {
+    formik.resetForm(initialValues);
+    setOpen(false);
+    confirmAlert("Tem certeza?", "Isso será irreversivel", () => {
+      deletarTransacao();
+    });
+  }
+
+  function deletarTransacao() {
+    api
+      .delete("/transacoes/" + editTransacao?.id)
+      .then((result) => {
+        successAlert("Sucesso", "Transação Excluida", () => {
+          renderTransicoes();
+        });
+      })
+      .catch((error) => {
+        infoAlert("Atenção", error?.response?.data?.message);
+      });
   }
 
   useEffect(() => {
@@ -297,7 +325,7 @@ function ModalTransacao({
       if (tipoTransacao.current === "despesa") {
         formik.setFieldValue("tipo", "despesa");
         formik.setFieldValue("tipoFavorecido", "fornecedores");
-        formik.setFieldValue("situacao", "registrada");
+        formik.setFieldValue("situacao", "aberta");
       }
     }
   }, [open]);
@@ -602,6 +630,17 @@ function ModalTransacao({
                     Cancelar
                   </Button>
                 </Grid>
+                {editTransacao && (<Grid item>
+                  <Button
+                    variant="outlined"
+                    startIcon={<DeleteForeverIcon />}
+                    className={"btn btn-error btn-spacing"}
+                    disabled={formik.isSubmitting}
+                    onClick={handleDelete}
+                  >
+                    Excluir
+                  </Button>
+                </Grid>)}
               </div>
             </Grid>
           </form>
