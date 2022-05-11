@@ -688,7 +688,7 @@ function EditarVendasPage() {
       return {
         ...parcela,
         valorParcela: Number(parcela.valorParcela),
-        dataVencimento: moment(parcela.dataVencimento).format("DD/MM/YYYY"),
+        dataVencimento: parcela.dataVencimento,
       };
     });
 

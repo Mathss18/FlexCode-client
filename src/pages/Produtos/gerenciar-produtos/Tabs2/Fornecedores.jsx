@@ -87,7 +87,9 @@ export function Fornecedores() {
     api.get("/clientes").then(response => {
       var array = [];
       response.data['data'].forEach(cliente => {
-        array.push({ label: cliente.nome, value: cliente.id });
+        if (cliente.situacao === 1) {
+          array.push({ label: cliente.nome, value: cliente.id });
+        }
       })
       setClientes(array);
     })
@@ -101,7 +103,9 @@ export function Fornecedores() {
     api.get("/fornecedores").then(response => {
       var array = [];
       response.data['data'].forEach(fornecedor => {
-        array.push({ label: fornecedor.nome, value: fornecedor.id });
+        if (fornecedor.situacao === 1) {
+          array.push({ label: fornecedor.nome, value: fornecedor.id });
+        }
       })
       setFornecedores(array);
     })
