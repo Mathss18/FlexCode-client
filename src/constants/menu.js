@@ -20,7 +20,6 @@ import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import StorageIcon from '@mui/icons-material/Storage';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import RoomServiceIcon from '@mui/icons-material/RoomService';
-import ListAltIcon from '@mui/icons-material/ListAlt';
 
 const user = JSON.parse(localStorage.getItem("user"));
 
@@ -40,7 +39,7 @@ export const menu = [
     path: '/',
     icon: <RoomServiceIcon className={"sidemenu-text"} />,
     className: 'sidemenu-text',
-    click: `()=>{history.push('/ordens-servicos-funcionarios/${user.id}')}`,
+    click: `()=>{history.push('/ordens-servicos-funcionarios/${user?.id}')}`,
     state: null,
     collapse: false,
     children: [],
