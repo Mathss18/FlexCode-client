@@ -86,6 +86,7 @@ import EditarVendasPage from "../pages/Financeiro/vendas/Editar";
 import ListarEstoques from "../pages/Estoque/Listar";
 import MovimentacoesPage from "../pages/Estoque/Movimentacoes";
 import CalendarioPage from "../pages/Financeiro/money/Calendario";
+import ListarExtratos from "../pages/Financeiro/extratos/Litsar";
 
 
 export default function Routes({themeSetter}) {
@@ -187,6 +188,8 @@ export default function Routes({themeSetter}) {
 
             <Route path="/estoques" exact component={ListarEstoques}></Route>
             <Route path="/estoques/movimentacoes/:id" exact component={MovimentacoesPage}></Route>
+
+            <Route path="/extratos/:id" exact component={ListarExtratos}></Route>
            
 
 

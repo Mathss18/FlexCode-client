@@ -19,6 +19,10 @@ import PeopleIcon from '@mui/icons-material/People';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import StorageIcon from '@mui/icons-material/Storage';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import RoomServiceIcon from '@mui/icons-material/RoomService';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+
+const user = JSON.parse(localStorage.getItem("user"));
 
 export const menu = [
   {
@@ -27,6 +31,16 @@ export const menu = [
     icon: <HomeIcon className={"sidemenu-text"} />,
     className: 'sidemenu-text',
     click: '()=>{history.push(`/`)}',
+    state: null,
+    collapse: false,
+    children: [],
+  },
+  {
+    title: 'Minhas Tarefas',
+    path: '/',
+    icon: <RoomServiceIcon className={"sidemenu-text"} />,
+    className: 'sidemenu-text',
+    click: `()=>{history.push('/ordens-servicos-funcionarios/${user.id}')}`,
     state: null,
     collapse: false,
     children: [],
@@ -184,6 +198,16 @@ export const menu = [
         children: [],
       },
       {
+        title: 'Contas Bancárias',
+        path: '/contas-bancarias',
+        icon: <AccountBalanceIcon className={"sidemenu-text"} />,
+        className: 'sidemenu-text',
+        click: '()=>{}',
+        state: null,
+        collapse: false,
+        children: [],
+      },
+      {
         title: 'Compras',
         path: '/compras',
         icon: <ShoppingCartIcon className={"sidemenu-text"} />,
@@ -227,16 +251,6 @@ export const menu = [
         title: 'Formas de Pagamento',
         path: '/formas-pagamentos',
         icon: <PaymentsIcon className={"sidemenu-text"} />,
-        className: 'sidemenu-text',
-        click: '()=>{}',
-        state: null,
-        collapse: false,
-        children: [],
-      },
-      {
-        title: 'Contas Bancárias',
-        path: '/contas-bancarias',
-        icon: <AccountBalanceIcon className={"sidemenu-text"} />,
         className: 'sidemenu-text',
         click: '()=>{}',
         state: null,

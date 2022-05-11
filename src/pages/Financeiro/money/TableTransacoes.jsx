@@ -24,8 +24,6 @@ function TableTransacoes({
   transportadoras,
   funcionarios,
   contasBancarias,
-  transacoes,
-  setTransacoes,
   tableData,
   modalTransacaoOpen,
   setModalTransacaoOpen,
@@ -38,6 +36,10 @@ function TableTransacoes({
 
 
   const columns = [
+    {
+      name: "#",
+      options: rowConfig,
+    },
     {
       name: "Data",
       options: rowConfig,

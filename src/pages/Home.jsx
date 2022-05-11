@@ -31,8 +31,6 @@ function Home() {
         <DashboardCard type="blue" />
       </div>
 
-      <h1>TEEEEE AMOOOOOO MEU CHEIRINHO LINDO</h1>
-
       <div className={classes.chart_conteiner + ' ' + 'chart-container'}>
         <DashboardChart />
       </div>

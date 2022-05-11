@@ -5,11 +5,10 @@ import api from "../../../services/api";
 import EditIcon from "@material-ui/icons/Edit";
 import SearchIcon from "@material-ui/icons/Search";
 import { useHistory } from "react-router-dom";
-import { Button } from "@material-ui/core";
+import { Button, Tooltip } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import ListAltIcon from "@mui/icons-material/ListAlt";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
-
-
 
 function ListarContasBancariasPage() {
   const columns = [
@@ -28,13 +27,13 @@ function ListarContasBancariasPage() {
   ];
 
   const data = [];
-  
+
   const [contasBancarias, setContasBancarias] = useState([]);
   const history = useHistory();
   const fullScreenLoader = useFullScreenLoader();
 
-  function handleOnClickShowButton(event, id) {
-    history.push("/contas-bancarias/mostrar/" + id);
+  function handleOnClickExtratoButton(event, id) {
+    history.push("/extratos/" + id);
   }
 
   function handleOnClickEditButton(event, id) {
@@ -51,20 +50,22 @@ function ListarContasBancariasPage() {
           response.data["data"].forEach((element) => {
             var array = [
               element["nome"],
-              `R$: ${element['saldo'].toFixed(2)}`,
+              `R$: ${element["saldo"].toFixed(2)}`,
               <>
-                {/* <SearchIcon
-                  className={"btn-lista"}
-                  onClick={(event) =>
-                    handleOnClickShowButton(event, element["id"])
-                  }
-                /> */}
                 <EditIcon
                   className={"btn-lista"}
                   onClick={(event) =>
                     handleOnClickEditButton(event, element["id"])
                   }
                 />
+                <Tooltip title="Visualizar extrato" arrow>
+                  <ListAltIcon
+                    className={"btn-lista"}
+                    onClick={(event) =>
+                      handleOnClickExtratoButton(event, element["id"])
+                    }
+                  />
+                </Tooltip>
               </>,
             ];
             data.push(array);

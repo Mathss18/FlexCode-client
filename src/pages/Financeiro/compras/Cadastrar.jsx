@@ -26,7 +26,7 @@ import api from "../../../services/api";
 import { DataGrid } from "@mui/x-data-grid";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
+import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import moment from "moment";
 import {
   deleteFromArrayByIndex,
@@ -47,7 +47,7 @@ const initialValues = {
   numeroNF: "",
   quantidadeParcelas: 1,
   intervaloParcelas: 0,
-  tipoFormaPagamento: '0', // 0 - À vista, 1 - A prazo
+  tipoFormaPagamento: "0", // 0 - À vista, 1 - A prazo
   somarFreteAoTotal: false,
   produtos: [],
   parcelas: [],
@@ -62,7 +62,7 @@ const initialValues = {
   observacao: "",
   observacaoInterna: "",
 
-  qtdeMaximaParcelas: Infinity // Para não permitir que o usuário digite uma quantidade de parcelas maior que o permitido (Não faz parte do formulário em sí)
+  qtdeMaximaParcelas: Infinity, // Para não permitir que o usuário digite uma quantidade de parcelas maior que o permitido (Não faz parte do formulário em sí)
 };
 
 function CadastrarComprasPage() {
@@ -91,7 +91,7 @@ function CadastrarComprasPage() {
       headerName: "Produto",
       flex: 2,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       renderCell: (params) => (
         <>
           <Autocomplete
@@ -124,28 +124,28 @@ function CadastrarComprasPage() {
     {
       field: "quantidade",
       headerName: "Quantidade",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "preco",
       headerName: "Preço Unitário",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "total",
       headerName: "Total",
-      type: 'number',
+      type: "number",
       editable: false,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
@@ -153,14 +153,14 @@ function CadastrarComprasPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Excluir",
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       renderCell: (params) => (
         <>
           <DeleteIcon
@@ -180,14 +180,14 @@ function CadastrarComprasPage() {
       type: "date",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
     },
     {
       field: "valorParcela",
       headerName: "Valor Parcela",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       type: "number",
       flex: 1,
     },
@@ -195,7 +195,7 @@ function CadastrarComprasPage() {
       field: "forma_pagamento_id",
       headerName: "Forma Pagamento",
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
       renderCell: (params) => (
         <>
@@ -205,10 +205,15 @@ function CadastrarComprasPage() {
             value={
               params.row.forma_pagamento_id == ""
                 ? { label: "", value: null }
-                : { label: params.row.nome, value: params.row.forma_pagamento_id }
+                : {
+                    label: params.row.nome,
+                    value: params.row.forma_pagamento_id,
+                  }
             }
             name="forma_pagamento_id"
-            onChange={(event, value) => handleFormaPagamentoChange(params, value)}
+            onChange={(event, value) =>
+              handleFormaPagamentoChange(params, value)
+            }
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
@@ -235,7 +240,7 @@ function CadastrarComprasPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 2,
     },
     // {
@@ -254,14 +259,15 @@ function CadastrarComprasPage() {
     // },
   ];
 
-
   useEffect(() => {
     api
       .get("/fornecedores")
       .then((response) => {
         var array = [];
         response.data["data"].forEach((fornecedor) => {
-          array.push({ label: fornecedor.nome, value: fornecedor.id });
+          if (fornecedor.situacao === 1) {
+            array.push({ label: fornecedor.nome, value: fornecedor.id });
+          }
         });
         setFornecedores(array);
       })
@@ -315,7 +321,7 @@ function CadastrarComprasPage() {
         });
         setProdutos(array);
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }, []);
 
   useEffect(() => {
@@ -331,25 +337,33 @@ function CadastrarComprasPage() {
   useEffect(() => {
     if (!formik.values.tipoFormaPagamento) return;
     // Se for a vista, seta a quantidade de parcelas como 1 e o intervalo como 0
-    if (formik.values.tipoFormaPagamento == '0') {
+    if (formik.values.tipoFormaPagamento == "0") {
       formik.setFieldValue("quantidadeParcelas", 1);
       formik.setFieldValue("intervaloParcelas", 0);
     }
   }, [formik.values.tipoFormaPagamento]);
 
   useEffect(() => {
-    if (formik.values.tipoFormaPagamento == '0') return
-    var formaPaga = formasPagamentosOriginal.current.filter((formaPagamento) => {
-      return formaPagamento.id == formik.values.forma_pagamento_id.value;
-    });
-    if(formaPaga.length == 1){
+    if (formik.values.tipoFormaPagamento == "0") return;
+    var formaPaga = formasPagamentosOriginal.current.filter(
+      (formaPagamento) => {
+        return formaPagamento.id == formik.values.forma_pagamento_id.value;
+      }
+    );
+    if (formaPaga.length == 1) {
       formik.setFieldValue("intervaloParcelas", formaPaga[0].intervaloParcelas);
-      formik.setFieldValue("qtdeMaximaParcelas", formaPaga[0].numeroMaximoParcelas);
+      formik.setFieldValue(
+        "qtdeMaximaParcelas",
+        formaPaga[0].numeroMaximoParcelas
+      );
     }
-    if(formik.values.quantidadeParcelas > formik.values.qtdeMaximaParcelas){
-      toast("A quantidade máxima de parcelas para essa forma de pagamento é "+formik.values.qtdeMaximaParcelas, { type: "error" });
+    if (formik.values.quantidadeParcelas > formik.values.qtdeMaximaParcelas) {
+      toast(
+        "A quantidade máxima de parcelas para essa forma de pagamento é " +
+          formik.values.qtdeMaximaParcelas,
+        { type: "error" }
+      );
     }
-    
   }, [formik.values.forma_pagamento_id, formik.isSubmitting]);
 
   const fullScreenLoader = useFullScreenLoader();
@@ -383,20 +397,21 @@ function CadastrarComprasPage() {
     }
     if (rowsParcelas.length <= 0) {
       formik.setSubmitting(false);
-      errorAlert(
-        "A compra deve ter pelo menos uma parcela!"
-      );
+      errorAlert("A compra deve ter pelo menos uma parcela!");
       return;
     }
     if (rowsParcelas.find((parcela) => Number(parcela.valorParcela) < 0)) {
       formik.setSubmitting(false);
-      errorAlert(
-        "Por favor, selecione uma valor válido para cada parcela!"
-      );
+      errorAlert("Por favor, selecione uma valor válido para cada parcela!");
       return;
     }
-    const totalParcelas = rowsParcelas.reduce((acc, item) => acc + Number(item.valorParcela), 0);
-    if (Number(totalParcelas.toFixed(2)) != Number(formik.values.total.toFixed(2))) {
+    const totalParcelas = rowsParcelas.reduce(
+      (acc, item) => acc + Number(item.valorParcela),
+      0
+    );
+    if (
+      Number(totalParcelas.toFixed(2)) != Number(formik.values.total.toFixed(2))
+    ) {
       formik.setSubmitting(false);
       errorAlert(
         "Erro no calculo das parcelas!",
@@ -405,7 +420,7 @@ function CadastrarComprasPage() {
       return;
     }
 
-    if (formik.values.tipoFormaPagamento == '0' && rowsParcelas.length != 1) {
+    if (formik.values.tipoFormaPagamento == "0" && rowsParcelas.length != 1) {
       formik.setSubmitting(false);
       errorAlert(
         "Erro no calculo das parcelas!",
@@ -426,9 +441,8 @@ function CadastrarComprasPage() {
       ...formik.values,
       produtos: rowsProdutos,
       parcelas: rowParcelasSanitezed,
-      anexos: files
+      anexos: files,
     };
-
 
     fullScreenLoader.setLoading(true);
     api
@@ -515,27 +529,34 @@ function CadastrarComprasPage() {
 
     objectToArray(dataGrid.rows.idRowsLookup).forEach((row, index) => {
       // Caso o preço daquela row tenha sido alterado, entrara no if
-      if (objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela != rowsParcelas[index].valorParcela) {
-        resto = Number(total) - (Number(acumulador) + Number(objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela)); // Calcula o restante TOTAL para ser dividido entra as parcelas restantes
+      if (
+        objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela !=
+        rowsParcelas[index].valorParcela
+      ) {
+        resto =
+          Number(total) -
+          (Number(acumulador) +
+            Number(
+              objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela
+            )); // Calcula o restante TOTAL para ser dividido entra as parcelas restantes
         var restoCadaParcela = resto / (parcelas - (index + 1)); // Calcula o restante INDIVIDUAL para ser dividido entre as parcelas restantes
 
         // Para cada parcela restante, altera o valor da parcela (se o valor restante for negativo, o valor da parcela será 0)
         for (let i = index + 1; i < parcelas; i++) {
           if (restoCadaParcela > 0) {
-            objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = restoCadaParcela.toFixed(2);
-          } 
-          else {
+            objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela =
+              restoCadaParcela.toFixed(2);
+          } else {
             objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = 0;
           }
         }
-
-      }
-      else {
+      } else {
         acumulador = acumulador + Number(rowsParcelas[index].valorParcela); // Acumula o valor das parcelas que não foram alteradas
       }
 
-      totalParcelas += Number(objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela); // Soma os valores de todas as parcelas (usado somente para calcular a diferença)
-
+      totalParcelas += Number(
+        objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela
+      ); // Soma os valores de todas as parcelas (usado somente para calcular a diferença)
     });
 
     var diferenca = total - totalParcelas;
@@ -543,13 +564,19 @@ function CadastrarComprasPage() {
 
     // se hover diferença, adiciona a diferença na ultima parcela
     if (Number(diferenca) !== 0) {
-      objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela = Number(objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela) + Number(diferenca.toFixed(2));
+      objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela =
+        Number(
+          objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela
+        ) + Number(diferenca.toFixed(2));
     }
 
-    setRowsParcelas(objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
-      row.valorParcela = row.valorParcela > 0 ? Number(row.valorParcela).toFixed(2) : 0;
-      return row;
-    }));
+    setRowsParcelas(
+      objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
+        row.valorParcela =
+          row.valorParcela > 0 ? Number(row.valorParcela).toFixed(2) : 0;
+        return row;
+      })
+    );
   }
 
   function handleClienteChange(params, value) {
@@ -566,13 +593,20 @@ function CadastrarComprasPage() {
     var aux = [];
 
     var diferenca = formik.values.total / formik.values.quantidadeParcelas;
-    diferenca = (formik.values.total - (diferenca.toFixed(2) * formik.values.quantidadeParcelas)).toFixed(2);
+    diferenca = (
+      formik.values.total -
+      diferenca.toFixed(2) * formik.values.quantidadeParcelas
+    ).toFixed(2);
 
     for (let i = 0; i < formik.values.quantidadeParcelas; i++) {
       aux.push({
         id: new Date().getTime() + i,
-        dataVencimento: moment(formik.values.dataPrimeiraParcela).add(formik.values.intervaloParcelas * i, 'days').format("DD/MM/YYYY"),
-        valorParcela: Number((Number(formik.values.total) / Number(formik.values.quantidadeParcelas))).toFixed(2),
+        dataVencimento: moment(formik.values.dataPrimeiraParcela)
+          .add(formik.values.intervaloParcelas * i, "days")
+          .format("DD/MM/YYYY"),
+        valorParcela: Number(
+          Number(formik.values.total) / Number(formik.values.quantidadeParcelas)
+        ).toFixed(2),
         forma_pagamento_id: formik.values.forma_pagamento_id.value,
         nome: formik.values.forma_pagamento_id.label,
         observacao: "",
@@ -580,11 +614,11 @@ function CadastrarComprasPage() {
     }
     // Se houver diferência, adiciona a última parcela com o valor da diferença
     if (Number(diferenca) !== 0) {
-      aux[aux.length - 1].valorParcela = Number(aux[aux.length - 1].valorParcela) + Number(diferenca);
+      aux[aux.length - 1].valorParcela =
+        Number(aux[aux.length - 1].valorParcela) + Number(diferenca);
     }
     setRowsParcelas(aux);
   }
-
 
   function handleFormaPagamentoChange(params, value) {
     params.row.forma_pagamento_id = value.value;
@@ -610,7 +644,14 @@ function CadastrarComprasPage() {
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
-        <div style={{ marginTop: 0, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 0,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -637,7 +678,9 @@ function CadastrarComprasPage() {
               <Autocomplete
                 value={formik.values.fornecedor_id}
                 name="fornecedor_id"
-                onChange={(event, value) => handleOnChange("fornecedor_id", value)}
+                onChange={(event, value) =>
+                  handleOnChange("fornecedor_id", value)
+                }
                 onBlur={formik.handleBlur}
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
@@ -651,8 +694,14 @@ function CadastrarComprasPage() {
                     {...params}
                     label="Fornecedor *"
                     placeholder="Pesquise..."
-                    error={formik.touched.fornecedor_id && Boolean(formik.errors.fornecedor_id)}
-                    helperText={formik.touched.fornecedor_id && formik.errors.fornecedor_id}
+                    error={
+                      formik.touched.fornecedor_id &&
+                      Boolean(formik.errors.fornecedor_id)
+                    }
+                    helperText={
+                      formik.touched.fornecedor_id &&
+                      formik.errors.fornecedor_id
+                    }
                   />
                 )}
               />
@@ -737,18 +786,22 @@ function CadastrarComprasPage() {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.numeroNF &&
-                  Boolean(formik.errors.numeroNF)
+                  formik.touched.numeroNF && Boolean(formik.errors.numeroNF)
                 }
-                helperText={
-                  formik.touched.numeroNF && formik.errors.numeroNF
-                }
+                helperText={formik.touched.numeroNF && formik.errors.numeroNF}
               />
             </Grid>
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -800,7 +853,14 @@ function CadastrarComprasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -825,7 +885,7 @@ function CadastrarComprasPage() {
                           checked={formik.values.somarFreteAoTotal}
                           onChange={formik.handleChange}
                           name="somarFreteAoTotal"
-                          inputProps={{ 'aria-label': 'controlled' }}
+                          inputProps={{ "aria-label": "controlled" }}
                         />
                       </Tooltip>
                     </InputAdornment>
@@ -833,10 +893,7 @@ function CadastrarComprasPage() {
                 }}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => { }}
-                      edge="end"
-                    >
+                    <IconButton onClick={() => {}} edge="end">
                       {<CloseIcon />}
                     </IconButton>
                   </InputAdornment>
@@ -865,7 +922,9 @@ function CadastrarComprasPage() {
                 name="impostos"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.impostos && Boolean(formik.errors.impostos)}
+                error={
+                  formik.touched.impostos && Boolean(formik.errors.impostos)
+                }
                 helperText={formik.touched.impostos && formik.errors.impostos}
               />
             </Grid>
@@ -913,26 +972,45 @@ function CadastrarComprasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
             <AssignmentIcon />
             <h3>Pagamento</h3>
-            <div style={{ marginLeft: 'auto' }}>
+            <div style={{ marginLeft: "auto" }}>
               <FormControl>
                 <RadioGroup
                   value={formik.values.tipoFormaPagamento}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   name="tipoFormaPagamento"
-                  row>
-                  <FormControlLabel value={'0'} control={<Radio />} label="À vista" />
-                  <FormControlLabel value={'1'} control={<Radio />} label="A prazo" />
+                  row
+                >
+                  <FormControlLabel
+                    value={"0"}
+                    control={<Radio />}
+                    label="À vista"
+                  />
+                  <FormControlLabel
+                    value={"1"}
+                    control={<Radio />}
+                    label="A prazo"
+                  />
                 </RadioGroup>
-                <FormHelperText>{formik.touched.tipoFormaPagamento && formik.errors.tipoFormaPagamento}</FormHelperText>
+                <FormHelperText>
+                  {formik.touched.tipoFormaPagamento &&
+                    formik.errors.tipoFormaPagamento}
+                </FormHelperText>
               </FormControl>
-              {rowsParcelas.length <= 0 ?
+              {rowsParcelas.length <= 0 ? (
                 <Button
                   style={{ height: 28, fontSize: 12, marginTop: 8 }}
                   className={"btn btn-primary"}
@@ -942,7 +1020,7 @@ function CadastrarComprasPage() {
                 >
                   Parcelas
                 </Button>
-                :
+              ) : (
                 <Button
                   style={{ height: 28, fontSize: 12, marginTop: 8 }}
                   className={"btn btn-primary"}
@@ -951,11 +1029,9 @@ function CadastrarComprasPage() {
                   disabled={isBtnDisabled}
                 >
                   Limpar
-                </Button>}
-
-
+                </Button>
+              )}
             </div>
-
           </div>
 
           <Grid container spacing={3}>
@@ -963,7 +1039,9 @@ function CadastrarComprasPage() {
               <Autocomplete
                 value={formik.values.forma_pagamento_id}
                 name="forma_pagamento_id"
-                onChange={(event, value) => handleOnChange("forma_pagamento_id", value)}
+                onChange={(event, value) =>
+                  handleOnChange("forma_pagamento_id", value)
+                }
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
@@ -976,8 +1054,14 @@ function CadastrarComprasPage() {
                     {...params}
                     label="Forma de pagamento *"
                     placeholder="Pesquise..."
-                    error={formik.touched.forma_pagamento_id && Boolean(formik.errors.forma_pagamento_id)}
-                    helperText={formik.touched.forma_pagamento_id && formik.errors.forma_pagamento_id}
+                    error={
+                      formik.touched.forma_pagamento_id &&
+                      Boolean(formik.errors.forma_pagamento_id)
+                    }
+                    helperText={
+                      formik.touched.forma_pagamento_id &&
+                      formik.errors.forma_pagamento_id
+                    }
                   />
                 )}
               />
@@ -999,7 +1083,8 @@ function CadastrarComprasPage() {
                   Boolean(formik.errors.quantidadeParcelas)
                 }
                 helperText={
-                  formik.touched.quantidadeParcelas && formik.errors.quantidadeParcelas
+                  formik.touched.quantidadeParcelas &&
+                  formik.errors.quantidadeParcelas
                 }
               />
             </Grid>
@@ -1019,7 +1104,8 @@ function CadastrarComprasPage() {
                   Boolean(formik.errors.intervaloParcelas)
                 }
                 helperText={
-                  formik.touched.intervaloParcelas && formik.errors.intervaloParcelas
+                  formik.touched.intervaloParcelas &&
+                  formik.errors.intervaloParcelas
                 }
               />
             </Grid>
@@ -1038,7 +1124,8 @@ function CadastrarComprasPage() {
                   Boolean(formik.errors.dataPrimeiraParcela)
                 }
                 helperText={
-                  formik.touched.dataPrimeiraParcela && formik.errors.dataPrimeiraParcela
+                  formik.touched.dataPrimeiraParcela &&
+                  formik.errors.dataPrimeiraParcela
                 }
               />
             </Grid>
@@ -1077,7 +1164,14 @@ function CadastrarComprasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1089,14 +1183,24 @@ function CadastrarComprasPage() {
             <>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <DragAndDrop state={[files, setFiles]} listFiles></DragAndDrop>
+                  <DragAndDrop
+                    state={[files, setFiles]}
+                    listFiles
+                  ></DragAndDrop>
                 </Grid>
               </Grid>
             </>
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >

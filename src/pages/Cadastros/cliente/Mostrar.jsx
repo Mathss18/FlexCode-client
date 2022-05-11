@@ -71,7 +71,7 @@ function MostrarClientePage() {
           <Grid item xs={3}>
             <FormControl variant="outlined" fullWidth required name="situacao">
               <InputLabel>Situação</InputLabel>
-              <Select className={'input-select'} label="Situação" value='' name="situacao" value={values.situacao} disabled>
+              <Select className={'input-select'} label="Situação" name="situacao" value={values.situacao} disabled>
                 <MenuItem value={1}>Ativo</MenuItem>
                 <MenuItem value={0}>Inativo</MenuItem>
               </Select>

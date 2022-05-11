@@ -268,7 +268,9 @@ function EditarComprasPage() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((fornecedor) => {
-          array.push({ label: fornecedor.nome, value: fornecedor.id });
+          if (fornecedor.situacao === 1) {
+            array.push({ label: fornecedor.nome, value: fornecedor.id });
+          }
         });
         setFornecedores(array);
       })

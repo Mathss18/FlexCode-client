@@ -10,6 +10,8 @@ import TableTransacoes from "./TableTransacoes";
 import api from "../../../services/api";
 import moment from "moment";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
+import { errorAlert } from "../../../utils/alert";
+import { Tooltip } from "@material-ui/core";
 
 function CalendarioPage() {
   const data = [];
@@ -38,7 +40,9 @@ function CalendarioPage() {
   function renderEventContent(eventInfo) {
     return (
       <>
-        <span>{`${eventInfo.event.title} - R$: ${eventInfo.event.extendedProps.valor.toFixed(2)}`}</span>
+        <span>{`${
+          eventInfo.event.title
+        } - R$: ${eventInfo.event.extendedProps.valor.toFixed(2)}`}</span>
       </>
     );
   }
@@ -57,7 +61,7 @@ function CalendarioPage() {
     showTransacoesFromSelectedDay();
   }
 
-  function test(event, element) {
+  function handleEditClick(event, element) {
     setEditTransacao(element);
     setModalTableOpen(false);
     setModalTransacaoOpen(true);
@@ -70,6 +74,24 @@ function CalendarioPage() {
     console.log(transacoesFromSelectedDay);
     transacoesFromSelectedDay.forEach((element) => {
       var array = [
+        <Tooltip title={element["situacao"] === "aberta" ? 'Aberta' : 'Registrada'}>
+          <div
+            style={{
+              backgroundColor:
+                element["situacao"] === "aberta"
+                  ? element["tipo"] === "rendimento"
+                    ? "#007f45"
+                    : "#c62b2b"
+                  : "transparent",
+              border: "2px solid",
+              borderColor:
+                element["tipo"] === "rendimento" ? "#007f45" : "#c62b2b",
+              width: "15px",
+              height: "15px",
+              borderRadius: "20px",
+            }}
+          ></div>
+        </Tooltip>,
         moment(element["start"]).format("DD/MM/YYYY"),
         element["title"],
         element["conta_bancaria"]["nome"],
@@ -84,7 +106,7 @@ function CalendarioPage() {
         <>
           <EditIcon
             className={"btn btn-lista"}
-            onClick={(event) => test(event, element)}
+            onClick={(event) => handleEditClick(event, element)}
           />
         </>,
       ];
@@ -94,82 +116,71 @@ function CalendarioPage() {
   }
 
   useEffect(() => {
-    api
-      .get("/clientes")
-      .then((response) => {
+    let url1 = "/clientes";
+    let url2 = "/fornecedores";
+    let url3 = "/funcionarios";
+    let url4 = "/contas-bancarias";
+    let url5 = "/transportadoras";
+
+    const req1 = api.get(url1);
+    const req2 = api.get(url2);
+    const req3 = api.get(url3);
+    const req4 = api.get(url4);
+    const req5 = api.get(url5);
+
+    Promise.all([req1, req2, req3, req4, req5])
+      .then(function ([resp1, resp2, resp3, resp4, resp5]) {
         var array = [];
-        response.data["data"].forEach((cliente) => {
-          array.push({ label: cliente.nome, value: cliente.id });
+        resp1.data["data"].forEach((cliente) => {
+          if (cliente.situacao === 1) {
+            array.push({ label: cliente.nome, value: cliente.id });
+          }
         });
         setClientes(array);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
-  useEffect(() => {
-    api
-      .get("/fornecedores")
-      .then((response) => {
-        var array = [];
-        response.data["data"].forEach((fornecedor) => {
-          array.push({ label: fornecedor.nome, value: fornecedor.id });
+        array = [];
+        resp2.data["data"].forEach((fornecedor) => {
+          if (fornecedor.situacao === 1) {
+            array.push({ label: fornecedor.nome, value: fornecedor.id });
+          }
         });
         setFornecedores(array);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
-  useEffect(() => {
-    api
-      .get("/transportadoras")
-      .then((response) => {
-        var array = [];
-        response.data["data"].forEach((transportadora) => {
-          array.push({ label: transportadora.nome, value: transportadora.id });
-        });
-        setTransportadoras(array);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    api
-      .get("/funcionarios")
-      .then((response) => {
-        var array = [];
-        response.data["data"].forEach((funcionario) => {
-          array.push({ label: funcionario.nome, value: funcionario.id });
+        array = [];
+        resp3.data["data"].forEach((funcionario) => {
+          if (funcionario.situacao === 1) {
+            array.push({ label: funcionario.nome, value: funcionario.id });
+          }
         });
         setFuncionarios(array);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
-  useEffect(() => {
-    api
-      .get("/contas-bancarias")
-      .then((response) => {
-        var array = [];
-        response.data["data"].forEach((contaBancaria) => {
+        array = [];
+        resp4.data["data"].forEach((contaBancaria) => {
           array.push({ label: contaBancaria.nome, value: contaBancaria.id });
         });
         setContasBancarias(array);
+
+        array = [];
+        resp5.data["data"].forEach((transportadora) => {
+          if (transportadora.situacao === 1) {
+            array.push({
+              label: transportadora.nome,
+              value: transportadora.id,
+            });
+          }
+        });
+        setTransportadoras(array);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((errors) => {
+        errorAlert(
+          "Erro ao carregar informações da tela!",
+          "tente novamente mais tarde"
+        );
       });
   }, []);
 
   useEffect(() => {
-    if(!datasView) return
+    if (!datasView) return;
     renderTransicoes();
   }, [datasView]);
 
@@ -187,20 +198,19 @@ function CalendarioPage() {
             start: transacao.data,
             end: transacao.data,
             allDay: true,
-            backgroundColor:(() => {
-              if(transacao.situacao === "aberta"){
-                if(transacao.tipo === "rendimento"){
+            backgroundColor: (() => {
+              if (transacao.situacao === "aberta") {
+                if (transacao.tipo === "rendimento") {
                   return "#007f45";
-                }
-                else{
+                } else {
                   return "#c62b2b";
                 }
-              }
-              else {
+              } else {
                 return "transparent";
               }
             })(),
-            borderColor: transacao.tipo === "rendimento" ? "#007f45" : "#c62b2b",
+            borderColor:
+              transacao.tipo === "rendimento" ? "#007f45" : "#c62b2b",
             fontSize: "12px",
 
             conta_bancaria: transacao.conta_bancaria,
@@ -224,7 +234,6 @@ function CalendarioPage() {
       .finally(() => fullScreenLoader.setLoading(false));
   }
 
-
   return (
     <div>
       <TableTransacoes
@@ -236,8 +245,6 @@ function CalendarioPage() {
         transportadoras={transportadoras}
         funcionarios={funcionarios}
         contasBancarias={contasBancarias}
-        transacoes={transacoes}
-        setTransacoes={setTransacoes}
         tableData={tableData}
         setTableData={setTableData}
         modalTransacaoOpen={modalTransacaoOpen}
