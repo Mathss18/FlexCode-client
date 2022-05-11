@@ -20,41 +20,62 @@ export function Fornecedores() {
   const [clientes, setClientes] = useState([]);
   const [fornecedores, setFornecedores] = useState([]);
 
-  function canSubmit(){
-    var errorsMessages = '';
+  function canSubmit() {
+    var errorsMessages = "";
     produtoContext.formik.setSubmitting(true);
-    objectToArray(produtoContext.formik.errors).forEach((item)=>{
-      errorsMessages += '• '+item + '<br>';
-    })
-    if(produtoContext.formik.values.movimentaEstoque ){
-      if(produtoContext.formik.values.estoqueMaximo === '' || produtoContext.formik.values.estoqueMinimo === ''){
-        errorsMessages += '• '+"Para movimentar o estoque, é necessário informar o estoque mínimo e máximo!" + '<br>';
-        produtoContext.formik.setSubmitting(false)
+    objectToArray(produtoContext.formik.errors).forEach((item) => {
+      errorsMessages += "• " + item + "<br>";
+    });
+    if (produtoContext.formik.values.movimentaEstoque) {
+      if (
+        produtoContext.formik.values.estoqueMaximo === "" ||
+        produtoContext.formik.values.estoqueMinimo === ""
+      ) {
+        errorsMessages +=
+          "• " +
+          "Para movimentar o estoque, é necessário informar o estoque mínimo e máximo!" +
+          "<br>";
+        produtoContext.formik.setSubmitting(false);
       }
-      if(produtoContext.formik.values.estoqueMinimo > produtoContext.formik.values.estoqueMaximo){
-        errorsMessages += '• '+"O estoque mínimo não pode ser maior que o estoque máximo!" + '<br>';
-        produtoContext.formik.setSubmitting(false)
+      if (
+        produtoContext.formik.values.estoqueMinimo >
+        produtoContext.formik.values.estoqueMaximo
+      ) {
+        errorsMessages +=
+          "• " +
+          "O estoque mínimo não pode ser maior que o estoque máximo!" +
+          "<br>";
+        produtoContext.formik.setSubmitting(false);
       }
-      if(produtoContext.formik.values.estoqueMinimo === produtoContext.formik.values.estoqueMaximo){
-        errorsMessages += '• '+"O estoque mínimo não pode ser igual ao estoque máximo!" + '<br>';
-        produtoContext.formik.setSubmitting(false)
+      if (
+        produtoContext.formik.values.estoqueMinimo ===
+        produtoContext.formik.values.estoqueMaximo
+      ) {
+        errorsMessages +=
+          "• " +
+          "O estoque mínimo não pode ser igual ao estoque máximo!" +
+          "<br>";
+        produtoContext.formik.setSubmitting(false);
       }
-      if(produtoContext.formik.values.unidade_produto_id === ''){
-        errorsMessages += '• '+"Para movimentar o estoque, é necessário informar a unidade do produto!" + '<br>';
-        produtoContext.formik.setSubmitting(false)
+      if (produtoContext.formik.values.unidade_produto_id === "") {
+        errorsMessages +=
+          "• " +
+          "Para movimentar o estoque, é necessário informar a unidade do produto!" +
+          "<br>";
+        produtoContext.formik.setSubmitting(false);
       }
     }
 
-    if(errorsMessages.length > 0){
-      console.log(errorsMessages)
+    if (errorsMessages.length > 0) {
+      console.log(errorsMessages);
       errorAlert("Atenção", errorsMessages);
-      produtoContext.formik.setSubmitting(false)
+      produtoContext.formik.setSubmitting(false);
       return false;
     }
     return true;
   }
   function handleCadastrarProduto() {
-    if(!canSubmit()) return;
+    if (!canSubmit()) return;
     api
       .post("/produtos", produtoContext.formik.values)
       .then((response) => {
@@ -85,7 +106,9 @@ export function Fornecedores() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((cliente) => {
-          array.push({ label: cliente.nome, value: cliente.id });
+          if (cliente.situacao === 1) {
+            array.push({ label: cliente.nome, value: cliente.id });
+          }
         });
         setClientes(array);
       })
@@ -100,7 +123,9 @@ export function Fornecedores() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((fornecedor) => {
-          array.push({ label: fornecedor.nome, value: fornecedor.id });
+          if (fornecedor.situacao === 1) {
+            array.push({ label: fornecedor.nome, value: fornecedor.id });
+          }
         });
         setFornecedores(array);
       })
