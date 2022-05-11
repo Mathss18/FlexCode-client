@@ -1,12 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Divider, Tab, Tabs } from "@mui/material";
 import { Abertas, Fazendo ,Finalizadas } from "./Tabs";
 import AssignmentIcon from "@material-ui/icons/Assignment";
+import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function ListarOrdensServicosFuncionariosPage() {
   const history = useHistory();
+  const { idUsuario } = useParams();
   const [currentTab, setCurrentTab] = useState(0);
+
+  useEffect(()=>{
+    const user = JSON.parse(localStorage.getItem("user"));
+    if(idUsuario != user.id){
+      toast.error('Você pode ver somente suas tarefas.');
+      history.push(`/ordens-servicos-funcionarios/${user.id}`);
+    }
+    
+  },[])
 
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
