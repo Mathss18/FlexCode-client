@@ -91,10 +91,14 @@ function EditarFornecedorPage() {
 
   function handleOnSubmit(values) {
     // Removendo máscaras antes de enviar dados para API
-    values.cep = values.cep.replace(/[^\d]/g, '');
-    values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, '');
-    values.telefone = values.telefone.replace(/[^\d]/g, '');
-    values.celular = values.celular.replace(/[^\d]/g, '');
+    try {
+      values.cep = values.cep.replace(/[^\d]/g, '');
+      values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, '');
+      values.telefone = values.telefone.replace(/[^\d]/g, '');
+      values.celular = values.celular.replace(/[^\d]/g, '');
+    } catch (error) {
+      
+    }
     
     api
       .put("/fornecedores/" + id, values)

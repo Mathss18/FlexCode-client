@@ -72,7 +72,7 @@ function EditarPorcentagensLucros() {
             <Grid item xs={6}>
               <TextField
                 variant="outlined"
-                label="Descrição"
+                label="Descrição *"
                 fullWidth
                 type="text"
                 value={formik.values.descricao}
@@ -88,7 +88,7 @@ function EditarPorcentagensLucros() {
             <Grid item xs={6}>
               <TextField
                 variant="outlined"
-                label="Porcentagem"
+                label="Porcentagem *"
                 fullWidth
                 type="text"
                 value={formik.values.porcentagem}

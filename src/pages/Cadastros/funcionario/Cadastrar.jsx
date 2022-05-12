@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const initialValues = {
-  situacao: "",
+  situacao: 1,
   nome: "",
   cpf: "",
   rg: "",
@@ -47,7 +47,7 @@ const initialValues = {
   grupo_id: "",
   email: "",
   senha: "",
-  comissao: "",
+  comissao: 0,
   foto: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
   rua: "",
   cidade: "",
@@ -98,10 +98,14 @@ function CadastrarFuncionarioPage() {
   }
 
   function handleOnSubmit(values) {
-    values.cep = values.cep.replace(/[^\d]/g, "");
-    values.cpf = values.cpf.replace(/[^\d]/g, "");
-    values.telefone = values.telefone.replace(/[^\d]/g, "");
-    values.celular = values.celular.replace(/[^\d]/g, "");
+    try {
+      values.cep = values.cep.replace(/[^\d]/g, '');
+      values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, '');
+      values.telefone = values.telefone.replace(/[^\d]/g, '');
+      values.celular = values.celular.replace(/[^\d]/g, '');
+    } catch (error) {
+      
+    }
 
     api
       .post("/funcionarios", values)
@@ -151,10 +155,10 @@ function CadastrarFuncionarioPage() {
                 className={classes.input}
                 name="grupo"
               >
-                <InputLabel>Grupo</InputLabel>
+                <InputLabel>Grupo *</InputLabel>
                 <Select
                   className={"input-select"}
-                  label="Grupo"
+                  label="Grupo *"
                   name="grupo_id"
                   value={formik.values.grupo_id}
                   onChange={formik.handleChange}
@@ -186,10 +190,10 @@ function CadastrarFuncionarioPage() {
                 className={classes.input}
                 name="situacao"
               >
-                <InputLabel>Situação</InputLabel>
+                <InputLabel>Situação *</InputLabel>
                 <Select
                   className={"input-select"}
-                  label="Situação"
+                  label="Situação *"
                   name="situacao"
                   value={formik.values.situacao}
                   onChange={formik.handleChange}
@@ -216,10 +220,10 @@ function CadastrarFuncionarioPage() {
                 className={classes.input}
                 name="sexo"
               >
-                <InputLabel>Sexo</InputLabel>
+                <InputLabel>Sexo *</InputLabel>
                 <Select
                   className={"input-select"}
-                  label="Sexo"
+                  label="Sexo *"
                   name="sexo"
                   value={formik.values.sexo}
                   onChange={formik.handleChange}
@@ -228,7 +232,7 @@ function CadastrarFuncionarioPage() {
                 >
                   <MenuItem value={"masculino"}>Masculino</MenuItem>
                   <MenuItem value={"feminino"}>Feminino</MenuItem>
-                  <MenuItem value={"outro"}>Outro</MenuItem>
+                  {/* <MenuItem value={"outro"}>Outro</MenuItem> */}
                 </Select>
                 {formik.touched.sexo && Boolean(formik.errors.sexo) ? (
                   <FormHelperText>{formik.errors.sexo}</FormHelperText>
@@ -318,7 +322,7 @@ function CadastrarFuncionarioPage() {
                 type="number"
                 step="0.01"
                 variant="outlined"
-                label="Comissão (%)"
+                label="Comissão (%) *"
                 fullWidth
                 className={classes.input}
                 name="comissao"

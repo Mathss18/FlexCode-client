@@ -21,7 +21,7 @@ import { infoAlert, successAlert } from "../../../utils/alert";
 const initialValues = {
   nome: "",
   sigla: "",
-  padrao: 0,
+  padrao: 1,
 };
 
 function CadastrarUnidadeDeProdutos() {
@@ -63,7 +63,7 @@ function CadastrarUnidadeDeProdutos() {
             <Grid item xs={6}>
               <TextField
                 variant="outlined"
-                label="Nome"
+                label="Nome *"
                 fullWidth
                 type="text"
                 value={formik.values.nome}
@@ -77,7 +77,7 @@ function CadastrarUnidadeDeProdutos() {
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
-                label="Sigla"
+                label="Sigla *"
                 fullWidth
                 type="text"
                 value={formik.values.sigla}
@@ -93,7 +93,7 @@ function CadastrarUnidadeDeProdutos() {
                 <InputLabel>Padrão</InputLabel>
                 <Select
                   className={"input-select"}
-                  label="Padrão"
+                  label="Padrão *"
                   onChange={formik.handleChange}
                   type="select"
                   name="padrao"

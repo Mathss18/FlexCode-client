@@ -99,10 +99,14 @@ function EditarClientePage() {
 
   function handleOnSubmit(values) {
     // Removendo máscaras antes de enviar dados para API
-    values.cep = values.cep.replace(/[^\d]/g, '');
-    values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, '');
-    values.telefone = values.telefone.replace(/[^\d]/g, '');
-    values.celular = values.celular.replace(/[^\d]/g, '');
+    try {
+      values.cep = values.cep.replace(/[^\d]/g, '');
+      values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, '');
+      values.telefone = values.telefone.replace(/[^\d]/g, '');
+      values.celular = values.celular.replace(/[^\d]/g, '');
+    } catch (error) {
+    }
+
 
     api
       .put("/clientes/" + id, values)
@@ -261,7 +265,7 @@ function EditarClientePage() {
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
-                label="Nome/Razão social"
+                label="Nome/Razão social *"
                 fullWidth
                 value={formik.values.nome}
                 name="nome"

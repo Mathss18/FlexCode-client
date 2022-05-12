@@ -25,7 +25,7 @@ import { useFormik } from "formik";
 
 const initialValues = {
   tipoCliente: "",
-  situacao: "",
+  situacao: 1,
   tipoContribuinte: "",
   inscricaoEstadual: "",
   nome: "",
@@ -56,10 +56,14 @@ function CadastrarClientePage() {
 
   function handleOnSubmit(values) {
     // Removendo máscaras antes de enviar dados para API
-    values.cep = values.cep.replace(/[^\d]/g, '');
-    values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, '');
-    values.telefone = values.telefone.replace(/[^\d]/g, '');
-    values.celular = values.celular.replace(/[^\d]/g, '');
+    try {
+      values.cep = values.cep.replace(/[^\d]/g, '');
+      values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, '');
+      values.telefone = values.telefone.replace(/[^\d]/g, '');
+      values.celular = values.celular.replace(/[^\d]/g, '');
+    } catch (error) {
+      
+    }
 
     api
       .post("/clientes", values)
@@ -109,10 +113,10 @@ function CadastrarClientePage() {
           <Grid container spacing={2}>
             <Grid item xs={3}>
               <FormControl variant="outlined" fullWidth name="tipoCliente">
-                <InputLabel>Tipo de Cliente</InputLabel>
+                <InputLabel>Tipo de Cliente *</InputLabel>
                 <Select
                   className={"input-select"}
-                  label="Tipo de Cliente"
+                  label="Tipo de Cliente "
                   name="tipoCliente"
                   value={formik.values.tipoCliente}
                   onChange={formik.handleChange}
@@ -136,10 +140,10 @@ function CadastrarClientePage() {
 
             <Grid item xs={3}>
               <FormControl variant="outlined" fullWidth name="situacao">
-                <InputLabel>Situação</InputLabel>
+                <InputLabel>Situação *</InputLabel>
                 <Select
                   className={"input-select"}
-                  label="Situação"
+                  label="Situação *"
                   name="situacao"
                   value={formik.values.situacao}
                   onChange={formik.handleChange}
@@ -219,7 +223,7 @@ function CadastrarClientePage() {
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
-                label="Nome/Razão social"
+                label="Nome/Razão social *"
                 fullWidth
                 value={formik.values.nome}
                 name="nome"

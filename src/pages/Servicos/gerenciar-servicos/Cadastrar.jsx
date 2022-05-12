@@ -71,7 +71,7 @@ function CadastrarServicoPage() {
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
-                label="Nome do Serviço"
+                label="Nome do Serviço *"
                 fullWidth
                 type="text"
                 value={formik.values.nome}
@@ -85,7 +85,7 @@ function CadastrarServicoPage() {
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
-                label="Código Interno"
+                label="Código Interno *"
                 fullWidth
                 type="text"
                 value={formik.values.codigoInterno}
@@ -104,23 +104,25 @@ function CadastrarServicoPage() {
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
-                label="Valor"
+                label="Valor *"
                 fullWidth
                 type="number"
+                step="0.01"
                 value={formik.values.valor}
                 name="valor"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.valor && Boolean(formik.errors.valor)}
                 helperText={formik.touched.valor && formik.errors.valor}
-              />
+                />
             </Grid>
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
-                label="Comissão"
+                label="Comissão *"
                 fullWidth
-                type="text"
+                type="number"
+                step="0.01"
                 value={formik.values.comissao}
                 name="comissao"
                 onChange={formik.handleChange}
@@ -139,7 +141,7 @@ function CadastrarServicoPage() {
                 className={"input-select"}
                 rows={5}
                 variant="outlined"
-                label="Descrição"
+                label="Descrição *"
                 fullWidth
                 type="text"
                 value={formik.values.descricao}
