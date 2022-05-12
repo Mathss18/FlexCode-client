@@ -91,7 +91,7 @@ function EditarUnidadeDeProdutos() {
             <Grid item xs={6}>
               <TextField
                 variant="outlined"
-                label="Nome"
+                label="Nome *"
                 fullWidth
                 type="text"
                 value={formik.values.nome}
@@ -105,7 +105,7 @@ function EditarUnidadeDeProdutos() {
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
-                label="Sigla"
+                label="Sigla *"
                 fullWidth
                 type="text"
                 value={formik.values.sigla}
@@ -121,7 +121,7 @@ function EditarUnidadeDeProdutos() {
                 <InputLabel>Padrão</InputLabel>
                 <Select
                   className={"input-select"}
-                  label="Padrão"
+                  label="Padrão *"
                   onChange={formik.handleChange}
                   type="select"
                   name="padrao"

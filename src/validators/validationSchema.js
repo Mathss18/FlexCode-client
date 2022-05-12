@@ -5,14 +5,15 @@ export const clienteValidation = yup.object().shape({
   situacao: yup.number("").required("A situação é obrigatória"),
   tipoContribuinte: yup
     .number("")
-    .required("O tipo de contribuinte é obrigatório"),
+    .nullable(),
   inscricaoEstadual: yup.string().nullable(),
-  nome: yup.string().required("O nome do cliente é obrigatório"),
-  cpfCnpj: yup.string().required("O CPF/CNPJ é obrigatório"),
+  nome: yup.string().required("O nome é obrigatório"),
+  // cpfCnpj: yup.string().required("O CPF/CNPJ é obrigatório"),
+  cpfCnpj: yup.string().nullable(),
   email: yup
     .string()
     .email("Digite o e-mail corretamente")
-    .required("O e-mail é obrigatório"),
+    .nullable(),
   contato: yup.string().nullable(),
   rua: yup.string().nullable(),
   cidade: yup.string().nullable(),
@@ -29,27 +30,28 @@ export const transportadoraValidation = yup.object().shape({
   tipoTransportadora: yup
     .string()
     .required("O tipo de transportadora é obrigatório"),
-  situacao: yup.number("").required("A situação é obrigatória"),
-  tipoContribuinte: yup
-    .number("")
-    .required("O tipo de contribuinte é obrigatório"),
-  inscricaoEstadual: yup.string().nullable(),
-  nome: yup.string().required("O nome da transportadora é obrigatório"),
-  cpfCnpj: yup.string().required("O CPF/CNPJ é obrigatório"),
-  email: yup
-    .string()
-    .email("Digite o e-mail corretamente")
-    .required("O e-mail é obrigatório"),
-  contato: yup.string().nullable(),
-  rua: yup.string().nullable(),
-  cidade: yup.string().nullable(),
-  numero: yup.string().nullable(),
-  cep: yup.string().nullable(),
-  bairro: yup.string().nullable(),
-  estado: yup.string().nullable(),
-  telefone: yup.string().nullable(),
-  celular: yup.string().nullable(),
-  codigoMunicipio: yup.string().nullable(),
+    situacao: yup.number("").required("A situação é obrigatória"),
+    tipoContribuinte: yup
+      .number("")
+      .nullable(),
+    inscricaoEstadual: yup.string().nullable(),
+    nome: yup.string().required("O nome é obrigatório"),
+    // cpfCnpj: yup.string().required("O CPF/CNPJ é obrigatório"),
+    cpfCnpj: yup.string().nullable(),
+    email: yup
+      .string()
+      .email("Digite o e-mail corretamente")
+      .nullable(),
+    contato: yup.string().nullable(),
+    rua: yup.string().nullable(),
+    cidade: yup.string().nullable(),
+    numero: yup.string().nullable(),
+    cep: yup.string().nullable(),
+    bairro: yup.string().nullable(),
+    estado: yup.string().nullable(),
+    telefone: yup.string().nullable(),
+    celular: yup.string().nullable(),
+    codigoMunicipio: yup.string().nullable(),
 });
 
 export const fornecedorValidation = yup.object().shape({
@@ -57,14 +59,15 @@ export const fornecedorValidation = yup.object().shape({
   situacao: yup.number("").required("A situação é obrigatória"),
   tipoContribuinte: yup
     .number("")
-    .required("O tipo de contribuinte é obrigatório"),
+    .nullable(),
   inscricaoEstadual: yup.string().nullable(),
-  nome: yup.string().required("O nome do fornecedor é obrigatório"),
-  cpfCnpj: yup.string().required("O CPF/CNPJ é obrigatório"),
+  nome: yup.string().required("O nome é obrigatório"),
+  // cpfCnpj: yup.string().required("O CPF/CNPJ é obrigatório"),
+  cpfCnpj: yup.string().nullable(),
   email: yup
     .string()
     .email("Digite o e-mail corretamente")
-    .required("O e-mail é obrigatório"),
+    .nullable(),
   contato: yup.string().nullable(),
   rua: yup.string().nullable(),
   cidade: yup.string().nullable(),

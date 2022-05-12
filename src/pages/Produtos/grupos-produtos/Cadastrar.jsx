@@ -160,7 +160,7 @@ function CadastrarGrupoDeProdutos() {
             <Grid item xs={6}>
               <TextField
                 variant="outlined"
-                label="Nome do Grupo"
+                label="Nome do Grupo *"
                 fullWidth
                 type="text"
                 name="nome"
@@ -176,10 +176,10 @@ function CadastrarGrupoDeProdutos() {
                 className={"input-select"}
                 style={{ marginTop: 16 }}
               >
-                <InputLabel id="label-grupo-pai">Grupo Pai</InputLabel>
+                <InputLabel id="label-grupo-pai">Grupo Pai *</InputLabel>
                 <Select
                   className={"input-select"}
-                  label="Grupo pai"
+                  label="Grupo pai *"
                   name="grupoPai"
                   value={formik.values.grupoPai}
                   onChange={formik.handleChange}

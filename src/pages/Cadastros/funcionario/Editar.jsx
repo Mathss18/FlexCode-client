@@ -159,10 +159,14 @@ function EditarClientePage() {
   }
 
   function handleOnSubmit(values) {
-    values.cep = values.cep.replace(/[^\d]/g, "");
-    values.cpf = values.cpf.replace(/[^\d]/g, "");
-    values.telefone = values.telefone.replace(/[^\d]/g, "");
-    values.celular = values.celular.replace(/[^\d]/g, "");
+    try {
+      values.cep = values.cep.replace(/[^\d]/g, '');
+      values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, '');
+      values.telefone = values.telefone.replace(/[^\d]/g, '');
+      values.celular = values.celular.replace(/[^\d]/g, '');
+    } catch (error) {
+      
+    }
 
     api
       .put("/funcionarios/" + id, values)
@@ -264,10 +268,10 @@ function EditarClientePage() {
                 className={classes.input}
                 name="grupo"
               >
-                <InputLabel>Grupo</InputLabel>
+                <InputLabel>Grupo *</InputLabel>
                 <Select
                   className={"input-select"}
-                  label="Grupo"
+                  label="Grupo *"
                   name="grupo_id"
                   value={formik.values.grupo_id}
                   onChange={formik.handleChange}
@@ -299,10 +303,10 @@ function EditarClientePage() {
                 className={classes.input}
                 name="situacao"
               >
-                <InputLabel>Situação</InputLabel>
+                <InputLabel>Situação *</InputLabel>
                 <Select
                   className={"input-select"}
-                  label="Situação"
+                  label="Situação *"
                   name="situacao"
                   value={formik.values.situacao}
                   onChange={formik.handleChange}
@@ -329,10 +333,10 @@ function EditarClientePage() {
                 className={classes.input}
                 name="sexo"
               >
-                <InputLabel>Sexo</InputLabel>
+                <InputLabel>Sexo *</InputLabel>
                 <Select
                   className={"input-select"}
-                  label="Sexo"
+                  label="Sexo *"
                   name="sexo"
                   value={formik.values.sexo}
                   onChange={formik.handleChange}
@@ -433,7 +437,7 @@ function EditarClientePage() {
                 type="number"
                 step="0.01"
                 variant="outlined"
-                label="Comissão (%)"
+                label="Comissão (%) *"
                 fullWidth
                 className={classes.input}
                 name="comissao"

@@ -298,7 +298,6 @@ function ModalTransacao({
     if (!open) return;
 
     if (editTransacao) {
-      console.log(editTransacao);
       var editInitialValues = {
         data: editTransacao.start,
         observacao: editTransacao.observacao ?? "",
