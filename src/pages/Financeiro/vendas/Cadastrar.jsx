@@ -46,7 +46,7 @@ const initialValues = {
   forma_pagamento_id: null,
   quantidadeParcelas: 1,
   intervaloParcelas: 0,
-  tipoFormaPagamento: '0', // 0 - À vista, 1 - A prazo
+  tipoFormaPagamento: '1', // 0 - À vista, 1 - A prazo
   somarFreteAoTotal: false,
   produtos: [],
   servicos: [],
@@ -344,6 +344,18 @@ function CadastrarVendasPage() {
     // },
   ];
 
+  useEffect(() => {
+    fullScreenLoader.setLoading(true);
+    api
+      .get("/vendas-proximo")
+      .then((response) => {
+        formik.setFieldValue("numero", response.data['data']);
+      })
+      .catch((error) => {
+        toast.error("Erro ao buscar próximo número de venda");
+      })
+      .finally(()=>fullScreenLoader.setLoading(false))
+  }, []);
 
   useEffect(() => {
     api
@@ -814,6 +826,7 @@ function CadastrarVendasPage() {
           <Grid container spacing={3}>
             <Grid item xs={4}>
               <TextField
+                disabled
                 variant="outlined"
                 label="Número *"
                 fullWidth

@@ -255,6 +255,7 @@ function CalendarioPage() {
       />
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
+        showNonCurrentDates={true}
         initialView={getInitialView()}
         headerToolbar={{
           left: "prev,next,today",

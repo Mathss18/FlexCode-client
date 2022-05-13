@@ -591,11 +591,4 @@ export const GlobalStyles = createGlobalStyle`
     cursor: pointer;
   }
 
-  /* ========= CARROUSEL ========= */
-  .react-multi-carousel-item {
-    width: inherit !important;
-  }
-
-
-
 `;

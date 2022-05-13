@@ -33,6 +33,7 @@ import { TimePicker } from "@material-ui/pickers";
 import { ordemServicoValidation } from "../../../validators/validationSchema";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
+import toast from "react-hot-toast";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -249,6 +250,19 @@ function CadastrarOrdensServicoPage() {
       ),
     },
   ];
+
+  useEffect(() => {
+    fullScreenLoader.setLoading(true);
+    api
+      .get("/ordens-servicos-proximo")
+      .then((response) => {
+        formik.setFieldValue("numero", response.data['data']);
+      })
+      .catch((error) => {
+        toast.error("Erro ao buscar próximo número de ordem de serviço");
+      })
+      .finally(()=>fullScreenLoader.setLoading(false))
+  }, []);
 
   useEffect(() => {
     api
@@ -562,6 +576,7 @@ function CadastrarOrdensServicoPage() {
           <Grid container spacing={3}>
             <Grid item xs={4}>
               <TextField
+                disabled
                 variant="outlined"
                 label="Número"
                 fullWidth
