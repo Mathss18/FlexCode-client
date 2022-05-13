@@ -42,8 +42,11 @@ function LoginPage() {
         redirecionar(response);
       })
       .catch((error) => {
-        if(error.response.data.code === 403){
+        if(error?.response?.data?.code === 403){
           infoAlert("Não autorizado!", "Usuário ou senha inválidos");
+        }
+        else{
+          infoAlert("Não autorizado!", "Tenant não encontrado");
         }
       })
       .finally(() => {
