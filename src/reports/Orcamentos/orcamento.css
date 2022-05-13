@@ -50,13 +50,13 @@
   border-left: none;
 }
 
-td,
-th {
+.tdOrcamento,
+.thOrcamento {
   padding: 8px;
   text-align: left;
 }
 
-tr:nth-child(even) {
+.trOrcamento:nth-child(even) {
   background-color: #dddddd;
 }
 

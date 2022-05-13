@@ -26,7 +26,7 @@ import api from "../../../services/api";
 import { DataGrid } from "@mui/x-data-grid";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
+import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import moment from "moment";
 import {
   deleteFromArrayByIndex,
@@ -38,6 +38,8 @@ import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import DragAndDrop from "../../../components/dragdrop/DragAndDrop";
 import toast from "react-hot-toast";
+import ModalTabelaPreco from "../modalTabelaPreco/ModalTabelaPreco";
+import CalculateIcon from '@mui/icons-material/Calculate';
 
 const initialValues = {
   numero: "",
@@ -46,7 +48,7 @@ const initialValues = {
   forma_pagamento_id: null,
   quantidadeParcelas: 1,
   intervaloParcelas: 0,
-  tipoFormaPagamento: '1', // 0 - À vista, 1 - A prazo
+  tipoFormaPagamento: "1", // 0 - À vista, 1 - A prazo
   somarFreteAoTotal: false,
   produtos: [],
   servicos: [],
@@ -62,7 +64,7 @@ const initialValues = {
   observacao: "",
   observacaoInterna: "",
 
-  qtdeMaximaParcelas: Infinity // Para não permitir que o usuário digite uma quantidade de parcelas maior que o permitido (Não faz parte do formulário em sí)
+  qtdeMaximaParcelas: Infinity, // Para não permitir que o usuário digite uma quantidade de parcelas maior que o permitido (Não faz parte do formulário em sí)
 };
 
 function CadastrarVendasPage() {
@@ -78,6 +80,10 @@ function CadastrarVendasPage() {
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const [files, setFiles] = useState([]);
   const formasPagamentosOriginal = useRef([]);
+  // === Tabela de Preço
+  const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
+  const produtosOriginal = useRef(null);
+  const produto = useRef(null);
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -93,7 +99,7 @@ function CadastrarVendasPage() {
       headerName: "Produto",
       flex: 2,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       renderCell: (params) => (
         <>
           <Autocomplete
@@ -126,28 +132,28 @@ function CadastrarVendasPage() {
     {
       field: "quantidade",
       headerName: "Quantidade",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "preco",
       headerName: "Preço Unitário",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "total",
       headerName: "Total",
-      type: 'number',
+      type: "number",
       editable: false,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
@@ -155,20 +161,26 @@ function CadastrarVendasPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 2,
     },
     {
       field: "excluir",
-      headerName: "Excluir",
+      headerName: "Ações",
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       renderCell: (params) => (
         <>
           <DeleteIcon
             className={"btn btn-lista"}
             onClick={() => removeProductRow(params)}
           />
+          <Tooltip title="Ver tabela de preços">
+            <CalculateIcon
+              className={"btn btn-lista"}
+              onClick={() => openTabelaDePrecosModal(params)}
+            />
+          </Tooltip>
         </>
       ),
     },
@@ -180,7 +192,7 @@ function CadastrarVendasPage() {
       headerName: "Serviço",
       flex: 2,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       renderCell: (params) => (
         <>
           <Autocomplete
@@ -213,28 +225,28 @@ function CadastrarVendasPage() {
     {
       field: "quantidade",
       headerName: "Quantidade",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "preco",
       headerName: "Preço Unitário",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "total",
       headerName: "Total",
-      type: 'number',
+      type: "number",
       editable: false,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
@@ -242,14 +254,14 @@ function CadastrarVendasPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Excluir",
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       // flex: 1,
       renderCell: (params) => (
         <>
@@ -270,14 +282,14 @@ function CadastrarVendasPage() {
       type: "date",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
     },
     {
       field: "valorParcela",
       headerName: "Valor Parcela",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       type: "number",
       flex: 1,
     },
@@ -285,7 +297,7 @@ function CadastrarVendasPage() {
       field: "forma_pagamento_id",
       headerName: "Forma Pagamento",
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
       renderCell: (params) => (
         <>
@@ -295,10 +307,15 @@ function CadastrarVendasPage() {
             value={
               params.row.forma_pagamento_id == ""
                 ? { label: "", value: null }
-                : { label: params.row.nome, value: params.row.forma_pagamento_id }
+                : {
+                    label: params.row.nome,
+                    value: params.row.forma_pagamento_id,
+                  }
             }
             name="forma_pagamento_id"
-            onChange={(event, value) => handleFormaPagamentoChange(params, value)}
+            onChange={(event, value) =>
+              handleFormaPagamentoChange(params, value)
+            }
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
@@ -325,7 +342,7 @@ function CadastrarVendasPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 2,
     },
     // {
@@ -349,12 +366,12 @@ function CadastrarVendasPage() {
     api
       .get("/vendas-proximo")
       .then((response) => {
-        formik.setFieldValue("numero", response.data['data']);
+        formik.setFieldValue("numero", response.data["data"]);
       })
       .catch((error) => {
         toast.error("Erro ao buscar próximo número de venda");
       })
-      .finally(()=>fullScreenLoader.setLoading(false))
+      .finally(() => fullScreenLoader.setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -363,7 +380,7 @@ function CadastrarVendasPage() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((cliente) => {
-          if(cliente.situacao === 1){
+          if (cliente.situacao === 1) {
             array.push({ label: cliente.nome, value: cliente.id });
           }
         });
@@ -396,8 +413,11 @@ function CadastrarVendasPage() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((transportadora) => {
-          if(transportadora.situacao === 1){
-            array.push({ label: transportadora.nome, value: transportadora.id });
+          if (transportadora.situacao === 1) {
+            array.push({
+              label: transportadora.nome,
+              value: transportadora.id,
+            });
           }
         });
         setTransportadoras(array);
@@ -411,6 +431,8 @@ function CadastrarVendasPage() {
     api
       .get("/produtos")
       .then((response) => {
+        produtosOriginal.current = response.data['data'];
+
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
@@ -421,7 +443,7 @@ function CadastrarVendasPage() {
         });
         setProdutos(array);
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }, []);
 
   useEffect(() => {
@@ -455,25 +477,33 @@ function CadastrarVendasPage() {
   useEffect(() => {
     if (!formik.values.tipoFormaPagamento) return;
     // Se for a vista, seta a quantidade de parcelas como 1 e o intervalo como 0
-    if (formik.values.tipoFormaPagamento == '0') {
+    if (formik.values.tipoFormaPagamento == "0") {
       formik.setFieldValue("quantidadeParcelas", 1);
       formik.setFieldValue("intervaloParcelas", 0);
     }
   }, [formik.values.tipoFormaPagamento]);
 
   useEffect(() => {
-    if (formik.values.tipoFormaPagamento == '0') return
-    var formaPaga = formasPagamentosOriginal.current.filter((formaPagamento) => {
-      return formaPagamento.id == formik.values.forma_pagamento_id.value;
-    });
-    if(formaPaga.length == 1){
+    if (formik.values.tipoFormaPagamento == "0") return;
+    var formaPaga = formasPagamentosOriginal.current.filter(
+      (formaPagamento) => {
+        return formaPagamento.id == formik.values.forma_pagamento_id.value;
+      }
+    );
+    if (formaPaga.length == 1) {
       formik.setFieldValue("intervaloParcelas", formaPaga[0].intervaloParcelas);
-      formik.setFieldValue("qtdeMaximaParcelas", formaPaga[0].numeroMaximoParcelas);
+      formik.setFieldValue(
+        "qtdeMaximaParcelas",
+        formaPaga[0].numeroMaximoParcelas
+      );
     }
-    if(formik.values.quantidadeParcelas > formik.values.qtdeMaximaParcelas){
-      toast("A quantidade máxima de parcelas para essa forma de pagamento é "+formik.values.qtdeMaximaParcelas, { type: "error" });
+    if (formik.values.quantidadeParcelas > formik.values.qtdeMaximaParcelas) {
+      toast(
+        "A quantidade máxima de parcelas para essa forma de pagamento é " +
+          formik.values.qtdeMaximaParcelas,
+        { type: "error" }
+      );
     }
-    
   }, [formik.values.forma_pagamento_id, formik.isSubmitting]);
 
   const fullScreenLoader = useFullScreenLoader();
@@ -530,20 +560,21 @@ function CadastrarVendasPage() {
     }
     if (rowsParcelas.length <= 0) {
       formik.setSubmitting(false);
-      errorAlert(
-        "A venda deve ter pelo menos uma parcela!"
-      );
+      errorAlert("A venda deve ter pelo menos uma parcela!");
       return;
     }
     if (rowsParcelas.find((parcela) => Number(parcela.valorParcela) < 0)) {
       formik.setSubmitting(false);
-      errorAlert(
-        "Por favor, selecione uma valor válido para cada parcela!"
-      );
+      errorAlert("Por favor, selecione uma valor válido para cada parcela!");
       return;
     }
-    const totalParcelas = rowsParcelas.reduce((acc, item) => acc + Number(item.valorParcela), 0);
-    if (Number(totalParcelas.toFixed(2)) != Number(formik.values.total.toFixed(2))) {
+    const totalParcelas = rowsParcelas.reduce(
+      (acc, item) => acc + Number(item.valorParcela),
+      0
+    );
+    if (
+      Number(totalParcelas.toFixed(2)) != Number(formik.values.total.toFixed(2))
+    ) {
       formik.setSubmitting(false);
       errorAlert(
         "Erro no calculo das parcelas!",
@@ -552,7 +583,7 @@ function CadastrarVendasPage() {
       return;
     }
 
-    if (formik.values.tipoFormaPagamento == '0' && rowsParcelas.length != 1) {
+    if (formik.values.tipoFormaPagamento == "0" && rowsParcelas.length != 1) {
       formik.setSubmitting(false);
       errorAlert(
         "Erro no calculo das parcelas!",
@@ -574,9 +605,8 @@ function CadastrarVendasPage() {
       produtos: rowsProdutos,
       servicos: rowsServicos,
       parcelas: rowParcelasSanitezed,
-      anexos: files
+      anexos: files,
     };
-
 
     fullScreenLoader.setLoading(true);
     api
@@ -622,6 +652,13 @@ function CadastrarVendasPage() {
     setRowsProdutos(deleteFromArrayByIndex(rowsProdutos, ...indexToBeDeleted));
   }
 
+  function openTabelaDePrecosModal(params) {
+    const prod_id = params?.row?.produto_id;
+    produto.current = produtosOriginal.current.find((item)=> item.id === prod_id)
+    if(produto.current)
+      setOpenModalTabelaPreco(true)
+  }
+
   function handleProductRowStateChange(dataGrid) {
     if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsProdutos))
       return;
@@ -663,27 +700,34 @@ function CadastrarVendasPage() {
 
     objectToArray(dataGrid.rows.idRowsLookup).forEach((row, index) => {
       // Caso o preço daquela row tenha sido alterado, entrara no if
-      if (objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela != rowsParcelas[index].valorParcela) {
-        resto = Number(total) - (Number(acumulador) + Number(objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela)); // Calcula o restante TOTAL para ser dividido entra as parcelas restantes
+      if (
+        objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela !=
+        rowsParcelas[index].valorParcela
+      ) {
+        resto =
+          Number(total) -
+          (Number(acumulador) +
+            Number(
+              objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela
+            )); // Calcula o restante TOTAL para ser dividido entra as parcelas restantes
         var restoCadaParcela = resto / (parcelas - (index + 1)); // Calcula o restante INDIVIDUAL para ser dividido entre as parcelas restantes
 
         // Para cada parcela restante, altera o valor da parcela (se o valor restante for negativo, o valor da parcela será 0)
         for (let i = index + 1; i < parcelas; i++) {
           if (restoCadaParcela > 0) {
-            objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = restoCadaParcela.toFixed(2);
-          } 
-          else {
+            objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela =
+              restoCadaParcela.toFixed(2);
+          } else {
             objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = 0;
           }
         }
-
-      }
-      else {
+      } else {
         acumulador = acumulador + Number(rowsParcelas[index].valorParcela); // Acumula o valor das parcelas que não foram alteradas
       }
 
-      totalParcelas += Number(objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela); // Soma os valores de todas as parcelas (usado somente para calcular a diferença)
-
+      totalParcelas += Number(
+        objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela
+      ); // Soma os valores de todas as parcelas (usado somente para calcular a diferença)
     });
 
     var diferenca = total - totalParcelas;
@@ -691,13 +735,19 @@ function CadastrarVendasPage() {
 
     // se hover diferença, adiciona a diferença na ultima parcela
     if (Number(diferenca) !== 0) {
-      objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela = Number(objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela) + Number(diferenca.toFixed(2));
+      objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela =
+        Number(
+          objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela
+        ) + Number(diferenca.toFixed(2));
     }
 
-    setRowsParcelas(objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
-      row.valorParcela = row.valorParcela > 0 ? Number(row.valorParcela).toFixed(2) : 0;
-      return row;
-    }));
+    setRowsParcelas(
+      objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
+        row.valorParcela =
+          row.valorParcela > 0 ? Number(row.valorParcela).toFixed(2) : 0;
+        return row;
+      })
+    );
   }
 
   function handleClienteChange(params, value) {
@@ -714,13 +764,20 @@ function CadastrarVendasPage() {
     var aux = [];
 
     var diferenca = formik.values.total / formik.values.quantidadeParcelas;
-    diferenca = (formik.values.total - (diferenca.toFixed(2) * formik.values.quantidadeParcelas)).toFixed(2);
+    diferenca = (
+      formik.values.total -
+      diferenca.toFixed(2) * formik.values.quantidadeParcelas
+    ).toFixed(2);
 
     for (let i = 0; i < formik.values.quantidadeParcelas; i++) {
       aux.push({
         id: new Date().getTime() + i,
-        dataVencimento: moment(formik.values.dataPrimeiraParcela).add(formik.values.intervaloParcelas * i, 'days').format("DD/MM/YYYY"),
-        valorParcela: Number((Number(formik.values.total) / Number(formik.values.quantidadeParcelas))).toFixed(2),
+        dataVencimento: moment(formik.values.dataPrimeiraParcela)
+          .add(formik.values.intervaloParcelas * i, "days")
+          .format("DD/MM/YYYY"),
+        valorParcela: Number(
+          Number(formik.values.total) / Number(formik.values.quantidadeParcelas)
+        ).toFixed(2),
         forma_pagamento_id: formik.values.forma_pagamento_id.value,
         nome: formik.values.forma_pagamento_id.label,
         observacao: "",
@@ -728,70 +785,70 @@ function CadastrarVendasPage() {
     }
     // Se houver diferência, adiciona a última parcela com o valor da diferença
     if (Number(diferenca) !== 0) {
-      aux[aux.length - 1].valorParcela = Number(aux[aux.length - 1].valorParcela) + Number(diferenca);
+      aux[aux.length - 1].valorParcela =
+        Number(aux[aux.length - 1].valorParcela) + Number(diferenca);
     }
     setRowsParcelas(aux);
   }
-
 
   function handleFormaPagamentoChange(params, value) {
     params.row.forma_pagamento_id = value.value;
     params.row.nome = value.label;
   }
 
-    // ==== Funções de serviços ====
-    function addServicoRow() {
-      setRowsServicos([
-        ...rowsServicos,
-        {
-          id: new Date().getTime(),
-          servico_id: "",
-          quantidade: 0,
-          preco: 0,
-          total: 0,
-          observacao: "",
-        },
-      ]);
-    }
-  
-    function removeServicoRow(params) {
-      var indexToBeDeleted = rowsServicos.map((row, index) => {
-        if (row.id === params.id) return index;
-      });
-      indexToBeDeleted = indexToBeDeleted.filter((row) => row !== undefined);
-      setRowsServicos(deleteFromArrayByIndex(rowsServicos, ...indexToBeDeleted));
-    }
-  
-    function handleServicoRowStateChange(dataGrid) {
-      if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsServicos))
-        return;
-      if (objectToArray(dataGrid.rows.idRowsLookup).length != rowsServicos.length)
-        return;
-  
-      objectToArray(dataGrid.rows.idRowsLookup).forEach((row, index) => {
-        const selectdServico = servicos.find(
-          (servico) => servico.value === row.servico_id
-        );
-        if (selectdServico) {
-          if (objectToArray(dataGrid.rows.idRowsLookup)[index].preco <= 0) {
-            objectToArray(dataGrid.rows.idRowsLookup)[index].preco =
-              selectdServico.preco;
-          } else {
-            console.log("Preço original mudado");
-          }
-  
-          objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
-            objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
-            Number(row.quantidade)
-          ).toFixed(2);
+  // ==== Funções de serviços ====
+  function addServicoRow() {
+    setRowsServicos([
+      ...rowsServicos,
+      {
+        id: new Date().getTime(),
+        servico_id: "",
+        quantidade: 0,
+        preco: 0,
+        total: 0,
+        observacao: "",
+      },
+    ]);
+  }
+
+  function removeServicoRow(params) {
+    var indexToBeDeleted = rowsServicos.map((row, index) => {
+      if (row.id === params.id) return index;
+    });
+    indexToBeDeleted = indexToBeDeleted.filter((row) => row !== undefined);
+    setRowsServicos(deleteFromArrayByIndex(rowsServicos, ...indexToBeDeleted));
+  }
+
+  function handleServicoRowStateChange(dataGrid) {
+    if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsServicos))
+      return;
+    if (objectToArray(dataGrid.rows.idRowsLookup).length != rowsServicos.length)
+      return;
+
+    objectToArray(dataGrid.rows.idRowsLookup).forEach((row, index) => {
+      const selectdServico = servicos.find(
+        (servico) => servico.value === row.servico_id
+      );
+      if (selectdServico) {
+        if (objectToArray(dataGrid.rows.idRowsLookup)[index].preco <= 0) {
+          objectToArray(dataGrid.rows.idRowsLookup)[index].preco =
+            selectdServico.preco;
+        } else {
+          console.log("Preço original mudado");
         }
-      });
-      setRowsServicos(objectToArray(dataGrid.rows.idRowsLookup));
-    }
-  
-    function handleServicoChange(params, value) {
-      params.row.servico_id = value.value;
-    }
+
+        objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
+          objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
+          Number(row.quantidade)
+        ).toFixed(2);
+      }
+    });
+    setRowsServicos(objectToArray(dataGrid.rows.idRowsLookup));
+  }
+
+  function handleServicoChange(params, value) {
+    params.row.servico_id = value.value;
+  }
 
   function calcularTotalFinal() {
     var total = 0;
@@ -814,8 +871,20 @@ function CadastrarVendasPage() {
 
   return (
     <>
+      <ModalTabelaPreco
+        open={openModalTabelaPreco}
+        setOpen={setOpenModalTabelaPreco}
+        produto={produto.current}
+      />
       <form onSubmit={formik.handleSubmit}>
-        <div style={{ marginTop: 0, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 0,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -857,8 +926,13 @@ function CadastrarVendasPage() {
                     {...params}
                     label="Cliente *"
                     placeholder="Pesquise..."
-                    error={formik.touched.cliente_id && Boolean(formik.errors.cliente_id)}
-                    helperText={formik.touched.cliente_id && formik.errors.cliente_id}
+                    error={
+                      formik.touched.cliente_id &&
+                      Boolean(formik.errors.cliente_id)
+                    }
+                    helperText={
+                      formik.touched.cliente_id && formik.errors.cliente_id
+                    }
                   />
                 )}
               />
@@ -932,11 +1006,17 @@ function CadastrarVendasPage() {
                 )}
               />
             </Grid>
-            
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -988,7 +1068,14 @@ function CadastrarVendasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1040,7 +1127,14 @@ function CadastrarVendasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1065,7 +1159,7 @@ function CadastrarVendasPage() {
                           checked={formik.values.somarFreteAoTotal}
                           onChange={formik.handleChange}
                           name="somarFreteAoTotal"
-                          inputProps={{ 'aria-label': 'controlled' }}
+                          inputProps={{ "aria-label": "controlled" }}
                         />
                       </Tooltip>
                     </InputAdornment>
@@ -1073,10 +1167,7 @@ function CadastrarVendasPage() {
                 }}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => { }}
-                      edge="end"
-                    >
+                    <IconButton onClick={() => {}} edge="end">
                       {<CloseIcon />}
                     </IconButton>
                   </InputAdornment>
@@ -1105,7 +1196,9 @@ function CadastrarVendasPage() {
                 name="impostos"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.impostos && Boolean(formik.errors.impostos)}
+                error={
+                  formik.touched.impostos && Boolean(formik.errors.impostos)
+                }
                 helperText={formik.touched.impostos && formik.errors.impostos}
               />
             </Grid>
@@ -1153,26 +1246,45 @@ function CadastrarVendasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
             <AssignmentIcon />
             <h3>Pagamento</h3>
-            <div style={{ marginLeft: 'auto' }}>
+            <div style={{ marginLeft: "auto" }}>
               <FormControl>
                 <RadioGroup
                   value={formik.values.tipoFormaPagamento}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   name="tipoFormaPagamento"
-                  row>
-                  <FormControlLabel value={'0'} control={<Radio />} label="À vista" />
-                  <FormControlLabel value={'1'} control={<Radio />} label="A prazo" />
+                  row
+                >
+                  <FormControlLabel
+                    value={"0"}
+                    control={<Radio />}
+                    label="À vista"
+                  />
+                  <FormControlLabel
+                    value={"1"}
+                    control={<Radio />}
+                    label="A prazo"
+                  />
                 </RadioGroup>
-                <FormHelperText>{formik.touched.tipoFormaPagamento && formik.errors.tipoFormaPagamento}</FormHelperText>
+                <FormHelperText>
+                  {formik.touched.tipoFormaPagamento &&
+                    formik.errors.tipoFormaPagamento}
+                </FormHelperText>
               </FormControl>
-              {rowsParcelas.length <= 0 ?
+              {rowsParcelas.length <= 0 ? (
                 <Button
                   style={{ height: 28, fontSize: 12, marginTop: 8 }}
                   className={"btn btn-primary"}
@@ -1182,7 +1294,7 @@ function CadastrarVendasPage() {
                 >
                   Parcelas
                 </Button>
-                :
+              ) : (
                 <Button
                   style={{ height: 28, fontSize: 12, marginTop: 8 }}
                   className={"btn btn-primary"}
@@ -1191,11 +1303,9 @@ function CadastrarVendasPage() {
                   disabled={isBtnDisabled}
                 >
                   Limpar
-                </Button>}
-
-
+                </Button>
+              )}
             </div>
-
           </div>
 
           <Grid container spacing={3}>
@@ -1203,7 +1313,9 @@ function CadastrarVendasPage() {
               <Autocomplete
                 value={formik.values.forma_pagamento_id}
                 name="forma_pagamento_id"
-                onChange={(event, value) => handleOnChange("forma_pagamento_id", value)}
+                onChange={(event, value) =>
+                  handleOnChange("forma_pagamento_id", value)
+                }
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
@@ -1216,8 +1328,14 @@ function CadastrarVendasPage() {
                     {...params}
                     label="Forma de pagamento *"
                     placeholder="Pesquise..."
-                    error={formik.touched.forma_pagamento_id && Boolean(formik.errors.forma_pagamento_id)}
-                    helperText={formik.touched.forma_pagamento_id && formik.errors.forma_pagamento_id}
+                    error={
+                      formik.touched.forma_pagamento_id &&
+                      Boolean(formik.errors.forma_pagamento_id)
+                    }
+                    helperText={
+                      formik.touched.forma_pagamento_id &&
+                      formik.errors.forma_pagamento_id
+                    }
                   />
                 )}
               />
@@ -1239,7 +1357,8 @@ function CadastrarVendasPage() {
                   Boolean(formik.errors.quantidadeParcelas)
                 }
                 helperText={
-                  formik.touched.quantidadeParcelas && formik.errors.quantidadeParcelas
+                  formik.touched.quantidadeParcelas &&
+                  formik.errors.quantidadeParcelas
                 }
               />
             </Grid>
@@ -1259,7 +1378,8 @@ function CadastrarVendasPage() {
                   Boolean(formik.errors.intervaloParcelas)
                 }
                 helperText={
-                  formik.touched.intervaloParcelas && formik.errors.intervaloParcelas
+                  formik.touched.intervaloParcelas &&
+                  formik.errors.intervaloParcelas
                 }
               />
             </Grid>
@@ -1278,7 +1398,8 @@ function CadastrarVendasPage() {
                   Boolean(formik.errors.dataPrimeiraParcela)
                 }
                 helperText={
-                  formik.touched.dataPrimeiraParcela && formik.errors.dataPrimeiraParcela
+                  formik.touched.dataPrimeiraParcela &&
+                  formik.errors.dataPrimeiraParcela
                 }
               />
             </Grid>
@@ -1317,7 +1438,14 @@ function CadastrarVendasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1329,14 +1457,24 @@ function CadastrarVendasPage() {
             <>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <DragAndDrop state={[files, setFiles]} listFiles></DragAndDrop>
+                  <DragAndDrop
+                    state={[files, setFiles]}
+                    listFiles
+                  ></DragAndDrop>
                 </Grid>
               </Grid>
             </>
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >

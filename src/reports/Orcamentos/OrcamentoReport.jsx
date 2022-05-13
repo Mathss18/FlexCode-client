@@ -104,32 +104,32 @@ export default function OrcamentoReport() {
           <div className="containerTable">
             <h4 className="title">DADOS DO CLIENTE</h4>
             <table cellspacing="0" className="tableCliente">
-              <tr>
-                <th>CLIENTE:</th>
-                <td>{dados?.cliente?.nome}</td>
-                <th>CPF/CNPJ:</th>
-                <td>{dados?.cliente?.cpfCnpj}</td>
+              <tr className="trOrcamento">
+                <th className="thOrcamento">CLIENTE:</th>
+                <td className="tdOrcamento">{dados?.cliente?.nome}</td>
+                <th className="thOrcamento">CPF/CNPJ:</th>
+                <td className="tdOrcamento">{dados?.cliente?.cpfCnpj}</td>
               </tr>
 
-              <tr>
-                <th>ENDEREÇO:</th>
-                <td>{dados?.cliente?.rua + ", " + dados?.cliente?.numero}</td>
-                <th>CEP:</th>
-                <td>{dados?.cliente?.cep}</td>
+              <tr className="trOrcamento">
+                <th className="thOrcamento">ENDEREÇO:</th>
+                <td className="tdOrcamento">{dados?.cliente?.rua + ", " + dados?.cliente?.numero}</td>
+                <th className="thOrcamento">CEP:</th>
+                <td className="tdOrcamento">{dados?.cliente?.cep}</td>
               </tr>
 
-              <tr>
-                <th>CIDADE:</th>
-                <td>{dados?.cliente?.cidade}</td>
-                <th>ESTADO:</th>
-                <td>{dados?.cliente?.estado}</td>
+              <tr className="trOrcamento">
+                <th className="thOrcamento">CIDADE:</th>
+                <td className="tdOrcamento">{dados?.cliente?.cidade}</td>
+                <th className="thOrcamento">ESTADO:</th>
+                <td className="tdOrcamento">{dados?.cliente?.estado}</td>
               </tr>
 
-              <tr>
-                <th>TELEFONE:</th>
-                <td>{dados?.cliente?.telefone}</td>
-                <th>E-MAIL:</th>
-                <td>{dados?.cliente?.email}</td>
+              <tr className="trOrcamento">
+                <th className="thOrcamento">TELEFONE:</th>
+                <td className="tdOrcamento">{dados?.cliente?.telefone}</td>
+                <th className="thOrcamento">E-MAIL:</th>
+                <td className="tdOrcamento">{dados?.cliente?.email}</td>
               </tr>
             </table>
           </div>
@@ -138,29 +138,29 @@ export default function OrcamentoReport() {
             <div className="containerTable">
               <h4>INFORMAÇÕES DO PRODUTO</h4>
               <table cellspacing="0" className="tableProdutos">
-                <tr>
-                  <th>ITEM</th>
-                  <th>NOME</th>
-                  <th>OBS</th>
-                  <th>QTD</th>
-                  <th>VR UNIT</th>
-                  <th>SUBTOTAL</th>
+                <tr className="trOrcamento">
+                  <th className="thOrcamento">ITEM</th>
+                  <th className="thOrcamento">NOME</th>
+                  <th className="thOrcamento">OBS</th>
+                  <th className="thOrcamento">QTD</th>
+                  <th className="thOrcamento">VR UNIT</th>
+                  <th className="thOrcamento">SUBTOTAL</th>
                 </tr>
                 {dados?.produtos?.map((produto, index) => {
                   return (
-                    <tr key={index}>
-                      <td width={"7%"}>{index + 1}</td>
-                      <td>{produto?.nome}</td>
-                      <td>{produto?.pivot.observacao}</td>
-                      <td>{produto?.pivot.quantidade}</td>
-                      <td>
+                    <tr className="trOrcamento" key={index}>
+                      <td className="tdOrcamento" width={"7%"}>{index + 1}</td>
+                      <td className="tdOrcamento">{produto?.nome}</td>
+                      <td className="tdOrcamento">{produto?.pivot.observacao}</td>
+                      <td className="tdOrcamento">{produto?.pivot.quantidade}</td>
+                      <td className="tdOrcamento">
                         {produto?.pivot.preco
                           .toFixed(2)
                           .toLocaleString("pt-br", {
                             minimumFractionDigits: 2,
                           })}
                       </td>
-                      <td>
+                      <td className="tdOrcamento">
                         {produto?.pivot.total
                           .toFixed(2)
                           .toLocaleString("pt-br", {
@@ -170,15 +170,15 @@ export default function OrcamentoReport() {
                     </tr>
                   );
                 })}
-                <tr>
-                  <th>TOTAL</th>
-                  <td></td>
-                  <td></td>
-                  <td>
+                <tr className="trOrcamento">
+                  <th className="thOrcamento">TOTAL</th>
+                  <td className="tdOrcamento"></td>
+                  <td className="tdOrcamento"></td>
+                  <td className="tdOrcamento">
                     <b>{totalProdutos?.quantidade}</b>
                   </td>
-                  <td></td>
-                  <td>
+                  <td className="tdOrcamento"></td>
+                  <td className="tdOrcamento">
                     <b>
                       {totalProdutos?.valor
                         .toFixed(2)
@@ -194,30 +194,30 @@ export default function OrcamentoReport() {
             <div className="containerTable">
               <h4>SERVIÇOS</h4>
               <table cellspacing="0" className="tableServicos">
-                <tr>
-                  <th>ITEM</th>
-                  <th>NOME</th>
-                  <th>OBS</th>
-                  <th>QTD</th>
-                  <th>VR UNIT</th>
-                  <th>SUBTOTAL</th>
+                <tr className="trOrcamento">
+                  <th className="thOrcamento">ITEM</th>
+                  <th className="thOrcamento">NOME</th>
+                  <th className="thOrcamento">OBS</th>
+                  <th className="thOrcamento">QTD</th>
+                  <th className="thOrcamento">VR UNIT</th>
+                  <th className="thOrcamento">SUBTOTAL</th>
                 </tr>
 
                 {dados?.servicos?.map((servico, index) => {
                   return (
-                    <tr key={index}>
-                      <td width={"7%"}>{index + 1}</td>
-                      <td>{servico?.nome}</td>
-                      <td>{servico?.pivot.observacao}</td>
-                      <td>{servico?.pivot.quantidade}</td>
-                      <td>
+                    <tr className="trOrcamento" key={index}>
+                      <td className="tdOrcamento" width={"7%"}>{index + 1}</td>
+                      <td className="tdOrcamento">{servico?.nome}</td>
+                      <td className="tdOrcamento">{servico?.pivot.observacao}</td>
+                      <td className="tdOrcamento">{servico?.pivot.quantidade}</td>
+                      <td className="tdOrcamento">
                         {servico?.pivot.preco
                           .toFixed(2)
                           .toLocaleString("pt-br", {
                             minimumFractionDigits: 2,
                           })}
                       </td>
-                      <td>
+                      <td className="tdOrcamento">
                         {servico?.pivot.total
                           .toFixed(2)
                           .toLocaleString("pt-br", {
@@ -228,15 +228,15 @@ export default function OrcamentoReport() {
                   );
                 })}
 
-                <tr>
-                  <th>TOTAL</th>
-                  <td></td>
-                  <td></td>
-                  <td>
+                <tr className="trOrcamento">
+                  <th className="thOrcamento">TOTAL</th>
+                  <td className="tdOrcamento"></td>
+                  <td className="tdOrcamento"></td>
+                  <td className="tdOrcamento">
                     <b>{totalServicos?.quantidade}</b>
                   </td>
-                  <td></td>
-                  <td>
+                  <td className="tdOrcamento"></td>
+                  <td className="tdOrcamento">
                     <b>
                       {totalServicos?.valor
                         .toFixed(2)
@@ -251,30 +251,30 @@ export default function OrcamentoReport() {
           <div className="containerTable">
             <h4>DADOS DO PAGAMENTO</h4>
             <table cellspacing="0" className="tablePagamento">
-              <tr>
-                <th>FRETE</th>
-                <th>OUTROS CUSTOS</th>
-                <th>DESCONTO</th>
-                <th>TOTAL FINAL</th>
+              <tr className="trOrcamento">
+                <th className="thOrcamento">FRETE</th>
+                <th className="thOrcamento">OUTROS CUSTOS</th>
+                <th className="thOrcamento">DESCONTO</th>
+                <th className="thOrcamento">TOTAL FINAL</th>
               </tr>
 
-              <tr>
-                <td>
+              <tr className="trOrcamento">
+                <td className="tdOrcamento">
                   {dados?.frete
                     .toFixed(2)
                     .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
                 </td>
-                <td>
+                <td className="tdOrcamento">
                   {dados?.outros
                     .toFixed(2)
                     .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
                 </td>
-                <td>
+                <td className="tdOrcamento">
                   {dados?.desconto
                     .toFixed(2)
                     .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
                 </td>
-                <td style={{ color: "red" }}>
+                <td className="tdOrcamento" style={{ color: "red" }}>
                   <b>
                     {dados?.total
                       .toFixed(2)
@@ -289,8 +289,8 @@ export default function OrcamentoReport() {
             <table cellspacing="0" className="tableObs">
               <h4>OBSERVAÇÕES</h4>
 
-              <tr>
-                <td>{dados?.observacao}</td>
+              <tr className="trOrcamento">
+                <td className="tdOrcamento">{dados?.observacao}</td>
               </tr>
             </table>
           </div>

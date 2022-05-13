@@ -38,6 +38,8 @@ import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import DragAndDrop from "../../../components/dragdrop/DragAndDrop";
 import toast from "react-hot-toast";
+import ModalTabelaPreco from "../modalTabelaPreco/ModalTabelaPreco";
+import CalculateIcon from '@mui/icons-material/Calculate';
 
 const initialValues = {
   numero: "",
@@ -81,6 +83,10 @@ function EditarVendasPage() {
   const formasPagamentosOriginal = useRef([]);
   const isRealizada = useRef(false);
   const isCancelada = useRef(false);
+   // === Tabela de Preço
+   const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
+   const produtosOriginal = useRef(null);
+   const produto = useRef(null);
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -168,7 +174,7 @@ function EditarVendasPage() {
     },
     {
       field: "excluir",
-      headerName: "Excluir",
+      headerName: "Ações",
       sortable: false,
       headerAlign: 'letf',
       renderCell: (params) => (
@@ -177,6 +183,12 @@ function EditarVendasPage() {
             className={"btn btn-lista"}
             onClick={() => removeProductRow(params)}
           />
+          <Tooltip title="Ver tabela de preços">
+            <CalculateIcon
+              className={"btn btn-lista"}
+              onClick={() => openTabelaDePrecosModal(params)}
+            />
+          </Tooltip>
         </>
       ),
     },
@@ -412,6 +424,8 @@ function EditarVendasPage() {
     api
       .get("/produtos")
       .then((response) => {
+        produtosOriginal.current = response.data['data'];
+        
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
@@ -745,6 +759,13 @@ function EditarVendasPage() {
     setRowsProdutos(deleteFromArrayByIndex(rowsProdutos, ...indexToBeDeleted));
   }
 
+  function openTabelaDePrecosModal(params) {
+    const prod_id = params?.row?.produto_id;
+    produto.current = produtosOriginal.current.find((item)=> item.id === prod_id)
+    if(produto.current)
+      setOpenModalTabelaPreco(true)
+  }
+
   function handleProductRowStateChange(dataGrid) {
     if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsProdutos))
       return;
@@ -937,6 +958,11 @@ function EditarVendasPage() {
 
   return (
     <>
+    <ModalTabelaPreco
+        open={openModalTabelaPreco}
+        setOpen={setOpenModalTabelaPreco}
+        produto={produto.current}
+      />
       <form onSubmit={formik.handleSubmit} style={{pointerEvents: isCancelada.current ? 'none': 'auto'}}>
         <div style={{ marginTop: 0, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
