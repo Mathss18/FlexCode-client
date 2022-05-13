@@ -1,8 +1,17 @@
 import axios from "axios";
 
+var dominio = window.location.hostname;
+dominio = dominio.split('.')
+var requestUrl = '';
+if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+  requestUrl = `http://${dominio[0]}.api.${dominio[1]}:8000/api` // dev url
+} else {
+  requestUrl = `https://${dominio[0]}.api.${dominio[1]}.com/api` // dev url
+}
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
-  // baseURL: "http://127.0.0.1:8000/api",
+  // baseURL: process.env.REACT_APP_API_URL,
+  baseURL: requestUrl
 });
 
 api.interceptors.request.use((config) => {

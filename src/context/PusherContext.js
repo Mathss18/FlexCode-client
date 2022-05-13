@@ -28,16 +28,24 @@ function PusherContextProvider({ children }) {
 
   const [faviconCongif, setFavioconCongif] = useFaviconNotification();
 
-
   // Use effect para criar uma instancia do pusher
   useEffect(() => {
     if (localStorage.getItem("token") == null) return;
+
+    var dominio = window.location.hostname;
+    dominio = dominio.split(".");
+    var requestUrl = "";
+    if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+      requestUrl = `http://${dominio[0]}.api.${dominio[1]}:8000/api`; // dev url
+    } else {
+      requestUrl = `https://${dominio[0]}.api.${dominio[1]}.com/api`; // dev url
+    }
 
     if (!pusher) {
       const pusherInstance = new Pusher(process.env.REACT_APP_PUSHER_KEY, {
         cluster: "sa1",
         useTLS: true,
-        authEndpoint: process.env.REACT_APP_API_URL + "/broadcasting/auth",
+        authEndpoint: requestUrl + "/broadcasting/auth",
         auth: {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -110,8 +118,12 @@ function PusherContextProvider({ children }) {
 
   // Use effect para atualizar as notificações do favicon
   useEffect(() => {
-    setFavioconCongif({...faviconCongif, show: mensagensNaoLidas.length === 0 ? false : true, counter: mensagensNaoLidas.length});
-  },[mensagensNaoLidas]);
+    setFavioconCongif({
+      ...faviconCongif,
+      show: mensagensNaoLidas.length === 0 ? false : true,
+      counter: mensagensNaoLidas.length,
+    });
+  }, [mensagensNaoLidas]);
 
   function notificate(data) {
     if (user["chat-status"] === "online")
