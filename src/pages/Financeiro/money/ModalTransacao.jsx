@@ -36,6 +36,7 @@ import {
   infoAlert,
   successAlert,
 } from "../../../utils/alert";
+import moment from "moment";
 
 const initialValues = {
   data: "",
@@ -69,16 +70,13 @@ function ModalTransacao({
   const [outrosFavorecidosDespesas, setOutrosFavorecidosDespesas] = useState(
     []
   );
-  const [dialogValue, setDialogValue] = useState({
-    favorecido: "",
-  });
   const filter = createFilterOptions();
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (event) => {
       handleOnSubmit(event);
     },
-    validationSchema: transacaoValidation
+    validationSchema: transacaoValidation,
   });
 
   function ChooseFavorecidoSelect() {
@@ -181,15 +179,9 @@ function ModalTransacao({
                 // timeout to avoid instant validation of the dialog's form.
                 setTimeout(() => {
                   setOutroOpen(true);
-                  setDialogValue({
-                    favorecido: newValue,
-                  });
                 });
               } else if (newValue && newValue.inputValue) {
                 setOutroOpen(true);
-                setDialogValue({
-                  favorecido: newValue.inputValue,
-                });
               } else {
                 setValue(newValue);
               }
@@ -351,9 +343,21 @@ function ModalTransacao({
           formik.setSubmitting(false);
         });
     } else {
+      if (formik.values.isRecorrente) {
+        postTransacaoRecorrente();
+      } else {
+        postTransacao();
+      }
+    }
+  }
+
+  function postTransacaoRecorrente() {
+    for (let index = 0; index <= 6; index++) {
       api
         .post("/transacoes", {
           ...formik.values,
+          data: moment(formik.values.data).add(index, "M").format("YYYY-MM-DD"),
+          situacao: index===0 ? formik.values.situacao : "aberta",
           title: formik.values.favorecido_id.label,
         })
         .then((response) => {
@@ -373,6 +377,27 @@ function ModalTransacao({
           formik.setSubmitting(false);
         });
     }
+  }
+
+  function postTransacao() {
+    api
+      .post("/transacoes", {
+        ...formik.values,
+        title: formik.values.favorecido_id.label,
+      })
+      .then((response) => {
+        formik.resetForm(initialValues);
+        setOpen(false);
+        toast("Transação cadastrada com sucesso!", { type: "success" });
+        renderTransicoes();
+      })
+      .catch((error) => {
+        toast("Erro ao cadastrar transação!", { type: "error" });
+        errorAlert("Erro ao cadastrar transação!", error.response.data.message);
+      })
+      .finally(() => {
+        formik.setSubmitting(false);
+      });
   }
 
   return (
@@ -629,17 +654,19 @@ function ModalTransacao({
                     Cancelar
                   </Button>
                 </Grid>
-                {editTransacao && (<Grid item>
-                  <Button
-                    variant="outlined"
-                    startIcon={<DeleteForeverIcon />}
-                    className={"btn btn-error btn-spacing"}
-                    disabled={formik.isSubmitting}
-                    onClick={handleDelete}
-                  >
-                    Excluir
-                  </Button>
-                </Grid>)}
+                {editTransacao && (
+                  <Grid item>
+                    <Button
+                      variant="outlined"
+                      startIcon={<DeleteForeverIcon />}
+                      className={"btn btn-error btn-spacing"}
+                      disabled={formik.isSubmitting}
+                      onClick={handleDelete}
+                    >
+                      Excluir
+                    </Button>
+                  </Grid>
+                )}
               </div>
             </Grid>
           </form>

@@ -5,16 +5,22 @@ import EditIcon from "@material-ui/icons/Edit";
 import api from "../../../services/api";
 import MUIDataTable from "mui-datatables";
 import { config, rowConfig } from "../../../config/tablesConfig";
+import moment from "moment";
 
 function ListarExtratos() {
   const { id } = useParams();
+  const history = useHistory();
   const fullScreenLoader = useFullScreenLoader();
   const [transacoes, setTransacoes] = useState([]);
   const [contaBancaria, setContaBancaria] = useState([]);
   const data = [];
   const columns = [
     {
-      name: "Data",
+      name: "Data (Money)",
+      options: rowConfig,
+    },
+    {
+      name: "Data Registrado",
       options: rowConfig,
     },
     {
@@ -29,10 +35,10 @@ function ListarExtratos() {
       name: "Saldo",
       options: rowConfig,
     },
-    {
-      name: "Ações",
-      options: rowConfig,
-    },
+    // {
+    //   name: "Ações",
+    //   options: rowConfig,
+    // },
   ];
 
   useEffect(() => {
@@ -63,11 +69,21 @@ function ListarExtratos() {
             }
           }
           var array = [
+            moment(element["data"]).format("DD/MM/YYYY"),
             new Date(element["dataTransacaoRegistrada"]).toLocaleString(),
             element["favorecido_nome"],
             <b
+              onClick={() => {
+                if (element["compra_id"]) {
+                  history.push("/compras/editar/" + element["compra_id"]);
+                }
+                else if(element["venda_id"]) {
+                  history.push("/vendas/editar/" + element["venda_id"]);
+                }
+              }}
               style={{
                 color: element.tipo === "rendimento" ? "#007f45" : "#c62b2b",
+                cursor: "pointer",
               }}
             >{`R$: ${
               element.tipo === "rendimento"
@@ -75,13 +91,14 @@ function ListarExtratos() {
                 : (element["valor"] * -1).toFixed(2)
             }`}</b>,
             `R$: ${saldoParaCalculo.toFixed(2)}`,
-            <>
-              <EditIcon className={"btn-lista"} onClick={(event) => {}} />
-            </>,
+            // <>
+            //   <EditIcon className={"btn-lista"} onClick={(event) => {}} />
+            // </>,
           ];
           data.push(array);
         });
         data.push([
+          "-",
           new Date(
             response.data["data"][0].conta_bancaria["created_at"]
           ).toLocaleString(),

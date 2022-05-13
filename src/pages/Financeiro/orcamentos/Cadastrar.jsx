@@ -30,6 +30,7 @@ import {
 import { orcamentoValidation } from "../../../validators/validationSchema";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
+import toast from "react-hot-toast";
 
 const initialValues = {
   numero: "",
@@ -244,6 +245,19 @@ function CadastrarOrcamentosPage() {
       ),
     },
   ];
+
+  useEffect(() => {
+    fullScreenLoader.setLoading(true);
+    api
+      .get("/orcamentos-proximo")
+      .then((response) => {
+        formik.setFieldValue("numero", response.data['data']);
+      })
+      .catch((error) => {
+        toast.error("Erro ao buscar próximo número de orçamento");
+      })
+      .finally(()=>fullScreenLoader.setLoading(false))
+  }, []);
 
   useEffect(() => {
     api
@@ -545,8 +559,9 @@ function CadastrarOrcamentosPage() {
           <Grid container spacing={3}>
             <Grid item xs={4}>
               <TextField
+                disabled
                 variant="outlined"
-                label="Número"
+                label="Número *"
                 fullWidth
                 type="text"
                 value={formik.values.numero}
