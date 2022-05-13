@@ -50,13 +50,13 @@
   border-left: none;
 }
 
-td,
-th {
+.tdOrdemServico,
+.thOrdemServico {
   padding: 8px;
   text-align: left;
 }
 
-tr:nth-child(even) {
+.trOrdemServico:nth-child(even) {
   background-color: #dddddd;
 }
 

@@ -117,32 +117,32 @@ export default function OrdermServicoReport(texto) {
           <div className="containerTable">
             <h4 className="title">DADOS DO CLIENTE</h4>
             <table cellspacing="0" className="tableCliente">
-              <tr>
-                <th>CLIENTE:</th>
-                <td>{dados?.cliente?.nome}</td>
-                <th>CPF/CNPJ:</th>
-                <td>{dados?.cliente?.cpfCnpj}</td>
+              <tr className="trOrdemServico">
+                <th className="thOrdemServico">CLIENTE:</th>
+                <td className="tdOrdemServico">{dados?.cliente?.nome}</td>
+                <th className="thOrdemServico">CPF/CNPJ:</th>
+                <td className="tdOrdemServico">{dados?.cliente?.cpfCnpj}</td>
               </tr>
 
-              <tr>
-                <th>ENDEREÇO:</th>
-                <td>{dados?.cliente?.rua + ", " + dados?.cliente?.numero}</td>
-                <th>CEP:</th>
-                <td>{dados?.cliente?.cep}</td>
+              <tr className="trOrdemServico">
+                <th className="thOrdemServico">ENDEREÇO:</th>
+                <td className="tdOrdemServico">{dados?.cliente?.rua + ", " + dados?.cliente?.numero}</td>
+                <th className="thOrdemServico">CEP:</th>
+                <td className="tdOrdemServico">{dados?.cliente?.cep}</td>
               </tr>
 
-              <tr>
-                <th>CIDADE:</th>
-                <td>{dados?.cliente?.cidade}</td>
-                <th>ESTADO:</th>
-                <td>{dados?.cliente?.estado}</td>
+              <tr className="trOrdemServico">
+                <th className="thOrdemServico">CIDADE:</th>
+                <td className="tdOrdemServico">{dados?.cliente?.cidade}</td>
+                <th className="thOrdemServico">ESTADO:</th>
+                <td className="tdOrdemServico">{dados?.cliente?.estado}</td>
               </tr>
 
-              <tr>
-                <th>TELEFONE:</th>
-                <td>{dados?.cliente?.telefone}</td>
-                <th>E-MAIL:</th>
-                <td>{dados?.cliente?.email}</td>
+              <tr className="trOrdemServico">
+                <th className="thOrdemServico">TELEFONE:</th>
+                <td className="tdOrdemServico">{dados?.cliente?.telefone}</td>
+                <th className="thOrdemServico">E-MAIL:</th>
+                <td className="tdOrdemServico">{dados?.cliente?.email}</td>
               </tr>
             </table>
           </div>
@@ -151,29 +151,29 @@ export default function OrdermServicoReport(texto) {
             <div className="containerTable">
               <h4>INFORMAÇÕES DO PRODUTO</h4>
               <table cellspacing="0" className="tableProdutos">
-                <tr>
-                  <th>ITEM</th>
-                  <th>NOME</th>
-                  <th>OBS</th>
-                  <th>QTD</th>
-                  <th>VR UNIT</th>
-                  <th>SUBTOTAL</th>
+                <tr className="trOrdemServico">
+                  <th className="thOrdemServico">ITEM</th>
+                  <th className="thOrdemServico">NOME</th>
+                  <th className="thOrdemServico">OBS</th>
+                  <th className="thOrdemServico">QTD</th>
+                  <th className="thOrdemServico">VR UNIT</th>
+                  <th className="thOrdemServico">SUBTOTAL</th>
                 </tr>
                 {dados?.produtos?.map((produto, index) => {
                   return (
-                    <tr key={index}>
-                      <td width={"7%"}>{index + 1}</td>
-                      <td>{produto?.nome}</td>
-                      <td>{produto?.pivot.observacao}</td>
-                      <td>{produto?.pivot.quantidade}</td>
-                      <td>
+                    <tr className="trOrdemServico" key={index}>
+                      <td className="tdOrdemServico" width={"7%"}>{index + 1}</td>
+                      <td className="tdOrdemServico">{produto?.nome}</td>
+                      <td className="tdOrdemServico">{produto?.pivot.observacao}</td>
+                      <td className="tdOrdemServico">{produto?.pivot.quantidade}</td>
+                      <td className="tdOrdemServico">
                         {produto?.pivot.preco
                           .toFixed(2)
                           .toLocaleString("pt-br", {
                             minimumFractionDigits: 2,
                           })}
                       </td>
-                      <td>
+                      <td className="tdOrdemServico">
                         {produto?.pivot.total
                           .toFixed(2)
                           .toLocaleString("pt-br", {
@@ -183,15 +183,15 @@ export default function OrdermServicoReport(texto) {
                     </tr>
                   );
                 })}
-                <tr>
-                  <th>TOTAL</th>
-                  <td></td>
-                  <td></td>
-                  <td>
+                <tr className="trOrdemServico">
+                  <th className="thOrdemServico">TOTAL</th>
+                  <td className="tdOrdemServico"></td>
+                  <td className="tdOrdemServico"></td>
+                  <td className="tdOrdemServico">
                     <b>{totalProdutos?.quantidade}</b>
                   </td>
-                  <td></td>
-                  <td>
+                  <td className="tdOrdemServico"></td>
+                  <td className="tdOrdemServico">
                     <b>
                       {totalProdutos?.valor
                         .toFixed(2)
@@ -207,30 +207,30 @@ export default function OrdermServicoReport(texto) {
             <div className="containerTable">
               <h4>SERVIÇOS</h4>
               <table cellspacing="0" className="tableServicos">
-                <tr>
-                  <th>ITEM</th>
-                  <th>NOME</th>
-                  <th>OBS</th>
-                  <th>QTD</th>
-                  <th>VR UNIT</th>
-                  <th>SUBTOTAL</th>
+                <tr className="trOrdemServico">
+                  <th className="thOrdemServico">ITEM</th>
+                  <th className="thOrdemServico">NOME</th>
+                  <th className="thOrdemServico">OBS</th>
+                  <th className="thOrdemServico">QTD</th>
+                  <th className="thOrdemServico">VR UNIT</th>
+                  <th className="thOrdemServico">SUBTOTAL</th>
                 </tr>
 
                 {dados?.servicos?.map((servico, index) => {
                   return (
-                    <tr key={index}>
-                      <td width={"7%"}>{index + 1}</td>
-                      <td>{servico?.nome}</td>
-                      <td>{servico?.pivot.observacao}</td>
-                      <td>{servico?.pivot.quantidade}</td>
-                      <td>
+                    <tr className="trOrdemServico" key={index}>
+                      <td className="tdOrdemServico" width={"7%"}>{index + 1}</td>
+                      <td className="tdOrdemServico">{servico?.nome}</td>
+                      <td className="tdOrdemServico">{servico?.pivot.observacao}</td>
+                      <td className="tdOrdemServico">{servico?.pivot.quantidade}</td>
+                      <td className="tdOrdemServico">
                         {servico?.pivot.preco
                           .toFixed(2)
                           .toLocaleString("pt-br", {
                             minimumFractionDigits: 2,
                           })}
                       </td>
-                      <td>
+                      <td className="tdOrdemServico">
                         {servico?.pivot.total
                           .toFixed(2)
                           .toLocaleString("pt-br", {
@@ -241,15 +241,15 @@ export default function OrdermServicoReport(texto) {
                   );
                 })}
 
-                <tr>
-                  <th>TOTAL</th>
-                  <td></td>
-                  <td></td>
-                  <td>
+                <tr className="trOrdemServico">
+                  <th className="thOrdemServico">TOTAL</th>
+                  <td className="tdOrdemServico"></td>
+                  <td className="tdOrdemServico"></td>
+                  <td className="tdOrdemServico">
                     <b>{totalServicos?.quantidade}</b>
                   </td>
-                  <td></td>
-                  <td>
+                  <td className="tdOrdemServico"></td>
+                  <td className="tdOrdemServico">
                     <b>
                       {totalServicos?.valor
                         .toFixed(2)
@@ -264,30 +264,30 @@ export default function OrdermServicoReport(texto) {
           <div className="containerTable">
             <h4>DADOS DO PAGAMENTO</h4>
             <table cellspacing="0" className="tablePagamento">
-              <tr>
-                <th>FRETE</th>
-                <th>OUTROS CUSTOS</th>
-                <th>DESCONTO</th>
-                <th>TOTAL FINAL</th>
+              <tr className="trOrdemServico">
+                <th className="thOrdemServico">FRETE</th>
+                <th className="thOrdemServico">OUTROS CUSTOS</th>
+                <th className="thOrdemServico">DESCONTO</th>
+                <th className="thOrdemServico">TOTAL FINAL</th>
               </tr>
 
-              <tr>
-                <td>
+              <tr className="trOrdemServico">
+                <td className="tdOrdemServico">
                   {dados?.frete
                     .toFixed(2)
                     .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
                 </td>
-                <td>
+                <td className="tdOrdemServico">
                   {dados?.outros
                     .toFixed(2)
                     .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
                 </td>
-                <td>
+                <td className="tdOrdemServico">
                   {dados?.desconto
                     .toFixed(2)
                     .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
                 </td>
-                <td style={{ color: "red" }}>
+                <td className="tdOrdemServico" style={{ color: "red" }}>
                   <b>
                     {dados?.total
                       .toFixed(2)
@@ -302,8 +302,8 @@ export default function OrdermServicoReport(texto) {
             <table cellspacing="0" className="tableObs">
               <h4>OBSERVAÇÕES</h4>
 
-              <tr>
-                <td>{dados?.observacao}</td>
+              <tr className="trOrdemServico">
+                <td className="tdOrdemServico">{dados?.observacao}</td>
               </tr>
             </table>
           </div>

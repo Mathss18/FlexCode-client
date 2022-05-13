@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Grid,
   TextField,
@@ -10,6 +10,7 @@ import {
   FormHelperText,
   Checkbox,
   InputAdornment,
+  Tooltip,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import CheckIcon from "@material-ui/icons/Check";
@@ -30,7 +31,9 @@ import {
 import { orcamentoValidation } from "../../../validators/validationSchema";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
+import CalculateIcon from "@mui/icons-material/Calculate";
 import toast from "react-hot-toast";
+import ModalTabelaPreco from "../modalTabelaPreco/ModalTabelaPreco";
 
 const initialValues = {
   numero: "",
@@ -61,6 +64,10 @@ function CadastrarOrcamentosPage() {
   const [rowsProdutos, setRowsProdutos] = useState([]);
   const [rowsServicos, setRowsServicos] = useState([]);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+  // === Tabela de Preço
+  const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
+  const produtosOriginal = useRef(null);
+  const produto = useRef(null);
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -76,7 +83,7 @@ function CadastrarOrcamentosPage() {
       headerName: "Produto",
       flex: 2,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       renderCell: (params) => (
         <>
           <Autocomplete
@@ -109,28 +116,28 @@ function CadastrarOrcamentosPage() {
     {
       field: "quantidade",
       headerName: "Quantidade",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "preco",
       headerName: "Preço Unitário",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "total",
       headerName: "Total",
-      type: 'number',
+      type: "number",
       editable: false,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
@@ -138,14 +145,14 @@ function CadastrarOrcamentosPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 2,
     },
     {
       field: "excluir",
-      headerName: "Excluir",
+      headerName: "Ações",
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       // flex: 1,
       renderCell: (params) => (
         <>
@@ -153,6 +160,12 @@ function CadastrarOrcamentosPage() {
             className={"btn btn-lista"}
             onClick={() => removeProductRow(params)}
           />
+          <Tooltip title="Ver tabela de preços">
+            <CalculateIcon
+              className={"btn btn-lista"}
+              onClick={() => openTabelaDePrecosModal(params)}
+            />
+          </Tooltip>
         </>
       ),
     },
@@ -164,7 +177,7 @@ function CadastrarOrcamentosPage() {
       headerName: "Serviço",
       flex: 2,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       renderCell: (params) => (
         <>
           <Autocomplete
@@ -197,28 +210,28 @@ function CadastrarOrcamentosPage() {
     {
       field: "quantidade",
       headerName: "Quantidade",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "preco",
       headerName: "Preço Unitário",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "total",
       headerName: "Total",
-      type: 'number',
+      type: "number",
       editable: false,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
@@ -226,14 +239,14 @@ function CadastrarOrcamentosPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Excluir",
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       // flex: 1,
       renderCell: (params) => (
         <>
@@ -251,12 +264,12 @@ function CadastrarOrcamentosPage() {
     api
       .get("/orcamentos-proximo")
       .then((response) => {
-        formik.setFieldValue("numero", response.data['data']);
+        formik.setFieldValue("numero", response.data["data"]);
       })
       .catch((error) => {
         toast.error("Erro ao buscar próximo número de orçamento");
       })
-      .finally(()=>fullScreenLoader.setLoading(false))
+      .finally(() => fullScreenLoader.setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -265,7 +278,7 @@ function CadastrarOrcamentosPage() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((cliente) => {
-          if(cliente.situacao === 1){
+          if (cliente.situacao === 1) {
             array.push({ label: cliente.nome, value: cliente.id });
           }
         });
@@ -282,8 +295,11 @@ function CadastrarOrcamentosPage() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((transportadora) => {
-          if(transportadora.situacao === 1){
-            array.push({ label: transportadora.nome, value: transportadora.id });
+          if (transportadora.situacao === 1) {
+            array.push({
+              label: transportadora.nome,
+              value: transportadora.id,
+            });
           }
         });
         setTransportadoras(array);
@@ -297,6 +313,8 @@ function CadastrarOrcamentosPage() {
     api
       .get("/produtos")
       .then((response) => {
+        produtosOriginal.current = response.data['data'];
+
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
@@ -442,6 +460,14 @@ function CadastrarOrcamentosPage() {
     setRowsProdutos(deleteFromArrayByIndex(rowsProdutos, ...indexToBeDeleted));
   }
 
+  function openTabelaDePrecosModal(params) {
+    const prod_id = params?.row?.produto_id;
+    produto.current = produtosOriginal.current.find(
+      (item) => item.id === prod_id
+    );
+    if (produto.current) setOpenModalTabelaPreco(true);
+  }
+
   function handleProductRowStateChange(dataGrid) {
     if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsProdutos))
       return;
@@ -547,8 +573,20 @@ function CadastrarOrcamentosPage() {
 
   return (
     <>
+      <ModalTabelaPreco
+        open={openModalTabelaPreco}
+        setOpen={setOpenModalTabelaPreco}
+        produto={produto.current}
+      />
       <form onSubmit={formik.handleSubmit}>
-        <div style={{ marginTop: 0, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 0,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -665,7 +703,14 @@ function CadastrarOrcamentosPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -717,7 +762,14 @@ function CadastrarOrcamentosPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -769,7 +821,14 @@ function CadastrarOrcamentosPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -860,7 +919,14 @@ function CadastrarOrcamentosPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >

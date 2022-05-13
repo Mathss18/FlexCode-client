@@ -541,6 +541,9 @@ export const GlobalStyles = createGlobalStyle`
   .dialogTitle{
     color: ${({ theme }) => theme.colors.text}; // cor padrao do texto da aplicação
   }
+  .dialogText{
+    color: ${({ theme }) => theme.colors.text}; // cor padrao do texto da aplicação
+  }
   .dialogBackground{
     background: ${({ theme }) => theme.colors.topbar.background}; // cor do hearder do calendario
   }
