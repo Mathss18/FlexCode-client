@@ -10,6 +10,7 @@ import {
   FormHelperText,
   Checkbox,
   InputAdornment,
+  Tooltip,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import CheckIcon from "@material-ui/icons/Check";
@@ -35,6 +36,8 @@ import { ordemServicoValidation } from "../../../validators/validationSchema";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import { useParams } from "react-router-dom";
+import ModalTabelaPreco from "../modalTabelaPreco/ModalTabelaPreco";
+import CalculateIcon from "@mui/icons-material/Calculate";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -68,10 +71,11 @@ function EditarOrcamentosPage() {
   const [rowsServicos, setRowsServicos] = useState([]);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const { id } = useParams();
-  const i = useRef(0);
   const fullScreenLoader = useFullScreenLoader();
-  
-  
+  // === Tabela de Preço
+  const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
+  const produtosOriginal = useRef(null);
+  const produto = useRef(null);
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -87,14 +91,18 @@ function EditarOrcamentosPage() {
       headerName: "Produto",
       flex: 2,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       renderCell: (params) => (
         <>
           <Autocomplete
             fullWidth
             name="produto_id"
             disableClearable={true}
-            value={params.row.produto_id == '' ? { label: "", value: null } : { label: params.row.nome, value: params.row.produto_id }}
+            value={
+              params.row.produto_id == ""
+                ? { label: "", value: null }
+                : { label: params.row.nome, value: params.row.produto_id }
+            }
             onChange={(event, value) => handleClienteChange(params, value)}
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
@@ -121,28 +129,28 @@ function EditarOrcamentosPage() {
     {
       field: "quantidade",
       headerName: "Quantidade",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "preco",
       headerName: "Preço Unitário",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "total",
       headerName: "Total",
-      type: 'number',
+      type: "number",
       editable: false,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
@@ -150,14 +158,14 @@ function EditarOrcamentosPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Excluir",
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       // flex: 1,
       renderCell: (params) => (
         <>
@@ -165,6 +173,12 @@ function EditarOrcamentosPage() {
             className={"btn btn-lista"}
             onClick={() => removeProductRow(params)}
           />
+          <Tooltip title="Ver tabela de preços">
+            <CalculateIcon
+              className={"btn btn-lista"}
+              onClick={() => openTabelaDePrecosModal(params)}
+            />
+          </Tooltip>
         </>
       ),
     },
@@ -176,14 +190,18 @@ function EditarOrcamentosPage() {
       headerName: "Serviço",
       flex: 2,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       renderCell: (params) => (
         <>
           <Autocomplete
             fullWidth
             name="servico_id"
             disableClearable={true}
-            value={params.row.servico_id == '' ? { label: "", value: null } : { label: params.row.nome, value: params.row.servico_id }}
+            value={
+              params.row.servico_id == ""
+                ? { label: "", value: null }
+                : { label: params.row.nome, value: params.row.servico_id }
+            }
             onChange={(event, value) => handleServicoChange(params, value)}
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
@@ -210,28 +228,28 @@ function EditarOrcamentosPage() {
     {
       field: "quantidade",
       headerName: "Quantidade",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "preco",
       headerName: "Preço Unitário",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "total",
       headerName: "Total",
-      type: 'number',
+      type: "number",
       editable: false,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
@@ -239,14 +257,14 @@ function EditarOrcamentosPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Excluir",
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       // flex: 1,
       renderCell: (params) => (
         <>
@@ -261,7 +279,7 @@ function EditarOrcamentosPage() {
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
-    
+
     api
       .get("/ordens-servicos/" + id)
       .then((response) => {
@@ -295,7 +313,7 @@ function EditarOrcamentosPage() {
         formik.setValues(valuesToFillFormik);
 
         var prods = [];
-        response.data["data"].produtos.map((item,index) => {
+        response.data["data"].produtos.map((item, index) => {
           console.log(item);
           prods.push({
             id: new Date().getTime() + index,
@@ -304,13 +322,13 @@ function EditarOrcamentosPage() {
             produto_id: item.pivot.produto_id,
             quantidade: item.pivot.quantidade,
             total: item.pivot.total,
-            nome: item.nome
+            nome: item.nome,
           });
         });
         setRowsProdutos(prods);
 
         var servs = [];
-        response.data["data"].servicos.map((item,index) => {
+        response.data["data"].servicos.map((item, index) => {
           console.log(item);
           servs.push({
             id: new Date().getTime() + index,
@@ -319,11 +337,10 @@ function EditarOrcamentosPage() {
             servico_id: item.pivot.servico_id,
             quantidade: item.pivot.quantidade,
             total: item.pivot.total,
-            nome: item.nome
+            nome: item.nome,
           });
         });
         setRowsServicos(servs);
-        
       })
       .catch((error) => {
         console.log(error);
@@ -339,7 +356,7 @@ function EditarOrcamentosPage() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((cliente) => {
-          if(cliente.situacao === 1){
+          if (cliente.situacao === 1) {
             array.push({ label: cliente.nome, value: cliente.id });
           }
         });
@@ -356,7 +373,7 @@ function EditarOrcamentosPage() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((funcionario) => {
-          if(funcionario.situacao === 1){
+          if (funcionario.situacao === 1) {
             array.push({ label: funcionario.nome, value: funcionario.id });
           }
         });
@@ -366,9 +383,12 @@ function EditarOrcamentosPage() {
   }, []);
 
   useEffect(() => {
+    
     api
-      .get("/produtos")
-      .then((response) => {
+    .get("/produtos")
+    .then((response) => {
+        produtosOriginal.current = response.data['data'];
+        
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
@@ -467,9 +487,9 @@ function EditarOrcamentosPage() {
     };
 
     fullScreenLoader.setLoading(true);
-    
+
     api
-      .put("/ordens-servicos/"+ id, params)
+      .put("/ordens-servicos/" + id, params)
       .then((response) => {
         successAlert("Sucesso", "Ordem de Serviço Editada", () =>
           history.push("/ordens-servicos")
@@ -525,6 +545,13 @@ function EditarOrcamentosPage() {
     });
     indexToBeDeleted = indexToBeDeleted.filter((row) => row !== undefined);
     setRowsProdutos(deleteFromArrayByIndex(rowsProdutos, ...indexToBeDeleted));
+  }
+
+  function openTabelaDePrecosModal(params) {
+    const prod_id = params?.row?.produto_id;
+    produto.current = produtosOriginal.current.find((item)=> item.id === prod_id)
+    if(produto.current)
+      setOpenModalTabelaPreco(true)
   }
 
   function handleProductRowStateChange(dataGrid) {
@@ -634,9 +661,20 @@ function EditarOrcamentosPage() {
 
   return (
     <>
-      {console.log(i.current++)}
+      <ModalTabelaPreco
+        open={openModalTabelaPreco}
+        setOpen={setOpenModalTabelaPreco}
+        produto={produto.current}
+      />
       <form onSubmit={formik.handleSubmit}>
-        <div style={{ marginTop: 0, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 0,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -695,7 +733,9 @@ function EditarOrcamentosPage() {
                   }
                 >
                   <MenuItem value={0}>Aberta</MenuItem>
-                  <MenuItem disabled value={1}>Fazendo</MenuItem>
+                  <MenuItem disabled value={1}>
+                    Fazendo
+                  </MenuItem>
                   <MenuItem value={2}>Finalizada</MenuItem>
                   <MenuItem value={3}>Cancelada</MenuItem>
                 </Select>
@@ -793,7 +833,14 @@ function EditarOrcamentosPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -837,7 +884,14 @@ function EditarOrcamentosPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -889,7 +943,14 @@ function EditarOrcamentosPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -941,7 +1002,14 @@ function EditarOrcamentosPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1032,7 +1100,14 @@ function EditarOrcamentosPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1095,7 +1170,7 @@ function EditarOrcamentosPage() {
                 variant="outlined"
                 startIcon={<CheckIcon />}
                 className={"btn btn-primary btn-spacing"}
-disabled={formik.isSubmitting}
+                disabled={formik.isSubmitting}
               >
                 Salvar
               </Button>
@@ -1106,7 +1181,7 @@ disabled={formik.isSubmitting}
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}
-disabled={formik.isSubmitting}
+                disabled={formik.isSubmitting}
               >
                 Cancelar
               </Button>
