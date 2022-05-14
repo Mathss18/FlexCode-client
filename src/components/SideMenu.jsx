@@ -18,13 +18,13 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import { useRef } from "react";
-import { useCadastroMenu } from "../context/SideMenuCadastroContext";
-import { useProdutoMenu } from "../context/SideMenuProdutoContext";
-import { useMenu } from "../context/SideMenuContext";
-import { useServicoMenu } from "../context/SideMenuServicoContext";
+import { useCadastroMenu } from "../context/side-menu/SideMenuCadastroContext";
+import { useProdutoMenu } from "../context/side-menu/SideMenuProdutoContext";
+import { useMenu } from "../context/side-menu/SideMenuContext";
+import { useServicoMenu } from "../context/side-menu/SideMenuServicoContext";
 import { menu } from "../constants/menu";
-import { useFinanceiroMenu } from "../context/SideMenuFinanceiroContext";
-import { useEstoqueMenu } from "../context/SideMenuEstoqueContext";
+import { useFinanceiroMenu } from "../context/side-menu/SideMenuFinanceiroContext";
+import { useEstoqueMenu } from "../context/side-menu/SideMenuEstoqueContext";
 
 const drawerWidth = 240;
 

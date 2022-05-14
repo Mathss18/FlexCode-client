@@ -3,7 +3,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Badge from "@material-ui/core/Badge";
 import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
-import { useMenu } from "../context/SideMenuContext";
+import { useMenu } from "../context/side-menu/SideMenuContext";
 import { Link, useHistory } from "react-router-dom";
 import UserMenu from "./UserMenu";
 import { Toaster } from "react-hot-toast";
