@@ -1,12 +1,11 @@
 import axios from "axios";
 
-var dominio = window.location.hostname;
-dominio = dominio.split('.')
+var dominio = window.location.hostname.split('.');
 var requestUrl = '';
 if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
   requestUrl = `http://${dominio[0]}.api.${dominio[1]}:8000/api` // dev url
 } else {
-  requestUrl = `https://${dominio[0]}.api.${dominio[1]}.com/api` // dev url
+  requestUrl = `https://${dominio[0]}.api.${dominio[1]}.com/api` // prod url
 }
 
 const api = axios.create({

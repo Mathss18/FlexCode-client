@@ -5,7 +5,7 @@ import Routes from "./routes/routes";
 import { ThemeProvider } from "styled-components";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import GerenciarProdutosContextProvider from "./context/GerenciarProdutosContext";
-import SideMenuContextProvider from "./context/SideMenuContext";
+import SideMenuContextProvider from "./context/side-menu/SideMenuContext";
 import PusherContextProvider from "./context/PusherContext";
 // Temas
 import WebFont from "webfontloader";

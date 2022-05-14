@@ -32,8 +32,7 @@ function PusherContextProvider({ children }) {
   useEffect(() => {
     if (localStorage.getItem("token") == null) return;
 
-    var dominio = window.location.hostname;
-    dominio = dominio.split(".");
+    var dominio = window.location.hostname.split(".");
     var requestUrl = "";
     if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
       requestUrl = `http://${dominio[0]}.api.${dominio[1]}:8000/api`; // dev url
@@ -63,7 +62,7 @@ function PusherContextProvider({ children }) {
     if (!pusher) return;
 
     // Se inscreve no canal privado do usuário logado
-    setPrivateChannel(pusher.subscribe("private-chat-" + user?.id));
+    setPrivateChannel(pusher.subscribe("private-chat-"+window.location.hostname.split(".")[0]+'-'+ user?.id));
 
     // Se inscreve no canal publico
     setPublicChannel(pusher.subscribe("presence-chat"));
