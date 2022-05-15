@@ -193,7 +193,7 @@ function EditarClientePage() {
     api
       .delete("/funcionarios/" + id)
       .then((result) => {
-        successAlert("Sucesso", "Funcionario Excluido", () =>
+        successAlert("Sucesso", "Funcionário Excluido", () =>
           history.push("/funcionarios")
         );
       })

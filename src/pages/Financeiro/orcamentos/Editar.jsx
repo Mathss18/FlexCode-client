@@ -93,7 +93,7 @@ function EditarOrdensServicoPage() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            disablePortal
+            
             options={produtos}
             renderInput={(params) => (
               <TextField
@@ -186,7 +186,7 @@ function EditarOrdensServicoPage() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            disablePortal
+            
             options={servicos}
             renderInput={(params) => (
               <TextField
@@ -646,7 +646,7 @@ function EditarOrdensServicoPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                disablePortal
+                
                 options={clientes}
                 renderInput={(params) => (
                   <TextField
@@ -715,7 +715,7 @@ function EditarOrdensServicoPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                disablePortal
+                
                 options={transportadoras}
                 renderInput={(params) => (
                   <TextField

@@ -102,7 +102,6 @@ function CadastrarComprasPage() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            disablePortal
             options={produtos}
             renderInput={(params) => (
               <TextField
@@ -264,12 +263,12 @@ function CadastrarComprasPage() {
     api
       .get("/compras-proximo")
       .then((response) => {
-        formik.setFieldValue("numero", response.data['data']);
+        formik.setFieldValue("numero", response.data["data"]);
       })
       .catch((error) => {
         toast.error("Erro ao buscar próximo número de compra");
       })
-      .finally(()=>fullScreenLoader.setLoading(false))
+      .finally(() => fullScreenLoader.setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -446,7 +445,7 @@ function CadastrarComprasPage() {
       return {
         ...parcela,
         valorParcela: Number(parcela.valorParcela),
-        dataVencimento:parcela.dataVencimento,
+        dataVencimento: parcela.dataVencimento,
       };
     });
 
@@ -699,7 +698,6 @@ function CadastrarComprasPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                disablePortal
                 options={fornecedores}
                 renderInput={(params) => (
                   <TextField
@@ -776,7 +774,6 @@ function CadastrarComprasPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                disablePortal
                 options={transportadoras}
                 renderInput={(params) => (
                   <TextField
@@ -1059,7 +1056,6 @@ function CadastrarComprasPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                disablePortal
                 options={formasPagamentos}
                 renderInput={(params) => (
                   <TextField

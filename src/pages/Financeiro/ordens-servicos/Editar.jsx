@@ -107,7 +107,7 @@ function EditarOrcamentosPage() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            disablePortal
+            
             options={produtos}
             renderInput={(params) => (
               <TextField
@@ -206,7 +206,7 @@ function EditarOrcamentosPage() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            disablePortal
+            
             options={servicos}
             renderInput={(params) => (
               <TextField
@@ -388,7 +388,7 @@ function EditarOrcamentosPage() {
     .get("/produtos")
     .then((response) => {
         produtosOriginal.current = response.data['data'];
-        
+
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
@@ -705,7 +705,7 @@ function EditarOrcamentosPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                disablePortal
+                
                 options={clientes}
                 renderInput={(params) => (
                   <TextField

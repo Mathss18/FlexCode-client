@@ -8,7 +8,6 @@ import {
   Button,
   Checkbox,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Divider,
   FormControl,
@@ -58,9 +57,10 @@ function ModalTransacao({
   transportadoras,
   funcionarios,
   tipoTransacao,
-  dataSelecionada,
   contasBancarias,
+  dataSelecionada,
   editTransacao,
+  contaBancariaSelecionada,
   renderTransicoes,
 }) {
   const [outroOpen, setOutroOpen] = useState(false);
@@ -291,7 +291,7 @@ function ModalTransacao({
 
     if (editTransacao) {
       var editInitialValues = {
-        data: editTransacao.start,
+        data: editTransacao.data,
         observacao: editTransacao.observacao ?? "",
         valor: editTransacao.valor,
         tipo: editTransacao.tipo,
@@ -318,6 +318,15 @@ function ModalTransacao({
         formik.setFieldValue("tipoFavorecido", "fornecedores");
         formik.setFieldValue("situacao", "aberta");
       }
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (contaBancariaSelecionada && !editTransacao) {
+      formik.setFieldValue("conta_bancaria_id", {
+        label: contaBancariaSelecionada.nome,
+        value: contaBancariaSelecionada.id,
+      });
     }
   }, [open]);
 
@@ -357,7 +366,7 @@ function ModalTransacao({
         .post("/transacoes", {
           ...formik.values,
           data: moment(formik.values.data).add(index, "M").format("YYYY-MM-DD"),
-          situacao: index===0 ? formik.values.situacao : "aberta",
+          situacao: index === 0 ? formik.values.situacao : "aberta",
           title: formik.values.favorecido_id.label,
         })
         .then((response) => {

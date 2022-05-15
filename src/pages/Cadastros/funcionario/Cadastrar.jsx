@@ -110,7 +110,7 @@ function CadastrarFuncionarioPage() {
     api
       .post("/funcionarios", values)
       .then((response) => {
-        successAlert("Sucesso", "Funcionatio Cadastrado", () =>
+        successAlert("Sucesso", "Funcionário Cadastrado", () =>
           history.push("/funcionarios")
         );
       })

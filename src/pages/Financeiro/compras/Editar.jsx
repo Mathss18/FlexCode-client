@@ -767,7 +767,7 @@ function EditarComprasPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                disablePortal
+                
                 options={fornecedores}
                 renderInput={(params) => (
                   <TextField
@@ -838,7 +838,7 @@ function EditarComprasPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                disablePortal
+                
                 options={transportadoras}
                 renderInput={(params) => (
                   <TextField
@@ -1092,7 +1092,7 @@ function EditarComprasPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                disablePortal
+                
                 options={formasPagamentos}
                 renderInput={(params) => (
                   <TextField
