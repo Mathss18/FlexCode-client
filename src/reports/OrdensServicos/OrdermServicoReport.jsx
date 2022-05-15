@@ -126,7 +126,7 @@ export default function OrdermServicoReport(texto) {
 
               <tr className="trOrdemServico">
                 <th className="thOrdemServico">ENDEREÇO:</th>
-                <td className="tdOrdemServico">{dados?.cliente?.rua + ", " + dados?.cliente?.numero}</td>
+                <td className="tdOrdemServico">{dados?.cliente?.rua ?? '' + ", " + dados?.cliente?.numero ?? ''}</td>
                 <th className="thOrdemServico">CEP:</th>
                 <td className="tdOrdemServico">{dados?.cliente?.cep}</td>
               </tr>

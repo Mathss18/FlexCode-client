@@ -193,8 +193,7 @@ function CalendarioPage() {
         var array = [];
         response.data["data"].forEach((transacao) => {
           array.push({
-            id: transacao.id,
-            title: transacao.title,
+            ...transacao,
             start: transacao.data,
             end: transacao.data,
             allDay: true,
@@ -212,18 +211,10 @@ function CalendarioPage() {
             borderColor:
               transacao.tipo === "rendimento" ? "#007f45" : "#c62b2b",
             fontSize: "12px",
-
-            conta_bancaria: transacao.conta_bancaria,
-            valor: transacao.valor,
-            situacao: transacao.situacao,
             favorecido_id: {
               value: transacao.favorecido_id,
               label: transacao.favorecido_nome,
             },
-            favorecido_nome: transacao.favorecido_nome,
-            tipoFavorecido: transacao.tipoFavorecido,
-            tipo: transacao.tipo,
-            observacao: transacao.observacao,
           });
         });
         setTransacoes(array);

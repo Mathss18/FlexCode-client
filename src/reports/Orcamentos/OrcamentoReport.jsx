@@ -113,7 +113,7 @@ export default function OrcamentoReport() {
 
               <tr className="trOrcamento">
                 <th className="thOrcamento">ENDEREÇO:</th>
-                <td className="tdOrcamento">{dados?.cliente?.rua + ", " + dados?.cliente?.numero}</td>
+                <td className="tdOrcamento">{dados?.cliente?.rua ?? '' + ", " + dados?.cliente?.numero ?? ''}</td>
                 <th className="thOrcamento">CEP:</th>
                 <td className="tdOrcamento">{dados?.cliente?.cep}</td>
               </tr>
