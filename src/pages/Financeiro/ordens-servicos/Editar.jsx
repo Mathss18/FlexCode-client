@@ -496,7 +496,7 @@ function EditarOrcamentosPage() {
         );
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => fullScreenLoader.setLoading(false));
   }

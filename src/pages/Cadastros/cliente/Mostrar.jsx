@@ -6,7 +6,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import api from '../../../services/api';
-import { infoAlert } from "../../../utils/alert";
+import { infoAlert,errorAlert } from "../../../utils/alert";
 
 
 const initialValues = {
@@ -42,7 +42,7 @@ function MostrarClientePage() {
         setValues(response.data['data']);
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       });
 
   }, []);

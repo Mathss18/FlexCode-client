@@ -84,7 +84,7 @@ export function Fornecedores() {
         });
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => produtoContext.formik.setSubmitting(false));
   }

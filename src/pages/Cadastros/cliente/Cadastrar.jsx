@@ -19,7 +19,7 @@ import LocationOnIcon from "@material-ui/icons/LocationOn";
 import FormHelperText from "@mui/material/FormHelperText";
 import buscarCep from "../../../services/cep";
 import InputMask from "react-input-mask";
-import { infoAlert, successAlert } from "../../../utils/alert";
+import { infoAlert, successAlert,errorAlert } from "../../../utils/alert";
 import { clienteValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 
@@ -57,23 +57,20 @@ function CadastrarClientePage() {
   function handleOnSubmit(values) {
     // Removendo máscaras antes de enviar dados para API
     try {
-      values.cep = values.cep.replace(/[^\d]/g, '');
-      values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, '');
-      values.telefone = values.telefone.replace(/[^\d]/g, '');
-      values.celular = values.celular.replace(/[^\d]/g, '');
-    } catch (error) {
-      
-    }
+      values.cep = values.cep.replace(/[^\d]/g, "");
+      values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, "");
+      values.telefone = values.telefone.replace(/[^\d]/g, "");
+      values.celular = values.celular.replace(/[^\d]/g, "");
+    } catch (error) {}
 
     api
       .post("/clientes", values)
       .then((response) => {
-        successAlert("Sucesso", "Cliente Cadastrado", () =>
-          history.push("/clientes")
-        );
+        history.push("/clientes");
+        successAlert("Sucesso", "Cliente Cadastrado");
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => {
         formik.setSubmitting(false);
@@ -302,8 +299,8 @@ function CadastrarClientePage() {
           </div>
           <Grid container spacing={2}>
             <Grid item xs={3}>
-               <InputMask
-                mask={'99999-999'}
+              <InputMask
+                mask={"99999-999"}
                 value={formik.values.cep}
                 onChange={formik.handleChange}
                 onBlur={handleCepChange}
@@ -314,12 +311,8 @@ function CadastrarClientePage() {
                     label="Cep"
                     fullWidth
                     name="cep"
-                    error={
-                      formik.touched.cep && Boolean(formik.errors.cep)
-                    }
-                    helperText={
-                      formik.touched.cep && formik.errors.cep
-                    }
+                    error={formik.touched.cep && Boolean(formik.errors.cep)}
+                    helperText={formik.touched.cep && formik.errors.cep}
                   />
                 )}
               </InputMask>
@@ -425,7 +418,7 @@ function CadastrarClientePage() {
             </Grid>
             <Grid item xs={3}>
               <InputMask
-                mask={'(99) 9999-9999'}
+                mask={"(99) 9999-9999"}
                 value={formik.values.telefone}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -447,8 +440,8 @@ function CadastrarClientePage() {
               </InputMask>
             </Grid>
             <Grid item xs={3}>
-            <InputMask
-                mask={'(99) 9 9999-9999'}
+              <InputMask
+                mask={"(99) 9 9999-9999"}
                 value={formik.values.celular}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -462,9 +455,7 @@ function CadastrarClientePage() {
                     error={
                       formik.touched.celular && Boolean(formik.errors.celular)
                     }
-                    helperText={
-                      formik.touched.celular && formik.errors.celular
-                    }
+                    helperText={formik.touched.celular && formik.errors.celular}
                   />
                 )}
               </InputMask>

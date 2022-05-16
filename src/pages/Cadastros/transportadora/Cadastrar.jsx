@@ -11,7 +11,7 @@ import InputMask from "react-input-mask";
 import buscarCep from '../../../services/cep';
 import { useFormik } from 'formik';
 import { transportadoraValidation } from '../../../validators/validationSchema';
-import { infoAlert, successAlert } from '../../../utils/alert';
+import { infoAlert,errorAlert, successAlert } from '../../../utils/alert';
 import { useFullScreenLoader } from '../../../context/FullScreenLoaderContext';
 
 
@@ -80,12 +80,11 @@ function CadastrarTransportadoraPage() {
     
     api.post('/transportadoras', values)
       .then((response) => {
-        successAlert("Sucesso", "Transportadora Cadastrada", () =>
-          history.push("/transportadoras")
-        );
+        history.push("/transportadoras")
+        successAlert("Sucesso", "Transportadora Cadastrada");
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => {
         formik.setSubmitting(false);

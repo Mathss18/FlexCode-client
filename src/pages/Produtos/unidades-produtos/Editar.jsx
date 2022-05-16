@@ -15,7 +15,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import api from "../../../services/api";
-import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
+import { confirmAlert, errorAlert, successAlert } from "../../../utils/alert";
 import { useFormik } from "formik";
 import { unidadeProdutoValidation } from "../../../validators/validationSchema";
 
@@ -52,7 +52,7 @@ function EditarUnidadeDeProdutos() {
         );
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => formik.setSubmitting(false));
   }
@@ -72,7 +72,7 @@ function EditarUnidadeDeProdutos() {
         );
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       });
   }
 

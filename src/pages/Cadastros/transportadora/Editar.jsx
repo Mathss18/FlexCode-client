@@ -22,7 +22,7 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import api from "../../../services/api";
 import { transportadoraValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
-import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
+import { confirmAlert, infoAlert,errorAlert, successAlert } from "../../../utils/alert";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import buscarCep from "../../../services/cep";
 
@@ -104,12 +104,11 @@ function EditarTransportadoraPage() {
     api
       .put("/transportadoras/" + id, values)
       .then((response) => {
-        successAlert("Sucesso", "Transportadora Editada", () =>
-          history.push("/transportadoras")
-        );
+        history.push("/transportadoras")
+        successAlert("Sucesso", "Transportadora Editada");
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => {
         formik.setSubmitting(false);
@@ -126,12 +125,11 @@ function EditarTransportadoraPage() {
     api
       .delete("/transportadoras/" + id)
       .then((result) => {
-        successAlert("Sucesso", "Transportadora Excluida", () =>
-          history.push("/transportadoras")
-        );
+        history.push("/transportadoras")
+        successAlert("Sucesso", "Transportadora Excluida");
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       });
   }
 

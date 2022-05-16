@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
 import { useParams } from "react-router-dom";
-import { infoAlert } from "../../../../utils/alert";
+import { errorAlert } from "../../../../utils/alert";
 import { initialValues } from "../../../../constants/produtosInitialValues";
 import { useFullScreenLoader } from "../../../../context/FullScreenLoaderContext";
 
@@ -103,7 +103,7 @@ export function Dados() {
         console.log(response.data['data']);
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => {
         fullScreenLoader.setLoading(false);

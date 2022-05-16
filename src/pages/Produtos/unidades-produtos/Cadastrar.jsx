@@ -16,7 +16,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { useFormik } from "formik";
 import { unidadeProdutoValidation } from "../../../validators/validationSchema";
-import { infoAlert, successAlert } from "../../../utils/alert";
+import { errorAlert, successAlert } from "../../../utils/alert";
 
 const initialValues = {
   nome: "",
@@ -43,7 +43,7 @@ function CadastrarUnidadeDeProdutos() {
         );
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => formik.setSubmitting(false));
   }

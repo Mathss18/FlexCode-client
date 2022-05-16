@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
-import { useHistory } from "react-router-dom";
 import { config, rowConfig } from "../../../../../config/tablesConfig";
 import { useFullScreenLoader } from "../../../../../context/FullScreenLoaderContext";
 import CheckIcon from "@mui/icons-material/Check";
@@ -25,7 +24,7 @@ import BubbleChartIcon from "@mui/icons-material/BubbleChart";
 import PhotoIcon from "@mui/icons-material/Photo";
 import BuildIcon from "@mui/icons-material/Build";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { confirmAlert, infoAlert } from "../../../../../utils/alert";
+import { confirmAlert, errorAlert } from "../../../../../utils/alert";
 import api from "../../../../../services/api";
 
 export function Fazendo() {
@@ -87,7 +86,7 @@ export function Fazendo() {
         search();
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => {
         fullScreenLoader.setLoading(false);

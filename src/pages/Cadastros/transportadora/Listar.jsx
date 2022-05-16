@@ -76,7 +76,7 @@ function ListarTransportadoraPage() {
             element['email'],
             element['contato'],
             <>
-              <SearchIcon className={'btn-lista'} onClick={(event) => handleOnClickShowButton(event, element['id'])} />
+              {/* <SearchIcon className={'btn-lista'} onClick={(event) => handleOnClickShowButton(event, element['id'])} /> */}
               <EditIcon className={'btn-lista'} onClick={(event) => handleOnClickEditButton(event, element['id'])} />
             </>
           ]

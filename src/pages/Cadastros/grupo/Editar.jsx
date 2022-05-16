@@ -22,7 +22,7 @@ import moment from "moment";
 import "moment/locale/pt-br";
 import { grupoValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
-import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
+import { confirmAlert, errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 const initialValues = {
@@ -171,10 +171,11 @@ function EditarGrupoPage() {
     api
       .put("/grupos/" + id, values)
       .then((response) => {
-        successAlert("Sucesso", "Grupo Editado", () => history.push("/grupos"));
+        history.push("/grupos");
+        successAlert("Sucesso", "Grupo Editado");
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => {
         formik.setSubmitting(false);
@@ -191,12 +192,11 @@ function EditarGrupoPage() {
     api
       .delete("/grupos/" + id)
       .then((result) => {
-        successAlert("Sucesso", "Grupo Excluido", () =>
-          history.push("/grupos")
-        );
+        history.push("/grupos")
+        successAlert("Sucesso", "Grupo Excluido");
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       });
   }
 

@@ -19,7 +19,7 @@ import LocationOnIcon from "@material-ui/icons/LocationOn";
 import FormHelperText from "@mui/material/FormHelperText";
 import buscarCep from "../../../services/cep";
 import InputMask from "react-input-mask";
-import { infoAlert, successAlert } from "../../../utils/alert";
+import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import { fornecedorValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
@@ -88,12 +88,11 @@ function CadastrarFornecedorPage() {
     api
       .post("/fornecedores", values)
       .then((response) => {
-        successAlert("Sucesso!", "Fornecedor cadastrado com sucesso!", () => {
-          history.push("/fornecedores");
-        });
+        history.push("/fornecedores");
+        successAlert("Sucesso!", "Fornecedor cadastrado com sucesso!");
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => {
         formik.setSubmitting(false);

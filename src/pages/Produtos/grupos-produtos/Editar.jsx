@@ -19,7 +19,7 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import api from "../../../services/api";
 import { grupoProdutoValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
-import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
+import { confirmAlert, errorAlert, successAlert } from "../../../utils/alert";
 import MUIDataTable from "mui-datatables";
 import toast from "react-hot-toast";
 
@@ -131,7 +131,7 @@ function EditarGruposDeProdutos() {
         );
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => formik.setSubmitting(false));
   }
@@ -202,7 +202,7 @@ function EditarGruposDeProdutos() {
         );
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       });
   }
 

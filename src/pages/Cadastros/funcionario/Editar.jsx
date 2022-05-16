@@ -25,8 +25,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import { funcionarioValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
-import { useScrollBlock } from "../../../hooks/useScrollBlock";
-import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
+import { confirmAlert, errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import buscarCep from "../../../services/cep";
 import InputMask from "react-input-mask";
 
@@ -171,12 +170,11 @@ function EditarClientePage() {
     api
       .put("/funcionarios/" + id, values)
       .then((response) => {
-        successAlert("Sucesso", "Funcionario Editado", () =>
-          history.push("/funcionarios")
-        );
+        history.push("/funcionarios")
+        successAlert("Sucesso", "Funcionario Editado");
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.request.responseText);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => {
         formik.setSubmitting(false);
@@ -193,12 +191,11 @@ function EditarClientePage() {
     api
       .delete("/funcionarios/" + id)
       .then((result) => {
-        successAlert("Sucesso", "Funcionário Excluido", () =>
-          history.push("/funcionarios")
-        );
+        history.push("/funcionarios")
+        successAlert("Sucesso", "Funcionário Excluido");
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       });
   }
 
