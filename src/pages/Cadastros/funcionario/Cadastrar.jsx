@@ -22,7 +22,7 @@ import MouseIcon from "@material-ui/icons/Mouse";
 import FormHelperText from "@mui/material/FormHelperText";
 import buscarCep from "../../../services/cep";
 import InputMask from "react-input-mask";
-import { infoAlert, successAlert } from "../../../utils/alert";
+import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import { funcionarioValidationCreate } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
@@ -110,12 +110,11 @@ function CadastrarFuncionarioPage() {
     api
       .post("/funcionarios", values)
       .then((response) => {
-        successAlert("Sucesso", "Funcionário Cadastrado", () =>
-          history.push("/funcionarios")
-        );
+        history.push("/funcionarios")
+        successAlert("Sucesso", "Funcionário Cadastrado");
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => {
         formik.setSubmitting(false);

@@ -64,7 +64,7 @@ function EditarClientePage() {
         formik.setValues(response.data.data);
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => {
         fullScreenLoader.setLoading(false);
@@ -111,12 +111,11 @@ function EditarClientePage() {
     api
       .put("/clientes/" + id, values)
       .then((response) => {
-        successAlert("Sucesso", "Cliente Editado", () =>
-          history.push("/clientes")
-        );
+        history.push("/clientes")
+        successAlert("Sucesso", "Cliente Editado");
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => {
         formik.setSubmitting(false);
@@ -133,12 +132,11 @@ function EditarClientePage() {
     api
       .delete("/clientes/" + id)
       .then((result) => {
-        successAlert("Sucesso", "Cliente Excluido", () =>
-          history.push("/clientes")
-        );
+        history.push("/clientes")
+        successAlert("Sucesso", "Cliente Excluido");
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       });
   }
 

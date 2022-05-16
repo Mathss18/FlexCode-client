@@ -11,7 +11,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { useFormik } from "formik";
 import { contasBancariasValidation } from "../../../validators/validationSchema";
-import { infoAlert, successAlert } from "../../../utils/alert";
+import { errorAlert, successAlert } from "../../../utils/alert";
 import { useEffect, useState } from "react";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
@@ -41,7 +41,7 @@ function CadastrarContasBancariasPage() {
         );
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => formik.setSubmitting(false));
   }

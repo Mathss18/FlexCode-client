@@ -9,7 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { gradeVariacoesValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
-import { infoAlert, successAlert } from "../../../utils/alert";
+import { errorAlert, successAlert } from "../../../utils/alert";
 
 const initialValues = {
   nome: "",
@@ -66,11 +66,11 @@ function CadastrarVariacoes() {
             tipo_variacao_produto_id: res.data.data.id,
             tipo_variacao_produto: res.data.data
           }).catch((error) => {
-            infoAlert("Atenção", error.response.data.message);
+            errorAlert("Atenção", error?.response?.data?.message);
           });
         });
       }).catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       });
   }
 

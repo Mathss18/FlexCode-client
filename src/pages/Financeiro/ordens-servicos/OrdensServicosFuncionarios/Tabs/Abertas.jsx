@@ -27,7 +27,7 @@ import PhotoIcon from "@mui/icons-material/Photo";
 import BuildIcon from "@mui/icons-material/Build";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { config, rowConfig } from "../../../../../config/tablesConfig";
-import { confirmAlert, infoAlert } from "../../../../../utils/alert";
+import { confirmAlert, errorAlert } from "../../../../../utils/alert";
 
 export function Abertas() {
   const { idUsuario } = useParams();
@@ -89,7 +89,7 @@ export function Abertas() {
         search();
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => {
         fullScreenLoader.setLoading(false);

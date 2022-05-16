@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import { Grid, TextField, Select, MenuItem, FormControl, InputLabel, Divider, Button } from "@material-ui/core";
+import {
+  Grid,
+  TextField,
+  Divider,
+  Button,
+} from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import api from "../../../services/api";
-import Swal from "sweetalert2";
-import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
+import { confirmAlert, errorAlert, successAlert } from "../../../utils/alert";
 import { useFormik } from "formik";
 import { servicoValidation } from "../../../validators/validationSchema";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
-
-
 
 const initialValues = {
   nome: "",
@@ -29,32 +31,36 @@ function EditarServicoPage() {
 
   const formik = useFormik({
     initialValues: initialValues,
-    onSubmit: (event) => { handleOnSubmit(event) },
+    onSubmit: (event) => {
+      handleOnSubmit(event);
+    },
     validationSchema: servicoValidation,
-  })
+  });
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
-    api.get("/servicos/" + id).then((response) => {
-      formik.setValues(response.data["data"]);
-    })
-    .finally(() => fullScreenLoader.setLoading(false));
+    api
+      .get("/servicos/" + id)
+      .then((response) => {
+        formik.setValues(response.data["data"]);
+      })
+      .finally(() => fullScreenLoader.setLoading(false));
   }, []);
 
   function handleOnSubmit(values) {
     api
       .put("/servicos/" + id, values)
-        .then((response) => {
-          successAlert("Sucesso", "Serviço Editado", () =>
-            history.push("/servicos")
-          );
-        })
-        .catch((error) => {
-          infoAlert("Atenção", error.response.data.message);
-        })
-        .finally(() => {
-          formik.setSubmitting(false);
-        });
+      .then((response) => {
+        successAlert("Sucesso", "Serviço Editado", () =>
+          history.push("/servicos")
+        );
+      })
+      .catch((error) => {
+        errorAlert("Atenção", error?.response?.data?.message);
+      })
+      .finally(() => {
+        formik.setSubmitting(false);
+      });
   }
 
   function handleDelete() {
@@ -73,7 +79,7 @@ function EditarServicoPage() {
         );
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => fullScreenLoader.setLoading(false));
   }
@@ -81,8 +87,10 @@ function EditarServicoPage() {
   return (
     <>
       <div>
-      <Divider />
-        <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+        <Divider />
+        <div
+          style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+        >
           <AssignmentIcon />
           <h3>Dados do Serviço</h3>
         </div>
@@ -99,7 +107,8 @@ function EditarServicoPage() {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.nome && Boolean(formik.errors.nome)}
-                helperText={formik.touched.nome && formik.errors.nome} />
+                helperText={formik.touched.nome && formik.errors.nome}
+              />
             </Grid>
             <Grid item xs={3}>
               <TextField
@@ -111,8 +120,14 @@ function EditarServicoPage() {
                 name="codigoInterno"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.codigoInterno && Boolean(formik.errors.codigoInterno)}
-                helperText={formik.touched.codigoInterno && formik.errors.codigoInterno} />
+                error={
+                  formik.touched.codigoInterno &&
+                  Boolean(formik.errors.codigoInterno)
+                }
+                helperText={
+                  formik.touched.codigoInterno && formik.errors.codigoInterno
+                }
+              />
             </Grid>
             <Grid item xs={3}>
               <TextField
@@ -126,7 +141,8 @@ function EditarServicoPage() {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.valor && Boolean(formik.errors.valor)}
-                helperText={formik.touched.valor && formik.errors.valor} />
+                helperText={formik.touched.valor && formik.errors.valor}
+              />
             </Grid>
             <Grid item xs={3}>
               <TextField
@@ -139,11 +155,14 @@ function EditarServicoPage() {
                 name="comissao"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.comissao && Boolean(formik.errors.comissao)}
-                helperText={formik.touched.comissao && formik.errors.comissao} />
+                error={
+                  formik.touched.comissao && Boolean(formik.errors.comissao)
+                }
+                helperText={formik.touched.comissao && formik.errors.comissao}
+              />
             </Grid>
           </Grid>
-          <Grid container spacing={3} style={{marginTop: 8}}>
+          <Grid container spacing={3} style={{ marginTop: 8 }}>
             <Grid item xs={12}>
               <TextField
                 multiline
@@ -157,8 +176,11 @@ function EditarServicoPage() {
                 name="descricao"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.descricao && Boolean(formik.errors.descricao)}
-                helperText={formik.touched.descricao && formik.errors.descricao} />
+                error={
+                  formik.touched.descricao && Boolean(formik.errors.descricao)
+                }
+                helperText={formik.touched.descricao && formik.errors.descricao}
+              />
             </Grid>
           </Grid>
           <br />
@@ -166,23 +188,33 @@ function EditarServicoPage() {
 
           <Grid container spacing={0}>
             <Grid item>
-              <Button type="submit" variant="outlined" startIcon={<CheckIcon />} className={'btn btn-primary btn-spacing'}>
+              <Button
+                type="submit"
+                variant="outlined"
+                startIcon={<CheckIcon />}
+                className={"btn btn-primary btn-spacing"}
+              >
                 Salvar
               </Button>
             </Grid>
             <Grid item>
-            <Button
-              variant="outlined"
-              startIcon={<DeleteForeverIcon />}
-              className={"btn btn-error btn-spacing"}
-disabled={formik.isSubmitting}
-              onClick={handleDelete}
-            >
-              Excluir
-            </Button>
-          </Grid>
+              <Button
+                variant="outlined"
+                startIcon={<DeleteForeverIcon />}
+                className={"btn btn-error btn-spacing"}
+                disabled={formik.isSubmitting}
+                onClick={handleDelete}
+              >
+                Excluir
+              </Button>
+            </Grid>
             <Grid item>
-              <Button onClick={() => history.push("/servicos")} variant="outlined" startIcon={<CloseIcon />} className={'btn btn-error btn-spacing'}>
+              <Button
+                onClick={() => history.push("/servicos")}
+                variant="outlined"
+                startIcon={<CloseIcon />}
+                className={"btn btn-error btn-spacing"}
+              >
                 Cancelar
               </Button>
             </Grid>

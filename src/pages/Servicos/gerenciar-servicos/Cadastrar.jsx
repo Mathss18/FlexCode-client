@@ -2,14 +2,8 @@ import { useEffect, useState } from "react";
 import {
   Grid,
   TextField,
-  Select,
   Divider,
   Button,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  FormHelperText,
-  Checkbox,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import api from "../../../services/api";
@@ -18,7 +12,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { useFormik } from "formik";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
-import { infoAlert, successAlert } from "../../../utils/alert";
+import { errorAlert, successAlert } from "../../../utils/alert";
 import { servicoValidation } from "../../../validators/validationSchema";
 
 const initialValues = {
@@ -48,7 +42,7 @@ function CadastrarServicoPage() {
           );
         })
         .catch((error) => {
-          infoAlert("Atenção", error.response.data.message);
+          errorAlert("Atenção", error?.response?.data?.message);
         })
         .finally(() => {
           formik.setSubmitting(false);

@@ -17,7 +17,7 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { useFormik } from "formik";
 import { formasPagamentoValidation } from "../../../validators/validationSchema";
-import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
+import { confirmAlert, errorAlert, successAlert } from "../../../utils/alert";
 import { useEffect, useState } from "react";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import { useParams } from "react-router-dom";
@@ -52,7 +52,7 @@ function EditarFormasPagamentosPage() {
         );
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => formik.setSubmitting(false));
   }
@@ -72,7 +72,7 @@ function EditarFormasPagamentosPage() {
         );
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       });
   }
 

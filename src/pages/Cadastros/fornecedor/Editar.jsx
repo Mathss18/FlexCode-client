@@ -21,7 +21,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import buscarCep from "../../../services/cep";
 import InputMask from "react-input-mask";
-import { confirmAlert, infoAlert, successAlert } from "../../../utils/alert";
+import { confirmAlert, infoAlert, successAlert,errorAlert } from "../../../utils/alert";
 import { fornecedorValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
@@ -103,9 +103,8 @@ function EditarFornecedorPage() {
     api
       .put("/fornecedores/" + id, values)
       .then((response) => {
-        successAlert("Sucesso", "Fornecedor Editado", () =>
-          history.push("/fornecedores")
-        );
+        history.push("/fornecedores")
+        successAlert("Sucesso", "Fornecedor Editado");
       })
       .catch((error) => {
         infoAlert("Atenção", error.response.request.responseText);
@@ -125,12 +124,11 @@ function EditarFornecedorPage() {
     api
       .delete("/fornecedores/" + id)
       .then((result) => {
-        successAlert("Sucesso", "Fornecedor Excluido", () =>
-          history.push("/fornecedores")
-        );
+        history.push("/fornecedores")
+        successAlert("Sucesso", "Fornecedor Excluido");
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       });
   }
 

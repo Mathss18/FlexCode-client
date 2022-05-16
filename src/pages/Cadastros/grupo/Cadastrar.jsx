@@ -22,7 +22,7 @@ import moment from "moment";
 import "moment/locale/pt-br";
 import { grupoValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
-import { infoAlert, successAlert } from "../../../utils/alert";
+import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 
 const initialValues = {
@@ -111,12 +111,11 @@ function CadastrarGrupoPage() {
 
   function handleOnSubmit(values) {
     api.post("/grupos", values).then((response) => {
-      successAlert("Sucesso", "Grupo Cadastrado", () =>
-        history.push("/grupos")
-      );
+      history.push("/grupos")
+      successAlert("Sucesso", "Grupo Cadastrado");
     })
     .catch((error) => {
-      infoAlert("Atenção", error.response.data.message);
+      errorAlert("Atenção", error?.response?.data?.message);
     })
     .finally(() => {
       formik.setSubmitting(false);

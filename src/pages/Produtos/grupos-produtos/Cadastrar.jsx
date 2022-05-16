@@ -17,7 +17,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { useFormik } from "formik";
 import { grupoProdutoValidation } from "../../../validators/validationSchema";
-import { infoAlert, successAlert } from "../../../utils/alert";
+import { errorAlert, successAlert } from "../../../utils/alert";
 import MUIDataTable from "mui-datatables";
 import toast from "react-hot-toast";
 
@@ -102,7 +102,7 @@ function CadastrarGrupoDeProdutos() {
         );
       })
       .catch((error) => {
-        infoAlert("Atenção", error.response.data.message);
+        errorAlert("Atenção", error?.response?.data?.message);
       })
       .finally(() => formik.setSubmitting(false));
   }
