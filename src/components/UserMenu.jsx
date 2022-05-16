@@ -81,7 +81,6 @@ function UserMenu() {
           status: status.find(item => item.selected === true).class
         })
         .then((response) => {
-          console.log(response);
           let user = getFromLS('user');
           user['chat-status'] = status.find(item => item.selected === true).class;
           setToLS('user', user);
