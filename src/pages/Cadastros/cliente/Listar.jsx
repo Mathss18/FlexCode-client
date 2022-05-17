@@ -82,7 +82,6 @@ function ListarClientePage() {
 
 
         });
-        console.log(data);
         setClientes(data)
 
       })
