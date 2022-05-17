@@ -25,6 +25,7 @@ import { useServicoMenu } from "../context/side-menu/SideMenuServicoContext";
 import { menu } from "../constants/menu";
 import { useFinanceiroMenu } from "../context/side-menu/SideMenuFinanceiroContext";
 import { useEstoqueMenu } from "../context/side-menu/SideMenuEstoqueContext";
+import { useNotaFiscalMenu } from "../context/side-menu/SideMenuNotaFiscalContext";
 
 const drawerWidth = 240;
 
@@ -85,6 +86,7 @@ function SideMenu({ children }) {
   const [openServicoList, setOpenServicoList] = useServicoMenu();
   const [openFinanceiroList, setOpenFinanceiroList] = useFinanceiroMenu();
   const [openEstoqueList, setOpenEstoqueList] = useEstoqueMenu();
+  const [openNotaFiscalList, setOpenNotaFiscalList] = useNotaFiscalMenu();
   const [openSideMenu, setOpenSideMenu] = useMenu();
 
   // Função que controla se Side Menu esta aberto ou fechado
@@ -111,6 +113,10 @@ function SideMenu({ children }) {
 
   const handleOpenEstoqueList = () => {
     setOpenEstoqueList(!openEstoqueList);
+  }
+
+  const handleOpenNotaFiscalList = () => {
+    setOpenNotaFiscalList(!openNotaFiscalList);
   }
 
   return (

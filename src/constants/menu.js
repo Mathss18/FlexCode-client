@@ -20,6 +20,7 @@ import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import StorageIcon from '@mui/icons-material/Storage';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import RoomServiceIcon from '@mui/icons-material/RoomService';
+import BalanceIcon from '@mui/icons-material/Balance';
 
 const user = JSON.parse(localStorage.getItem("user"));
 
@@ -250,6 +251,27 @@ export const menu = [
         title: 'Formas de Pagamento',
         path: '/formas-pagamentos',
         icon: <PaymentsIcon className={"sidemenu-text"} />,
+        className: 'sidemenu-text',
+        click: '()=>{}',
+        state: null,
+        collapse: false,
+        children: [],
+      },
+    ],
+  },
+  {
+    title: 'Notas Físcais',
+    path: null,
+    icon: <BalanceIcon className={"sidemenu-text"} />,
+    className: 'sidemenu-text',
+    click: 'handleOpenNotaFiscalList',
+    state: ['openNotaFiscalList', 'setOpenNotaFiscalList'],
+    collapse: true,
+    children: [
+      {
+        title: 'Notas Físcais',
+        path: '/notas-fiscais',
+        icon: <BalanceIcon className={"sidemenu-text"} />,
         className: 'sidemenu-text',
         click: '()=>{}',
         state: null,

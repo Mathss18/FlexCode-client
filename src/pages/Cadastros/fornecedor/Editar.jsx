@@ -234,11 +234,11 @@ function EditarFornecedorPage() {
                 value={formik.values.inscricaoEstadual}
                 name="inscricaoEstadual"
                 InputProps={{
-                  endAdornment: (
-                    <Tooltip title="Digite ISENTO caso não haja Inscrição Estadual">
-                      <HelpIcon />
-                    </Tooltip>
-                  ),
+                  // endAdornment: (
+                  //   <Tooltip title="Digite ISENTO caso não haja Inscrição Estadual">
+                  //     <HelpIcon />
+                  //   </Tooltip>
+                  // ),
                 }}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}

@@ -39,7 +39,7 @@ import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import DragAndDrop from "../../../components/dragdrop/DragAndDrop";
 import toast from "react-hot-toast";
 import ModalTabelaPreco from "../modalTabelaPreco/ModalTabelaPreco";
-import CalculateIcon from '@mui/icons-material/Calculate';
+import CalculateIcon from "@mui/icons-material/Calculate";
 
 const initialValues = {
   numero: "",
@@ -110,7 +110,6 @@ function CadastrarVendasPage() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            
             options={produtos}
             renderInput={(params) => (
               <TextField
@@ -203,7 +202,6 @@ function CadastrarVendasPage() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            
             options={servicos}
             renderInput={(params) => (
               <TextField
@@ -431,7 +429,7 @@ function CadastrarVendasPage() {
     api
       .get("/produtos")
       .then((response) => {
-        produtosOriginal.current = response.data['data'];
+        produtosOriginal.current = response.data["data"];
 
         var array = [];
         response.data["data"].forEach((produto) => {
@@ -592,7 +590,23 @@ function CadastrarVendasPage() {
       return;
     }
 
-    const rowParcelasSanitezed = rowsParcelas.map((parcela) => {
+    const rowParcelasSanitezed = rowsParcelas.map((parcela, index) => {
+      if (typeof parcela.dataVencimento === "object") {
+        parcela.dataVencimento = new Date(
+          parcela.dataVencimento
+        ).toLocaleString("pt-BR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        });
+      } else if (parcela.dataVencimento === null) {
+        errorAlert(
+          "Por favor, selecione uma data de vencimento válida a parcela número " +
+            (index + 1)
+        );
+        return;
+      }
+
       return {
         ...parcela,
         valorParcela: Number(parcela.valorParcela),
@@ -654,9 +668,10 @@ function CadastrarVendasPage() {
 
   function openTabelaDePrecosModal(params) {
     const prod_id = params?.row?.produto_id;
-    produto.current = produtosOriginal.current.find((item)=> item.id === prod_id)
-    if(produto.current)
-      setOpenModalTabelaPreco(true)
+    produto.current = produtosOriginal.current.find(
+      (item) => item.id === prod_id
+    );
+    if (produto.current) setOpenModalTabelaPreco(true);
   }
 
   function handleProductRowStateChange(dataGrid) {
@@ -917,7 +932,6 @@ function CadastrarVendasPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                
                 options={clientes}
                 renderInput={(params) => (
                   <TextField
@@ -993,7 +1007,6 @@ function CadastrarVendasPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                
                 options={transportadoras}
                 renderInput={(params) => (
                   <TextField
@@ -1319,7 +1332,6 @@ function CadastrarVendasPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                
                 options={formasPagamentos}
                 renderInput={(params) => (
                   <TextField
