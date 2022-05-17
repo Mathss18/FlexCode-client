@@ -1,35 +1,41 @@
 import { useEffect, useState } from "react";
-import { useParams, useHistory } from 'react-router-dom';
-import { Grid, TextField, Select, MenuItem, FormControl, InputLabel, Divider, Button } from '@material-ui/core';
-import PrintIcon from '@material-ui/icons/Print';
-import CloseIcon from '@material-ui/icons/Close';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import api from '../../../services/api';
-import { infoAlert,errorAlert } from "../../../utils/alert";
-
+import { useParams, useHistory } from "react-router-dom";
+import {
+  Grid,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Divider,
+  Button,
+} from "@material-ui/core";
+import PrintIcon from "@material-ui/icons/Print";
+import CloseIcon from "@material-ui/icons/Close";
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
+import api from "../../../services/api";
+import { infoAlert, errorAlert } from "../../../utils/alert";
 
 const initialValues = {
-  tipoCliente: '',
-  situacao: '',
-  tipoContribuinte: '',
-  inscricaoEstadual: '',
-  nome: '',
-  cpfCnpj: '',
-  email: '',
-  contato: '',
-  rua: '',
-  cidade: '',
-  numero: '',
-  cep: '',
-  bairro: '',
-  estado: '',
-  telefone: '',
-  celular: '',
-  codigoMunicipio: '',
-
-
-}
+  tipoCliente: "",
+  situacao: "",
+  tipoContribuinte: "",
+  inscricaoEstadual: "",
+  nome: "",
+  cpfCnpj: "",
+  email: "",
+  contato: "",
+  rua: "",
+  cidade: "",
+  numero: "",
+  cep: "",
+  bairro: "",
+  estado: "",
+  telefone: "",
+  celular: "",
+  codigoMunicipio: "",
+};
 
 function MostrarClientePage() {
   const history = useHistory();
@@ -37,31 +43,42 @@ function MostrarClientePage() {
   const { id } = useParams();
 
   useEffect(() => {
-    api.get('/clientes/' + id)
+    api
+      .get("/clientes/" + id)
       .then((response) => {
-        setValues(response.data['data']);
+        setValues(response.data["data"]);
       })
       .catch((error) => {
         errorAlert("Atenção", error?.response?.data?.message);
       });
-
   }, []);
 
   return (
     <>
-
       <div>
         <Divider />
-        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', }}>
+        <div
+          style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+        >
           <AssignmentIcon />
           <h3>Dados Pessoais</h3>
         </div>
         <Grid container spacing={2}>
-
           <Grid item xs={3}>
-            <FormControl variant="outlined" fullWidth required name="tipoCliente">
+            <FormControl
+              variant="outlined"
+              fullWidth
+              required
+              name="tipoCliente"
+            >
               <InputLabel>Tipo de Cliente</InputLabel>
-              <Select className={'input-select'} label="Tipo de Cliente" name="tipoCliente" value={values.tipoCliente} disabled>
+              <Select
+                className={"input-select"}
+                label="Tipo de Cliente"
+                name="tipoCliente"
+                value={values.tipoCliente}
+                disabled
+              >
                 <MenuItem value={"pf"}>Pessia Física</MenuItem>
                 <MenuItem value={"pj"}>Pessia Juridica</MenuItem>
               </Select>
@@ -71,7 +88,13 @@ function MostrarClientePage() {
           <Grid item xs={3}>
             <FormControl variant="outlined" fullWidth required name="situacao">
               <InputLabel>Situação</InputLabel>
-              <Select className={'input-select'} label="Situação" name="situacao" value={values.situacao} disabled>
+              <Select
+                className={"input-select"}
+                label="Situação"
+                name="situacao"
+                value={values.situacao}
+                disabled
+              >
                 <MenuItem value={1}>Ativo</MenuItem>
                 <MenuItem value={0}>Inativo</MenuItem>
               </Select>
@@ -79,9 +102,20 @@ function MostrarClientePage() {
           </Grid>
 
           <Grid item xs={3}>
-            <FormControl variant="outlined" fullWidth required name="tipoContribuinte">
+            <FormControl
+              variant="outlined"
+              fullWidth
+              required
+              name="tipoContribuinte"
+            >
               <InputLabel>Tipo de contribuinte</InputLabel>
-              <Select className={'input-select'} label="Tipo de contribuinte" name="tipoContribuinte" value={values.tipoContribuinte} disabled>
+              <Select
+                className={"input-select"}
+                label="Tipo de contribuinte"
+                name="tipoContribuinte"
+                value={values.tipoContribuinte}
+                disabled
+              >
                 <MenuItem value={1}>Contribuinte ICMS</MenuItem>
                 <MenuItem value={2}>Contribuinte ISENTO</MenuItem>
                 <MenuItem value={9}>Não Contribuinte</MenuItem>
@@ -90,55 +124,129 @@ function MostrarClientePage() {
           </Grid>
 
           <Grid item xs={3}>
-            <TextField variant="outlined" fullWidth label="Inscrição Estadual" helperText="Digite ISENTO caso não haja Inscrição Estadual" value={values.inscricaoEstadual} name="inscricaoEstadual" disabled />
+            <TextField
+              variant="outlined"
+              fullWidth
+              label="Inscrição Estadual"
+              value={values.inscricaoEstadual}
+              name="inscricaoEstadual"
+              disabled
+            />
           </Grid>
 
           <Grid item xs={3}>
-            <TextField variant="outlined" label="Nome/Razão social" fullWidth value={values.nome} name="nome" disabled />
+            <TextField
+              variant="outlined"
+              label="Nome/Razão social"
+              fullWidth
+              value={values.nome}
+              name="nome"
+              disabled
+            />
           </Grid>
 
           <Grid item xs={3}>
-            <TextField variant="outlined" label="CPF/CNPJ" fullWidth value={values.cpfCnpj} name="cpfCnpj" disabled />
+            <TextField
+              variant="outlined"
+              label="CPF/CNPJ"
+              fullWidth
+              value={values.cpfCnpj}
+              name="cpfCnpj"
+              disabled
+            />
           </Grid>
 
           <Grid item xs={3}>
-            <TextField variant="outlined" label="Email" fullWidth value={values.email} name="email" disabled />
+            <TextField
+              variant="outlined"
+              label="Email"
+              fullWidth
+              value={values.email}
+              name="email"
+              disabled
+            />
           </Grid>
 
           <Grid item xs={3}>
-            <TextField variant="outlined" label="Contato" fullWidth value={values.contato} name="contato" disabled />
+            <TextField
+              variant="outlined"
+              label="Contato"
+              fullWidth
+              value={values.contato}
+              name="contato"
+              disabled
+            />
           </Grid>
-
         </Grid>
         <br />
         <Divider />
-        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', }}>
+        <div
+          style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+        >
           <LocationOnIcon />
           <h3>Endereço</h3>
         </div>
         <Grid container spacing={2}>
-
           <Grid item xs={3}>
-            <TextField variant="outlined" label="CEP" fullWidth value={values.cep} name="cep" disabled />
-
+            <TextField
+              variant="outlined"
+              label="CEP"
+              fullWidth
+              value={values.cep}
+              name="cep"
+              disabled
+            />
           </Grid>
           <Grid item xs={3}>
-            <TextField variant="outlined" label="Rua" fullWidth value={values.rua} name="rua" disabled />
-
+            <TextField
+              variant="outlined"
+              label="Rua"
+              fullWidth
+              value={values.rua}
+              name="rua"
+              disabled
+            />
           </Grid>
           <Grid item xs={3}>
-            <TextField variant="outlined" label="Número" fullWidth value={values.numero} name="numero" disabled />
+            <TextField
+              variant="outlined"
+              label="Número"
+              fullWidth
+              value={values.numero}
+              name="numero"
+              disabled
+            />
           </Grid>
           <Grid item xs={3}>
-            <TextField variant="outlined" label="Cidade" fullWidth value={values.cidade} name="cidade" disabled />
+            <TextField
+              variant="outlined"
+              label="Cidade"
+              fullWidth
+              value={values.cidade}
+              name="cidade"
+              disabled
+            />
           </Grid>
           <Grid item xs={3}>
-            <TextField variant="outlined" label="Bairro" fullWidth value={values.bairro} name="bairro" disabled />
+            <TextField
+              variant="outlined"
+              label="Bairro"
+              fullWidth
+              value={values.bairro}
+              name="bairro"
+              disabled
+            />
           </Grid>
           <Grid item xs={3}>
-            <FormControl variant="outlined" fullWidth required >
+            <FormControl variant="outlined" fullWidth required>
               <InputLabel>Estado</InputLabel>
-              <Select className={'input-select'} label="Estado" name="estado" value={values.estado} disabled >
+              <Select
+                className={"input-select"}
+                label="Estado"
+                name="estado"
+                value={values.estado}
+                disabled
+              >
                 <MenuItem value={"AC"}>Acre</MenuItem>
                 <MenuItem value={"AL"}>Alagoas</MenuItem>
                 <MenuItem value={"AP"}>Amapá</MenuItem>
@@ -170,27 +278,60 @@ function MostrarClientePage() {
             </FormControl>
           </Grid>
           <Grid item xs={3}>
-            <TextField variant="outlined" label="Telefone" fullWidth value={values.telefone} name="telefone" disabled />
+            <TextField
+              variant="outlined"
+              label="Telefone"
+              fullWidth
+              value={values.telefone}
+              name="telefone"
+              disabled
+            />
           </Grid>
           <Grid item xs={3}>
-            <TextField variant="outlined" label="Celular" fullWidth value={values.celular} name="celular" disabled />
+            <TextField
+              variant="outlined"
+              label="Celular"
+              fullWidth
+              value={values.celular}
+              name="celular"
+              disabled
+            />
           </Grid>
           <Grid item xs={3}>
-            <TextField variant="outlined" label="Código do Municipio" fullWidth value={values.codigoMunicipio} name="codigoMunicipio" disabled />
+            <TextField
+              variant="outlined"
+              label="Código do Municipio"
+              fullWidth
+              value={values.codigoMunicipio}
+              name="codigoMunicipio"
+              disabled
+            />
           </Grid>
-
         </Grid>
 
         <Grid container spacing={0}>
           <Grid item>
-            <Button onClick={() => history.push("/clientes")} variant="outlined" startIcon={<PrintIcon />} className={'btn btn-primary btn-spacing'}>Imprimir</Button>
+            <Button
+              onClick={() => history.push("/clientes")}
+              variant="outlined"
+              startIcon={<PrintIcon />}
+              className={"btn btn-primary btn-spacing"}
+            >
+              Imprimir
+            </Button>
           </Grid>
           <Grid item>
-            <Button onClick={() => history.push("/clientes")} variant="outlined" startIcon={<CloseIcon />} className={'btn btn-error btn-spacing'}>Cancelar</Button>
+            <Button
+              onClick={() => history.push("/clientes")}
+              variant="outlined"
+              startIcon={<CloseIcon />}
+              className={"btn btn-error btn-spacing"}
+            >
+              Cancelar
+            </Button>
           </Grid>
         </Grid>
       </div>
-
     </>
   );
 }

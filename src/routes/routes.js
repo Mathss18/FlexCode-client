@@ -87,6 +87,8 @@ import ListarEstoques from "../pages/Estoque/Listar";
 import MovimentacoesPage from "../pages/Estoque/Movimentacoes";
 import CalendarioPage from "../pages/Financeiro/money/Calendario";
 import ListarExtratos from "../pages/Financeiro/extratos/Litsar";
+import ListarNotasFiscaisPage from "../pages/NotasFiscais/nfe/Listar";
+import CadastrarNotasFiscais from "../pages/NotasFiscais/nfe/Cadastrar";
 
 
 export default function Routes({themeSetter}) {
@@ -191,7 +193,8 @@ export default function Routes({themeSetter}) {
 
             <Route path="/extratos/:id" exact component={ListarExtratos}></Route>
            
-
+            <Route path="/notas-fiscais" exact component={ListarNotasFiscaisPage}></Route>
+            <Route path="/notas-fiscais/novo" exact component={CadastrarNotasFiscais}></Route>
 
 
             <Route path="/chat" exact component={Chat}></Route>

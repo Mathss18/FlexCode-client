@@ -698,7 +698,23 @@ function EditarVendasPage() {
       return;
     }
 
-    const rowParcelasSanitezed = rowsParcelas.map((parcela) => {
+    const rowParcelasSanitezed = rowsParcelas.map((parcela, index) => {
+      if (typeof parcela.dataVencimento === "object") {
+        parcela.dataVencimento = new Date(
+          parcela.dataVencimento
+        ).toLocaleString("pt-BR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        });
+      } else if (parcela.dataVencimento === null) {
+        errorAlert(
+          "Por favor, selecione uma data de vencimento válida a parcela número " +
+            (index + 1)
+        );
+        return;
+      }
+      
       return {
         ...parcela,
         valorParcela: Number(parcela.valorParcela),
@@ -714,6 +730,10 @@ function EditarVendasPage() {
       anexos: files
     };
 
+
+    console.log(params.parcelas);
+    formik.setSubmitting(false);
+    return;
 
     fullScreenLoader.setLoading(true);
     api
@@ -1556,7 +1576,7 @@ function EditarVendasPage() {
             </Grid>
             <Grid item>
               <Button
-                onClick={() => history.push("/orcamentos")}
+                onClick={() => history.push("/vendas")}
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 className={"btn btn-error btn-spacing"}

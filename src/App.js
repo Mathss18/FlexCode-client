@@ -15,6 +15,7 @@ import MomentUtils from "@date-io/moment";
 import FullScreenLoaderProvider from "./context/FullScreenLoaderContext";
 import FaviconNotificationContextProvider from "react-favicon-notification";
 import _ from "lodash";
+import NotaFiscalContextProvider from "./context/NotaFiscalContext";
 
 function App() {
   const { theme, themeLoaded, getFonts } = useTheme();
@@ -63,11 +64,13 @@ function App() {
             <PusherContextProvider>
               <SideMenuContextProvider>
                 <GerenciarProdutosContextProvider>
-                  <MuiPickersUtilsProvider utils={MomentUtils}>
-                    <FullScreenLoaderProvider>
-                      <Routes themeSetter={setSelectedTheme} />
-                    </FullScreenLoaderProvider>
-                  </MuiPickersUtilsProvider>
+                  <NotaFiscalContextProvider>
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <FullScreenLoaderProvider>
+                        <Routes themeSetter={setSelectedTheme} />
+                      </FullScreenLoaderProvider>
+                    </MuiPickersUtilsProvider>
+                  </NotaFiscalContextProvider>
                 </GerenciarProdutosContextProvider>
               </SideMenuContextProvider>
             </PusherContextProvider>
