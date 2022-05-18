@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../../../../services/api";
-import { useProdutoContext } from "../../../../context/GerenciarProdutosContext";
 import {
   Grid,
   TextField,
@@ -9,21 +8,63 @@ import {
   Select,
   MenuItem,
   FormHelperText,
+  InputAdornment,
 } from "@material-ui/core";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import LocalShippingIcon from "@material-ui/icons/LocalShipping";
 import { Autocomplete } from "@mui/material";
+import { useNotaFiscalContext } from "../../../../context/NotaFiscalContext";
+import { cfop } from "../../../../constants/cfop";
 
-export function Dados() {
-  const produtoContext = useProdutoContext();
+export default function Dados() {
+  const notaFiscalContext = useNotaFiscalContext();
   const [clientesAndFornecedores, setClientesAndFornecedores] = useState([]);
+  const clientes = useRef([]);
+  const fornecedores = useRef([]);
   const [transportadoras, setTransportadoras] = useState([]);
+  const [cfops, setCfops] = useState([]);
 
   function handleOnChange(event) {
     const { name, value } = event.target;
-    produtoContext.formik.setFieldValue(name, value); // Altera o formik
+    notaFiscalContext.formik.setFieldValue(name, value); // Altera o formik
   }
+
+  function handleOnAutoCompleteChange(name, value) {
+    notaFiscalContext.formik.setFieldValue(name, value); // Altera o formik
+  }
+
+  useEffect(
+    () => console.log(notaFiscalContext.formik.values),
+    [notaFiscalContext.formik.values]
+  );
+
+  useEffect(() => {
+    if (cfops.length > 0) return;
+
+    var aux = [];
+    var grupoAtual = "";
+    for (var prop in cfop) {
+      // Se o CFOP terminar em _000, é um grupo
+      if (prop[1] == "0" && prop[2] == "0" && prop[3] == "0") {
+        grupoAtual = prop + " - " + cfop[prop];
+      }
+      aux.push({
+        value: prop,
+        label: prop + " - " + cfop[prop],
+        grupo: grupoAtual,
+      });
+
+      // Retira os CFOPs que são grupos (terminal com _000 ou __00)
+      if (prop[1] == "0" && prop[2] == "0" && prop[3] == "0") {
+        aux.pop();
+      }
+      if (prop[2] == "0" && prop[3] == "0") {
+        aux.pop();
+      }
+    }
+    setCfops(aux);
+  }, []);
 
   useEffect(() => {
     api
@@ -32,6 +73,7 @@ export function Dados() {
         var array = [];
         response.data["data"].forEach((cliente) => {
           if (cliente.situacao === 1) {
+            clientes.current.push(cliente);
             array.push({
               label: cliente.nome,
               value: cliente.id,
@@ -53,6 +95,7 @@ export function Dados() {
         var array = [];
         response.data["data"].forEach((fornecedor) => {
           if (fornecedor.situacao === 1) {
+            fornecedores.current.push(fornecedor);
             array.push({
               label: fornecedor.nome,
               value: fornecedor.id,
@@ -87,8 +130,34 @@ export function Dados() {
       });
   }, []);
 
-  function handleOnChange(name, value) {
-    produtoContext.formik.setFieldValue(name, value); // Altera o formik
+  function getInfo(campo) {
+    if (clientes.current.length === 0 || fornecedores.current.length === 0)
+      return;
+
+    const tipo = notaFiscalContext.formik.values.clienteFornecedor_id?.tipo;
+    var resp = "";
+    if (tipo === "clientes") {
+      var cli = clientes.current.find((item) => {
+        return (
+          item.id ===
+          notaFiscalContext.formik.values.clienteFornecedor_id?.value
+        );
+      });
+      resp = cli[campo];
+    } else if (tipo === "fornecedores") {
+      var forne = fornecedores.current.find((item) => {
+        return (
+          item.id ===
+          notaFiscalContext.formik.values.clienteFornecedor_id?.value
+        );
+      });
+      resp = forne[campo];
+    }
+
+    if (resp === undefined || resp === null) {
+      resp = "";
+    }
+    return resp;
   }
 
   return (
@@ -98,47 +167,47 @@ export function Dados() {
         <h3>Detalhes</h3>
       </div>
       <Grid container spacing={3}>
-        <Grid item xs={4}>
-          <FormControl variant="outlined" fullWidth name="tpNf">
+        <Grid item xs={3}>
+          <FormControl variant="outlined" fullWidth name="tpNF">
             <InputLabel>Tipo *</InputLabel>
             <Select
               className={"input-select"}
               label="Tipo *"
               name="tpNF"
-              value={produtoContext.formik.values.tpNf}
+              value={notaFiscalContext.formik.values.tpNF}
               onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
+              onBlur={notaFiscalContext.formik.handleBlur}
               error={
-                produtoContext.formik.touched.tpNf &&
-                Boolean(produtoContext.formik.errors.tpNf)
+                notaFiscalContext.formik.touched.tpNF &&
+                Boolean(notaFiscalContext.formik.errors.tpNF)
               }
             >
               <MenuItem value={0}>Entrada</MenuItem>
               <MenuItem value={1}>Saída</MenuItem>
             </Select>
-            {produtoContext.formik.touched.tpNf &&
-            Boolean(produtoContext.formik.errors.tpNf) ? (
+            {notaFiscalContext.formik.touched.tpNF &&
+            Boolean(notaFiscalContext.formik.errors.tpNF) ? (
               <FormHelperText>
-                {produtoContext.formik.errors.tpNf}
+                {notaFiscalContext.formik.errors.tpNF}
               </FormHelperText>
             ) : (
               ""
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={4}>
-          <FormControl variant="outlined" fullWidth name="finNFe ">
+        <Grid item xs={3}>
+          <FormControl variant="outlined" fullWidth name="finNFe">
             <InputLabel>Finalidade *</InputLabel>
             <Select
               className={"input-select"}
               label="Finalidade *"
-              name="finNFe "
-              value={produtoContext.formik.values.finNFe}
+              name="finNFe"
+              value={notaFiscalContext.formik.values.finNFe}
               onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
+              onBlur={notaFiscalContext.formik.handleBlur}
               error={
-                produtoContext.formik.touched.finNFe &&
-                Boolean(produtoContext.formik.errors.finNFe)
+                notaFiscalContext.formik.touched.finNFe &&
+                Boolean(notaFiscalContext.formik.errors.finNFe)
               }
             >
               <MenuItem value={1}>NF-e normal</MenuItem>
@@ -146,23 +215,26 @@ export function Dados() {
               <MenuItem value={3}>NF-e de ajuste</MenuItem>
               <MenuItem value={4}>Devolução de mercadoria</MenuItem>
             </Select>
-            {produtoContext.formik.touched.finNFe &&
-            Boolean(produtoContext.formik.errors.finNFe) ? (
+            {notaFiscalContext.formik.touched.finNFe &&
+            Boolean(notaFiscalContext.formik.errors.finNFe) ? (
               <FormHelperText>
-                {produtoContext.formik.errors.finNFe}
+                {notaFiscalContext.formik.errors.finNFe}
               </FormHelperText>
             ) : (
               ""
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <Autocomplete
-            value={produtoContext.formik.values.natOp}
+            value={notaFiscalContext.formik.values.natOp}
             name="natOp"
-            onChange={(event, value) => handleOnChange("natOp", value)}
+            groupBy={(option) => option.grupo}
+            onChange={(event, value) =>
+              handleOnAutoCompleteChange("natOp", value)
+            }
             disablePortal
-            options={[]}
+            options={cfops}
             renderInput={(params) => (
               <TextField
                 variant="outlined"
@@ -176,10 +248,10 @@ export function Dados() {
         </Grid>
         <Grid item xs={4}>
           <Autocomplete
-            value={produtoContext.formik.values.clienteFornecedor_id}
+            value={notaFiscalContext.formik.values.clienteFornecedor_id}
             name="clienteFornecedor_id"
             onChange={(event, value) =>
-              handleOnChange("clienteFornecedor_id", value)
+              handleOnAutoCompleteChange("clienteFornecedor_id", value)
             }
             disablePortal
             options={clientesAndFornecedores}
@@ -188,7 +260,7 @@ export function Dados() {
                 variant="outlined"
                 fullWidth
                 {...params}
-                label="Cliente ou Fornecedor"
+                label="Cliente ou Fornecedor *"
                 placeholder="Pesquise..."
               />
             )}
@@ -201,21 +273,21 @@ export function Dados() {
               className={"input-select"}
               label="Consumidor Final *"
               name="indFinal"
-              value={produtoContext.formik.values.indFinal}
+              value={notaFiscalContext.formik.values.indFinal}
               onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
+              onBlur={notaFiscalContext.formik.handleBlur}
               error={
-                produtoContext.formik.touched.indFinal &&
-                Boolean(produtoContext.formik.errors.indFinal)
+                notaFiscalContext.formik.touched.indFinal &&
+                Boolean(notaFiscalContext.formik.errors.indFinal)
               }
             >
               <MenuItem value={1}>Sim</MenuItem>
               <MenuItem value={0}>Não</MenuItem>
             </Select>
-            {produtoContext.formik.touched.indFinal &&
-            Boolean(produtoContext.formik.errors.indFinal) ? (
+            {notaFiscalContext.formik.touched.indFinal &&
+            Boolean(notaFiscalContext.formik.errors.indFinal) ? (
               <FormHelperText>
-                {produtoContext.formik.errors.indFinal}
+                {notaFiscalContext.formik.errors.indFinal}
               </FormHelperText>
             ) : (
               ""
@@ -229,12 +301,12 @@ export function Dados() {
               className={"input-select"}
               label="Tipo Atendimento *"
               name="indPres"
-              value={produtoContext.formik.values.indPres}
+              value={notaFiscalContext.formik.values.indPres}
               onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
+              onBlur={notaFiscalContext.formik.handleBlur}
               error={
-                produtoContext.formik.touched.indPres &&
-                Boolean(produtoContext.formik.errors.indPres)
+                notaFiscalContext.formik.touched.indPres &&
+                Boolean(notaFiscalContext.formik.errors.indPres)
               }
             >
               <MenuItem value="0">Não se aplica</MenuItem>
@@ -247,10 +319,10 @@ export function Dados() {
               </MenuItem>
               <MenuItem value="9">Operação não presencial, outros</MenuItem>
             </Select>
-            {produtoContext.formik.touched.indPres &&
-            Boolean(produtoContext.formik.errors.indPres) ? (
+            {notaFiscalContext.formik.touched.indPres &&
+            Boolean(notaFiscalContext.formik.errors.indPres) ? (
               <FormHelperText>
-                {produtoContext.formik.errors.indPres}
+                {notaFiscalContext.formik.errors.indPres}
               </FormHelperText>
             ) : (
               ""
@@ -271,12 +343,12 @@ export function Dados() {
         <h3>Transporte</h3>
       </div>
       <Grid container spacing={3}>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <Autocomplete
-            value={""}
+            value={notaFiscalContext.formik.values.transportadora_id}
             name="transportadora_id"
             onChange={(event, value) =>
-              handleOnChange("transportadora_id", value)
+              handleOnAutoCompleteChange("transportadora_id", value)
             }
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
@@ -293,19 +365,19 @@ export function Dados() {
             )}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <FormControl variant="outlined" fullWidth name="modFrete">
             <InputLabel>Modalidade do Frete *</InputLabel>
             <Select
               className={"input-select"}
               label="Modalidade do Frete *"
               name="modFrete"
-              value={produtoContext.formik.values.modFrete}
+              value={notaFiscalContext.formik.values.modFrete}
               onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
+              onBlur={notaFiscalContext.formik.handleBlur}
               error={
-                produtoContext.formik.touched.modFrete &&
-                Boolean(produtoContext.formik.errors.modFrete)
+                notaFiscalContext.formik.touched.modFrete &&
+                Boolean(notaFiscalContext.formik.errors.modFrete)
               }
             >
               <MenuItem value={0}>
@@ -325,20 +397,48 @@ export function Dados() {
               </MenuItem>
               <MenuItem value={9}>Sem Ocorrência de Transporte</MenuItem>
             </Select>
-            {produtoContext.formik.touched.modFrete &&
-            Boolean(produtoContext.formik.errors.modFrete) ? (
+            {notaFiscalContext.formik.touched.modFrete &&
+            Boolean(notaFiscalContext.formik.errors.modFrete) ? (
               <FormHelperText>
-                {produtoContext.formik.errors.modFrete}
+                {notaFiscalContext.formik.errors.modFrete}
               </FormHelperText>
             ) : (
               ""
             )}
           </FormControl>
         </Grid>
+        <Grid item xs={4}>
+          <TextField
+            variant="outlined"
+            label="Valor do frete"
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">R$:</InputAdornment>
+              ),
+            }}
+            type="number"
+            value={notaFiscalContext.formik.values.frete}
+            name="frete"
+            onChange={notaFiscalContext.formik.handleChange}
+            onBlur={notaFiscalContext.formik.handleBlur}
+            error={
+              notaFiscalContext.formik.touched.frete &&
+              Boolean(notaFiscalContext.formik.errors.frete)
+            }
+            helperText={
+              notaFiscalContext.formik.touched.frete &&
+              notaFiscalContext.formik.errors.frete
+            }
+          />
+        </Grid>
       </Grid>
 
       <div
         style={{
+          display: notaFiscalContext.formik.values.clienteFornecedor_id?.value
+            ? "block"
+            : "none",
           marginTop: 24,
           boxShadow:
             "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
@@ -349,43 +449,53 @@ export function Dados() {
           style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
         >
           <AssignmentIcon />
-          <h3>Confira os dados do cliente ou fornecedor</h3>
+          <h3>
+            Confira os dados do{" "}
+            {notaFiscalContext.formik.values.clienteFornecedor_id?.tipo ===
+            "clientes"
+              ? "Cliente"
+              : "Fornecedor"}
+          </h3>
         </div>
 
         <Grid container spacing={3}>
           <Grid item xs={3}>
             <h3 style={{ marginBottom: 4 }}>Nome</h3>
-            <p style={{ margin: 0 }}>Matheus Bezerra Filho</p>
+            <p style={{ margin: 0 }}>{getInfo("nome")}</p>
           </Grid>
           <Grid item xs={3}>
             <h3 style={{ marginBottom: 4 }}>CPF/CNPJ</h3>
-            <p style={{ margin: 0 }}>427.024.218-58</p>
+            <p style={{ margin: 0 }}>{getInfo("cpfCnpj")}</p>
           </Grid>
           <Grid item xs={3}>
             <h3 style={{ marginBottom: 4 }}>E-mail</h3>
-            <p style={{ margin: 0 }}>theus.7@hotmail.com</p>
+            <p style={{ margin: 0 }}>{getInfo("email")}</p>
           </Grid>
           <Grid item xs={3}>
             <h3 style={{ marginBottom: 4 }}>Inscrição Estadual</h3>
-            <p style={{ margin: 0 }}>297023651113</p>
+            <p style={{ margin: 0 }}>{getInfo("inscricaoEstadual")}</p>
           </Grid>
         </Grid>
         <Grid container spacing={3}>
           <Grid item xs={3}>
             <h3 style={{ marginBottom: 4 }}>CEP</h3>
-            <p style={{ margin: 0 }}>13402-803</p>
+            <p style={{ margin: 0 }}>{getInfo("cep")}</p>
           </Grid>
           <Grid item xs={3}>
             <h3 style={{ marginBottom: 4 }}>Rua</h3>
-            <p style={{ margin: 0 }}>Rua Bofete, 79</p>
+            <p style={{ margin: 0 }}>
+              {getInfo("rua") + " ," + getInfo("numero")}
+            </p>
           </Grid>
           <Grid item xs={3}>
             <h3 style={{ marginBottom: 4 }}>Bairro</h3>
-            <p style={{ margin: 0 }}>São Jorge</p>
+            <p style={{ margin: 0 }}>{getInfo("bairro")}</p>
           </Grid>
           <Grid item xs={3}>
             <h3 style={{ marginBottom: 4 }}>Cidade</h3>
-            <p style={{ margin: 0 }}>Piracicaba - SP</p>
+            <p style={{ margin: 0 }}>
+              {getInfo("cidade") + " - " + getInfo("estado")}
+            </p>
           </Grid>
         </Grid>
       </div>

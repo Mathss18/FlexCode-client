@@ -1,13 +1,11 @@
 import { useFormik } from "formik";
 import React, { createContext, useContext, useState } from "react";
-import { initialValues } from "../constants/produtosInitialValues";
+import { initialValues } from "../constants/notaFiscalInitialValues";
 import { produtoValidation } from "../validators/validationSchema";
 
 export const NotaFiscalContext = createContext({});
 
 function NotaFiscalContextProvider(props) {
-  const [values, setValues] = useState(initialValues);
-
   function handleOnSubmit(values) {
     console.log(values);
   }
@@ -17,7 +15,6 @@ function NotaFiscalContextProvider(props) {
     onSubmit: (event) => {
       handleOnSubmit(event);
     },
-    validationSchema: produtoValidation,
   });
 
   return (
@@ -31,7 +28,7 @@ function NotaFiscalContextProvider(props) {
   );
 }
 
-export function useProdutoContext() {
+export function useNotaFiscalContext() {
   return useContext(NotaFiscalContext);
 }
 

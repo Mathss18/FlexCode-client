@@ -6,11 +6,8 @@ import {
   InputAdornment,
   Tooltip,
 } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { Autocomplete } from "@mui/material";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { DataGrid } from "@mui/x-data-grid";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -24,10 +21,10 @@ import ModalTabelaPreco from "../../../Financeiro/modalTabelaPreco/ModalTabelaPr
 import { useFullScreenLoader } from "../../../../context/FullScreenLoaderContext";
 import api from "../../../../services/api";
 import { errorAlert } from "../../../../utils/alert";
-import { useProdutoContext } from "../../../../context/GerenciarProdutosContext";
+import { useNotaFiscalContext } from "../../../../context/NotaFiscalContext";
 
 export default function Produtos() {
-  const produtoContext = useProdutoContext();
+  const notaFiscalContext = useNotaFiscalContext();
   const [produtos, setProdutos] = useState([]);
   const [rowsProdutos, setRowsProdutos] = useState([]);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
@@ -36,6 +33,49 @@ export default function Produtos() {
   const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
   const produtosOriginal = useRef(null);
   const produto = useRef(null);
+
+  function interceptKeys(event) {
+    event = event || window.event; // IE support
+    var ctrlDown = event.ctrlKey || event.metaKey; // Mac support
+
+    // Se for ctrl + enter, retorna true
+    console.log(event.keyCode)
+    if (ctrlDown && event.keyCode === 13) return true;
+    // Otherwise allow
+    return false;
+  }
+
+  function CustomInput(params) {
+    return (
+      <TextField
+        variant="outlined"
+        fullWidth
+        {...params}
+        onKeyUp={(event) => {
+          if (interceptKeys(event)) {
+            var newProduto = rowsProdutos.find((item) => item.id == params.id);
+            if (newProduto) {
+              setProdutos([
+                ...produtos,
+                {
+                  value: newProduto.produto_id,
+                  label: event.target.value,
+                  preco: newProduto.preco,
+                  cfop: newProduto.cfop,
+                },
+              ]);
+            }
+          }
+        }}
+        placeholder="Pesquise..."
+        style={{
+          backgroundColor: "transparent",
+          paddingTop: 8,
+          paddingBottom: 8,
+        }}
+      />
+    );
+  }
 
   const columnsProdutos = [
     {
@@ -50,24 +90,13 @@ export default function Produtos() {
             fullWidth
             disableClearable={true}
             name="produto_id"
-            onChange={(event, value) => handleClienteChange(params, value)}
+            id={params.id}
+            onChange={(event, value) => handleProdutoChange(params, value)}
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
             options={produtos}
-            renderInput={(params) => (
-              <TextField
-                variant="outlined"
-                fullWidth
-                {...params}
-                placeholder="Pesquise..."
-                style={{
-                  backgroundColor: "transparent",
-                  paddingTop: 8,
-                  paddingBottom: 8,
-                }}
-              />
-            )}
+            renderInput={(params) => CustomInput(params)}
           />
         </>
       ),
@@ -75,7 +104,6 @@ export default function Produtos() {
     {
       field: "cfop",
       headerName: "CFOP",
-      type: "number",
       editable: true,
       sortable: false,
       headerAlign: "letf",
@@ -144,6 +172,7 @@ export default function Produtos() {
             label: produto.nome,
             value: produto.id,
             preco: produto.custoFinal,
+            cfop: produto.id,
           });
         });
         setProdutos(array);
@@ -160,27 +189,27 @@ export default function Produtos() {
 
   function handleOnSubmit(values) {
     if (rowsProdutos.length === 0) {
-      produtoContext.formik.setSubmitting(false);
+      notaFiscalContext.formik.setSubmitting(false);
       errorAlert("É necessário adicionar pelo menos um produto!");
       return;
     }
 
     if (rowsProdutos.find((produto) => produto.produto_id === "")) {
-      produtoContext.formik.setSubmitting(false);
+      notaFiscalContext.formik.setSubmitting(false);
       errorAlert(
         "Por favor, selecione um produto para cada linha de produtos!"
       );
       return;
     }
     if (rowsProdutos.find((produto) => produto.quantidade <= 0)) {
-      produtoContext.formik.setSubmitting(false);
+      notaFiscalContext.formik.setSubmitting(false);
       errorAlert(
         "Por favor, selecione uma quantidade válida para cada linha de produtos!"
       );
       return;
     }
     if (rowsProdutos.find((produto) => produto.preco < 0)) {
-      produtoContext.formik.setSubmitting(false);
+      notaFiscalContext.formik.setSubmitting(false);
       errorAlert(
         "Por favor, selecione uma preço válido para cada linha de produtos!"
       );
@@ -188,14 +217,14 @@ export default function Produtos() {
     }
 
     const params = {
-      ...produtoContext.formik.values,
+      ...notaFiscalContext.formik.values,
       produtos: rowsProdutos,
     };
   }
 
   function handleOnChange(name, value) {
-    produtoContext.formik.setFieldValue(name, value); // Altera o formik
-    console.log(produtoContext.formik.values);
+    notaFiscalContext.formik.setFieldValue(name, value); // Altera o formik
+    console.log(notaFiscalContext.formik.values);
   }
 
   // ==== Funções de produtos ====
@@ -205,11 +234,14 @@ export default function Produtos() {
       {
         id: new Date().getTime(),
         produto_id: "",
+        produto_nome: "",
+        cfop: "",
         quantidade: 0,
         preco: 0,
         total: 0,
       },
     ]);
+    console.log(rowsProdutos);
   }
 
   function removeProductRow(params) {
@@ -255,8 +287,10 @@ export default function Produtos() {
     setRowsProdutos(objectToArray(dataGrid.rows.idRowsLookup));
   }
 
-  function handleClienteChange(params, value) {
+  function handleProdutoChange(params, value) {
     params.row.produto_id = value.value;
+    params.row.produto_nome = value.label;
+    params.row.cfop = value.cfop;
   }
 
   function calcularDeProdutos() {
@@ -265,7 +299,7 @@ export default function Produtos() {
       total = total + Number(row.total);
     });
 
-    produtoContext.formik.setFieldValue("total", total);
+    notaFiscalContext.formik.setFieldValue("total", total);
   }
 
   return (
@@ -275,7 +309,6 @@ export default function Produtos() {
         setOpen={setOpenModalTabelaPreco}
         produto={produto.current}
       />
-      <form onSubmit={produtoContext.formik.handleSubmit}>
         <div
           style={{
             marginTop: 38,
@@ -335,6 +368,8 @@ export default function Produtos() {
           </Grid>
         </div>
 
+        <p>Dica: para alterar o nome de um produto utilize: CRTL + Enter</p>
+
         <div
           style={{
             marginTop: 38,
@@ -363,23 +398,22 @@ export default function Produtos() {
                     <InputAdornment position="start">R$:</InputAdornment>
                   ),
                 }}
-                value={produtoContext.formik.values.total}
+                value={notaFiscalContext.formik.values.total}
                 name="total"
-                onChange={produtoContext.formik.handleChange}
-                onBlur={produtoContext.formik.handleBlur}
+                onChange={notaFiscalContext.formik.handleChange}
+                onBlur={notaFiscalContext.formik.handleBlur}
                 error={
-                  produtoContext.formik.touched.total &&
-                  Boolean(produtoContext.formik.errors.total)
+                  notaFiscalContext.formik.touched.total &&
+                  Boolean(notaFiscalContext.formik.errors.total)
                 }
                 helperText={
-                  produtoContext.formik.touched.total &&
-                  produtoContext.formik.errors.total
+                  notaFiscalContext.formik.touched.total &&
+                  notaFiscalContext.formik.errors.total
                 }
               />
             </Grid>
           </Grid>
         </div>
-      </form>
     </>
   );
 }

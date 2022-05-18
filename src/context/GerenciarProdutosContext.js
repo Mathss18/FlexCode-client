@@ -7,8 +7,6 @@ export const GerenciarProdutosContext = createContext({});
 
 function GerenciarProdutosContextProvider(props) {
 
-  const [values, setValues] = useState(initialValues);
-
   function handleOnSubmit(values) {
     console.log(values);
   }
