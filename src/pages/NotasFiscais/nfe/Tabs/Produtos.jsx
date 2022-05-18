@@ -26,7 +26,9 @@ import { useNotaFiscalContext } from "../../../../context/NotaFiscalContext";
 export default function Produtos() {
   const notaFiscalContext = useNotaFiscalContext();
   const [produtos, setProdutos] = useState([]);
-  const [rowsProdutos, setRowsProdutos] = useState([]);
+  const [rowsProdutos, setRowsProdutos] = useState(
+    notaFiscalContext.formik.values.produtos
+  );
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const fullScreenLoader = useFullScreenLoader();
   // === Tabela de Preço
@@ -39,7 +41,6 @@ export default function Produtos() {
     var ctrlDown = event.ctrlKey || event.metaKey; // Mac support
 
     // Se for ctrl + enter, retorna true
-    console.log(event.keyCode)
     if (ctrlDown && event.keyCode === 13) return true;
     // Otherwise allow
     return false;
@@ -86,9 +87,19 @@ export default function Produtos() {
       headerAlign: "letf",
       renderCell: (params) => (
         <>
+          {/* {console.clear()}
+          {console.log(params)} */}
           <Autocomplete
             fullWidth
             disableClearable={true}
+            onKeyUp={(e)=>{
+              params.row.nome = e.target.value
+            }}
+            value={
+              params.row.produto_id == ""
+                ? { label: "", value: null }
+                : { label: params.row.nome, value: params.row.produto_id }
+            }
             name="produto_id"
             id={params.id}
             onChange={(event, value) => handleProdutoChange(params, value)}
@@ -183,8 +194,14 @@ export default function Produtos() {
       });
   }, []);
 
+  useEffect(
+    () => console.log(notaFiscalContext.formik.values),
+    [notaFiscalContext.formik.values]
+  );
+
   useEffect(() => {
-    calcularDeProdutos();
+    calcularTotalDeProdutos();
+    notaFiscalContext.formik.setFieldValue("produtos", rowsProdutos);
   }, [rowsProdutos]);
 
   function handleOnSubmit(values) {
@@ -234,7 +251,7 @@ export default function Produtos() {
       {
         id: new Date().getTime(),
         produto_id: "",
-        produto_nome: "",
+        nome: "",
         cfop: "",
         quantidade: 0,
         preco: 0,
@@ -289,17 +306,17 @@ export default function Produtos() {
 
   function handleProdutoChange(params, value) {
     params.row.produto_id = value.value;
-    params.row.produto_nome = value.label;
+    params.row.nome = value.label;
     params.row.cfop = value.cfop;
   }
 
-  function calcularDeProdutos() {
+  function calcularTotalDeProdutos() {
     var total = 0;
     rowsProdutos.forEach((row) => {
       total = total + Number(row.total);
     });
 
-    notaFiscalContext.formik.setFieldValue("total", total);
+    notaFiscalContext.formik.setFieldValue("totalProdutos", total);
   }
 
   return (
@@ -309,111 +326,111 @@ export default function Produtos() {
         setOpen={setOpenModalTabelaPreco}
         produto={produto.current}
       />
+      <div
+        style={{
+          marginTop: 38,
+          boxShadow:
+            "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+          padding: 24,
+        }}
+      >
         <div
-          style={{
-            marginTop: 38,
-            boxShadow:
-              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
-            padding: 24,
-          }}
+          style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
         >
-          <div
-            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+          <AssignmentIcon />
+          <h3>Adicionar Produtos</h3>
+          <Button
+            style={{ marginLeft: "auto", height: 28, fontSize: 12 }}
+            className={"btn btn-primary"}
+            startIcon={<AddIcon />}
+            onClick={addProductRow}
+            disabled={isBtnDisabled}
           >
-            <AssignmentIcon />
-            <h3>Adicionar Produtos</h3>
-            <Button
-              style={{ marginLeft: "auto", height: 28, fontSize: 12 }}
-              className={"btn btn-primary"}
-              startIcon={<AddIcon />}
-              onClick={addProductRow}
-              disabled={isBtnDisabled}
-            >
-              Produto
-            </Button>
-          </div>
-
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <div
-                style={{
-                  height: 100 + rowsProdutos.length * 55,
-                  width: "100%",
-                  color: "#fff",
-                }}
-              >
-                <DataGrid
-                  className={"table-data-grid"}
-                  rows={rowsProdutos}
-                  columns={columnsProdutos}
-                  hideFooter={true}
-                  disableColumnMenu={true}
-                  onStateChange={handleProductRowStateChange}
-                  components={{
-                    NoRowsOverlay: () => (
-                      <div style={{ marginTop: 55, textAlign: "center" }}>
-                        <h3>Nenhum produto adicionado</h3>
-                      </div>
-                    ),
-                  }}
-                  onCellEditStart={() => {
-                    setIsBtnDisabled(true);
-                  }}
-                  onCellEditStop={() => {
-                    setIsBtnDisabled(false);
-                  }}
-                />
-              </div>
-            </Grid>
-          </Grid>
+            Produto
+          </Button>
         </div>
 
-        <p>Dica: para alterar o nome de um produto utilize: CRTL + Enter</p>
-
-        <div
-          style={{
-            marginTop: 38,
-            boxShadow:
-              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
-            padding: 24,
-          }}
-        >
-          <div
-            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
-          >
-            <AssignmentIcon />
-            <h3>Total de Produtos</h3>
-          </div>
-
-          <Grid container spacing={3}>
-            <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="Total Produtos"
-                fullWidth
-                type="number"
-                InputProps={{
-                  readOnly: true,
-                  startAdornment: (
-                    <InputAdornment position="start">R$:</InputAdornment>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <div
+              style={{
+                height: 100 + rowsProdutos.length * 55,
+                width: "100%",
+                color: "#fff",
+              }}
+            >
+              <DataGrid
+                className={"table-data-grid"}
+                rows={rowsProdutos}
+                columns={columnsProdutos}
+                hideFooter={true}
+                disableColumnMenu={true}
+                onStateChange={handleProductRowStateChange}
+                components={{
+                  NoRowsOverlay: () => (
+                    <div style={{ marginTop: 55, textAlign: "center" }}>
+                      <h3>Nenhum produto adicionado</h3>
+                    </div>
                   ),
                 }}
-                value={notaFiscalContext.formik.values.total}
-                name="total"
-                onChange={notaFiscalContext.formik.handleChange}
-                onBlur={notaFiscalContext.formik.handleBlur}
-                error={
-                  notaFiscalContext.formik.touched.total &&
-                  Boolean(notaFiscalContext.formik.errors.total)
-                }
-                helperText={
-                  notaFiscalContext.formik.touched.total &&
-                  notaFiscalContext.formik.errors.total
-                }
+                onCellEditStart={() => {
+                  setIsBtnDisabled(true);
+                }}
+                onCellEditStop={() => {
+                  setIsBtnDisabled(false);
+                }}
               />
-            </Grid>
+            </div>
           </Grid>
+        </Grid>
+      </div>
+
+      <p>Dica: para alterar o nome de um produto utilize: CRTL + Enter</p>
+
+      <div
+        style={{
+          marginTop: 38,
+          boxShadow:
+            "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+          padding: 24,
+        }}
+      >
+        <div
+          style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+        >
+          <AssignmentIcon />
+          <h3>Total de Produtos</h3>
         </div>
+
+        <Grid container spacing={3}>
+          <Grid item xs={3}>
+            <TextField
+              variant="outlined"
+              label="Total Produtos"
+              fullWidth
+              type="number"
+              InputProps={{
+                readOnly: true,
+                startAdornment: (
+                  <InputAdornment position="start">R$:</InputAdornment>
+                ),
+              }}
+              value={notaFiscalContext.formik.values.totalProdutos}
+              name="totalProdutos"
+              onChange={notaFiscalContext.formik.handleChange}
+              onBlur={notaFiscalContext.formik.handleBlur}
+              error={
+                notaFiscalContext.formik.touched.totalProdutos &&
+                Boolean(notaFiscalContext.formik.errors.totalProdutos)
+              }
+              helperText={
+                notaFiscalContext.formik.touched.totalProdutos &&
+                notaFiscalContext.formik.errors.totalProdutos
+              }
+            />
+          </Grid>
+        </Grid>
+      </div>
     </>
   );
 }

@@ -42,7 +42,9 @@ export default function Valores() {
   const history = useHistory();
   const notaFiscalContext = useNotaFiscalContext();
   const [formasPagamentos, setFormasPagamentos] = useState([]);
-  const [rowsParcelas, setRowsParcelas] = useState([]);
+  const [rowsParcelas, setRowsParcelas] = useState(
+    notaFiscalContext.formik.values.parcelas
+  );
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const formasPagamentosOriginal = useRef([]);
   const fullScreenLoader = useFullScreenLoader();
@@ -110,14 +112,6 @@ export default function Valores() {
         </>
       ),
     },
-    {
-      field: "observacao",
-      headerName: "Observação",
-      editable: true,
-      sortable: false,
-      headerAlign: "letf",
-      flex: 2,
-    },
     // {
     //   field: "excluir",
     //   headerName: "Excluir",
@@ -150,13 +144,19 @@ export default function Valores() {
       });
   }, []);
 
+  useEffect(
+    () => console.log(notaFiscalContext.formik.values),
+    [notaFiscalContext.formik.values]
+  );
+
   useEffect(() => {
     calcularTotalFinal();
+    notaFiscalContext.formik.setFieldValue("parcelas", rowsParcelas);
   }, [
+    rowsParcelas,
+    notaFiscalContext.formik.values.produtos,
     notaFiscalContext.formik.values.frete,
-    notaFiscalContext.formik.values.impostos,
     notaFiscalContext.formik.values.desconto,
-    notaFiscalContext.formik.values.somarFreteAoTotal,
   ]);
 
   useEffect(() => {
@@ -203,7 +203,7 @@ export default function Valores() {
     notaFiscalContext.formik.isSubmitting,
   ]);
 
-  function handleOnSubmit(values) {
+  function handleOnSubmit() {
     if (rowsParcelas.length <= 0) {
       notaFiscalContext.formik.setSubmitting(false);
       errorAlert("A compra deve ter pelo menos uma parcela!");
@@ -220,7 +220,7 @@ export default function Valores() {
     );
     if (
       Number(totalParcelas.toFixed(2)) !=
-      Number(notaFiscalContext.formik.values.total.toFixed(2))
+      Number(notaFiscalContext.formik.values.totalFinal.toFixed(2))
     ) {
       notaFiscalContext.formik.setSubmitting(false);
       errorAlert(
@@ -237,7 +237,7 @@ export default function Valores() {
       notaFiscalContext.formik.setSubmitting(false);
       errorAlert(
         "Erro no calculo das parcelas!",
-        "Compras à vista devem ter apenas uma parcela!"
+        "Vendas à vista devem ter apenas uma parcela!"
       );
       return;
     }
@@ -270,7 +270,10 @@ export default function Valores() {
       ...notaFiscalContext.formik.values,
       parcelas: rowParcelasSanitezed,
     };
+
+    console.log(params);
   }
+
 
   function handleOnChange(name, value) {
     notaFiscalContext.formik.setFieldValue(name, value); // Altera o formik
@@ -284,7 +287,7 @@ export default function Valores() {
     if (objectToArray(dataGrid.rows.idRowsLookup).length != rowsParcelas.length)
       return;
 
-    const total = notaFiscalContext.formik.values.total;
+    const total = notaFiscalContext.formik.values.totalFinal;
     const parcelas = notaFiscalContext.formik.values.quantidadeParcelas;
     var acumulador = 0;
     var resto = 0;
@@ -350,10 +353,10 @@ export default function Valores() {
     var aux = [];
 
     var diferenca =
-      notaFiscalContext.formik.values.total /
+      notaFiscalContext.formik.values.totalFinal /
       notaFiscalContext.formik.values.quantidadeParcelas;
     diferenca = (
-      notaFiscalContext.formik.values.total -
+      notaFiscalContext.formik.values.totalFinal -
       diferenca.toFixed(2) * notaFiscalContext.formik.values.quantidadeParcelas
     ).toFixed(2);
 
@@ -370,13 +373,12 @@ export default function Valores() {
           .add(notaFiscalContext.formik.values.intervaloParcelas * i, "days")
           .format("DD/MM/YYYY"),
         valorParcela: Number(
-          Number(notaFiscalContext.formik.values.total) /
+          Number(notaFiscalContext.formik.values.totalFinal) /
             Number(notaFiscalContext.formik.values.quantidadeParcelas)
         ).toFixed(2),
         forma_pagamento_id:
           notaFiscalContext.formik.values.forma_pagamento_id.value,
         nome: notaFiscalContext.formik.values.forma_pagamento_id.label,
-        observacao: "",
       });
     }
     // Se houver diferência, adiciona a última parcela com o valor da diferença
@@ -394,23 +396,18 @@ export default function Valores() {
 
   function calcularTotalFinal() {
     var total = 0;
-    // rowsProdutos.forEach((row) => {
-    //   total = total + Number(row.total);
-    // });
+    notaFiscalContext.formik.values.produtos.forEach((row) => {
+      total = total + Number(row.total);
+    });
 
-    if (notaFiscalContext.formik.values.somarFreteAoTotal) {
-      total = total + Number(notaFiscalContext.formik.values.frete);
-    }
-    total = total + Number(notaFiscalContext.formik.values.impostos);
+    total = total + Number(notaFiscalContext.formik.values.frete);
     total = total - Number(notaFiscalContext.formik.values.desconto);
 
-    notaFiscalContext.formik.setFieldValue("total", total);
-    notaFiscalContext.formik.setFieldValue("total", total);
+    notaFiscalContext.formik.setFieldValue("totalFinal", total);
   }
 
   return (
     <>
-      <form onSubmit={notaFiscalContext.formik.handleSubmit}>
         <div
           style={{
             boxShadow:
@@ -674,17 +671,17 @@ export default function Valores() {
                     <InputAdornment position="start">R$:</InputAdornment>
                   ),
                 }}
-                value={notaFiscalContext.formik.values.total}
-                name="total"
+                value={notaFiscalContext.formik.values.desconto}
+                name="desconto"
                 onChange={notaFiscalContext.formik.handleChange}
                 onBlur={notaFiscalContext.formik.handleBlur}
                 error={
-                  notaFiscalContext.formik.touched.total &&
-                  Boolean(notaFiscalContext.formik.errors.total)
+                  notaFiscalContext.formik.touched.desconto &&
+                  Boolean(notaFiscalContext.formik.errors.desconto)
                 }
                 helperText={
-                  notaFiscalContext.formik.touched.total &&
-                  notaFiscalContext.formik.errors.total
+                  notaFiscalContext.formik.touched.desconto &&
+                  notaFiscalContext.formik.errors.desconto
                 }
               />
             </Grid>
@@ -735,7 +732,7 @@ export default function Valores() {
                 variant="outlined"
                 label="Unidade Padrão *"
                 fullWidth
-                type="number"
+                type="text"
                 value={notaFiscalContext.formik.values.unidadePadrao}
                 name="unidadePadrao"
                 onChange={notaFiscalContext.formik.handleChange}
@@ -750,12 +747,18 @@ export default function Valores() {
                 }
               />
             </Grid>
-            <Grid item xs={2} >
+            <Grid item xs={2}>
               <TextField
                 variant="outlined"
                 label="Total Final"
-                style={{border: '3px solid #3f51b5', borderRadius: '6px'}}
+                style={{ border: "2px solid orange", borderRadius: "6px" }}
                 fullWidth
+                InputProps={{
+                  readOnly: true,
+                  startAdornment: (
+                    <InputAdornment position="start">R$:</InputAdornment>
+                  ),
+                }}
                 type="number"
                 value={notaFiscalContext.formik.values.totalFinal}
                 name="totalFinal"
@@ -798,18 +801,18 @@ export default function Valores() {
                 label="Informações complementares"
                 placeholder="valor aprox. tributos será acrescentado automaticamente."
                 fullWidth
-                value={notaFiscalContext.formik.values.observacao}
+                value={notaFiscalContext.formik.values.infCpl}
                 rows={5}
-                name="observacao"
+                name="infCpl"
                 onChange={notaFiscalContext.formik.handleChange}
                 onBlur={notaFiscalContext.formik.handleBlur}
                 error={
-                  notaFiscalContext.formik.touched.observacao &&
-                  Boolean(notaFiscalContext.formik.errors.observacao)
+                  notaFiscalContext.formik.touched.infCpl &&
+                  Boolean(notaFiscalContext.formik.errors.infCpl)
                 }
                 helperText={
-                  notaFiscalContext.formik.touched.observacao &&
-                  notaFiscalContext.formik.errors.observacao
+                  notaFiscalContext.formik.touched.infCpl &&
+                  notaFiscalContext.formik.errors.infCpl
                 }
               />
             </Grid>
@@ -820,18 +823,18 @@ export default function Valores() {
                 variant="outlined"
                 label="Informações para o Fisco"
                 fullWidth
-                value={notaFiscalContext.formik.values.observacaoInterna}
+                value={notaFiscalContext.formik.values.infAdFisco}
                 rows={5}
-                name="observacaoInterna"
+                name="infAdFisco"
                 onChange={notaFiscalContext.formik.handleChange}
                 onBlur={notaFiscalContext.formik.handleBlur}
                 error={
-                  notaFiscalContext.formik.touched.observacaoInterna &&
-                  Boolean(notaFiscalContext.formik.errors.observacaoInterna)
+                  notaFiscalContext.formik.touched.infAdFisco &&
+                  Boolean(notaFiscalContext.formik.errors.infAdFisco)
                 }
                 helperText={
-                  notaFiscalContext.formik.touched.observacaoInterna &&
-                  notaFiscalContext.formik.errors.observacaoInterna
+                  notaFiscalContext.formik.touched.infAdFisco &&
+                  notaFiscalContext.formik.errors.infAdFisco
                 }
               />
             </Grid>
@@ -842,9 +845,9 @@ export default function Valores() {
           <Grid container spacing={0}>
             <Grid item>
               <Button
-                type="submit"
                 variant="outlined"
                 startIcon={<CheckIcon />}
+                onClick={handleOnSubmit}
                 className={"btn btn-primary btn-spacing"}
                 disabled={notaFiscalContext.formik.isSubmitting}
               >
@@ -864,7 +867,6 @@ export default function Valores() {
             </Grid>
           </Grid>
         </div>
-      </form>
     </>
   );
 }
