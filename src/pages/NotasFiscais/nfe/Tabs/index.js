@@ -1,3 +1,3 @@
 export * from './Dados';
-export * from './Detalhes';
+export * from './Produtos';
 export * from './Valores';

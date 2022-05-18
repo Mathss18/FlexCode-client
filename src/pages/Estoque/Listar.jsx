@@ -69,14 +69,14 @@ function ListarEstoques() {
       name: "Estoque",
       options: rowConfig,
     },
-    {
-      name: "Cliente",
-      options: rowConfig,
-    },
-    {
-      name: "Fornecedores",
-      options: rowConfig,
-    },
+    // {
+    //   name: "Cliente",
+    //   options: rowConfig,
+    // },
+    // {
+    //   name: "Fornecedores",
+    //   options: rowConfig,
+    // },
     {
       name: "Cadastrado em",
       options: rowConfig,
@@ -161,31 +161,31 @@ function ListarEstoques() {
             `${element["quantidade"]} ${
               element.produto.unidade_produto?.sigla ?? ""
             }`,
-            element.produto?.cliente?.nome,
-            element.produto["fornecedores"].map((item, index) => {
-              if (element.produto["fornecedores"].length > 3) {
-                let string = "";
-                if (index < 3) {
-                  string += item["nome"] + ", ";
-                  if (index === 2) {
-                    string +=
-                      "... + " +
-                      (element["fornecedores"].length - 3) +
-                      " fornecedores";
-                  }
-                  return string;
-                }
-              } else {
-                return item["nome"] + ", ";
-              }
-            }),
+            // element.produto?.cliente?.nome,
+            // element.produto["fornecedores"].map((item, index) => {
+            //   if (element.produto["fornecedores"].length > 3) {
+            //     let string = "";
+            //     if (index < 3) {
+            //       string += item["nome"] + ", ";
+            //       if (index === 2) {
+            //         string +=
+            //           "... + " +
+            //           (element["fornecedores"].length - 3) +
+            //           " fornecedores";
+            //       }
+            //       return string;
+            //     }
+            //   } else {
+            //     return item["nome"] + ", ";
+            //   }
+            // }),
             new Date(element["created_at"]).toLocaleString(),
             <>
               <Tooltip title={"Movimentações"} arrow>
                 <CompareArrowsIcon
                   className={"btn btn-lista"}
                   onClick={(event) =>
-                    handleOnClickShowButton(event, element["id"])
+                    handleOnClickShowButton(event, element["produto_id"])
                   }
                 />
               </Tooltip>

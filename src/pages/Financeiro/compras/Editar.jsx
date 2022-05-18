@@ -301,7 +301,9 @@ function EditarComprasPage() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((transportadora) => {
-          array.push({ label: transportadora.nome, value: transportadora.id });
+          if(transportadora.situacao === 1){
+            array.push({ label: transportadora.nome, value: transportadora.id });
+          }
         });
         setTransportadoras(array);
       })

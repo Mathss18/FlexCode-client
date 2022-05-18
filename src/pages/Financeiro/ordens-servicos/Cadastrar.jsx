@@ -415,6 +415,10 @@ function CadastrarOrdensServicoPage() {
       servicos: rowsServicos,
     };
 
+    console.log(JSON.stringify(params));
+    formik.setSubmitting(false);
+    return;
+
     fullScreenLoader.setLoading(true);
     api
       .post("/ordens-servicos", params)

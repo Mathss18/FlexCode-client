@@ -12,11 +12,13 @@ import {
 } from "@material-ui/core";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
 import AssignmentIcon from "@material-ui/icons/Assignment";
+import LocalShippingIcon from "@material-ui/icons/LocalShipping";
 import { Autocomplete } from "@mui/material";
 
 export function Dados() {
   const produtoContext = useProdutoContext();
   const [clientesAndFornecedores, setClientesAndFornecedores] = useState([]);
+  const [transportadoras, setTransportadoras] = useState([]);
 
   function handleOnChange(event) {
     const { name, value } = event.target;
@@ -59,6 +61,26 @@ export function Dados() {
           }
         });
         setClientesAndFornecedores((prev) => [...prev, ...array]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    api
+      .get("/transportadoras")
+      .then((response) => {
+        var array = [];
+        response.data["data"].forEach((transportadora) => {
+          if (transportadora.situacao === 1) {
+            array.push({
+              label: transportadora.nome,
+              value: transportadora.id,
+            });
+          }
+        });
+        setTransportadoras(array);
       })
       .catch((error) => {
         console.log(error);
@@ -187,8 +209,8 @@ export function Dados() {
                 Boolean(produtoContext.formik.errors.indFinal)
               }
             >
-              <MenuItem value={0}>Não</MenuItem>
               <MenuItem value={1}>Sim</MenuItem>
+              <MenuItem value={0}>Não</MenuItem>
             </Select>
             {produtoContext.formik.touched.indFinal &&
             Boolean(produtoContext.formik.errors.indFinal) ? (
@@ -239,6 +261,84 @@ export function Dados() {
 
       <div
         style={{
+          display: "flex",
+          alignItems: "center",
+          flexWrap: "wrap",
+          marginTop: 12,
+        }}
+      >
+        <LocalShippingIcon />
+        <h3>Transporte</h3>
+      </div>
+      <Grid container spacing={3}>
+        <Grid item xs={6}>
+          <Autocomplete
+            value={""}
+            name="transportadora_id"
+            onChange={(event, value) =>
+              handleOnChange("transportadora_id", value)
+            }
+            isOptionEqualToValue={(option, value) =>
+              option.value === value.value
+            }
+            options={transportadoras}
+            renderInput={(params) => (
+              <TextField
+                variant="outlined"
+                fullWidth
+                {...params}
+                label="Transportadora"
+                placeholder="Pesquise..."
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <FormControl variant="outlined" fullWidth name="modFrete">
+            <InputLabel>Modalidade do Frete *</InputLabel>
+            <Select
+              className={"input-select"}
+              label="Modalidade do Frete *"
+              name="modFrete"
+              value={produtoContext.formik.values.modFrete}
+              onChange={handleOnChange}
+              onBlur={produtoContext.formik.handleBlur}
+              error={
+                produtoContext.formik.touched.modFrete &&
+                Boolean(produtoContext.formik.errors.modFrete)
+              }
+            >
+              <MenuItem value={0}>
+                Contratação do Frete por conta do Remetente (CIF)
+              </MenuItem>
+              <MenuItem value={1}>
+                Contratação do Frete por conta do Destinatário (FOB)
+              </MenuItem>
+              <MenuItem value={2}>
+                Contratação do Frete por conta de Terceiros
+              </MenuItem>
+              <MenuItem value={3}>
+                Transporte Próprio por conta do Remetente
+              </MenuItem>
+              <MenuItem value={4}>
+                Transporte Próprio por conta do Destinatário
+              </MenuItem>
+              <MenuItem value={9}>Sem Ocorrência de Transporte</MenuItem>
+            </Select>
+            {produtoContext.formik.touched.modFrete &&
+            Boolean(produtoContext.formik.errors.modFrete) ? (
+              <FormHelperText>
+                {produtoContext.formik.errors.modFrete}
+              </FormHelperText>
+            ) : (
+              ""
+            )}
+          </FormControl>
+        </Grid>
+      </Grid>
+
+      <div
+        style={{
           marginTop: 24,
           boxShadow:
             "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
@@ -254,38 +354,38 @@ export function Dados() {
 
         <Grid container spacing={3}>
           <Grid item xs={3}>
-            <h3>Nome</h3>
-            <h4>Matheus Bezerra Filho</h4>
+            <h3 style={{ marginBottom: 4 }}>Nome</h3>
+            <p style={{ margin: 0 }}>Matheus Bezerra Filho</p>
           </Grid>
           <Grid item xs={3}>
-            <h3>CPF/CNPJ</h3>
-            <h4>427.024.218-58</h4>
+            <h3 style={{ marginBottom: 4 }}>CPF/CNPJ</h3>
+            <p style={{ margin: 0 }}>427.024.218-58</p>
           </Grid>
           <Grid item xs={3}>
-            <h3>E-mail</h3>
-            <h4>theus.7@hotmail.com</h4>
+            <h3 style={{ marginBottom: 4 }}>E-mail</h3>
+            <p style={{ margin: 0 }}>theus.7@hotmail.com</p>
           </Grid>
           <Grid item xs={3}>
-            <h3>Inscrição Estadual</h3>
-            <h4>297023651113</h4>
+            <h3 style={{ marginBottom: 4 }}>Inscrição Estadual</h3>
+            <p style={{ margin: 0 }}>297023651113</p>
           </Grid>
         </Grid>
         <Grid container spacing={3}>
           <Grid item xs={3}>
-            <h3>CEP</h3>
-            <h4>13402-803</h4>
+            <h3 style={{ marginBottom: 4 }}>CEP</h3>
+            <p style={{ margin: 0 }}>13402-803</p>
           </Grid>
           <Grid item xs={3}>
-            <h3>Rua</h3>
-            <h4>Rua Bofete, 79</h4>
+            <h3 style={{ marginBottom: 4 }}>Rua</h3>
+            <p style={{ margin: 0 }}>Rua Bofete, 79</p>
           </Grid>
           <Grid item xs={3}>
-            <h3>Bairro</h3>
-            <h4>São Jorge</h4>
+            <h3 style={{ marginBottom: 4 }}>Bairro</h3>
+            <p style={{ margin: 0 }}>São Jorge</p>
           </Grid>
           <Grid item xs={3}>
-            <h3>Cidade</h3>
-            <h4>Piracicaba - SP</h4>
+            <h3 style={{ marginBottom: 4 }}>Cidade</h3>
+            <p style={{ margin: 0 }}>Piracicaba - SP</p>
           </Grid>
         </Grid>
       </div>
