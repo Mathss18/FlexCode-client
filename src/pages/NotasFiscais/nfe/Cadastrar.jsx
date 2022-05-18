@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Divider, Tabs, Tab } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import { Dados, Detalhes, Valores } from "./Tabs/index";
+import { Dados, Valores } from "./Tabs/index";
+import Produtos from './Tabs/Produtos'
 
 function CadastrarNotasFiscais() {
   const history = useHistory();
@@ -33,12 +34,12 @@ function CadastrarNotasFiscais() {
         </div>
         <Tabs style={{marginBottom: '24px'}} value={currentTab} onChange={handleTabChange}>
           <Tab label="Dados"/>
-          <Tab label="Detalhes"/>
+          <Tab label="Produtos"/>
           <Tab label="Valores"/>
         </Tabs>
 
         <TabPanel value={currentTab} index={0}><Dados /></TabPanel>
-        <TabPanel value={currentTab} index={1}><Detalhes /></TabPanel>
+        <TabPanel value={currentTab} index={1}><Produtos /></TabPanel>
         <TabPanel value={currentTab} index={2}><Valores /></TabPanel>
       </div>
     </>
