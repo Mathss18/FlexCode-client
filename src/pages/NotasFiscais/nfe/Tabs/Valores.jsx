@@ -48,6 +48,7 @@ export default function Valores() {
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const formasPagamentosOriginal = useRef([]);
   const fullScreenLoader = useFullScreenLoader();
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
   const columnsParcelas = [
     {
@@ -204,11 +205,6 @@ export default function Valores() {
   ]);
 
   function handleOnSubmit() {
-    if (rowsParcelas.length <= 0) {
-      notaFiscalContext.formik.setSubmitting(false);
-      errorAlert("A compra deve ter pelo menos uma parcela!");
-      return;
-    }
     if (rowsParcelas.find((parcela) => Number(parcela.valorParcela) < 0)) {
       notaFiscalContext.formik.setSubmitting(false);
       errorAlert("Por favor, selecione uma valor válido para cada parcela!");
@@ -218,17 +214,6 @@ export default function Valores() {
       (acc, item) => acc + Number(item.valorParcela),
       0
     );
-    if (
-      Number(totalParcelas.toFixed(2)) !=
-      Number(notaFiscalContext.formik.values.totalFinal.toFixed(2))
-    ) {
-      notaFiscalContext.formik.setSubmitting(false);
-      errorAlert(
-        "Erro no calculo das parcelas!",
-        "A soma das parcelas deve ser igual ao valor final da compra"
-      );
-      return;
-    }
 
     if (
       notaFiscalContext.formik.values.tipoFormaPagamento == "0" &&
@@ -251,7 +236,7 @@ export default function Valores() {
           month: "2-digit",
           day: "2-digit",
         });
-      } else if (parcela.dataVencimento === null) {
+      } else if (parcela.dataVencimento === null || parcela.dataVencimento === "") {
         errorAlert(
           "Por favor, selecione uma data de vencimento válida a parcela número " +
             (index + 1)
@@ -271,9 +256,12 @@ export default function Valores() {
       parcelas: rowParcelasSanitezed,
     };
 
-    console.log(params);
+    api
+      .post("/notas-fiscais", params)
+      .then((response) => {})
+      .catch((error) => {})
+      .finally(() => {});
   }
-
 
   function handleOnChange(name, value) {
     notaFiscalContext.formik.setFieldValue(name, value); // Altera o formik
@@ -311,7 +299,7 @@ export default function Valores() {
         for (let i = index + 1; i < parcelas; i++) {
           if (restoCadaParcela > 0) {
             objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela =
-              restoCadaParcela.toFixed(2);
+              restoCadaParcela.toFixed(empresaConfig.quantidadeCasasDecimaisValor);
           } else {
             objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = 0;
           }
@@ -326,20 +314,20 @@ export default function Valores() {
     });
 
     var diferenca = total - totalParcelas;
-    diferenca = Number(diferenca.toFixed(2));
+    diferenca = Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
 
     // se hover diferença, adiciona a diferença na ultima parcela
     if (Number(diferenca) !== 0) {
       objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela =
         Number(
           objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela
-        ) + Number(diferenca.toFixed(2));
+        ) + Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
     }
 
     setRowsParcelas(
       objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
         row.valorParcela =
-          row.valorParcela > 0 ? Number(row.valorParcela).toFixed(2) : 0;
+          row.valorParcela > 0 ? Number(row.valorParcela).toFixed(empresaConfig.quantidadeCasasDecimaisValor) : 0;
         return row;
       })
     );
@@ -357,8 +345,8 @@ export default function Valores() {
       notaFiscalContext.formik.values.quantidadeParcelas;
     diferenca = (
       notaFiscalContext.formik.values.totalFinal -
-      diferenca.toFixed(2) * notaFiscalContext.formik.values.quantidadeParcelas
-    ).toFixed(2);
+      diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor) * notaFiscalContext.formik.values.quantidadeParcelas
+    ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
 
     for (
       let i = 0;
@@ -375,7 +363,7 @@ export default function Valores() {
         valorParcela: Number(
           Number(notaFiscalContext.formik.values.totalFinal) /
             Number(notaFiscalContext.formik.values.quantidadeParcelas)
-        ).toFixed(2),
+        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor),
         forma_pagamento_id:
           notaFiscalContext.formik.values.forma_pagamento_id.value,
         nome: notaFiscalContext.formik.values.forma_pagamento_id.label,
@@ -408,465 +396,459 @@ export default function Valores() {
 
   return (
     <>
+      <div
+        style={{
+          boxShadow:
+            "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+          padding: 24,
+        }}
+      >
         <div
-          style={{
-            boxShadow:
-              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
-            padding: 24,
-          }}
+          style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
         >
-          <div
-            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
-          >
-            <AssignmentIcon />
-            <h3>Pagamento</h3>
-            <div style={{ marginLeft: "auto" }}>
-              <FormControl>
-                <RadioGroup
-                  value={notaFiscalContext.formik.values.tipoFormaPagamento}
-                  onChange={notaFiscalContext.formik.handleChange}
-                  onBlur={notaFiscalContext.formik.handleBlur}
-                  name="tipoFormaPagamento"
-                  row
-                >
-                  <FormControlLabel
-                    value={"0"}
-                    control={<Radio />}
-                    label="À vista"
-                  />
-                  <FormControlLabel
-                    value={"1"}
-                    control={<Radio />}
-                    label="A prazo"
-                  />
-                </RadioGroup>
-                <FormHelperText>
-                  {notaFiscalContext.formik.touched.tipoFormaPagamento &&
-                    notaFiscalContext.formik.errors.tipoFormaPagamento}
-                </FormHelperText>
-              </FormControl>
-              {rowsParcelas.length <= 0 ? (
-                <Button
-                  style={{ height: 28, fontSize: 12, marginTop: 8 }}
-                  className={"btn btn-primary"}
-                  startIcon={<AddIcon />}
-                  onClick={refreshParcelas}
-                  disabled={isBtnDisabled}
-                >
-                  Parcelas
-                </Button>
-              ) : (
-                <Button
-                  style={{ height: 28, fontSize: 12, marginTop: 8 }}
-                  className={"btn btn-primary"}
-                  startIcon={<CleaningServicesIcon />}
-                  onClick={() => setRowsParcelas([])}
-                  disabled={isBtnDisabled}
-                >
-                  Limpar
-                </Button>
-              )}
-            </div>
-          </div>
-
-          <Grid container spacing={3}>
-            <Grid item xs={3}>
-              <Autocomplete
-                value={notaFiscalContext.formik.values.forma_pagamento_id}
-                name="forma_pagamento_id"
-                onChange={(event, value) =>
-                  handleOnChange("forma_pagamento_id", value)
-                }
-                isOptionEqualToValue={(option, value) =>
-                  option.value === value.value
-                }
-                options={formasPagamentos}
-                renderInput={(params) => (
-                  <TextField
-                    variant="outlined"
-                    fullWidth
-                    {...params}
-                    label="Forma de pagamento *"
-                    placeholder="Pesquise..."
-                    error={
-                      notaFiscalContext.formik.touched.forma_pagamento_id &&
-                      Boolean(
-                        notaFiscalContext.formik.errors.forma_pagamento_id
-                      )
-                    }
-                    helperText={
-                      notaFiscalContext.formik.touched.forma_pagamento_id &&
-                      notaFiscalContext.formik.errors.forma_pagamento_id
-                    }
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <TextField
-                max={notaFiscalContext.formik.values.qtdeMaximaParcelas}
-                variant="outlined"
-                label="Qtde Parcelas *"
-                fullWidth
-                type="number"
-                value={notaFiscalContext.formik.values.quantidadeParcelas}
-                disabled={
-                  notaFiscalContext.formik.values.tipoFormaPagamento == 0
-                }
-                name="quantidadeParcelas"
+          <AssignmentIcon />
+          <h3>Pagamento</h3>
+          <div style={{ marginLeft: "auto" }}>
+            <FormControl>
+              <RadioGroup
+                value={notaFiscalContext.formik.values.tipoFormaPagamento}
                 onChange={notaFiscalContext.formik.handleChange}
                 onBlur={notaFiscalContext.formik.handleBlur}
-                error={
-                  notaFiscalContext.formik.touched.quantidadeParcelas &&
-                  Boolean(notaFiscalContext.formik.errors.quantidadeParcelas)
-                }
-                helperText={
-                  notaFiscalContext.formik.touched.quantidadeParcelas &&
-                  notaFiscalContext.formik.errors.quantidadeParcelas
-                }
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="Intervalo (dias) *"
-                fullWidth
-                type="number"
-                value={notaFiscalContext.formik.values.intervaloParcelas}
-                disabled={
-                  notaFiscalContext.formik.values.tipoFormaPagamento == 0
-                }
-                name="intervaloParcelas"
-                onChange={notaFiscalContext.formik.handleChange}
-                onBlur={notaFiscalContext.formik.handleBlur}
-                error={
-                  notaFiscalContext.formik.touched.intervaloParcelas &&
-                  Boolean(notaFiscalContext.formik.errors.intervaloParcelas)
-                }
-                helperText={
-                  notaFiscalContext.formik.touched.intervaloParcelas &&
-                  notaFiscalContext.formik.errors.intervaloParcelas
-                }
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <TextField
-                variant="outlined"
-                label="Data 1ª parcela *"
-                fullWidth
-                type="date"
-                value={notaFiscalContext.formik.values.dataPrimeiraParcela}
-                name="dataPrimeiraParcela"
-                onChange={notaFiscalContext.formik.handleChange}
-                onBlur={notaFiscalContext.formik.handleBlur}
-                error={
-                  notaFiscalContext.formik.touched.dataPrimeiraParcela &&
-                  Boolean(notaFiscalContext.formik.errors.dataPrimeiraParcela)
-                }
-                helperText={
-                  notaFiscalContext.formik.touched.dataPrimeiraParcela &&
-                  notaFiscalContext.formik.errors.dataPrimeiraParcela
-                }
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <div
-                style={{
-                  height: 100 + rowsParcelas.length * 55,
-                  width: "100%",
-                  color: "#fff",
-                }}
+                name="tipoFormaPagamento"
+                row
               >
-                <DataGrid
-                  className={"table-data-grid"}
-                  rows={rowsParcelas}
-                  columns={columnsParcelas}
-                  onStateChange={handleParcelaRowStateChange}
-                  disableVirtualization
-                  hideFooter={true}
-                  disableColumnMenu={true}
-                  components={{
-                    NoRowsOverlay: () => (
-                      <div style={{ marginTop: 55, textAlign: "center" }}>
-                        <h3>Nenhum serviço adicionado</h3>
-                      </div>
-                    ),
-                  }}
-                  onCellEditStart={() => {
-                    setIsBtnDisabled(true);
-                  }}
-                  onCellEditStop={() => {
-                    setIsBtnDisabled(false);
-                  }}
+                <FormControlLabel
+                  value={"0"}
+                  control={<Radio />}
+                  label="À vista"
                 />
-              </div>
-            </Grid>
-          </Grid>
+                <FormControlLabel
+                  value={"1"}
+                  control={<Radio />}
+                  label="A prazo"
+                />
+              </RadioGroup>
+              <FormHelperText>
+                {notaFiscalContext.formik.touched.tipoFormaPagamento &&
+                  notaFiscalContext.formik.errors.tipoFormaPagamento}
+              </FormHelperText>
+            </FormControl>
+            {rowsParcelas.length <= 0 ? (
+              <Button
+                style={{ height: 28, fontSize: 12, marginTop: 8 }}
+                className={"btn btn-primary"}
+                startIcon={<AddIcon />}
+                onClick={refreshParcelas}
+                disabled={isBtnDisabled}
+              >
+                Parcelas
+              </Button>
+            ) : (
+              <Button
+                style={{ height: 28, fontSize: 12, marginTop: 8 }}
+                className={"btn btn-primary"}
+                startIcon={<CleaningServicesIcon />}
+                onClick={() => setRowsParcelas([])}
+                disabled={isBtnDisabled}
+              >
+                Limpar
+              </Button>
+            )}
+          </div>
         </div>
 
-        <div
-          style={{
-            marginTop: 38,
-            boxShadow:
-              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
-            padding: 24,
-          }}
-        >
-          <div
-            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
-          >
-            <AssignmentIcon />
-            <h3>Informações Adicionais</h3>
-          </div>
-
-          <Grid container spacing={3}>
-            <Grid item xs={4}>
-              <TextField
-                variant="outlined"
-                label="Especie *"
-                fullWidth
-                type="text"
-                value={notaFiscalContext.formik.values.esp}
-                name="esp"
-                onChange={notaFiscalContext.formik.handleChange}
-                onBlur={notaFiscalContext.formik.handleBlur}
-                error={
-                  notaFiscalContext.formik.touched.esp &&
-                  Boolean(notaFiscalContext.formik.errors.esp)
-                }
-                helperText={
-                  notaFiscalContext.formik.touched.esp &&
-                  notaFiscalContext.formik.errors.esp
-                }
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                variant="outlined"
-                label="Volumes *"
-                fullWidth
-                type="text"
-                value={notaFiscalContext.formik.values.qVol}
-                name="qVol"
-                onChange={notaFiscalContext.formik.handleChange}
-                onBlur={notaFiscalContext.formik.handleBlur}
-                error={
-                  notaFiscalContext.formik.touched.qVol &&
-                  Boolean(notaFiscalContext.formik.errors.qVol)
-                }
-                helperText={
-                  notaFiscalContext.formik.touched.qVol &&
-                  notaFiscalContext.formik.errors.qVol
-                }
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                variant="outlined"
-                label="Desconto"
-                fullWidth
-                type="number"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">R$:</InputAdornment>
+        <Grid container spacing={3}>
+          <Grid item xs={3}>
+            <Autocomplete
+              value={notaFiscalContext.formik.values.forma_pagamento_id}
+              name="forma_pagamento_id"
+              onChange={(event, value) =>
+                handleOnChange("forma_pagamento_id", value)
+              }
+              isOptionEqualToValue={(option, value) =>
+                option.value === value.value
+              }
+              options={formasPagamentos}
+              renderInput={(params) => (
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  {...params}
+                  label="Forma de pagamento *"
+                  placeholder="Pesquise..."
+                  error={
+                    notaFiscalContext.formik.touched.forma_pagamento_id &&
+                    Boolean(notaFiscalContext.formik.errors.forma_pagamento_id)
+                  }
+                  helperText={
+                    notaFiscalContext.formik.touched.forma_pagamento_id &&
+                    notaFiscalContext.formik.errors.forma_pagamento_id
+                  }
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              max={notaFiscalContext.formik.values.qtdeMaximaParcelas}
+              variant="outlined"
+              label="Qtde Parcelas *"
+              fullWidth
+              type="number"
+              value={notaFiscalContext.formik.values.quantidadeParcelas}
+              disabled={notaFiscalContext.formik.values.tipoFormaPagamento == 0}
+              name="quantidadeParcelas"
+              onChange={notaFiscalContext.formik.handleChange}
+              onBlur={notaFiscalContext.formik.handleBlur}
+              error={
+                notaFiscalContext.formik.touched.quantidadeParcelas &&
+                Boolean(notaFiscalContext.formik.errors.quantidadeParcelas)
+              }
+              helperText={
+                notaFiscalContext.formik.touched.quantidadeParcelas &&
+                notaFiscalContext.formik.errors.quantidadeParcelas
+              }
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              variant="outlined"
+              label="Intervalo (dias) *"
+              fullWidth
+              type="number"
+              value={notaFiscalContext.formik.values.intervaloParcelas}
+              disabled={notaFiscalContext.formik.values.tipoFormaPagamento == 0}
+              name="intervaloParcelas"
+              onChange={notaFiscalContext.formik.handleChange}
+              onBlur={notaFiscalContext.formik.handleBlur}
+              error={
+                notaFiscalContext.formik.touched.intervaloParcelas &&
+                Boolean(notaFiscalContext.formik.errors.intervaloParcelas)
+              }
+              helperText={
+                notaFiscalContext.formik.touched.intervaloParcelas &&
+                notaFiscalContext.formik.errors.intervaloParcelas
+              }
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              variant="outlined"
+              label="Data 1ª parcela *"
+              fullWidth
+              type="date"
+              value={notaFiscalContext.formik.values.dataPrimeiraParcela}
+              name="dataPrimeiraParcela"
+              onChange={notaFiscalContext.formik.handleChange}
+              onBlur={notaFiscalContext.formik.handleBlur}
+              error={
+                notaFiscalContext.formik.touched.dataPrimeiraParcela &&
+                Boolean(notaFiscalContext.formik.errors.dataPrimeiraParcela)
+              }
+              helperText={
+                notaFiscalContext.formik.touched.dataPrimeiraParcela &&
+                notaFiscalContext.formik.errors.dataPrimeiraParcela
+              }
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <div
+              style={{
+                height: 100 + rowsParcelas.length * 55,
+                width: "100%",
+                color: "#fff",
+              }}
+            >
+              <DataGrid
+                className={"table-data-grid"}
+                rows={rowsParcelas}
+                columns={columnsParcelas}
+                onStateChange={handleParcelaRowStateChange}
+                disableVirtualization
+                hideFooter={true}
+                disableColumnMenu={true}
+                components={{
+                  NoRowsOverlay: () => (
+                    <div style={{ marginTop: 55, textAlign: "center" }}>
+                      <h3>Nenhum serviço adicionado</h3>
+                    </div>
                   ),
                 }}
-                value={notaFiscalContext.formik.values.desconto}
-                name="desconto"
-                onChange={notaFiscalContext.formik.handleChange}
-                onBlur={notaFiscalContext.formik.handleBlur}
-                error={
-                  notaFiscalContext.formik.touched.desconto &&
-                  Boolean(notaFiscalContext.formik.errors.desconto)
-                }
-                helperText={
-                  notaFiscalContext.formik.touched.desconto &&
-                  notaFiscalContext.formik.errors.desconto
-                }
-              />
-            </Grid>
-          </Grid>
-          <Grid container spacing={3}>
-            <Grid item xs={4}>
-              <TextField
-                variant="outlined"
-                label="Peso Bruto *"
-                fullWidth
-                type="number"
-                value={notaFiscalContext.formik.values.pesoB}
-                name="pesoB"
-                onChange={notaFiscalContext.formik.handleChange}
-                onBlur={notaFiscalContext.formik.handleBlur}
-                error={
-                  notaFiscalContext.formik.touched.pesoB &&
-                  Boolean(notaFiscalContext.formik.errors.pesoB)
-                }
-                helperText={
-                  notaFiscalContext.formik.touched.pesoB &&
-                  notaFiscalContext.formik.errors.pesoB
-                }
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                variant="outlined"
-                label="Peso Líquido *"
-                fullWidth
-                type="number"
-                value={notaFiscalContext.formik.values.pesoL}
-                name="pesoL"
-                onChange={notaFiscalContext.formik.handleChange}
-                onBlur={notaFiscalContext.formik.handleBlur}
-                error={
-                  notaFiscalContext.formik.touched.pesoL &&
-                  Boolean(notaFiscalContext.formik.errors.pesoL)
-                }
-                helperText={
-                  notaFiscalContext.formik.touched.pesoL &&
-                  notaFiscalContext.formik.errors.pesoL
-                }
-              />
-            </Grid>
-            <Grid item xs={2}>
-              <TextField
-                variant="outlined"
-                label="Unidade Padrão *"
-                fullWidth
-                type="text"
-                value={notaFiscalContext.formik.values.unidadePadrao}
-                name="unidadePadrao"
-                onChange={notaFiscalContext.formik.handleChange}
-                onBlur={notaFiscalContext.formik.handleBlur}
-                error={
-                  notaFiscalContext.formik.touched.unidadePadrao &&
-                  Boolean(notaFiscalContext.formik.errors.unidadePadrao)
-                }
-                helperText={
-                  notaFiscalContext.formik.touched.unidadePadrao &&
-                  notaFiscalContext.formik.errors.unidadePadrao
-                }
-              />
-            </Grid>
-            <Grid item xs={2}>
-              <TextField
-                variant="outlined"
-                label="Total Final"
-                style={{ border: "2px solid orange", borderRadius: "6px" }}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                  startAdornment: (
-                    <InputAdornment position="start">R$:</InputAdornment>
-                  ),
+                onCellEditStart={() => {
+                  setIsBtnDisabled(true);
                 }}
-                type="number"
-                value={notaFiscalContext.formik.values.totalFinal}
-                name="totalFinal"
-                onChange={notaFiscalContext.formik.handleChange}
-                onBlur={notaFiscalContext.formik.handleBlur}
-                error={
-                  notaFiscalContext.formik.touched.totalFinal &&
-                  Boolean(notaFiscalContext.formik.errors.totalFinal)
-                }
-                helperText={
-                  notaFiscalContext.formik.touched.totalFinal &&
-                  notaFiscalContext.formik.errors.totalFinal
-                }
+                onCellEditStop={() => {
+                  setIsBtnDisabled(false);
+                }}
               />
-            </Grid>
+            </div>
           </Grid>
-        </div>
+        </Grid>
+      </div>
 
+      <div
+        style={{
+          marginTop: 38,
+          boxShadow:
+            "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+          padding: 24,
+        }}
+      >
         <div
-          style={{
-            marginTop: 38,
-            boxShadow:
-              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
-            padding: 24,
-          }}
+          style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
         >
-          <div
-            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
-          >
-            <AssignmentIcon />
-            <h3>Informações adicionais</h3>
-          </div>
-
-          <Grid container spacing={3}>
-            <Grid item xs={6}>
-              <TextField
-                multiline
-                className={"input-select"}
-                variant="outlined"
-                label="Informações complementares"
-                placeholder="valor aprox. tributos será acrescentado automaticamente."
-                fullWidth
-                value={notaFiscalContext.formik.values.infCpl}
-                rows={5}
-                name="infCpl"
-                onChange={notaFiscalContext.formik.handleChange}
-                onBlur={notaFiscalContext.formik.handleBlur}
-                error={
-                  notaFiscalContext.formik.touched.infCpl &&
-                  Boolean(notaFiscalContext.formik.errors.infCpl)
-                }
-                helperText={
-                  notaFiscalContext.formik.touched.infCpl &&
-                  notaFiscalContext.formik.errors.infCpl
-                }
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                multiline
-                className={"input-select"}
-                variant="outlined"
-                label="Informações para o Fisco"
-                fullWidth
-                value={notaFiscalContext.formik.values.infAdFisco}
-                rows={5}
-                name="infAdFisco"
-                onChange={notaFiscalContext.formik.handleChange}
-                onBlur={notaFiscalContext.formik.handleBlur}
-                error={
-                  notaFiscalContext.formik.touched.infAdFisco &&
-                  Boolean(notaFiscalContext.formik.errors.infAdFisco)
-                }
-                helperText={
-                  notaFiscalContext.formik.touched.infAdFisco &&
-                  notaFiscalContext.formik.errors.infAdFisco
-                }
-              />
-            </Grid>
-          </Grid>
+          <AssignmentIcon />
+          <h3>Informações Adicionais</h3>
         </div>
 
-        <div style={{ marginTop: 38 }}>
-          <Grid container spacing={0}>
-            <Grid item>
-              <Button
-                variant="outlined"
-                startIcon={<CheckIcon />}
-                onClick={handleOnSubmit}
-                className={"btn btn-primary btn-spacing"}
-                disabled={notaFiscalContext.formik.isSubmitting}
-              >
-                Salvar
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button
-                onClick={() => history.push("/orcamentos")}
-                variant="outlined"
-                startIcon={<CloseIcon />}
-                className={"btn btn-error btn-spacing"}
-                disabled={notaFiscalContext.formik.isSubmitting}
-              >
-                Cancelar
-              </Button>
-            </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs={4}>
+            <TextField
+              variant="outlined"
+              label="Especie *"
+              fullWidth
+              type="text"
+              value={notaFiscalContext.formik.values.esp}
+              name="esp"
+              onChange={notaFiscalContext.formik.handleChange}
+              onBlur={notaFiscalContext.formik.handleBlur}
+              error={
+                notaFiscalContext.formik.touched.esp &&
+                Boolean(notaFiscalContext.formik.errors.esp)
+              }
+              helperText={
+                notaFiscalContext.formik.touched.esp &&
+                notaFiscalContext.formik.errors.esp
+              }
+            />
           </Grid>
+          <Grid item xs={4}>
+            <TextField
+              variant="outlined"
+              label="Volumes *"
+              fullWidth
+              type="text"
+              value={notaFiscalContext.formik.values.qVol}
+              name="qVol"
+              onChange={notaFiscalContext.formik.handleChange}
+              onBlur={notaFiscalContext.formik.handleBlur}
+              error={
+                notaFiscalContext.formik.touched.qVol &&
+                Boolean(notaFiscalContext.formik.errors.qVol)
+              }
+              helperText={
+                notaFiscalContext.formik.touched.qVol &&
+                notaFiscalContext.formik.errors.qVol
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              variant="outlined"
+              label="Desconto"
+              fullWidth
+              type="number"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">R$:</InputAdornment>
+                ),
+              }}
+              value={notaFiscalContext.formik.values.desconto}
+              name="desconto"
+              onChange={notaFiscalContext.formik.handleChange}
+              onBlur={notaFiscalContext.formik.handleBlur}
+              error={
+                notaFiscalContext.formik.touched.desconto &&
+                Boolean(notaFiscalContext.formik.errors.desconto)
+              }
+              helperText={
+                notaFiscalContext.formik.touched.desconto &&
+                notaFiscalContext.formik.errors.desconto
+              }
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs={4}>
+            <TextField
+              variant="outlined"
+              label="Peso Bruto *"
+              fullWidth
+              type="number"
+              value={notaFiscalContext.formik.values.pesoB}
+              name="pesoB"
+              onChange={notaFiscalContext.formik.handleChange}
+              onBlur={notaFiscalContext.formik.handleBlur}
+              error={
+                notaFiscalContext.formik.touched.pesoB &&
+                Boolean(notaFiscalContext.formik.errors.pesoB)
+              }
+              helperText={
+                notaFiscalContext.formik.touched.pesoB &&
+                notaFiscalContext.formik.errors.pesoB
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              variant="outlined"
+              label="Peso Líquido *"
+              fullWidth
+              type="number"
+              value={notaFiscalContext.formik.values.pesoL}
+              name="pesoL"
+              onChange={notaFiscalContext.formik.handleChange}
+              onBlur={notaFiscalContext.formik.handleBlur}
+              error={
+                notaFiscalContext.formik.touched.pesoL &&
+                Boolean(notaFiscalContext.formik.errors.pesoL)
+              }
+              helperText={
+                notaFiscalContext.formik.touched.pesoL &&
+                notaFiscalContext.formik.errors.pesoL
+              }
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <TextField
+              variant="outlined"
+              label="Unidade Padrão *"
+              fullWidth
+              type="text"
+              value={notaFiscalContext.formik.values.unidadePadrao}
+              name="unidadePadrao"
+              onChange={notaFiscalContext.formik.handleChange}
+              onBlur={notaFiscalContext.formik.handleBlur}
+              error={
+                notaFiscalContext.formik.touched.unidadePadrao &&
+                Boolean(notaFiscalContext.formik.errors.unidadePadrao)
+              }
+              helperText={
+                notaFiscalContext.formik.touched.unidadePadrao &&
+                notaFiscalContext.formik.errors.unidadePadrao
+              }
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <TextField
+              variant="outlined"
+              label="Total Final"
+              style={{ border: "2px solid orange", borderRadius: "6px" }}
+              fullWidth
+              InputProps={{
+                readOnly: true,
+                startAdornment: (
+                  <InputAdornment position="start">R$:</InputAdornment>
+                ),
+              }}
+              type="number"
+              value={notaFiscalContext.formik.values.totalFinal}
+              name="totalFinal"
+              onChange={notaFiscalContext.formik.handleChange}
+              onBlur={notaFiscalContext.formik.handleBlur}
+              error={
+                notaFiscalContext.formik.touched.totalFinal &&
+                Boolean(notaFiscalContext.formik.errors.totalFinal)
+              }
+              helperText={
+                notaFiscalContext.formik.touched.totalFinal &&
+                notaFiscalContext.formik.errors.totalFinal
+              }
+            />
+          </Grid>
+        </Grid>
+      </div>
+
+      <div
+        style={{
+          marginTop: 38,
+          boxShadow:
+            "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+          padding: 24,
+        }}
+      >
+        <div
+          style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+        >
+          <AssignmentIcon />
+          <h3>Informações adicionais</h3>
         </div>
+
+        <Grid container spacing={3}>
+          <Grid item xs={6}>
+            <TextField
+              multiline
+              className={"input-select"}
+              variant="outlined"
+              label="Informações complementares"
+              placeholder="valor aprox. tributos será acrescentado automaticamente."
+              fullWidth
+              value={notaFiscalContext.formik.values.infCpl}
+              rows={5}
+              name="infCpl"
+              onChange={notaFiscalContext.formik.handleChange}
+              onBlur={notaFiscalContext.formik.handleBlur}
+              error={
+                notaFiscalContext.formik.touched.infCpl &&
+                Boolean(notaFiscalContext.formik.errors.infCpl)
+              }
+              helperText={
+                notaFiscalContext.formik.touched.infCpl &&
+                notaFiscalContext.formik.errors.infCpl
+              }
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              multiline
+              className={"input-select"}
+              variant="outlined"
+              label="Informações para o Fisco"
+              fullWidth
+              value={notaFiscalContext.formik.values.infAdFisco}
+              rows={5}
+              name="infAdFisco"
+              onChange={notaFiscalContext.formik.handleChange}
+              onBlur={notaFiscalContext.formik.handleBlur}
+              error={
+                notaFiscalContext.formik.touched.infAdFisco &&
+                Boolean(notaFiscalContext.formik.errors.infAdFisco)
+              }
+              helperText={
+                notaFiscalContext.formik.touched.infAdFisco &&
+                notaFiscalContext.formik.errors.infAdFisco
+              }
+            />
+          </Grid>
+        </Grid>
+      </div>
+
+      <div style={{ marginTop: 38 }}>
+        <Grid container spacing={0}>
+          <Grid item>
+            <Button
+              variant="outlined"
+              startIcon={<CheckIcon />}
+              onClick={handleOnSubmit}
+              className={"btn btn-primary btn-spacing"}
+              disabled={notaFiscalContext.formik.isSubmitting}
+            >
+              Salvar
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              onClick={() => history.push("/orcamentos")}
+              variant="outlined"
+              startIcon={<CloseIcon />}
+              className={"btn btn-error btn-spacing"}
+              disabled={notaFiscalContext.formik.isSubmitting}
+            >
+              Cancelar
+            </Button>
+          </Grid>
+        </Grid>
+      </div>
     </>
   );
 }

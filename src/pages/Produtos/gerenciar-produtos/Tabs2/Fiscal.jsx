@@ -2,259 +2,228 @@ import { useProdutoContext } from "../../../../context/GerenciarProdutosContext"
 import { Grid, TextField, Divider } from "@material-ui/core";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
+import { useEffect, useState } from "react";
+import { cfop } from "../../../../constants/cfop";
+import { Autocomplete } from "@mui/material";
 
 export function Fiscal() {
   const produtoContext = useProdutoContext();
+  const [cfops, setCfops] = useState([]);
 
   function handleOnChange(event) {
     const { name, value } = event.target;
     produtoContext.formik.setFieldValue(name, value); // Altera o formik
   }
 
+  function handleOnAutoCompleteChange(name, value) {
+    produtoContext.formik.setFieldValue(name, value); // Altera o formik
+  }
+
+  useEffect(() => {
+    if (cfops.length > 0) return;
+
+    var aux = [];
+    var grupoAtual = "";
+    for (var prop in cfop) {
+      // Se o CFOP terminar em _000, é um grupo
+      if (prop[1] == "0" && prop[2] == "0" && prop[3] == "0") {
+        grupoAtual = prop + " - " + cfop[prop];
+      }
+      aux.push({
+        value: prop,
+        label: prop + " - " + cfop[prop],
+        grupo: grupoAtual,
+      });
+
+      // Retira os CFOPs que são grupos (terminal com _000 ou __00)
+      if (prop[1] == "0" && prop[2] == "0" && prop[3] == "0") {
+        aux.pop();
+      }
+      if (prop[2] == "0" && prop[3] == "0") {
+        aux.pop();
+      }
+    }
+    setCfops(aux);
+  }, []);
+
   return (
     <>
-      {produtoContext.formik.values.habilitaNotaFiscal ? (
-        ""
-      ) : (
-        <h2 style={{ textAlign: "center" }}>
-          Este produto não habilita nota fiscal!
-        </h2>
-      )}
-      <div
-        style={{
-          display: produtoContext.formik.values.habilitaNotaFiscal
-            ? "block"
-            : "none",
-        }}
-      >
-        <div
-          style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
-        >
-          <OpenWithIcon />
-          <h3>Detalhes</h3>
-        </div>
-        <Grid container spacing={3}>
-          <Grid item xs={4}>
-            <TextField
-              variant="outlined"
-              label="NCM"
-              fullWidth
-              value={produtoContext.formik.values.ncm}
-              name="ncm"
-              onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
-              error={
-                produtoContext.formik.touched.ncm &&
-                Boolean(produtoContext.formik.errors.ncm)
-              }
-              helperText={
-                produtoContext.formik.touched.ncm &&
-                produtoContext.formik.errors.ncm
-              }
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              variant="outlined"
-              label="CEST"
-              fullWidth
-              value={produtoContext.formik.values.cest}
-              name="cest"
-              onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
-              error={
-                produtoContext.formik.touched.cest &&
-                Boolean(produtoContext.formik.errors.cest)
-              }
-              helperText={
-                produtoContext.formik.touched.cest &&
-                produtoContext.formik.errors.cest
-              }
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              variant="outlined"
-              label="Origem"
-              fullWidth
-              value={produtoContext.formik.values.origem}
-              name="origem"
-              onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
-              error={
-                produtoContext.formik.touched.origem &&
-                Boolean(produtoContext.formik.errors.origem)
-              }
-              helperText={
-                produtoContext.formik.touched.origem &&
-                produtoContext.formik.errors.origem
-              }
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              variant="outlined"
-              label="Peso líquido"
-              fullWidth
-              value={produtoContext.formik.values.pesoLiquido}
-              name="pesoLiquido"
-              onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
-              error={
-                produtoContext.formik.touched.pesoLiquido &&
-                Boolean(produtoContext.formik.errors.pesoLiquido)
-              }
-              helperText={
-                produtoContext.formik.touched.pesoLiquido &&
-                produtoContext.formik.errors.pesoLiquido
-              }
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              variant="outlined"
-              label="Peso bruto"
-              fullWidth
-              value={produtoContext.formik.values.pesoBruto}
-              name="pesoBruto"
-              onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
-              error={
-                produtoContext.formik.touched.pesoBruto &&
-                Boolean(produtoContext.formik.errors.pesoBruto)
-              }
-              helperText={
-                produtoContext.formik.touched.pesoBruto &&
-                produtoContext.formik.errors.pesoBruto
-              }
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              variant="outlined"
-              label="Número FCI"
-              fullWidth
-              value={produtoContext.formik.values.numeroFci}
-              name="numeroFci"
-              onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
-              error={
-                produtoContext.formik.touched.numeroFci &&
-                Boolean(produtoContext.formik.errors.numeroFci)
-              }
-              helperText={
-                produtoContext.formik.touched.numeroFci &&
-                produtoContext.formik.errors.numeroFci
-              }
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              variant="outlined"
-              label="% Vr. aprox. tribut."
-              fullWidth
-              value={produtoContext.formik.values.valorAproxTribut}
-              name="valorAproxTribut"
-              onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
-              error={
-                produtoContext.formik.touched.valorAproxTribut &&
-                Boolean(produtoContext.formik.errors.valorAproxTribut)
-              }
-              helperText={
-                produtoContext.formik.touched.valorAproxTribut &&
-                produtoContext.formik.errors.valorAproxTribut
-              }
-            />
-          </Grid>
-        </Grid>
-        <br />
-        <Divider />
-        <div
-          style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
-        >
-          <MonetizationOnIcon />
-          <h3>PIS / COFINS</h3>
-        </div>
-        <Grid container spacing={3}>
-          <Grid item xs={3}>
-            <TextField
-              variant="outlined"
-              label="Valor fixo PIS"
-              fullWidth
-              value={produtoContext.formik.values.valorPixoPis}
-              name="valorPixoPis"
-              onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
-              error={
-                produtoContext.formik.touched.valorPixoPis &&
-                Boolean(produtoContext.formik.errors.valorPixoPis)
-              }
-              helperText={
-                produtoContext.formik.touched.valorPixoPis &&
-                produtoContext.formik.errors.valorPixoPis
-              }
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              variant="outlined"
-              label="Valor fixo PIS ST"
-              fullWidth
-              value={produtoContext.formik.values.valorFixoPisSt}
-              name="valorFixoPisSt"
-              onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
-              error={
-                produtoContext.formik.touched.valorFixoPisSt &&
-                Boolean(produtoContext.formik.errors.valorFixoPisSt)
-              }
-              helperText={
-                produtoContext.formik.touched.valorFixoPisSt &&
-                produtoContext.formik.errors.valorFixoPisSt
-              }
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              variant="outlined"
-              label="Valor fixo COFINS"
-              fullWidth
-              value={produtoContext.formik.values.valorFixoCofins}
-              name="valorFixoCofins"
-              onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
-              error={
-                produtoContext.formik.touched.valorFixoCofins &&
-                Boolean(produtoContext.formik.errors.valorFixoCofins)
-              }
-              helperText={
-                produtoContext.formik.touched.valorFixoCofins &&
-                produtoContext.formik.errors.valorFixoCofins
-              }
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              variant="outlined"
-              label="Valor fixo COFINS ST"
-              fullWidth
-              value={produtoContext.formik.values.valorFixoCofinsSt}
-              name="valorFixoCofinsSt"
-              onChange={handleOnChange}
-              onBlur={produtoContext.formik.handleBlur}
-              error={
-                produtoContext.formik.touched.valorFixoCofinsSt &&
-                Boolean(produtoContext.formik.errors.valorFixoCofinsSt)
-              }
-              helperText={
-                produtoContext.formik.touched.valorFixoCofinsSt &&
-                produtoContext.formik.errors.valorFixoCofinsSt
-              }
-            />
-          </Grid>
-        </Grid>
+    {produtoContext.formik.values.habilitaNotaFiscal
+        ? ""
+        : <h2 style={{textAlign: 'center'}}>Este produto não habilita nota fiscal!</h2>}
+    <div style={{
+      display: produtoContext.formik.values.habilitaNotaFiscal
+        ? "block"
+        : "none",
+    }}>
+      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+        <OpenWithIcon />
+        <h3>Detalhes</h3>
       </div>
+      <Grid container spacing={3}>
+        <Grid item xs={4}>
+          <TextField
+            variant="outlined"
+            label="NCM"
+            fullWidth
+            value={produtoContext.formik.values.ncm}
+            name="ncm"
+            onChange={handleOnChange}
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.ncm && Boolean(produtoContext.formik.errors.ncm)}
+            helperText={produtoContext.formik.touched.ncm && produtoContext.formik.errors.ncm}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            variant="outlined"
+            label="CEST"
+            fullWidth
+            value={produtoContext.formik.values.cest}
+            name="cest"
+            onChange={handleOnChange}
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.cest && Boolean(produtoContext.formik.errors.cest)}
+            helperText={produtoContext.formik.touched.cest && produtoContext.formik.errors.cest}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <Autocomplete
+            value={produtoContext.formik.values.cfop}
+            name="cfop"
+            groupBy={(option) => option.grupo}
+            onChange={(event, value) =>
+              handleOnAutoCompleteChange("cfop", value)
+            }
+            disablePortal
+            options={cfops}
+            renderInput={(params) => (
+              <TextField
+                variant="outlined"
+                fullWidth
+                {...params}
+                label="Natureza da Operação *"
+                placeholder="Pesquise..."
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <TextField
+            variant="outlined"
+            label="Peso líquido"
+            type={'number'}
+            fullWidth
+            value={produtoContext.formik.values.pesoLiquido}
+            name="pesoLiquido"
+            onChange={handleOnChange}
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.pesoLiquido && Boolean(produtoContext.formik.errors.pesoLiquido)}
+            helperText={produtoContext.formik.touched.pesoLiquido && produtoContext.formik.errors.pesoLiquido}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <TextField
+            variant="outlined"
+            label="Peso bruto"
+            type={'number'}
+            fullWidth
+            value={produtoContext.formik.values.pesoBruto}
+            name="pesoBruto"
+            onChange={handleOnChange}
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.pesoBruto && Boolean(produtoContext.formik.errors.pesoBruto)}
+            helperText={produtoContext.formik.touched.pesoBruto && produtoContext.formik.errors.pesoBruto}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <TextField
+            variant="outlined"
+            label="Número FCI"
+            fullWidth
+            value={produtoContext.formik.values.numeroFci}
+            name="numeroFci"
+            onChange={handleOnChange}
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.numeroFci && Boolean(produtoContext.formik.errors.numeroFci)}
+            helperText={produtoContext.formik.touched.numeroFci && produtoContext.formik.errors.numeroFci}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <TextField
+            variant="outlined"
+            label="% Vr. aprox. tribut."
+            fullWidth
+            value={produtoContext.formik.values.valorAproxTribut}
+            name="valorAproxTribut"
+            onChange={handleOnChange}
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.valorAproxTribut && Boolean(produtoContext.formik.errors.valorAproxTribut)}
+            helperText={produtoContext.formik.touched.valorAproxTribut && produtoContext.formik.errors.valorAproxTribut}
+          />
+        </Grid>
+      </Grid>
+      <br />
+      <Divider />
+      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+        <MonetizationOnIcon />
+        <h3>PIS / COFINS</h3>
+      </div>
+      <Grid container spacing={3}>
+        <Grid item xs={3}>
+          <TextField
+            variant="outlined"
+            label="Valor fixo PIS"
+            fullWidth
+            value={produtoContext.formik.values.valorPixoPis}
+            name="valorPixoPis"
+            onChange={handleOnChange}
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.valorPixoPis && Boolean(produtoContext.formik.errors.valorPixoPis)}
+            helperText={produtoContext.formik.touched.valorPixoPis && produtoContext.formik.errors.valorPixoPis}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <TextField
+            variant="outlined"
+            label="Valor fixo PIS ST"
+            fullWidth
+            value={produtoContext.formik.values.valorFixoPisSt}
+            name="valorFixoPisSt"
+            onChange={handleOnChange}
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.valorFixoPisSt && Boolean(produtoContext.formik.errors.valorFixoPisSt)}
+            helperText={produtoContext.formik.touched.valorFixoPisSt && produtoContext.formik.errors.valorFixoPisSt}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <TextField
+            variant="outlined"
+            label="Valor fixo COFINS"
+            fullWidth
+            value={produtoContext.formik.values.valorFixoCofins}
+            name="valorFixoCofins"
+            onChange={handleOnChange}
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.valorFixoCofins && Boolean(produtoContext.formik.errors.valorFixoCofins)}
+            helperText={produtoContext.formik.touched.valorFixoCofins && produtoContext.formik.errors.valorFixoCofins}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <TextField
+            variant="outlined"
+            label="Valor fixo COFINS ST"
+            fullWidth
+            value={produtoContext.formik.values.valorFixoCofinsSt}
+            name="valorFixoCofinsSt"
+            onChange={handleOnChange}
+            onBlur={produtoContext.formik.handleBlur}
+            error={produtoContext.formik.touched.valorFixoCofinsSt && Boolean(produtoContext.formik.errors.valorFixoCofinsSt)}
+            helperText={produtoContext.formik.touched.valorFixoCofinsSt && produtoContext.formik.errors.valorFixoCofinsSt}
+          />
+        </Grid>
+      </Grid>
+    </div>
     </>
   );
 }

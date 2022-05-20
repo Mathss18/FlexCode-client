@@ -79,6 +79,7 @@ function EditarComprasPage() {
   const isRecebida = useRef(false);
   const isCancelada = useRef(false);
   const formasPagamentosOriginal = useRef([]);
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -411,7 +412,7 @@ function EditarComprasPage() {
           parcs.push({
             id: item.id,
             dataVencimento: item.dataVencimento,
-            valorParcela: item.valorParcela.toFixed(2),
+            valorParcela: item.valorParcela.toFixed(empresaConfig.quantidadeCasasDecimaisValor),
             forma_pagamento_id: item.forma_pagamento.id,
             nome: item.forma_pagamento.nome,
             observacao: item.observacao
@@ -521,7 +522,7 @@ function EditarComprasPage() {
       return;
     }
     const totalParcelas = rowsParcelas.reduce((acc, item) => acc + Number(item.valorParcela), 0);
-    if (Number(totalParcelas.toFixed(2)) != Number(formik.values.total.toFixed(2))) {
+    if (Number(totalParcelas.toFixed(empresaConfig.quantidadeCasasDecimaisValor)) != Number(formik.values.total.toFixed(empresaConfig.quantidadeCasasDecimaisValor))) {
       formik.setSubmitting(false);
       errorAlert(
         "Erro no calculo das parcelas!",
@@ -548,7 +549,7 @@ function EditarComprasPage() {
           month: "2-digit",
           day: "2-digit",
         });
-      } else if (parcela.dataVencimento === null) {
+      } else if (parcela.dataVencimento === null || parcela.dataVencimento === "") {
         errorAlert(
           "Por favor, selecione uma data de vencimento válida a parcela número " +
             (index + 1)
@@ -636,7 +637,7 @@ function EditarComprasPage() {
         objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
           objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
           Number(row.quantidade)
-        ).toFixed(2);
+        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
       }
     });
     setRowsProdutos(objectToArray(dataGrid.rows.idRowsLookup));
@@ -663,7 +664,7 @@ function EditarComprasPage() {
         // Para cada parcela restante, altera o valor da parcela (se o valor restante for negativo, o valor da parcela será 0)
         for (let i = index + 1; i < parcelas; i++) {
           if (restoCadaParcela > 0) {
-            objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = restoCadaParcela.toFixed(2);
+            objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = restoCadaParcela.toFixed(empresaConfig.quantidadeCasasDecimaisValor);
           }
           else {
             objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = 0;
@@ -680,15 +681,15 @@ function EditarComprasPage() {
     });
 
     var diferenca = total - totalParcelas;
-    diferenca = Number(diferenca.toFixed(2));
+    diferenca = Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
 
     // se hover diferença, adiciona a diferença na ultima parcela
     if (Number(diferenca) !== 0) {
-      objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela = Number(objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela) + Number(diferenca.toFixed(2));
+      objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela = Number(objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela) + Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
     }
 
     setRowsParcelas(objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
-      row.valorParcela = row.valorParcela > 0 ? Number(row.valorParcela).toFixed(2) : 0;
+      row.valorParcela = row.valorParcela > 0 ? Number(row.valorParcela).toFixed(empresaConfig.quantidadeCasasDecimaisValor) : 0;
       return row;
     }));
   }
@@ -707,13 +708,13 @@ function EditarComprasPage() {
     var aux = [];
 
     var diferenca = formik.values.total / formik.values.quantidadeParcelas;
-    diferenca = (formik.values.total - (diferenca.toFixed(2) * formik.values.quantidadeParcelas)).toFixed(2);
+    diferenca = (formik.values.total - (diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor) * formik.values.quantidadeParcelas)).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
 
     for (let i = 0; i < formik.values.quantidadeParcelas; i++) {
       aux.push({
         id: new Date().getTime() + i,
         dataVencimento: moment(formik.values.dataPrimeiraParcela).add(formik.values.intervaloParcelas * i, 'days').format("DD/MM/YYYY"),
-        valorParcela: Number((Number(formik.values.total) / Number(formik.values.quantidadeParcelas))).toFixed(2),
+        valorParcela: Number((Number(formik.values.total) / Number(formik.values.quantidadeParcelas))).toFixed(empresaConfig.quantidadeCasasDecimaisValor),
         forma_pagamento_id: formik.values.forma_pagamento_id.value,
         nome: formik.values.forma_pagamento_id.label,
         observacao: "",

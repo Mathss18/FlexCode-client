@@ -27,6 +27,7 @@ function LoginPage() {
 
   function redirecionar(response) {
     localStorage.setItem("token", response.data.access_token);
+    localStorage.setItem("config", JSON.stringify(response.data.config));
     setToLS("user", response.data.user);
     pusherContext.useIsLogged.setIsLogged(true);
     history.push("/home");

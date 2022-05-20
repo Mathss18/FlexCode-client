@@ -90,7 +90,8 @@ function EditarPorcentagensLucros() {
                 variant="outlined"
                 label="Porcentagem *"
                 fullWidth
-                type="text"
+                type={'number'}
+                step="0.01"
                 value={formik.values.porcentagem}
                 name="porcentagem"
                 onChange={formik.handleChange}

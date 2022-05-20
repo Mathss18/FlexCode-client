@@ -15,6 +15,7 @@ import { useParams } from "react-router-dom";
 import { errorAlert } from "../../../../utils/alert";
 import { initialValues } from "../../../../constants/produtosInitialValues";
 import { useFullScreenLoader } from "../../../../context/FullScreenLoaderContext";
+import { cfop } from "../../../../constants/cfop";
 
 export function Dados() {
   const produtoContext = useProdutoContext();
@@ -49,6 +50,7 @@ export function Dados() {
 
         response.data['data'].habilitaNotaFiscal = response.data['data'].habilitaNotaFiscal === 1 ? true : false;
         response.data['data'].movimentaEstoque = response.data['data'].movimentaEstoque === 1 ? true : false;
+        response.data['data'].cfop = response.data['data'].cfop ? { value: response.data['data'].cfop, label: response.data['data'].cfop + ' - '+ cfop[response.data['data'].cfop] } : initialValues.cfop
 
         response.data['data'].cliente_id = response.data['data'].cliente_id ? { value: response.data['data'].cliente.id, label: response.data['data'].cliente.nome } : initialValues.cliente_id
         response.data['data'].fornecedores_id = response.data['data'].fornecedores
@@ -84,7 +86,7 @@ export function Dados() {
           fotoPrincipal: response.data['data'].fotoPrincipal,
           ncm: response.data['data'].ncm,
           cest: response.data['data'].cest,
-          origem: response.data['data'].origem,
+          cfop: response.data['data'].cfop,
           pesoLiquido: response.data['data'].pesoLiquido,
           pesoBruto: response.data['data'].pesoBruto,
           numeroFci: response.data['data'].numeroFci,

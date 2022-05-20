@@ -27,6 +27,7 @@ import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import { ajusteEstoqueValidation } from "../../validators/validationSchema";
 import { confirmAlert, errorAlert, successAlert } from "../../utils/alert";
+const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
 const initialValues = {
   quantidade: "",
@@ -119,11 +120,10 @@ function ListarEstoques() {
         },
         () => {
           setOpen(true);
-          formik.setSubmitting(false)
+          formik.setSubmitting(false);
         }
       );
-    }
-    else{
+    } else {
       ajustarEstoque();
     }
   }
@@ -147,7 +147,7 @@ function ListarEstoques() {
   }
 
   useEffect(() => {
-    if(formik.isSubmitting) return;
+    if (formik.isSubmitting) return;
     fullScreenLoader.setLoading(true);
     api
       .get("/estoques")
@@ -157,7 +157,9 @@ function ListarEstoques() {
             element.produto.nome,
             element.produto.codigoInterno,
             element.produto.grupo_produto.nome,
-            `R$: ${element.produto["valorCusto"].toFixed(2)}`,
+            `R$: ${element.produto["valorCusto"].toFixed(
+              empresaConfig.quantidadeCasasDecimaisValor
+            )}`,
             `${element["quantidade"]} ${
               element.produto.unidade_produto?.sigla ?? ""
             }`,
@@ -251,7 +253,7 @@ function ListarEstoques() {
                   variant="outlined"
                   label="Valor Unitário *"
                   placeholder={`Valor atual: R$: ${selectedEstoque?.produto?.custoFinal.toFixed(
-                    2
+                    empresaConfig.quantidadeCasasDecimaisValor
                   )}`}
                   fullWidth
                   type="number"
@@ -322,7 +324,7 @@ function ListarEstoques() {
 
             <Grid container spacing={0}>
               <div style={{ marginLeft: "auto", display: "flex" }}>
-              <Grid item>
+                <Grid item>
                   <Button
                     type="submit"
                     variant="outlined"
@@ -344,7 +346,6 @@ function ListarEstoques() {
                     Cancelar
                   </Button>
                 </Grid>
-                
               </div>
             </Grid>
           </form>

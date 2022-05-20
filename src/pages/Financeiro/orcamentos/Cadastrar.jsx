@@ -64,6 +64,7 @@ function CadastrarOrcamentosPage() {
   const [rowsProdutos, setRowsProdutos] = useState([]);
   const [rowsServicos, setRowsServicos] = useState([]);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
   // === Tabela de Preço
   const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
   const produtosOriginal = useRef(null);
@@ -489,7 +490,7 @@ function CadastrarOrcamentosPage() {
         objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
           objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
           Number(row.quantidade)
-        ).toFixed(2);
+        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
       }
     });
     setRowsProdutos(objectToArray(dataGrid.rows.idRowsLookup));
@@ -543,7 +544,7 @@ function CadastrarOrcamentosPage() {
         objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
           objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
           Number(row.quantidade)
-        ).toFixed(2);
+        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
       }
     });
     setRowsServicos(objectToArray(dataGrid.rows.idRowsLookup));

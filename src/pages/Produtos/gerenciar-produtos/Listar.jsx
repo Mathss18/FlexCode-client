@@ -15,6 +15,7 @@ function ListarProdutos() {
   const [grupos, setGrupos] = useState([]);
   const fullScreenLoader = useFullScreenLoader();
   const produtoContext = useProdutoContext();
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
   const columns = [
     {
       name: "Nome",
@@ -73,7 +74,7 @@ function ListarProdutos() {
               element["nome"],
               element["codigoInterno"],
               element["grupo_produto"]["nome"],
-              `R$: ${element['valorCusto'].toFixed(2)}`,
+              `R$: ${element['valorCusto'].toFixed(empresaConfig.quantidadeCasasDecimaisValor)}`,
               `${element["quantidadeAtual"]} ${element["unidade_produto"]?.sigla ?? ''}`,
               element?.cliente?.nome,
               element["fornecedores"].map((item,index)=>{

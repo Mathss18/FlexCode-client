@@ -60,7 +60,7 @@ function ListarNotasFiscaisPage() {
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
-    api.get('/clientes')
+    api.get('/notas-fiscais')
       .then((response) => {
         response.data['data'].forEach(element => {
           if (element['tipoCliente'] === "pf") {

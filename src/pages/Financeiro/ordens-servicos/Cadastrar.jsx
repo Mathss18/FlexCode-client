@@ -69,6 +69,7 @@ function CadastrarOrdensServicoPage() {
   const [rowsProdutos, setRowsProdutos] = useState([]);
   const [rowsServicos, setRowsServicos] = useState([]);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
   // === Tabela de Preço
   const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
   const produtosOriginal = useRef(null);
@@ -415,10 +416,6 @@ function CadastrarOrdensServicoPage() {
       servicos: rowsServicos,
     };
 
-    console.log(JSON.stringify(params));
-    formik.setSubmitting(false);
-    return;
-
     fullScreenLoader.setLoading(true);
     api
       .post("/ordens-servicos", params)
@@ -507,7 +504,7 @@ function CadastrarOrdensServicoPage() {
         objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
           objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
           Number(row.quantidade)
-        ).toFixed(2);
+        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
       }
     });
     setRowsProdutos(objectToArray(dataGrid.rows.idRowsLookup));
@@ -561,7 +558,7 @@ function CadastrarOrdensServicoPage() {
         objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
           objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
           Number(row.quantidade)
-        ).toFixed(2);
+        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
       }
     });
     setRowsServicos(objectToArray(dataGrid.rows.idRowsLookup));

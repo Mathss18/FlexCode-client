@@ -12,6 +12,7 @@ import CheckIcon from "@material-ui/icons/Check";
 import api from "../../../services/api";
 
 function ModalTabelaPreco({ produto, open, setOpen }) {
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
   useEffect(() => {
     if (!produto) return;
     console.log(produto);
@@ -48,7 +49,7 @@ function ModalTabelaPreco({ produto, open, setOpen }) {
                   </td>
                   <td style={{ textAlign: "left", padding: 8 }}>
                     R$: {(produto.custoFinal +
-                      produto.custoFinal * (item?.porcentagem / 100)).toFixed(2)}
+                      produto.custoFinal * (item?.porcentagem / 100)).toFixed(empresaConfig.quantidadeCasasDecimaisValor)}
                   </td>
                 </tr>
               );

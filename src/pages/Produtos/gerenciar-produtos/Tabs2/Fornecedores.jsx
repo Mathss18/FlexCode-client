@@ -20,6 +20,7 @@ export function Fornecedores() {
   const [fornecedores, setFornecedores] = useState([]);
   const history = useHistory();
   const { id } = useParams();
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
   function canSubmit(){
     var errorsMessages = '';
@@ -77,7 +78,7 @@ export function Fornecedores() {
         parseFloat(...[produtoContext.formik.values.valorCusto]) +
         parseFloat(...[produtoContext.formik.values.despesasAdicionais]) +
         parseFloat(...[produtoContext.formik.values.outrasDespesas])
-      ).toFixed(4)
+      ).toFixed(empresaConfig.quantidadeCasasDecimaisValor)
 
     produtoContext.formik.setFieldValue('custoFinal', soma); // Altera o formik
 

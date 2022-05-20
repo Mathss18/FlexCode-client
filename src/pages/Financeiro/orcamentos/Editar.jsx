@@ -62,6 +62,7 @@ function EditarOrdensServicoPage() {
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const { id } = useParams();
   const fullScreenLoader = useFullScreenLoader();
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -528,7 +529,7 @@ function EditarOrdensServicoPage() {
         objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
           objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
           Number(row.quantidade)
-        ).toFixed(2);
+        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
       }
     });
     setRowsProdutos(objectToArray(dataGrid.rows.idRowsLookup));
@@ -583,7 +584,7 @@ function EditarOrdensServicoPage() {
         objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
           objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
           Number(row.quantidade)
-        ).toFixed(2);
+        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
       }
     });
     setRowsServicos(objectToArray(dataGrid.rows.idRowsLookup));

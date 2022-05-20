@@ -21,6 +21,7 @@ function ListarVendas() {
   const [vendas, setVendas] = useState([]);
   const ordensServicos = useRef([]);
   const fullScreenLoader = useFullScreenLoader();
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
   const columns = [
     {
       name: "Número",
@@ -86,8 +87,7 @@ function ListarVendas() {
           // negado
         }
       );
-    }
-    else{
+    } else {
       confirmAlert(
         "Atenção!",
         "Deseja mesmo criar uma OS?",
@@ -101,65 +101,63 @@ function ListarVendas() {
     }
   }
 
-  function criarOS(item){
-    const params = {
-      numero: getProximoNumeroOrdensServicos(),
-      venda_id: item.id,
-      cliente_id: { label: item.cliente.nome, value: item.cliente.id },
-      produtos: item.produtos.map((item, index) => {
-        return {
-          id: index,
-          produto_id: item.id,
-          quantidade: item.pivot.quantidade,
-          preco: item.pivot.preco,
-          total: item.pivot.total,
-          observacao: item.pivot.observacao,
-        };
-      }),
-      servicos: item.servicos.map((item, index) => {
-        return {
-          id: index,
-          servico_id: item.id,
-          quantidade: item.pivot.quantidade,
-          preco: item.pivot.preco,
-          total: item.pivot.total,
-          observacao: item.pivot.observacao,
-        };
-      }),
-      situacao: 0,
-      dataEntrada: item.dataEntrada,
-      horaEntrada: new Date().toLocaleTimeString(),
-      dataSaida: item.dataEntrada,
-      horaSaida: new Date().toLocaleTimeString(),
-      frete: item.frete,
-      outros: item.impostos,
-      desconto: item.desconto,
-      total: item.total,
-      observacao: item.observacao,
-      observacaoInterna: item.observacaoInterna,
-    };
+  function criarOS(item) {
     api
-      .post("/ordens-servicos", params)
-      .then((response) => {
-        console.log(response.data["data"]);
-        history.push("/ordens-servicos/editar/" + response.data["data"].id);
-      })
-      .catch((error) => {
-        errorAlert("Erro ao criar OS", error?.response?.data?.message);
-      });
-  }
-
-  async function getProximoNumeroOrdensServicos() {
-    const resp = await api
       .get("/ordens-servicos-proximo")
       .then((response) => {
-        return response.data["data"];
+        const params = {
+          numero: response.data["data"],
+          venda_id: item.id,
+          cliente_id: { label: item.cliente.nome, value: item.cliente.id },
+          produtos: item.produtos.map((item, index) => {
+            return {
+              id: index,
+              produto_id: item.id,
+              quantidade: item.pivot.quantidade,
+              preco: item.pivot.preco,
+              total: item.pivot.total,
+              observacao: item.pivot.observacao,
+            };
+          }),
+          servicos: item.servicos.map((item, index) => {
+            return {
+              id: index,
+              servico_id: item.id,
+              quantidade: item.pivot.quantidade,
+              preco: item.pivot.preco,
+              total: item.pivot.total,
+              observacao: item.pivot.observacao,
+            };
+          }),
+          situacao: 0,
+          dataEntrada: item.dataEntrada,
+          horaEntrada: new Date().toLocaleTimeString(),
+          dataSaida: item.dataEntrada,
+          horaSaida: new Date().toLocaleTimeString(),
+          frete: item.frete,
+          outros: item.impostos,
+          desconto: item.desconto,
+          total: item.total,
+          observacao: item.observacao,
+          observacaoInterna: item.observacaoInterna,
+        };
+
+        api
+          .post("/ordens-servicos", params)
+          .then((response) => {
+            console.log(response.data["data"]);
+            history.push("/ordens-servicos/editar/" + response.data["data"].id);
+          })
+          .catch((error) => {
+            errorAlert("Erro ao criar OS", error?.response?.data?.message);
+          });
       })
       .catch((error) => {
         toast.error("Erro ao buscar próximo número de ordem de serviço");
       });
-    return resp;
   }
+
+  async function getProximoNumeroOrdensServicos() {}
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
@@ -188,9 +186,15 @@ function ListarVendas() {
                   : "error"
               }
               size="small"
-              style={{ width: "90px" }}
+              style={{
+                width: "90px",
+                backgroundColor:
+                  element["situacao"] === "Cancelada" ? "#c55959" : "",
+              }}
             />,
-            `R$: ${element["total"].toFixed(2)}`,
+            `R$: ${element["total"].toFixed(
+              empresaConfig.quantidadeCasasDecimaisValor
+            )}`,
             moment(element["dataEntrada"]).format("DD/MM/YYYY"),
             <>
               <Tooltip title={"Baixar PDF"} arrow>

@@ -160,12 +160,14 @@ function EditarClientePage() {
   function handleOnSubmit(values) {
     try {
       values.cep = values.cep.replace(/[^\d]/g, '');
-      values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, '');
+      values.cpf = values.cpf.replace(/[^\d]/g, '');
       values.telefone = values.telefone.replace(/[^\d]/g, '');
       values.celular = values.celular.replace(/[^\d]/g, '');
     } catch (error) {
-      
+
     }
+
+
 
     api
       .put("/funcionarios/" + id, values)
