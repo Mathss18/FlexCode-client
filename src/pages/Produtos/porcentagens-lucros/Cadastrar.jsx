@@ -75,9 +75,10 @@ function CadastrarPorcentagensLucros() {
             <Grid item xs={6}>
               <TextField
                 variant="outlined"
+                type={'number'}
+                step="0.01"
                 label="Porcentagem *"
                 fullWidth
-                type="text"
                 value={formik.values.porcentagem}
                 name="porcentagem"
                 onChange={formik.handleChange}

@@ -23,7 +23,7 @@ export const initialValues = {
     fotoPrincipal: [],
     ncm: "",
     cest: "",
-    origem: "",
+    cfop: "",
     pesoLiquido: '',
     pesoBruto: '',
     numeroFci: '',

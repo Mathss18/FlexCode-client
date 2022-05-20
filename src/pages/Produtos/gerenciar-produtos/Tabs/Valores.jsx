@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 export function Valores() {
   const produtoContext = useProdutoContext();
   const [infoGrupo, setInfoGrupo] = useState();
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
   function handleOnChange(event) {
     const { name, value } = event.target;
@@ -115,7 +116,7 @@ export function Valores() {
               parseFloat(produtoContext.formik.values.valorCusto) +
               parseFloat(produtoContext.formik.values.despesasAdicionais) +
               parseFloat(produtoContext.formik.values.outrasDespesas)
-            ).toFixed(4)}
+            ).toFixed(empresaConfig.quantidadeCasasDecimaisValor)}
             InputProps={{
               readOnly: true,
               endAdornment: (
@@ -160,18 +161,7 @@ export function Valores() {
                     </Typography>
                     <Typography variant="h5" component="div">
                       Valor venda: R${" "}
-                      {(
-                        (
-                          parseFloat(produtoContext.formik.values.valorCusto) +
-                          parseFloat(
-                            produtoContext.formik.values.despesasAdicionais
-                          ) +
-                          parseFloat(
-                            produtoContext.formik.values.outrasDespesas
-                          )
-                        ).toFixed(4) *
-                        (1 + item.porcentagem / 100)
-                      ).toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                      {((parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) + (parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) * (item.porcentagem / 100)).toFixed(empresaConfig.quantidadeCasasDecimaisValor)}
                     </Typography>
                     <Typography
                       sx={{ mb: 1.5 }}
@@ -181,23 +171,7 @@ export function Valores() {
                       {item.porcentagem}% de lucro
                       <br />
                       Comissão do vendedor: R${" "}
-                      {(
-                        (
-                          (
-                            parseFloat(
-                              produtoContext.formik.values.valorCusto
-                            ) +
-                            parseFloat(
-                              produtoContext.formik.values.despesasAdicionais
-                            ) +
-                            parseFloat(
-                              produtoContext.formik.values.outrasDespesas
-                            )
-                          ).toFixed(4) *
-                          (1 + item.porcentagem / 100)
-                        ).toFixed(2) *
-                        (produtoContext.formik.values.comissao / 100).toFixed(2)
-                      ).toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                      {(((parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) + (parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) * (item.porcentagem / 100)) * (produtoContext.formik.values.comissao/100)).toFixed(empresaConfig.quantidadeCasasDecimaisValor)}
                     </Typography>
                   </CardContent>
                 </Card>

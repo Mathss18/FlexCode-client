@@ -2,14 +2,49 @@ import { useProdutoContext } from "../../../../context/GerenciarProdutosContext"
 import { Grid, TextField, Divider } from "@material-ui/core";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
+import { useEffect, useState } from "react";
+import { cfop } from "../../../../constants/cfop";
+import { Autocomplete } from "@mui/material";
 
 export function Fiscal() {
   const produtoContext = useProdutoContext();
+  const [cfops, setCfops] = useState([]);
 
   function handleOnChange(event) {
     const { name, value } = event.target;
     produtoContext.formik.setFieldValue(name, value); // Altera o formik
   }
+
+  function handleOnAutoCompleteChange(name, value) {
+    produtoContext.formik.setFieldValue(name, value); // Altera o formik
+  }
+
+  useEffect(() => {
+    if (cfops.length > 0) return;
+
+    var aux = [];
+    var grupoAtual = "";
+    for (var prop in cfop) {
+      // Se o CFOP terminar em _000, é um grupo
+      if (prop[1] == "0" && prop[2] == "0" && prop[3] == "0") {
+        grupoAtual = prop + " - " + cfop[prop];
+      }
+      aux.push({
+        value: prop,
+        label: prop + " - " + cfop[prop],
+        grupo: grupoAtual,
+      });
+
+      // Retira os CFOPs que são grupos (terminal com _000 ou __00)
+      if (prop[1] == "0" && prop[2] == "0" && prop[3] == "0") {
+        aux.pop();
+      }
+      if (prop[2] == "0" && prop[3] == "0") {
+        aux.pop();
+      }
+    }
+    setCfops(aux);
+  }, []);
 
   return (
     <>
@@ -53,22 +88,31 @@ export function Fiscal() {
           />
         </Grid>
         <Grid item xs={4}>
-          <TextField
-            variant="outlined"
-            label="Origem"
-            fullWidth
-            value={produtoContext.formik.values.origem}
-            name="origem"
-            onChange={handleOnChange}
-            onBlur={produtoContext.formik.handleBlur}
-            error={produtoContext.formik.touched.origem && Boolean(produtoContext.formik.errors.origem)}
-            helperText={produtoContext.formik.touched.origem && produtoContext.formik.errors.origem}
+          <Autocomplete
+            value={produtoContext.formik.values.cfop}
+            name="cfop"
+            groupBy={(option) => option.grupo}
+            onChange={(event, value) =>
+              handleOnAutoCompleteChange("cfop", value)
+            }
+            disablePortal
+            options={cfops}
+            renderInput={(params) => (
+              <TextField
+                variant="outlined"
+                fullWidth
+                {...params}
+                label="Natureza da Operação *"
+                placeholder="Pesquise..."
+              />
+            )}
           />
         </Grid>
         <Grid item xs={3}>
           <TextField
             variant="outlined"
             label="Peso líquido"
+            type={'number'}
             fullWidth
             value={produtoContext.formik.values.pesoLiquido}
             name="pesoLiquido"
@@ -82,6 +126,7 @@ export function Fiscal() {
           <TextField
             variant="outlined"
             label="Peso bruto"
+            type={'number'}
             fullWidth
             value={produtoContext.formik.values.pesoBruto}
             name="pesoBruto"

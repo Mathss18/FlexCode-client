@@ -14,6 +14,7 @@ export default function OrcamentoReport() {
     quantidade: 0,
     valor: 0,
   });
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
   useEffect(() => {
     const reportData = localStorage.getItem("orcamentoReport");
@@ -66,7 +67,7 @@ export default function OrcamentoReport() {
             <div>
               <h3>Flex Mol Industria e Comercio de Molas</h3>
               <p>
-                <b>CNPJ:</b> 43.206.158/0001-25
+                <b>CNPJ:</b> 43.empresaConfig.quantidadeCasasDecimaisValor06.158/0001-empresaConfig.quantidadeCasasDecimaisValor5
               </p>
               <p>
                 <b>Rua:</b> Rua Bofete, 79
@@ -155,16 +156,16 @@ export default function OrcamentoReport() {
                       <td className="tdOrcamento">{produto?.pivot.quantidade}</td>
                       <td className="tdOrcamento">
                         {produto?.pivot.preco
-                          .toFixed(2)
+                         .toFixed (empresaConfig.quantidadeCasasDecimaisValor)
                           .toLocaleString("pt-br", {
-                            minimumFractionDigits: 2,
+                            minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor,
                           })}
                       </td>
                       <td className="tdOrcamento">
                         {produto?.pivot.total
-                          .toFixed(2)
+                          .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
                           .toLocaleString("pt-br", {
-                            minimumFractionDigits: 2,
+                            minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor,
                           })}
                       </td>
                     </tr>
@@ -181,8 +182,8 @@ export default function OrcamentoReport() {
                   <td className="tdOrcamento">
                     <b>
                       {totalProdutos?.valor
-                        .toFixed(2)
-                        .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                        .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+                        .toLocaleString("pt-br", { minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor })}
                     </b>
                   </td>
                 </tr>
@@ -212,16 +213,16 @@ export default function OrcamentoReport() {
                       <td className="tdOrcamento">{servico?.pivot.quantidade}</td>
                       <td className="tdOrcamento">
                         {servico?.pivot.preco
-                          .toFixed(2)
+                          .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
                           .toLocaleString("pt-br", {
-                            minimumFractionDigits: 2,
+                            minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor,
                           })}
                       </td>
                       <td className="tdOrcamento">
                         {servico?.pivot.total
-                          .toFixed(2)
+                          .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
                           .toLocaleString("pt-br", {
-                            minimumFractionDigits: 2,
+                            minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor,
                           })}
                       </td>
                     </tr>
@@ -239,8 +240,8 @@ export default function OrcamentoReport() {
                   <td className="tdOrcamento">
                     <b>
                       {totalServicos?.valor
-                        .toFixed(2)
-                        .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                        .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+                        .toLocaleString("pt-br", { minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor })}
                     </b>
                   </td>
                 </tr>
@@ -261,24 +262,24 @@ export default function OrcamentoReport() {
               <tr className="trOrcamento">
                 <td className="tdOrcamento">
                   {dados?.frete
-                    .toFixed(2)
-                    .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                    .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+                    .toLocaleString("pt-br", { minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor })}
                 </td>
                 <td className="tdOrcamento">
                   {dados?.outros
-                    .toFixed(2)
-                    .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                    .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+                    .toLocaleString("pt-br", { minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor })}
                 </td>
                 <td className="tdOrcamento">
                   {dados?.desconto
-                    .toFixed(2)
-                    .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                    .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+                    .toLocaleString("pt-br", { minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor })}
                 </td>
                 <td className="tdOrcamento" style={{ color: "red" }}>
                   <b>
                     {dados?.total
-                      .toFixed(2)
-                      .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                      .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+                      .toLocaleString("pt-br", { minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor })}
                   </b>
                 </td>
               </tr>
@@ -320,8 +321,8 @@ export default function OrcamentoReport() {
         style={{
           margin: 10,
           top: "auto",
-          right: 20,
-          bottom: 20,
+          right: empresaConfig.quantidadeCasasDecimaisValor0,
+          bottom: empresaConfig.quantidadeCasasDecimaisValor0,
           left: "auto",
           position: "fixed",
         }}

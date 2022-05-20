@@ -19,6 +19,7 @@ export default function OrdermServicoReport(texto) {
     quantidade: 0,
     valor: 0,
   });
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
   useEffect(() => {
     const reportData = localStorage.getItem("ordemServicoReport");
@@ -72,7 +73,7 @@ export default function OrdermServicoReport(texto) {
             <div>
               <h3>Flex Mol Industria e Comercio de Molas</h3>
               <p>
-                <b>CNPJ:</b> 43.206.158/0001-25
+                <b>CNPJ:</b> 43.empresaConfig.quantidadeCasasDecimaisValor06.158/0001-empresaConfig.quantidadeCasasDecimaisValor5
               </p>
               <p>
                 <b>Rua:</b> Rua Bofete, 79
@@ -168,16 +169,16 @@ export default function OrdermServicoReport(texto) {
                       <td className="tdOrdemServico">{produto?.pivot.quantidade}</td>
                       <td className="tdOrdemServico">
                         {produto?.pivot.preco
-                          .toFixed(2)
+                          .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
                           .toLocaleString("pt-br", {
-                            minimumFractionDigits: 2,
+                            minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor,
                           })}
                       </td>
                       <td className="tdOrdemServico">
                         {produto?.pivot.total
-                          .toFixed(2)
+                          .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
                           .toLocaleString("pt-br", {
-                            minimumFractionDigits: 2,
+                            minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor,
                           })}
                       </td>
                     </tr>
@@ -194,8 +195,8 @@ export default function OrdermServicoReport(texto) {
                   <td className="tdOrdemServico">
                     <b>
                       {totalProdutos?.valor
-                        .toFixed(2)
-                        .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                        .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+                        .toLocaleString("pt-br", { minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor })}
                     </b>
                   </td>
                 </tr>
@@ -225,16 +226,16 @@ export default function OrdermServicoReport(texto) {
                       <td className="tdOrdemServico">{servico?.pivot.quantidade}</td>
                       <td className="tdOrdemServico">
                         {servico?.pivot.preco
-                          .toFixed(2)
+                          .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
                           .toLocaleString("pt-br", {
-                            minimumFractionDigits: 2,
+                            minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor,
                           })}
                       </td>
                       <td className="tdOrdemServico">
                         {servico?.pivot.total
-                          .toFixed(2)
+                          .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
                           .toLocaleString("pt-br", {
-                            minimumFractionDigits: 2,
+                            minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor,
                           })}
                       </td>
                     </tr>
@@ -252,8 +253,8 @@ export default function OrdermServicoReport(texto) {
                   <td className="tdOrdemServico">
                     <b>
                       {totalServicos?.valor
-                        .toFixed(2)
-                        .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                        .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+                        .toLocaleString("pt-br", { minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor })}
                     </b>
                   </td>
                 </tr>
@@ -274,24 +275,24 @@ export default function OrdermServicoReport(texto) {
               <tr className="trOrdemServico">
                 <td className="tdOrdemServico">
                   {dados?.frete
-                    .toFixed(2)
-                    .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                    .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+                    .toLocaleString("pt-br", { minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor })}
                 </td>
                 <td className="tdOrdemServico">
                   {dados?.outros
-                    .toFixed(2)
-                    .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                    .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+                    .toLocaleString("pt-br", { minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor })}
                 </td>
                 <td className="tdOrdemServico">
                   {dados?.desconto
-                    .toFixed(2)
-                    .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                    .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+                    .toLocaleString("pt-br", { minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor })}
                 </td>
                 <td className="tdOrdemServico" style={{ color: "red" }}>
                   <b>
                     {dados?.total
-                      .toFixed(2)
-                      .toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                      .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+                      .toLocaleString("pt-br", { minimumFractionDigits: empresaConfig.quantidadeCasasDecimaisValor })}
                   </b>
                 </td>
               </tr>
@@ -333,8 +334,8 @@ export default function OrdermServicoReport(texto) {
         style={{
           margin: 10,
           top: "auto",
-          right: 20,
-          bottom: 20,
+          right: empresaConfig.quantidadeCasasDecimaisValor0,
+          bottom: empresaConfig.quantidadeCasasDecimaisValor0,
           left: "auto",
           position: "fixed",
         }}

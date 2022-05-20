@@ -29,7 +29,7 @@ function MovimentacoesPage() {
   const [movimentacoes, setMovimentacoes] = useState([]);
   const fullScreenLoader = useFullScreenLoader();
   const [produto, setProduto] = useState(null);
-
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
   const [clientes, setClientes] = useState(null);
   const [fornecedores, setFornecedores] = useState(null);
   const [usuarios, setUsuarios] = useState(null);
@@ -142,8 +142,8 @@ function MovimentacoesPage() {
             `${element["quantidadeMomento"]} ${
               produto.unidade_produto?.sigla ?? ""
             }`,
-            `R$: ${element["preco"].toFixed(2)}`,
-            `R$: ${(element["quantidade"] * element["preco"]).toFixed(2)}`,
+            `R$: ${element["preco"].toFixed(empresaConfig.quantidadeCasasDecimaisValor)}`,
+            `R$: ${(element["quantidade"] * element["preco"]).toFixed(empresaConfig.quantidadeCasasDecimaisValor)}`,
             element["observacao"],
           ];
           data.push(array);

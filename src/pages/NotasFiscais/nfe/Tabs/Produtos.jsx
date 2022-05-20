@@ -31,6 +31,7 @@ export default function Produtos() {
   );
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const fullScreenLoader = useFullScreenLoader();
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
   // === Tabela de Preço
   const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
   const produtosOriginal = useRef(null);
@@ -183,7 +184,7 @@ export default function Produtos() {
             label: produto.nome,
             value: produto.id,
             preco: produto.custoFinal,
-            cfop: produto.id,
+            cfop: produto.cfop,
           });
         });
         setProdutos(array);
@@ -298,7 +299,7 @@ export default function Produtos() {
         objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
           objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
           Number(row.quantidade)
-        ).toFixed(2);
+        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
       }
     });
     setRowsProdutos(objectToArray(dataGrid.rows.idRowsLookup));

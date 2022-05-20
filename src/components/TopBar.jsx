@@ -15,6 +15,7 @@ function TopBar() {
   const [openSideMenu, setOpenSideMenu] = useMenu();
   const pusherContext = usePusherContext();
   const history = useHistory();
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
   return (
     <AppBar color="inherit" className={"topbar"}>
@@ -47,11 +48,11 @@ function TopBar() {
         >
           <MenuIcon />
         </IconButton>
-        <div style={{ width: "100px", height: "50px", cursor: " pointer" }}>
+        <div style={{cursor: " pointer" }}>
           <img
-            src={logoEmpresa}
+            src={empresaConfig.logo ?? 'https://via.placeholder.com/150'}
             alt="logo"
-            style={{ marginTop: -24 }}
+            style={{ height: "50px", width: "180px", objectFit: "contain" }}
             onClick={() => {
               history.push("/");
             }}

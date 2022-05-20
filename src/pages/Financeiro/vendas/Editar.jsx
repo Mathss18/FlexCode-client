@@ -41,6 +41,7 @@ import toast from "react-hot-toast";
 import ModalTabelaPreco from "../modalTabelaPreco/ModalTabelaPreco";
 import CalculateIcon from '@mui/icons-material/Calculate';
 
+
 const initialValues = {
   numero: "",
   cliente_id: null,
@@ -83,6 +84,7 @@ function EditarVendasPage() {
   const formasPagamentosOriginal = useRef([]);
   const isRealizada = useRef(false);
   const isCancelada = useRef(false);
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
    // === Tabela de Preço
    const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
    const produtosOriginal = useRef(null);
@@ -94,6 +96,7 @@ function EditarVendasPage() {
       handleOnSubmit(event);
     },
     validationSchema: vendasValidation,
+    
   });
 
   const columnsProdutos = [
@@ -550,7 +553,7 @@ function EditarVendasPage() {
           parcs.push({
             id: item.id,
             dataVencimento: item.dataVencimento,
-            valorParcela: item.valorParcela.toFixed(2),
+            valorParcela: item.valorParcela.toFixed(empresaConfig.quantidadeCasasDecimaisValor),
             forma_pagamento_id: item.forma_pagamento.id,
             nome: item.forma_pagamento.nome,
             observacao: item.observacao
@@ -680,7 +683,7 @@ function EditarVendasPage() {
       return;
     }
     const totalParcelas = rowsParcelas.reduce((acc, item) => acc + Number(item.valorParcela), 0);
-    if (Number(totalParcelas.toFixed(2)) != Number(formik.values.total.toFixed(2))) {
+    if (Number(totalParcelas.toFixed(empresaConfig.quantidadeCasasDecimaisValor)) != Number(formik.values.total.toFixed(empresaConfig.quantidadeCasasDecimaisValor))) {
       formik.setSubmitting(false);
       errorAlert(
         "Erro no calculo das parcelas!",
@@ -707,7 +710,7 @@ function EditarVendasPage() {
           month: "2-digit",
           day: "2-digit",
         });
-      } else if (parcela.dataVencimento === null) {
+      } else if (parcela.dataVencimento === null || parcela.dataVencimento === "") {
         errorAlert(
           "Por favor, selecione uma data de vencimento válida a parcela número " +
             (index + 1)
@@ -729,11 +732,6 @@ function EditarVendasPage() {
       parcelas: rowParcelasSanitezed,
       anexos: files
     };
-
-
-    console.log(params.parcelas);
-    formik.setSubmitting(false);
-    return;
 
     fullScreenLoader.setLoading(true);
     api
@@ -807,7 +805,7 @@ function EditarVendasPage() {
         objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
           objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
           Number(row.quantidade)
-        ).toFixed(2);
+        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
       }
     });
     setRowsProdutos(objectToArray(dataGrid.rows.idRowsLookup));
@@ -834,7 +832,7 @@ function EditarVendasPage() {
         // Para cada parcela restante, altera o valor da parcela (se o valor restante for negativo, o valor da parcela será 0)
         for (let i = index + 1; i < parcelas; i++) {
           if (restoCadaParcela > 0) {
-            objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = restoCadaParcela.toFixed(2);
+            objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = restoCadaParcela.toFixed(empresaConfig.quantidadeCasasDecimaisValor);
           } 
           else {
             objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = 0;
@@ -851,15 +849,15 @@ function EditarVendasPage() {
     });
 
     var diferenca = total - totalParcelas;
-    diferenca = Number(diferenca.toFixed(2));
+    diferenca = Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
 
     // se hover diferença, adiciona a diferença na ultima parcela
     if (Number(diferenca) !== 0) {
-      objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela = Number(objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela) + Number(diferenca.toFixed(2));
+      objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela = Number(objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela) + Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
     }
 
     setRowsParcelas(objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
-      row.valorParcela = row.valorParcela > 0 ? Number(row.valorParcela).toFixed(2) : 0;
+      row.valorParcela = row.valorParcela > 0 ? Number(row.valorParcela).toFixed(empresaConfig.quantidadeCasasDecimaisValor) : 0;
       return row;
     }));
   }
@@ -878,13 +876,13 @@ function EditarVendasPage() {
     var aux = [];
 
     var diferenca = formik.values.total / formik.values.quantidadeParcelas;
-    diferenca = (formik.values.total - (diferenca.toFixed(2) * formik.values.quantidadeParcelas)).toFixed(2);
+    diferenca = (formik.values.total - (diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor) * formik.values.quantidadeParcelas)).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
 
     for (let i = 0; i < formik.values.quantidadeParcelas; i++) {
       aux.push({
         id: new Date().getTime() + i,
         dataVencimento: moment(formik.values.dataPrimeiraParcela).add(formik.values.intervaloParcelas * i, 'days').format("DD/MM/YYYY"),
-        valorParcela: Number((Number(formik.values.total) / Number(formik.values.quantidadeParcelas))).toFixed(2),
+        valorParcela: Number((Number(formik.values.total) / Number(formik.values.quantidadeParcelas))).toFixed(empresaConfig.quantidadeCasasDecimaisValor),
         forma_pagamento_id: formik.values.forma_pagamento_id.value,
         nome: formik.values.forma_pagamento_id.label,
         observacao: "",

@@ -159,7 +159,7 @@ function EditarClientePage() {
                   label="Tipo de Cliente"
                   name="tipoCliente"
                   value={formik.values.tipoCliente}
-                  onChange={formik.handleChange}
+                  onChange={(e)=>{formik.handleChange(e); formik.setFieldValue('cpfCnpj', '')}}
                   onBlur={formik.handleBlur}
                   error={
                     formik.touched.tipoCliente &&

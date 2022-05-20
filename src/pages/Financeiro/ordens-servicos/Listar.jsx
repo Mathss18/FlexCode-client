@@ -98,7 +98,7 @@ function ListarOrdensServicos() {
                   : "error"
               }
               size="small"
-              style={{ width: "90px" }}
+              style={{ width: "90px", backgroundColor: element["situacao"] === "Cancelada" ? '#c55959' : '' }}
             />,
             moment(element["dataEntrada"]).format("DD/MM/YYYY") +
               " " +

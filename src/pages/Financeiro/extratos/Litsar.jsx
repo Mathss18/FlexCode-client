@@ -28,6 +28,7 @@ function ListarExtratos() {
   const [modalTransacaoOpen, setModalTransacaoOpen] = useState(false);
   const tipoTrans = useRef("");
   const dataSelecionada = useRef("");
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
   const data = [];
   const columns = [

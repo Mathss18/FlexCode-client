@@ -153,7 +153,7 @@ function EditarTransportadoraPage() {
                   label="Tipo de Transportadora"
                   name="tipoTransportadora"
                   value={formik.values.tipoTransportadora}
-                  onChange={formik.handleChange}
+                  onChange={(e)=>{formik.handleChange(e); formik.setFieldValue('cpfCnpj', '')}}
                   onBlur={formik.handleBlur}
                   error={
                     formik.touched.tipoTransportadora &&

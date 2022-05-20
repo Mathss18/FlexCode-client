@@ -47,6 +47,7 @@ function ListarContasBancariasPage() {
   const [open, setOpen] = useState(false);
   const history = useHistory();
   const fullScreenLoader = useFullScreenLoader();
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
   function handleOnClickExtratoButton(event, id) {
     history.push("/extratos/" + id);

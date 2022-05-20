@@ -152,7 +152,7 @@ function EditarFornecedorPage() {
                   label="Tipo de Fornecedor"
                   name="tipoFornecedor"
                   value={formik.values.tipoFornecedor}
-                  onChange={formik.handleChange}
+                  onChange={(e)=>{formik.handleChange(e); formik.setFieldValue('cpfCnpj', '')}}
                   onBlur={formik.handleBlur}
                   error={
                     formik.touched.tipoFornecedor &&

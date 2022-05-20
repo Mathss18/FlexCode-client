@@ -17,6 +17,7 @@ function ListarCompras() {
   const history = useHistory();
   const [compras, setCompras] = useState([]);
   const fullScreenLoader = useFullScreenLoader();
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
   const columns = [
     {
       name: 'Número',
@@ -84,9 +85,9 @@ function ListarCompras() {
                   label={element['situacao']}
                   color={element['situacao'] === "Aberta" ? "primary" : element['situacao'] === "Recebida" ? "secondary" : "error"}
                   size="small"
-                  style={{width: "90px"}}
+                  style={{width: "90px", backgroundColor: element["situacao"] === "Cancelada" ? '#c55959' : ''}}
             />,
-            `R$: ${element['total'].toFixed(2)}`,
+            `R$: ${element['total'].toFixed(empresaConfig.quantidadeCasasDecimaisValor)}`,
             moment(element["dataEntrada"]).format('DD/MM/YYYY'),
             <>
               <Tooltip title={'Baixar PDF'} arrow>

@@ -15,6 +15,7 @@ import HelpIcon from "@mui/icons-material/Help";
 export function Valores() {
   const produtoContext = useProdutoContext();
   const [infoGrupo, setInfoGrupo] = useState();
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
   function handleOnChange(event) {
     const { name, value } = event.target;
@@ -114,7 +115,7 @@ export function Valores() {
               parseFloat(produtoContext.formik.values.valorCusto) +
               parseFloat(produtoContext.formik.values.despesasAdicionais) +
               parseFloat(produtoContext.formik.values.outrasDespesas)
-            ).toFixed(4)}
+            ).toFixed(empresaConfig.quantidadeCasasDecimaisValor)}
             InputProps={{
               endAdornment: (
                 <Tooltip title="O Custo Final é calculado automaticamente">
@@ -157,19 +158,8 @@ export function Valores() {
                       {item.descricao}
                     </Typography>
                     <Typography variant="h5" component="div">
-                      Preço final: R${" "}
-                      {(
-                        (
-                          parseFloat(produtoContext.formik.values.valorCusto) +
-                          parseFloat(
-                            produtoContext.formik.values.despesasAdicionais
-                          ) +
-                          parseFloat(
-                            produtoContext.formik.values.outrasDespesas
-                          )
-                        ).toFixed(4) *
-                        (1 + item.porcentagem / 100)
-                      ).toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                      Valor venda: R${" "}
+                      {((parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) + (parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) * (item.porcentagem / 100)).toFixed(empresaConfig.quantidadeCasasDecimaisValor)}
                     </Typography>
                     <Typography
                       sx={{ mb: 1.5 }}
@@ -179,23 +169,7 @@ export function Valores() {
                       {item.porcentagem}% de lucro
                       <br />
                       Comissão do vendedor: R${" "}
-                      {(
-                        (
-                          (
-                            parseFloat(
-                              produtoContext.formik.values.valorCusto
-                            ) +
-                            parseFloat(
-                              produtoContext.formik.values.despesasAdicionais
-                            ) +
-                            parseFloat(
-                              produtoContext.formik.values.outrasDespesas
-                            )
-                          ).toFixed(4) *
-                          (1 + item.porcentagem / 100)
-                        ).toFixed(2) *
-                        (produtoContext.formik.values.comissao / 100).toFixed(2)
-                      ).toLocaleString("pt-br", { minimumFractionDigits: 2 })}
+                      {(((parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) + (parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) * (item.porcentagem / 100)) * (produtoContext.formik.values.comissao/100)).toFixed(empresaConfig.quantidadeCasasDecimaisValor)}
                     </Typography>
                   </CardContent>
                 </Card>

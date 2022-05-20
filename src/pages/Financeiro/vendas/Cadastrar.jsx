@@ -80,6 +80,7 @@ function CadastrarVendasPage() {
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const [files, setFiles] = useState([]);
   const formasPagamentosOriginal = useRef([]);
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
   // === Tabela de Preço
   const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
   const produtosOriginal = useRef(null);
@@ -571,7 +572,7 @@ function CadastrarVendasPage() {
       0
     );
     if (
-      Number(totalParcelas.toFixed(2)) != Number(formik.values.total.toFixed(2))
+      Number(totalParcelas.toFixed(empresaConfig.quantidadeCasasDecimaisValor)) != Number(formik.values.total.toFixed(empresaConfig.quantidadeCasasDecimaisValor))
     ) {
       formik.setSubmitting(false);
       errorAlert(
@@ -599,7 +600,7 @@ function CadastrarVendasPage() {
           month: "2-digit",
           day: "2-digit",
         });
-      } else if (parcela.dataVencimento === null) {
+      } else if (parcela.dataVencimento === null || parcela.dataVencimento === "") {
         errorAlert(
           "Por favor, selecione uma data de vencimento válida a parcela número " +
             (index + 1)
@@ -695,7 +696,7 @@ function CadastrarVendasPage() {
         objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
           objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
           Number(row.quantidade)
-        ).toFixed(2);
+        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
       }
     });
     setRowsProdutos(objectToArray(dataGrid.rows.idRowsLookup));
@@ -731,7 +732,7 @@ function CadastrarVendasPage() {
         for (let i = index + 1; i < parcelas; i++) {
           if (restoCadaParcela > 0) {
             objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela =
-              restoCadaParcela.toFixed(2);
+              restoCadaParcela.toFixed(empresaConfig.quantidadeCasasDecimaisValor);
           } else {
             objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = 0;
           }
@@ -746,20 +747,20 @@ function CadastrarVendasPage() {
     });
 
     var diferenca = total - totalParcelas;
-    diferenca = Number(diferenca.toFixed(2));
+    diferenca = Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
 
     // se hover diferença, adiciona a diferença na ultima parcela
     if (Number(diferenca) !== 0) {
       objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela =
         Number(
           objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela
-        ) + Number(diferenca.toFixed(2));
+        ) + Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
     }
 
     setRowsParcelas(
       objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
         row.valorParcela =
-          row.valorParcela > 0 ? Number(row.valorParcela).toFixed(2) : 0;
+          row.valorParcela > 0 ? Number(row.valorParcela).toFixed(empresaConfig.quantidadeCasasDecimaisValor) : 0;
         return row;
       })
     );
@@ -781,8 +782,8 @@ function CadastrarVendasPage() {
     var diferenca = formik.values.total / formik.values.quantidadeParcelas;
     diferenca = (
       formik.values.total -
-      diferenca.toFixed(2) * formik.values.quantidadeParcelas
-    ).toFixed(2);
+      diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor) * formik.values.quantidadeParcelas
+    ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
 
     for (let i = 0; i < formik.values.quantidadeParcelas; i++) {
       aux.push({
@@ -792,7 +793,7 @@ function CadastrarVendasPage() {
           .format("DD/MM/YYYY"),
         valorParcela: Number(
           Number(formik.values.total) / Number(formik.values.quantidadeParcelas)
-        ).toFixed(2),
+        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor),
         forma_pagamento_id: formik.values.forma_pagamento_id.value,
         nome: formik.values.forma_pagamento_id.label,
         observacao: "",
@@ -855,7 +856,7 @@ function CadastrarVendasPage() {
         objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
           objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
           Number(row.quantidade)
-        ).toFixed(2);
+        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
       }
     });
     setRowsServicos(objectToArray(dataGrid.rows.idRowsLookup));
