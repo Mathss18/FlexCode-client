@@ -509,7 +509,56 @@ export const GlobalStyles = createGlobalStyle`
 
   .chart-container{
     background: ${({ theme }) => theme.colors.chart.background};
+    border-radius: 10px;
   }
+  
+  .chart-container div{
+    border-radius: 10px;
+  }
+  
+  .highcharts-background{
+    border-radius: 10px;
+    fill: ${({ theme }) => theme.colors.chart.background};
+    background: ${({ theme }) => theme.colors.chart.background};
+  }
+  
+  .highcharts-title{
+    fill: ${({ theme }) => theme.colors.text} !important;
+  }
+  
+  .highcharts-subtitle{
+    fill: ${({ theme }) => theme.colors.text} !important;
+  }
+  
+  .highcharts-axis-labels > text{
+    fill: ${({ theme }) => theme.colors.text} !important;
+  }
+
+  .highcharts-legend-item > text{
+    fill: ${({ theme }) => theme.colors.text} !important;
+  }
+  
+  .highcharts-map-series > g >text{
+    fill: black !important;
+  }
+
+  .highcharts-label text{
+    fill: ${({ theme }) => theme.colors.text} !important;
+    text-decoration: none !important;
+  }
+  
+  .highcharts-text-outline{
+    display: none; // Remove o stroke dos textos
+  }
+  
+  .highcharts-tooltip-box{
+    fill: ${({ theme }) => theme.colors.popup.background} !important; // Fundo do tooltip
+  }
+  
+  .highcharts-breadcrumbs-button text{
+    fill: ${({ theme }) => theme.colors.text} !important; // Breadcrumb text
+  }
+  
 
   /* ========= POPUP ========= */
 

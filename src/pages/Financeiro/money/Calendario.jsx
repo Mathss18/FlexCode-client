@@ -97,13 +97,13 @@ function CalendarioPage() {
         element["title"],
         element["conta_bancaria"]["nome"],
         element["valor"].toFixed(2),
-        <b
-          style={{
-            color: element["situacao"] === "aberta" ? "#1976d2" : "#ff9920",
-          }}
-        >
-          {element["situacao"]}
-        </b>,
+        // <b
+        //   style={{
+        //     color: element["situacao"] === "aberta" ? "#1976d2" : "#ff9920",
+        //   }}
+        // >
+        //   {element["situacao"]}
+        // </b>,
         <>
           <EditIcon
             className={"btn btn-lista"}

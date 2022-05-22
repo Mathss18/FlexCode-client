@@ -1,37 +1,70 @@
-import { Bar } from 'react-chartjs-2';
+import { Bar } from "react-chartjs-2";
+import { randomHexColor } from "../../utils/functions";
 
-const data = {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange', 'Orange', 'Orange', 'Orange'],
+function DashboardChart({ contasBancarias }) {
+  const data = {
+    labels: contasBancarias.map((item) => {
+      return item.nome;
+    }),
 
-    datasets: [{
+    datasets: [
+      {
         categoryPercentage: 0.5,
-        barPercentage: 0.8,
-        label: '# of Votos',
-        data: [12, 19, 3, 5, 2, 3, 3, 3, 3],
-        backgroundColor: [
-            'rgba(54, 162, 235, 0.7)',
-        ],
-        borderColor: [
-            'rgba(54, 162, 235, 1)',
-        ],
-        borderWidth: 1
-    }]
-}
+        barPercentage: 0.5,
+        label: "Saldo atual",
+        data: contasBancarias.map((item) => {
+          return item.saldo.toFixed(2);
+        }),
+        backgroundColor: contasBancarias.map((item) => {
+          return randomColor();
+        }),
+        borderColor: ["#000000"],
+        borderWidth: 1,
+      },
+    ],
+  };
 
-const options = {
+  const options = {
+    plugins: {
+      title: {
+        display: true,
+        text: "Saldo das contas bancarias",
+        font: {
+          size: 24,
+        },
+      },
+    },
     maintainAspectRatio: true,
     responsive: true,
     scales: {
-        y: {
-            beginAtZero: true,
-        },
+      y: {
+        beginAtZero: true,
+      },
     },
-}
+  };
 
-function DashboardChart(){
-    return(
-        <Bar data={data} options={options} height={150} />
-    );
+  function randomColor() {
+    const colors = [
+      "#3FC1C0",
+      "#20BAC5",
+      "#00B2CA",
+      "#04A6C2",
+      "#0899BA",
+      "#0F80AA",
+      "#16679A",
+      "#1A5B92",
+      "#1C558E",
+      "#1D4E89",
+    ];
+
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
+  return (
+    <div>
+      <Bar data={data} options={options} />
+    </div>
+  );
 }
 
 export default DashboardChart;

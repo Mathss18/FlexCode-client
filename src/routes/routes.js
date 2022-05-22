@@ -92,6 +92,7 @@ import CadastrarNotasFiscais from "../pages/NotasFiscais/nfe/Cadastrar";
 import ListarConfiguracoesPage from "../pages/Configuracao/Listar";
 import CadastrarConfiguracaoPage from "../pages/Configuracao/Cadastrar";
 import EditarConfiguracaoPage from "../pages/Configuracao/Editar";
+import EditarNotasFiscaisPage from "../pages/NotasFiscais/nfe/Editar";
 
 
 export default function Routes({themeSetter}) {
@@ -198,6 +199,7 @@ export default function Routes({themeSetter}) {
            
             <Route path="/notas-fiscais" exact component={ListarNotasFiscaisPage}></Route>
             <Route path="/notas-fiscais/novo" exact component={CadastrarNotasFiscais}></Route>
+            <Route path="/notas-fiscais/editar/:id" exact component={EditarNotasFiscaisPage}></Route>
 
             <Route path="/configuracoes" exact component={ListarConfiguracoesPage}></Route>
             <Route path="/configuracoes/novo" exact component={CadastrarConfiguracaoPage}></Route>

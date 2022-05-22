@@ -21,6 +21,7 @@ import StorageIcon from '@mui/icons-material/Storage';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import RoomServiceIcon from '@mui/icons-material/RoomService';
 import BalanceIcon from '@mui/icons-material/Balance';
+import EqualizerIcon from '@mui/icons-material/Equalizer';
 
 const user = JSON.parse(localStorage.getItem("user"));
 
@@ -300,5 +301,15 @@ export const menu = [
         children: [],
       },
     ],
+  },
+  {
+    title: 'Relatórios',
+    path: '/relatorios',
+    icon: <EqualizerIcon className={"sidemenu-text"} />,
+    className: 'sidemenu-text',
+    click: '()=>{history.push(`/relatorios`)}',
+    state: null,
+    collapse: false,
+    children: [],
   },
 ]

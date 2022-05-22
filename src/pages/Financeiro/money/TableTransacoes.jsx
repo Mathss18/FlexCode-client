@@ -56,10 +56,10 @@ function TableTransacoes({
       name: "Valor",
       options: rowConfig,
     },
-    {
-      name: "Situação",
-      options: rowConfig,
-    },
+    // {
+    //   name: "Situação",
+    //   options: rowConfig,
+    // },
     {
       name: "Ações",
       options: rowConfig,

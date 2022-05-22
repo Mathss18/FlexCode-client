@@ -1,4 +1,6 @@
 import CircularProgress from '@mui/material/CircularProgress';
+const empresaConfig = JSON.parse(localStorage.getItem("config"));
+console.log(empresaConfig);
 
 export const config = {
   textLabels: {
@@ -77,6 +79,7 @@ export const config = {
   },
   rowsPerPageOptions: [10, 25, 50, 100],
   selectableRowsHideCheckboxes: true,
+  rowsPerPage: empresaConfig?.registrosPorPagina ?? 10,
 };
 
 

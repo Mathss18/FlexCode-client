@@ -1,40 +1,64 @@
+import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useEffect, useState } from "react";
 import DashboardCard from "../components/dashboard//DashboardCard";
+import DashboarContasBancarias from "../components/dashboard/DashboarContasBancarias";
 import DashboardChart from "../components/dashboard/DashboardChart";
-
-const useStyles = makeStyles((theme) => ({
-  card_conteiner: {
-    boxSizing: "border-box",
-    display: "flex",
-    flexWrap: "wrap",
-  },
-  chart_conteiner: {
-    display: "flex",
-    boxSizing: "border-box",
-    width: "830px",
-    height: "450px",
-    marginLeft: theme.spacing(2),
-    padding: theme.spacing(2),
-    borderRadius: "10px",
-    backgroundColor: "white",
-  },
-}));
+import DashboardMap from "../components/dashboard/DashboardMap";
+import { useFullScreenLoader } from "../context/FullScreenLoaderContext";
+import api from "../services/api";
+import { errorAlert } from "../utils/alert";
 
 function Home() {
-  const classes = useStyles();
+  const fullScreenLoader = useFullScreenLoader();
+  const [dados, setDados] = useState(null);
+
+  useEffect(() => {
+    fullScreenLoader.setLoading(true);
+    api
+      .get("/dashboards")
+      .then((response) => {
+        setDados(response.data["data"]);
+      })
+      .catch((error) => {
+        errorAlert("Erro ao carregar dados", error?.data?.message);
+      })
+      .finally(() => fullScreenLoader.setLoading(false));
+  }, []);
 
   return (
-    <div className={classes.root}>
-      <div className={classes.card_conteiner}>
-        <DashboardCard type="green" />
-        <DashboardCard type="red" />
-        <DashboardCard type="blue" />
+    <>
+      <div style={{ width: "99%" }}>
+        <Grid container>
+          <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+            <h2>Bem vindo, {JSON.parse(localStorage.getItem("user")).nome}</h2>
+          </Grid>
+        </Grid>
+        <Grid container spacing={3}>
+          <Grid item xl={4} lg={4} md={6} sm={12} xs={12}>
+            <DashboardCard type="green" dados={dados} />
+          </Grid>
+          <Grid item xl={4} lg={4} md={6} sm={12} xs={12}>
+            <DashboardCard type="red" dados={dados} />
+          </Grid>
+          <Grid item xl={4} lg={4} md={12} sm={12} xs={12}>
+            <DashboardCard type="blue" dados={dados}/>
+          </Grid>
+        </Grid>
+        <Grid container spacing={3}>
+          <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
+            <div className={"chart-container"}>
+              <DashboarContasBancarias dados={dados} />
+            </div>
+          </Grid>
+          <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
+            <div className={"chart-container"}>
+              <DashboardMap dados={dados} />
+            </div>
+          </Grid>
+        </Grid>
       </div>
-
-      <div className={classes.chart_conteiner + ' ' + 'chart-container'}>
-        <DashboardChart />
-      </div>
-    </div>
+    </>
   );
 }
 
