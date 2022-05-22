@@ -25,7 +25,7 @@ function ListarTransportadoraPage() {
       options: rowConfig
     },
     {
-      name: 'Ativo',
+      name: 'Situação',
       options: rowConfig
     },
     {
@@ -68,10 +68,16 @@ function ListarTransportadoraPage() {
           else if (element['tipoTransportadora'] === "pj") {
             element['tipoTransportadora'] = "Pessoa Jurídica"
           }
+          if (element['situacao'] === 1) {
+            element['situacao'] = "Ativo"
+          }
+          else if (element['situacao'] === 0) {
+            element['situacao'] = "Inativo"
+          }
           var array = [
             element['nome'],
             element['tipoTransportadora'],
-            element['telefone'],
+            element['situacao'],
             element['celular'],
             element['email'],
             element['contato'],

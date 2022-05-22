@@ -56,8 +56,8 @@ const initialValues = {
   servidorSmtp: "",
   portaSmtp: "",
   // emailSmtp:'',
+  usuarioSmtp: "",
   senhaSmtp: "",
-  conexaoSeguraSmtp: "",
   quantidadeCasasDecimaisValor: 2,
   quantidadeCasasDecimaisQuantidade: 2,
   registrosPorPagina: 10,
@@ -68,7 +68,6 @@ function CadastrarConfiguracaoPage() {
   const history = useHistory();
   const [logo, setLogo] = useState([]);
   const [certificadoDigital, setCertificadoDigital] = useState([]);
-  
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -98,7 +97,10 @@ function CadastrarConfiguracaoPage() {
       .post("/configuracoes", params)
       .then((response) => {
         history.push("/configuracoes");
-        successAlert("Sucesso", "Configuração Cadastrada");
+        infoAlert(
+          "Sucesso",
+          "É nessesário relogar no sistema para que as alterações tenham efeito."
+        );
       })
       .catch((error) => {
         errorAlert("Atenção", error?.response?.data?.message);
@@ -147,7 +149,10 @@ function CadastrarConfiguracaoPage() {
                   label="Tipo de Empresa "
                   name="tipoEmpresa"
                   value={formik.values.tipoEmpresa}
-                  onChange={(e)=>{formik.handleChange(e); formik.setFieldValue('cpfCnpj', '')}}
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                    formik.setFieldValue("cpfCnpj", "");
+                  }}
                   onBlur={formik.handleBlur}
                   error={
                     formik.touched.tipoEmpresa &&
@@ -542,7 +547,7 @@ function CadastrarConfiguracaoPage() {
                 variant="outlined"
                 label="Número Ultima NFe *"
                 fullWidth
-                type={'number'}
+                type={"number"}
                 value={formik.values.nNF}
                 name="nNF"
                 onChange={formik.handleChange}
@@ -555,7 +560,7 @@ function CadastrarConfiguracaoPage() {
               <TextField
                 variant="outlined"
                 label="Série *"
-                type={'number'}
+                type={"number"}
                 fullWidth
                 value={formik.values.serie}
                 name="serie"
@@ -829,6 +834,25 @@ function CadastrarConfiguracaoPage() {
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
+                label="Usuário"
+                type={"text"}
+                fullWidth
+                value={formik.values.usuarioSmtp}
+                name="usuarioSmtp"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.usuarioSmtp &&
+                  Boolean(formik.errors.usuarioSmtp)
+                }
+                helperText={
+                  formik.touched.usuarioSmtp && formik.errors.usuarioSmtp
+                }
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                variant="outlined"
                 label="Senha"
                 type={"text"}
                 fullWidth
@@ -841,34 +865,6 @@ function CadastrarConfiguracaoPage() {
                 }
                 helperText={formik.touched.senhaSmtp && formik.errors.senhaSmtp}
               />
-            </Grid>
-            <Grid item xs={3}>
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel>Utilizar conexão segura (TLS/SSL)</InputLabel>
-                <Select
-                  className={"input-select"}
-                  label="Utilizar conexão segura (TLS/SSL)"
-                  name="conexaoSeguraSmtp"
-                  value={formik.values.conexaoSeguraSmtp}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={
-                    formik.touched.conexaoSeguraSmtp &&
-                    Boolean(formik.errors.conexaoSeguraSmtp)
-                  }
-                >
-                  <MenuItem value={1}>Sim</MenuItem>
-                  <MenuItem value={0}>Não</MenuItem>
-                </Select>
-                {formik.touched.conexaoSeguraSmtp &&
-                Boolean(formik.errors.conexaoSeguraSmtp) ? (
-                  <FormHelperText>
-                    {formik.errors.conexaoSeguraSmtp}
-                  </FormHelperText>
-                ) : (
-                  ""
-                )}
-              </FormControl>
             </Grid>
           </Grid>
 

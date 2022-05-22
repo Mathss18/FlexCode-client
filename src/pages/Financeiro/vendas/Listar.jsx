@@ -15,12 +15,14 @@ import moment from "moment";
 import { Chip } from "@mui/material";
 import { confirmAlert, errorAlert } from "../../../utils/alert";
 import toast from "react-hot-toast";
+import { useNotaFiscalContext } from "../../../context/NotaFiscalContext";
 
 function ListarVendas() {
   const history = useHistory();
   const [vendas, setVendas] = useState([]);
   const ordensServicos = useRef([]);
   const fullScreenLoader = useFullScreenLoader();
+  const notaFiscalContext = useNotaFiscalContext();
   const empresaConfig = JSON.parse(localStorage.getItem("config"));
   const columns = [
     {
@@ -53,6 +55,19 @@ function ListarVendas() {
 
   function handleOnClickShowButton(event, id) {
     history.push("/clientes/mostrar/" + id);
+  }
+
+  function handleOnClickNfeButton(event, element) {
+    confirmAlert(
+      "Atenção!",
+      "Realmente deseja gerar a nota fiscal?",
+      () => {
+        criarNfe(element);
+      },
+      () => {
+        // negado
+      }
+    );
   }
 
   function handleOnClickEditButton(event, id) {
@@ -157,7 +172,62 @@ function ListarVendas() {
       });
   }
 
-  async function getProximoNumeroOrdensServicos() {}
+  function criarNfe(item) {
+    const params = {
+      venda_id: item.id,
+      tpNF: 1,
+      finNFe: 1,
+      natOp: [],
+      clienteFornecedor_id: {
+        label: item.cliente.nome,
+        value: item.cliente.id,
+        tipo: "clientes",
+      },
+      indFinal: 1,
+      indPres: "2",
+      transportadora_id: { label: item.transportadora.nome, value: item.transportadora.id },
+      modFrete: 2,
+      frete: item.frete,
+      produtos: item.produtos.map((item, index) => {
+        return {
+          id: index,
+          produto_id: item.id,
+          nome: item.nome,
+          cfop: item.cfop,
+          quantidade: item.pivot.quantidade,
+          preco: item.pivot.preco,
+          total: item.pivot.total,
+        };
+      }),
+      parcelas: item.parcelas.map((item, index) => {
+        return {
+          id: index,
+          dataVencimento: item.dataVencimento,
+          valorParcela: item.valorParcela,
+          forma_pagamento_id: item.forma_pagamento.id,
+          nome: item.forma_pagamento.nome,
+        };
+      }),
+      totalProdutos: 0,
+      forma_pagamento_id: { label: item.forma_pagamento.nome, value: item.forma_pagamento.id },
+      quantidadeParcelas: item.quantidadeParcelas,
+      intervaloParcelas: item.intervaloParcelas,
+      tipoFormaPagamento: item.tipoFormaPagamento,
+      dataPrimeiraParcela: item.dataPrimeiraParcela,
+      esp: "",
+      qVol: "",
+      desconto: 0,
+      pesoB: "",
+      pesoL: "",
+      unidadePadrao: "",
+      infCpl: "",
+      totalFinal: item.total,
+      qtdeMaximaParcelas: item.forma_pagamento.numeroMaximoParcelas,
+    };
+
+    notaFiscalContext.formik.setValues(params);
+    history.push('/notas-fiscais/novo');
+  }
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
@@ -212,7 +282,7 @@ function ListarVendas() {
               <Tooltip title={"Gerar NF- e"} arrow>
                 <BalanceIcon
                   className={"btn btn-lista"}
-                  onClick={(event) => handleOnClickPdfButton(event, element)}
+                  onClick={(event) => handleOnClickNfeButton(event, element)}
                 />
               </Tooltip>
               <EditIcon

@@ -256,11 +256,20 @@ export default function Valores() {
       parcelas: rowParcelasSanitezed,
     };
 
+    fullScreenLoader.setLoading(true);
     api
       .post("/notas-fiscais", params)
-      .then((response) => {})
-      .catch((error) => {})
-      .finally(() => {});
+      .then((response) => {
+        successAlert("Nota Fiscal emitida com sucesso!");
+        history.push('/notas-fiscais/editar/' + response.data['data'].id);
+      })
+      .catch((error) => {
+        errorAlert('Erro',error?.response?.data?.message);
+      })
+      .finally(() => {
+        notaFiscalContext.formik.setSubmitting(false);
+        fullScreenLoader.setLoading(false);
+      });
   }
 
   function handleOnChange(name, value) {
