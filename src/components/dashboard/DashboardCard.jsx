@@ -186,7 +186,7 @@ function DashboardCard({ dados, type }) {
               color="textSecondary"
               gutterBottom
             >
-              Pagamentos do mês
+              Despesas do mês
             </Typography>
             {/* <BarChartIcon className={classes.card_icon} /> */}
           </div>

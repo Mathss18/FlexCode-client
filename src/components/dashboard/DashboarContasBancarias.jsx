@@ -1,11 +1,8 @@
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
-import drilldow from "highcharts/modules/drilldown";
 import moment from "moment";
-// Load Highcharts modules
 
 function DashboarContasBancarias({ dados }) {
-  drilldow(Highcharts);
 
   const options = {
     chart: {

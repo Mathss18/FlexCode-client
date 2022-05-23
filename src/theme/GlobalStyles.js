@@ -522,6 +522,10 @@ export const GlobalStyles = createGlobalStyle`
     background: ${({ theme }) => theme.colors.chart.background};
   }
   
+  .highcharts-plot-band{
+    fill: ${({ theme }) => theme.colors.chart.background};
+  }
+  
   .highcharts-title{
     fill: ${({ theme }) => theme.colors.text} !important;
   }
