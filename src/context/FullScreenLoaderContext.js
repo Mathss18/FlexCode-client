@@ -16,7 +16,7 @@ function Loader({ loading }) {
         width: "100%",
         height: "100%",
         color: "#fff",
-        zIndex: 1000,
+        zIndex: 8,
       }}
     >
       <div

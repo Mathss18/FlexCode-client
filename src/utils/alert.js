@@ -75,7 +75,7 @@ export function errorAlert(title = "Erro", text = "", callback = () => {}) {
   });
 }
 
-export async function textAreaAllert(title = 'Observaçãoes', placeholder='Digite aqui...') {
+export async function textAreaAlert(title = 'Observaçãoes', placeholder='Digite aqui...') {
   const { value: text } = await Swal.fire({
     input: "textarea",
     inputLabel: title,

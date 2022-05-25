@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import { useHistory } from "react-router-dom";
 import api from "../../../../../services/api";
@@ -28,15 +28,23 @@ import BuildIcon from "@mui/icons-material/Build";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { config, rowConfig } from "../../../../../config/tablesConfig";
 import { confirmAlert, errorAlert } from "../../../../../utils/alert";
+import { Dialog, Slide } from "@material-ui/core";
+import ModalFotoProduto from "./ModalFotoProduto";
+
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export function Abertas() {
   const { idUsuario } = useParams();
-  const history = useHistory();
+
   const [ordensServicosFuncionarios, setOrdensServicosFuncionarios] = useState(
     []
   );
   const fullScreenLoader = useFullScreenLoader();
   const [open, setOpen] = useState(false);
+  const [openFotoModal, setOpenFotoModal] = useState(false);
+  const [produtoSelecionado, setProdutoSelecionado] = useState(null);
   const [dados, setDados] = useState({});
   const columns = [
     {
@@ -129,8 +137,8 @@ export function Abertas() {
         console.log(response.data["data"], data);
         setOrdensServicosFuncionarios(data);
 
-        if(response.data["data"].length === 0){
-            setOrdensServicosFuncionarios([]);
+        if (response.data["data"].length === 0) {
+          setOrdensServicosFuncionarios([]);
         }
       })
       .finally(() => {
@@ -150,7 +158,6 @@ export function Abertas() {
             edge="start"
             color="inherit"
             onClick={() => setOpen(false)}
-            aria-label="close"
           >
             <CloseIcon />
           </IconButton>
@@ -168,7 +175,12 @@ export function Abertas() {
   const DialogBody = () => {
     return (
       <div>
-        <List>
+        <List
+          style={{
+            display:
+              dados["ordem_servico"].produtos.length !== 0 ? "block" : "none",
+          }}
+        >
           <h3 style={{ textAlign: "center" }}>Produtos</h3>
           {dados["ordem_servico"].produtos.map((element, index) => {
             return (
@@ -176,10 +188,14 @@ export function Abertas() {
                 key={index}
                 button
                 secondaryAction={
-                  <IconButton edge="end" aria-label="delete">
+                  <IconButton edge="end">
                     <PhotoIcon style={{ fill: "grey" }} />
                   </IconButton>
                 }
+                onClick={() => {
+                  setProdutoSelecionado(element);
+                  setOpenFotoModal(true);
+                }}
               >
                 <ListItemAvatar>
                   <Avatar style={{ background: "grey" }}>
@@ -194,7 +210,7 @@ export function Abertas() {
                 <ListItemText
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={"Observações: " + element.pivot.observacao}
+                  secondary={"Observações: " + element.pivot.observacao ?? ""}
                 />
               </ListItem>
             );
@@ -202,7 +218,12 @@ export function Abertas() {
           <Divider />
         </List>
 
-        <List>
+        <List
+          style={{
+            display:
+              dados["ordem_servico"].servicos.length !== 0 ? "block" : "none",
+          }}
+        >
           <h3 style={{ textAlign: "center" }}>Serviços</h3>
           {dados["ordem_servico"].servicos.map((element, index) => {
             return (
@@ -210,7 +231,7 @@ export function Abertas() {
                 key={index}
                 button
                 secondaryAction={
-                  <IconButton edge="end" aria-label="delete">
+                  <IconButton edge="end">
                     <PhotoIcon style={{ fill: "grey" }} />
                   </IconButton>
                 }
@@ -228,7 +249,7 @@ export function Abertas() {
                 <ListItemText
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={"Observações: " + element.pivot.observacao}
+                  secondary={"Observações: " + element.pivot.observacao ?? " "}
                 />
               </ListItem>
             );
@@ -245,13 +266,18 @@ export function Abertas() {
 
   return (
     <>
-      <FullScreenDialog
+      <ModalFotoProduto open={openFotoModal} setOpen={setOpenFotoModal} item={produtoSelecionado}/>
+      <Dialog
+        fullScreen
         open={open}
-        setOpen={setOpen}
-        Header={DialogHeader}
-        Body={DialogBody}
-        Footer={DialogFooter}
-      />
+        onClose={() => setOpen(false)}
+        TransitionComponent={Transition}
+        style={{ zIndex: "3000" }}
+      >
+        <DialogHeader />
+        <DialogBody />
+        <DialogFooter />
+      </Dialog>
 
       <MUIDataTable
         title={"Minhas Ordens de Serviços - Abertas"}

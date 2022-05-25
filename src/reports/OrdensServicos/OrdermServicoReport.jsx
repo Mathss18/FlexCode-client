@@ -71,30 +71,30 @@ export default function OrdermServicoReport(texto) {
           <img src={logo} alt="logo" className="containerImg" />
           <div className="headerLeft" style={{ display: "flex", gap: 10 }}>
             <div>
-              <h3>Flex Mol Industria e Comercio de Molas</h3>
+              <h3>{empresaConfig?.nome}</h3>
               <p>
-                <b>CNPJ:</b> 43.empresaConfig.quantidadeCasasDecimaisValor06.158/0001-empresaConfig.quantidadeCasasDecimaisValor5
+                <b>CNPJ:</b> {empresaConfig?.cpfCnpj}
               </p>
               <p>
-                <b>Rua:</b> Rua Bofete, 79
+                <b>Rua:</b> {empresaConfig?.rua +", "+empresaConfig?.numero}
               </p>
               <p>
-                <b>Cidade:</b> Piracicaba
+                <b>Cidade:</b> {empresaConfig?.cidade}
               </p>
               <p>
-                <b>Bairro:</b> Jardim São Jorge
+                <b>Bairro:</b> {empresaConfig?.bairro}
               </p>
             </div>
             <div>
               <h4>&nbsp;</h4>
               <p>
-                <b>Telefone:</b> (19) 34353705
+                <b>Telefone:</b> {empresaConfig?.telefone}
               </p>
               <p>
-                <b>Celular:</b> (19) 983136930
+                <b>Celular:</b> (19) {empresaConfig?.celular}
               </p>
               <p>
-                <b>Email:</b> flexmol@flexmol.com.br
+                <b>Email:</b> {empresaConfig?.email}
               </p>
             </div>
           </div>
@@ -334,8 +334,8 @@ export default function OrdermServicoReport(texto) {
         style={{
           margin: 10,
           top: "auto",
-          right: empresaConfig.quantidadeCasasDecimaisValor0,
-          bottom: empresaConfig.quantidadeCasasDecimaisValor0,
+          right: 0,
+          bottom: 0,
           left: "auto",
           position: "fixed",
         }}

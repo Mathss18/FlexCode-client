@@ -79,7 +79,8 @@ function CadastrarContasBancariasPage() {
                 variant="outlined"
                 label="Saldo Inicial *"
                 fullWidth
-                type="text"
+                type="number"
+                step="0.01"
                 value={formik.values.saldoInicial}
                 name="saldoInicial"
                 onChange={formik.handleChange}
