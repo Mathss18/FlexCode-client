@@ -22,12 +22,16 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useParams } from "react-router-dom";
 import BubbleChartIcon from "@mui/icons-material/BubbleChart";
 import PhotoIcon from "@mui/icons-material/Photo";
-import BuildIcon from '@mui/icons-material/Build';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import BuildIcon from "@mui/icons-material/Build";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useFullScreenLoader } from "../../../../../context/FullScreenLoaderContext";
+import ModalFotoProduto from "./ModalFotoProduto";
+import { Grid } from "@material-ui/core";
 
 export function Finalizadas() {
   const { idUsuario } = useParams();
+  const [openFotoModal, setOpenFotoModal] = useState(false);
+  const [produtoSelecionado, setProdutoSelecionado] = useState(null);
   const [ordensServicosFuncionarios, setOrdensServicosFuncionarios] = useState(
     []
   );
@@ -65,43 +69,42 @@ export function Finalizadas() {
     setOpen(true);
   }
 
-  function search(){
+  function search() {
     api
-    .get("/ordens-servicos-funcionarios/" + idUsuario + "/finalizadas")
-    .then((response) => {
-      response.data["data"].forEach((element) => {
-        var array = [
-          element["ordem_servico"].numero,
-          element["ordem_servico"].cliente.nome,
-          moment(element["ordem_servico"].dataEntrada).format("DD/MM/YYYY") +
-            " " +
-            element["ordem_servico"].horaEntrada,
-          moment(element["ordem_servico"].dataSaida).format("DD/MM/YYYY") +
-            " " +
-            element["ordem_servico"].horaSaida,
-          <>
-            <MoreHorizIcon
-              className={"btn btn-lista"}
-              onClick={(event) => {
-                handleOnClickShowButton(event, element);
-              }}
-            />
-          </>,
-        ];
-        data.push(array);
+      .get("/ordens-servicos-funcionarios/" + idUsuario + "/finalizadas")
+      .then((response) => {
+        response.data["data"].forEach((element) => {
+          var array = [
+            element["ordem_servico"].numero,
+            element["ordem_servico"].cliente.nome,
+            moment(element["ordem_servico"].dataEntrada).format("DD/MM/YYYY") +
+              " " +
+              element["ordem_servico"].horaEntrada,
+            moment(element["ordem_servico"].dataSaida).format("DD/MM/YYYY") +
+              " " +
+              element["ordem_servico"].horaSaida,
+            <>
+              <MoreHorizIcon
+                className={"btn btn-lista"}
+                onClick={(event) => {
+                  handleOnClickShowButton(event, element);
+                }}
+              />
+            </>,
+          ];
+          data.push(array);
+        });
+        setOrdensServicosFuncionarios(data);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
       });
-      setOrdensServicosFuncionarios(data);
-    })
-    .finally(() => {
-      fullScreenLoader.setLoading(false);
-    });
   }
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
     search();
   }, []);
-
 
   const DialogHeader = () => {
     return (
@@ -129,17 +132,27 @@ export function Finalizadas() {
   const DialogBody = () => {
     return (
       <div>
-        <List>
+        <List
+          style={{
+            display:
+              dados["ordem_servico"].produtos.length !== 0 ? "block" : "none",
+          }}
+        >
           <h3 style={{ textAlign: "center" }}>Produtos</h3>
-          {dados["ordem_servico"].produtos.map((element) => {
+          {dados["ordem_servico"].produtos.map((element, index) => {
             return (
               <ListItem
+                key={index}
                 button
                 secondaryAction={
-                  <IconButton edge="end" aria-label="delete">
+                  <IconButton edge="end">
                     <PhotoIcon style={{ fill: "grey" }} />
                   </IconButton>
                 }
+                onClick={() => {
+                  setProdutoSelecionado(element);
+                  setOpenFotoModal(true);
+                }}
               >
                 <ListItemAvatar>
                   <Avatar style={{ background: "grey" }}>
@@ -154,7 +167,7 @@ export function Finalizadas() {
                 <ListItemText
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={"Observações: " + element.pivot.observacao}
+                  secondary={"Observações: " + element.pivot.observacao ?? ""}
                 />
               </ListItem>
             );
@@ -162,14 +175,20 @@ export function Finalizadas() {
           <Divider />
         </List>
 
-        <List>
+        <List
+          style={{
+            display:
+              dados["ordem_servico"].servicos.length !== 0 ? "block" : "none",
+          }}
+        >
           <h3 style={{ textAlign: "center" }}>Serviços</h3>
-          {dados["ordem_servico"].servicos.map((element) => {
+          {dados["ordem_servico"].servicos.map((element, index) => {
             return (
               <ListItem
+                key={index}
                 button
                 secondaryAction={
-                  <IconButton edge="end" aria-label="delete">
+                  <IconButton edge="end">
                     <PhotoIcon style={{ fill: "grey" }} />
                   </IconButton>
                 }
@@ -187,7 +206,7 @@ export function Finalizadas() {
                 <ListItemText
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={"Observações: " + element.pivot.observacao}
+                  secondary={"Observações: " + element.pivot.observacao ?? " "}
                 />
               </ListItem>
             );
@@ -199,11 +218,25 @@ export function Finalizadas() {
   };
 
   const DialogFooter = () => {
-    return <></>;
+    return (
+      <>
+        <Grid container style={{margin: 12, width: 'fit-content'}}>
+          <Grid item>
+            <h3>Observações:</h3>
+            <p>{dados?.observacao}</p>
+          </Grid>
+        </Grid>
+      </>
+    );
   };
 
   return (
     <>
+      <ModalFotoProduto
+        open={openFotoModal}
+        setOpen={setOpenFotoModal}
+        item={produtoSelecionado}
+      />
       <FullScreenDialog
         open={open}
         setOpen={setOpen}

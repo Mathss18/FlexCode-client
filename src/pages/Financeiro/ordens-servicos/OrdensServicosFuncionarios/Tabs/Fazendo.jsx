@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import { config, rowConfig } from "../../../../../config/tablesConfig";
 import { useFullScreenLoader } from "../../../../../context/FullScreenLoaderContext";
@@ -24,11 +24,19 @@ import BubbleChartIcon from "@mui/icons-material/BubbleChart";
 import PhotoIcon from "@mui/icons-material/Photo";
 import BuildIcon from "@mui/icons-material/Build";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { confirmAlert, errorAlert } from "../../../../../utils/alert";
+import {
+  confirmAlert,
+  errorAlert,
+  textAreaAlert,
+} from "../../../../../utils/alert";
 import api from "../../../../../services/api";
+import { Slide } from "@material-ui/core";
+import ModalFotoProduto from "./ModalFotoProduto";
 
 export function Fazendo() {
   const { idUsuario } = useParams();
+  const [openFotoModal, setOpenFotoModal] = useState(false);
+  const [produtoSelecionado, setProdutoSelecionado] = useState(null);
   const [ordensServicosFuncionarios, setOrdensServicosFuncionarios] = useState(
     []
   );
@@ -75,22 +83,25 @@ export function Fazendo() {
   }
 
   function moveToFinalizadas(element) {
-    fullScreenLoader.setLoading(true);
-    api
-      .put("/ordens-servicos-funcionarios/" + element.id, {
-        ...element,
-        status: 2,
-        dataFinalizado: moment().format("YYYY-MM-DD"),
-      })
-      .then((response) => {
-        search();
-      })
-      .catch((error) => {
-        errorAlert("Atenção", error?.response?.data?.message);
-      })
-      .finally(() => {
-        fullScreenLoader.setLoading(false);
-      });
+    textAreaAlert().then((response) => {
+      fullScreenLoader.setLoading(true);
+      api
+        .put("/ordens-servicos-funcionarios/" + element.id, {
+          ...element,
+          status: 2,
+          observacao: response,
+          dataFinalizado: moment().format("YYYY-MM-DD"),
+        })
+        .then((response) => {
+          search();
+        })
+        .catch((error) => {
+          errorAlert("Atenção", error?.response?.data?.message);
+        })
+        .finally(() => {
+          fullScreenLoader.setLoading(false);
+        });
+    });
   }
 
   function search() {
@@ -124,9 +135,9 @@ export function Fazendo() {
           data.push(array);
         });
         setOrdensServicosFuncionarios(data);
-        
-        if(response.data["data"].length === 0){
-            setOrdensServicosFuncionarios([]);
+
+        if (response.data["data"].length === 0) {
+          setOrdensServicosFuncionarios([]);
         }
       })
       .finally(() => {
@@ -164,17 +175,27 @@ export function Fazendo() {
   const DialogBody = () => {
     return (
       <div>
-        <List>
+        <List
+          style={{
+            display:
+              dados["ordem_servico"].produtos.length !== 0 ? "block" : "none",
+          }}
+        >
           <h3 style={{ textAlign: "center" }}>Produtos</h3>
-          {dados["ordem_servico"].produtos.map((element) => {
+          {dados["ordem_servico"].produtos.map((element, index) => {
             return (
               <ListItem
+                key={index}
                 button
                 secondaryAction={
-                  <IconButton edge="end" aria-label="delete">
+                  <IconButton edge="end">
                     <PhotoIcon style={{ fill: "grey" }} />
                   </IconButton>
                 }
+                onClick={() => {
+                  setProdutoSelecionado(element);
+                  setOpenFotoModal(true);
+                }}
               >
                 <ListItemAvatar>
                   <Avatar style={{ background: "grey" }}>
@@ -189,7 +210,7 @@ export function Fazendo() {
                 <ListItemText
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={"Observações: " + element.pivot.observacao}
+                  secondary={"Observações: " + element.pivot.observacao ?? ""}
                 />
               </ListItem>
             );
@@ -197,14 +218,20 @@ export function Fazendo() {
           <Divider />
         </List>
 
-        <List>
+        <List
+          style={{
+            display:
+              dados["ordem_servico"].servicos.length !== 0 ? "block" : "none",
+          }}
+        >
           <h3 style={{ textAlign: "center" }}>Serviços</h3>
-          {dados["ordem_servico"].servicos.map((element) => {
+          {dados["ordem_servico"].servicos.map((element, index) => {
             return (
               <ListItem
+                key={index}
                 button
                 secondaryAction={
-                  <IconButton edge="end" aria-label="delete">
+                  <IconButton edge="end">
                     <PhotoIcon style={{ fill: "grey" }} />
                   </IconButton>
                 }
@@ -222,7 +249,7 @@ export function Fazendo() {
                 <ListItemText
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={"Observações: " + element.pivot.observacao}
+                  secondary={"Observações: " + element.pivot.observacao ?? " "}
                 />
               </ListItem>
             );
@@ -239,6 +266,11 @@ export function Fazendo() {
 
   return (
     <>
+      <ModalFotoProduto
+        open={openFotoModal}
+        setOpen={setOpenFotoModal}
+        item={produtoSelecionado}
+      />
       <FullScreenDialog
         open={open}
         setOpen={setOpen}

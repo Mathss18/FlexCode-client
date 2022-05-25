@@ -1133,7 +1133,7 @@ function EditarComprasPage() {
                 fullWidth
                 type="number"
                 value={formik.values.quantidadeParcelas}
-                disabled={formik.values.tipoFormaPagamento == '0'}
+                disabled={formik.values.tipoFormaPagamento == '0' || rowsParcelas.length > 0}
                 name="quantidadeParcelas"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}

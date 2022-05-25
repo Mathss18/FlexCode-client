@@ -114,7 +114,8 @@ function EditarContasBancariasPage() {
                 variant="outlined"
                 label="Saldo *"
                 fullWidth
-                type="text"
+                type="number"
+                step="0.01"
                 value={formik.values.saldo}
                 name="saldo"
                 onChange={formik.handleChange}

@@ -217,11 +217,11 @@ function ListarEstoques() {
         fullWidth={true}
         maxWidth={"lg"}
       >
-        <DialogTitle style={{ backgroundColor: "#7d8086" }}>
+        <DialogTitle className="dialogBackground dialogTitle">
           <b>Ajuste de estoque manual - {selectedEstoque?.produto?.nome}</b>
         </DialogTitle>
-        <DialogContent style={{ backgroundColor: "#7d8086" }}>
-          <DialogContentText>
+        <DialogContent className="dialogBackground">
+          <DialogContentText className="dialogTitle">
             Utilize este formulário para ajustar o estoque de um produto.
           </DialogContentText>
           <form onSubmit={formik.handleSubmit}>

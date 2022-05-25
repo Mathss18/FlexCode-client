@@ -22,7 +22,7 @@ import {
   errorAlert,
   infoAlert,
   successAlert,
-  textAreaAllert,
+  textAreaAlert,
 } from "../../../utils/alert";
 import AttachEmailIcon from "@mui/icons-material/AttachEmail";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
@@ -57,7 +57,7 @@ function EditarNotasFiscaisPage() {
   }
 
   function handleOnClickCorrigirButton(event) {
-    var justificativa = textAreaAllert(
+    var justificativa = textAreaAlert(
       "Carta de correção",
       "Digite a justificativa aqui..."
     );
@@ -87,7 +87,7 @@ function EditarNotasFiscaisPage() {
   }
 
   function handleOnClickCancelarButton(event) {
-    var justificativa = textAreaAllert(
+    var justificativa = textAreaAlert(
       "Cancelamento",
       "Digite a justificativa aqui..."
     );
