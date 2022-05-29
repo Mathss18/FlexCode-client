@@ -17,6 +17,7 @@ require('highcharts/modules/drilldown')(Highcharts)
 require('highcharts/modules/bullet')(Highcharts)
 require('highcharts/modules/exporting')(Highcharts)
 require('highcharts/modules/export-data')(Highcharts)
+require('highcharts/highcharts-3d')(Highcharts)
 
 function Home() {
   const fullScreenLoader = useFullScreenLoader();

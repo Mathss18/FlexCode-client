@@ -302,6 +302,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   .MuiTableCell-head{
+    color: ${({ theme }) => theme.colors.table.header.text}; // icones header tabela
     border-bottom: none; // borda inferior header tabela
     background: ${({ theme }) => theme.colors.table.header.background}; // fundo header tabela
   }
@@ -413,6 +414,13 @@ export const GlobalStyles = createGlobalStyle`
   
   .MuiAutocomplete-tag span {
     color: ${({ theme }) => theme.colors.button.primary.text}; // cor da tag do multiple select (aba de fornecedores cadastro de produtos)
+  }
+
+  .cardText{
+    color: ${({ theme }) => theme.colors.text}; // cor padrao do texto da aplicação
+  }
+  .cardBackground{
+    background: ${({ theme }) => theme.colors.topbar.background}; // cor do fundo do card
   }
   
   

@@ -93,6 +93,9 @@ import ListarConfiguracoesPage from "../pages/Configuracao/Listar";
 import CadastrarConfiguracaoPage from "../pages/Configuracao/Cadastrar";
 import EditarConfiguracaoPage from "../pages/Configuracao/Editar";
 import EditarNotasFiscaisPage from "../pages/NotasFiscais/nfe/Editar";
+import ListarRelatorios from "../pages/Relatorios/Listar"
+import RendimentosVsDespesas from "../pages/Relatorios/RendimentosVsDespesas";
+import PatrimonioAoLongoDoTempo from "../pages/Relatorios/PatrimonioAoLongoDoTempo";
 
 
 export default function Routes({themeSetter}) {
@@ -204,6 +207,10 @@ export default function Routes({themeSetter}) {
             <Route path="/configuracoes" exact component={ListarConfiguracoesPage}></Route>
             <Route path="/configuracoes/novo" exact component={CadastrarConfiguracaoPage}></Route>
             <Route path="/configuracoes/editar/:id" exact component={EditarConfiguracaoPage}></Route>
+
+            <Route path="/relatorios" exact component={ListarRelatorios}></Route>
+            <Route path="/relatorios/rendimentosVsDespesas" exact component={RendimentosVsDespesas}></Route>
+            <Route path="/relatorios/patrimonioAoLongoDoTempo" exact component={PatrimonioAoLongoDoTempo}></Route>
 
             <Route path="/chat" exact component={Chat}></Route>
 

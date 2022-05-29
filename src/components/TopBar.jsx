@@ -50,7 +50,7 @@ function TopBar() {
         </IconButton>
         <div style={{cursor: " pointer" }}>
           <img
-            src={empresaConfig.logo ?? 'https://via.placeholder.com/150'}
+            src={empresaConfig?.logo ?? 'https://via.placeholder.com/150'}
             alt="logo"
             style={{ height: "50px", width: "180px", objectFit: "contain" }}
             onClick={() => {
