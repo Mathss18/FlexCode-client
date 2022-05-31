@@ -38,7 +38,7 @@ export const menu = [
   },
   {
     title: 'Minhas Tarefas',
-    path: '/',
+    path: '/ordens-servicos-funcionarios',
     icon: <RoomServiceIcon className={"sidemenu-text"} />,
     className: 'sidemenu-text',
     click: `()=>{history.push('/ordens-servicos-funcionarios/${user?.id}')}`,

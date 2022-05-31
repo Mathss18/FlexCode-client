@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
 import {
   Grid,
   TextField,
   FormControl,
   Divider,
   Button,
-  FormLabel,
   FormControlLabel,
   FormGroup,
   Switch,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Collapse,
+  List,
 } from "@material-ui/core";
 import { TimePicker } from "@material-ui/pickers";
 import { useHistory, useParams } from "react-router-dom";
@@ -24,6 +27,8 @@ import { grupoValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 import { confirmAlert, errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
+import { menu } from "../../../constants/menu";
+import { useEffect } from "react";
 
 const initialValues = {
   nome: "",
@@ -38,24 +43,24 @@ const initialValues = {
   horaInicio: "07:00:00",
   horaFim: "17:00:00",
 
-  acessoCliente: [0, 0, 0, 0],
-  clientes: "",
-
-  acessoFornecedor: [0, 0, 0, 0],
-  fornecedores: "",
-
-  acessoFuncionario: [0, 0, 0, 0],
-  funcionarios: "",
-
-  acessoTransportadora: [0, 0, 0, 0],
-  transportadoras: "",
-
-  acessoGrupo: [0, 0, 0, 0],
-  grupos: "",
-
-  acessoUsuario: [0, 0, 0, 0],
-  usuarios: "",
+  acessos: [],
 };
+
+menu.map((item) => {
+  if (!item.collapse) {
+    initialValues.acessos.push({
+      path: item.path,
+      situacao: false,
+    });
+  } else {
+    item.children.map((child, i) => {
+      initialValues.acessos.push({
+        path: child.path,
+        situacao: false,
+      });
+    });
+  }
+});
 
 function EditarGrupoPage() {
   const history = useHistory();
@@ -88,29 +93,7 @@ function EditarGrupoPage() {
           sabado: response.data["data"].sabado,
           domingo: response.data["data"].domingo,
 
-          acessoCliente: response.data["data"].clientes.split(".").map(Number),
-          clientes: response.data["data"].clientes,
-
-          acessoFornecedor: response.data["data"].fornecedores
-            .split(".")
-            .map(Number),
-          fornecedores: response.data["data"].fornecedores,
-
-          acessoFuncionario: response.data["data"].funcionarios
-            .split(".")
-            .map(Number),
-          funcionarios: response.data["data"].funcionarios,
-
-          acessoTransportadora: response.data["data"].transportadoras
-            .split(".")
-            .map(Number),
-          transportadoras: response.data["data"].transportadoras,
-
-          acessoGrupo: response.data["data"].grupos.split(".").map(Number),
-          grupos: response.data["data"].grupos,
-
-          acessoUsuario: response.data["data"].usuarios.split(".").map(Number),
-          usuarios: response.data["data"].usuarios,
+          acessos: JSON.parse(response.data["data"].acessos)
         });
 
         console.log("[RESPONSE]", formik.values);
@@ -120,59 +103,28 @@ function EditarGrupoPage() {
       });
   }, []);
 
-  const handleOnChange = (e) => {
-    let { name, value, checked, type, id } = e.target;
-
-    if (type === "checkbox") {
-      if (id !== "") {
-        var tipoOperacao = id.split(".")[1]; // C, R, U, D
-        var acesso = formik.values?.[name];
-        // eslint-disable-next-line default-case
-        switch (tipoOperacao) {
-          case "C":
-            acesso[0] == 1 ? (acesso[0] = 0) : (acesso[0] = 1);
-            break;
-          case "R":
-            acesso[1] == 1 ? (acesso[1] = 0) : (acesso[1] = 1);
-            break;
-          case "U":
-            acesso[2] == 1 ? (acesso[2] = 0) : (acesso[2] = 1);
-            break;
-          case "D":
-            acesso[3] == 1 ? (acesso[3] = 0) : (acesso[3] = 1);
-            break;
-        }
-        formik.setValues({
-          ...formik.values,
-          clientes: formik.values.acessoCliente.toString().replaceAll(",", "."),
-          transportadoras: formik.values.acessoTransportadora
-            .toString()
-            .replaceAll(",", "."),
-          fornecedores: formik.values.acessoFornecedor
-            .toString()
-            .replaceAll(",", "."),
-          grupos: formik.values.acessoGrupo.toString().replaceAll(",", "."),
-          funcionarios: formik.values.acessoFuncionario
-            .toString()
-            .replaceAll(",", "."),
-          usuarios: formik.values.acessoUsuario.toString().replaceAll(",", "."),
-        });
-      } else {
-        formik.setValues({ ...formik.values, [name]: checked });
+  const handleOnChange = (name) => {
+    var acessos = formik.values.acessos.map((item, i) => {
+      if (item.path === name) {
+        item.situacao = !item.situacao;
       }
-    } else {
-      formik.setValues({ ...formik.values, [name]: value });
-    }
-
+      return item;
+    });
     console.log(formik.values);
+    formik.setFieldValue("acessos", acessos);
   };
 
   function handleOnSubmit(values) {
+    const params = {
+      ...formik.values,
+      acessos: JSON.stringify(formik.values.acessos)
+    }
+
     api
-      .put("/grupos/" + id, values)
+      .put("/grupos/"+id, params)
       .then((response) => {
         history.push("/grupos");
-        successAlert("Sucesso", "Grupo Editado");
+        successAlert("Sucesso", "Grupo Cadastrado");
       })
       .catch((error) => {
         errorAlert("Atenção", error?.response?.data?.message);
@@ -234,9 +186,9 @@ function EditarGrupoPage() {
                 label="Nome do Grupo"
                 fullWidth
                 type="text"
-                value={formik.values.nome}
                 name="nome"
-                onChange={handleOnChange}
+                value={formik.values.nome}
+                onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.nome && Boolean(formik.errors.nome)}
                 helperText={formik.touched.nome && formik.errors.nome}
@@ -289,413 +241,187 @@ function EditarGrupoPage() {
             }}
           >
             <SettingsIcon />
-            <h3>Configurações</h3>
+            <h3>Dias de acesso</h3>
           </div>
           <Grid container spacing={2}>
             <Grid item xs={2}>
               <FormControl component="fieldset" variant="standard">
-                <FormLabel component="legend">Dias de acesso</FormLabel>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.segunda}
-                        onChange={handleOnChange}
-                        name="segunda"
-                        type="checkbox"
-                      />
-                    }
-                    label="Segunda-feira"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.terca}
-                        onChange={handleOnChange}
-                        name="terca"
-                      />
-                    }
-                    label="Terça-feira"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.quarta}
-                        onChange={handleOnChange}
-                        name="quarta"
-                      />
-                    }
-                    label="Quarta-feira"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.quinta}
-                        onChange={handleOnChange}
-                        name="quinta"
-                      />
-                    }
-                    label="Quinta-feira"
-                  />
+                <FormGroup style={{ display: "flex" }}>
+                  <div style={{ display: "flex" }}>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={formik.values.segunda}
+                          onChange={formik.handleChange}
+                          name="segunda"
+                          type="checkbox"
+                        />
+                      }
+                      labelPlacement="top"
+                      label="Segunda"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={formik.values.terca}
+                          onChange={formik.handleChange}
+                          name="terca"
+                        />
+                      }
+                      labelPlacement="top"
+                      label="Terça"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={formik.values.quarta}
+                          onChange={formik.handleChange}
+                          name="quarta"
+                        />
+                      }
+                      labelPlacement="top"
+                      label="Quarta"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={formik.values.quinta}
+                          onChange={formik.handleChange}
+                          name="quinta"
+                        />
+                      }
+                      labelPlacement="top"
+                      label="Quinta"
+                    />
 
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.sexta}
-                        onChange={handleOnChange}
-                        name="sexta"
-                      />
-                    }
-                    label="Sexta-feira"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.sabado}
-                        onChange={handleOnChange}
-                        name="sabado"
-                      />
-                    }
-                    label="Sabádo"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.domingo}
-                        onChange={handleOnChange}
-                        name="domingo"
-                      />
-                    }
-                    label="Domingo"
-                  />
-                </FormGroup>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={2}>
-              <FormControl component="fieldset" variant="standard">
-                <FormLabel component="legend">Controle de Clientes</FormLabel>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoCliente[0]}
-                        onChange={handleOnChange}
-                        name="acessoCliente"
-                        type="checkbox"
-                        id="acessoCliente.C"
-                      />
-                    }
-                    label="Criar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoCliente[1]}
-                        onChange={handleOnChange}
-                        name="acessoCliente"
-                        id="acessoCliente.R"
-                      />
-                    }
-                    label="Listar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoCliente[2]}
-                        onChange={handleOnChange}
-                        name="acessoCliente"
-                        id="acessoCliente.U"
-                      />
-                    }
-                    label="Editar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoCliente[3]}
-                        onChange={handleOnChange}
-                        name="acessoCliente"
-                        id="acessoCliente.D"
-                      />
-                    }
-                    label="Excluir"
-                  />
-                </FormGroup>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={2}>
-              <FormControl component="fieldset" variant="standard">
-                <FormLabel component="legend">
-                  Controle de Fornecedores
-                </FormLabel>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoFornecedor[0]}
-                        onChange={handleOnChange}
-                        name="acessoFornecedor"
-                        type="checkbox"
-                        id="acessoFornecedor.C"
-                      />
-                    }
-                    label="Criar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoFornecedor[1]}
-                        onChange={handleOnChange}
-                        name="acessoFornecedor"
-                        id="acessoFornecedor.R"
-                      />
-                    }
-                    label="Listar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoFornecedor[2]}
-                        onChange={handleOnChange}
-                        name="acessoFornecedor"
-                        id="acessoFornecedor.U"
-                      />
-                    }
-                    label="Editar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoFornecedor[3]}
-                        onChange={handleOnChange}
-                        name="acessoFornecedor"
-                        id="acessoFornecedor.D"
-                      />
-                    }
-                    label="Excluir"
-                  />
-                </FormGroup>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={2}>
-              <FormControl component="fieldset" variant="standard">
-                <FormLabel component="legend">
-                  Controle de Transportadoras
-                </FormLabel>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoTransportadora[0]}
-                        onChange={handleOnChange}
-                        name="acessoTransportadora"
-                        type="checkbox"
-                        id="acessoTransportadora.C"
-                      />
-                    }
-                    label="Criar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoTransportadora[1]}
-                        onChange={handleOnChange}
-                        name="acessoTransportadora"
-                        id="acessoTransportadora.R"
-                      />
-                    }
-                    label="Listar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoTransportadora[2]}
-                        onChange={handleOnChange}
-                        name="acessoTransportadora"
-                        id="acessoTransportadora.U"
-                      />
-                    }
-                    label="Editar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoTransportadora[3]}
-                        onChange={handleOnChange}
-                        name="acessoTransportadora"
-                        id="acessoTransportadora.D"
-                      />
-                    }
-                    label="Excluir"
-                  />
-                </FormGroup>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={2}>
-              <FormControl component="fieldset" variant="standard">
-                <FormLabel component="legend">Controle de Grupos</FormLabel>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoGrupo[0]}
-                        onChange={handleOnChange}
-                        name="acessoGrupo"
-                        type="checkbox"
-                        id="acessoGrupo.C"
-                      />
-                    }
-                    label="Criar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoGrupo[1]}
-                        onChange={handleOnChange}
-                        name="acessoGrupo"
-                        id="acessoGrupo.R"
-                      />
-                    }
-                    label="Listar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoGrupo[2]}
-                        onChange={handleOnChange}
-                        name="acessoGrupo"
-                        id="acessoGrupo.U"
-                      />
-                    }
-                    label="Editar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoGrupo[3]}
-                        onChange={handleOnChange}
-                        name="acessoGrupo"
-                        id="acessoGrupo.D"
-                      />
-                    }
-                    label="Excluir"
-                  />
-                </FormGroup>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={2}>
-              <FormControl component="fieldset" variant="standard">
-                <FormLabel component="legend">
-                  Controle de Funcionários
-                </FormLabel>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoFuncionario[0]}
-                        onChange={handleOnChange}
-                        name="acessoFuncionario"
-                        type="checkbox"
-                        id="acessoFuncionario.C"
-                      />
-                    }
-                    label="Criar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoFuncionario[1]}
-                        onChange={handleOnChange}
-                        name="acessoFuncionario"
-                        id="acessoFuncionario.R"
-                      />
-                    }
-                    label="Listar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoFuncionario[2]}
-                        onChange={handleOnChange}
-                        name="acessoFuncionario"
-                        id="acessoFuncionario.U"
-                      />
-                    }
-                    label="Editar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoFuncionario[3]}
-                        onChange={handleOnChange}
-                        name="acessoFuncionario"
-                        id="acessoFuncionario.D"
-                      />
-                    }
-                    label="Excluir"
-                  />
-                </FormGroup>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={2}>
-              <FormControl component="fieldset" variant="standard">
-                <FormLabel component="legend">Controle de Usuários</FormLabel>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoUsuario[0]}
-                        onChange={handleOnChange}
-                        name="acessoUsuario"
-                        type="checkbox"
-                        id="acessoUsuario.C"
-                      />
-                    }
-                    label="Criar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoUsuario[1]}
-                        onChange={handleOnChange}
-                        name="acessoUsuario"
-                        id="acessoUsuario.R"
-                      />
-                    }
-                    label="Listar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoUsuario[2]}
-                        onChange={handleOnChange}
-                        name="acessoUsuario"
-                        id="acessoUsuario.U"
-                      />
-                    }
-                    label="Editar"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.acessoUsuario[3]}
-                        onChange={handleOnChange}
-                        name="acessoUsuario"
-                        id="acessoUsuario.D"
-                      />
-                    }
-                    label="Excluir"
-                  />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={formik.values.sexta}
+                          onChange={formik.handleChange}
+                          name="sexta"
+                        />
+                      }
+                      labelPlacement="top"
+                      label="Sexta"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={formik.values.sabado}
+                          onChange={formik.handleChange}
+                          name="sabado"
+                        />
+                      }
+                      labelPlacement="top"
+                      label="Sabádo"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={formik.values.domingo}
+                          onChange={formik.handleChange}
+                          name="domingo"
+                        />
+                      }
+                      labelPlacement="top"
+                      label="Domingo"
+                    />
+                  </div>
                 </FormGroup>
               </FormControl>
             </Grid>
           </Grid>
+          <Divider />
+          <div
+            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+          >
+            <AssignmentIcon />
+            <h3>Configurações de acesso</h3>
+          </div>
+          {menu.map((item, index) => {
+            return (
+              <div
+                style={{
+                  boxShadow:
+                    "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+                  marginBottom: 8,
+                }}
+              >
+                <>
+                  <ListItem button key={index}>
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText
+                      className={item.className}
+                      primary={item.title}
+                    />
+
+                    {(() => {
+                      if (!item.collapse) {
+                        return (
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={
+                                  formik.values.acessos.find(
+                                    (acesso) => acesso.path === item.path
+                                  ).situacao
+                                }
+                                onChange={(e) => {
+                                  handleOnChange(item.path);
+                                }}
+                                name={item.child}
+                                type="checkbox"
+                              />
+                            }
+                          />
+                        );
+                      }
+                    })()}
+                  </ListItem>
+                  {item.collapse && (
+                    <Collapse in={true} timeout="auto" unmountOnExit>
+                      {item.children.map((child, i) => {
+                        return (
+                          <List
+                            style={{ marginLeft: 24 }}
+                            disablePadding
+                            key={index}
+                          >
+                            <div style={{ display: "flex" }}>
+                              <ListItem button>
+                                <ListItemIcon>{child.icon}</ListItemIcon>
+                                <ListItemText
+                                  className={child.className}
+                                  primary={child.title}
+                                />
+                              </ListItem>
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    checked={
+                                      formik.values.acessos.find(
+                                        (acesso) => acesso.path === child.path
+                                      ).situacao
+                                    }
+                                    onChange={(e) => {
+                                      handleOnChange(child.path);
+                                    }}
+                                    name={child.path}
+                                    type="checkbox"
+                                  />
+                                }
+                              />
+                            </div>
+                          </List>
+                        );
+                      })}
+                    </Collapse>
+                  )}
+                </>
+              </div>
+            );
+          })}
           <br />
           <Divider />
           <br />

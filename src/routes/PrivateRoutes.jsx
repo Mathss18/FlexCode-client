@@ -1,26 +1,89 @@
-import React, { useState, useEffect } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
+import { Route, Redirect } from "react-router-dom";
+import { errorAlert } from "../utils/alert";
+import { decrypt } from "../utils/crypto";
 
 function PrivateRoutes({ Component, ...rest }) {
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
   useEffect(() => {
-    setToken(localStorage.getItem('token'));
-
+    setToken(localStorage.getItem("token"));
   }, []);
-
-  if (token == null) {
-    return <Redirect to="/login" />
+  try {
+    var path = rest.location.pathname;
+    var grupo = JSON.parse(decrypt(localStorage.getItem("grupo")));
+    var acessos = JSON.parse(grupo.acessos);
+  } catch (error) {
+    toast.error("Erro ao carregar acessos, fale com o suporte!");
+    return <Redirect to="/login" />;
   }
 
-  return (
-    <Route
-      {...rest}
-      render={() =>
-        <Component {...rest} />
+  // console.log(path);
+  // console.log(grupo);
+  // console.log(acessos)
+
+  // ==== VERIFICAÇÃO DE DIA DA SEMANA ====
+  if (verificarDiaDaSemana() === false) {
+    errorAlert("Voce não tem permissão para acessar o sistema hoje!");
+    localStorage.removeItem("token");
+    setTimeout(()=>{
+      return <Redirect to="/home" />;
+    },1000)
+  }
+  // ==== VERIFICAÇÃO DE HORARIO ====
+  if(verificarHorario() === false){
+    errorAlert("Voce não tem permissão para acessar o sistema nesse horário!");
+    localStorage.removeItem("token");
+    setTimeout(()=>{
+      return <Redirect to="/home" />;
+    },1000)
+  }
+  // ==== VERIFICAÇÃO DE ACESSO ====
+  if (verificarAcessos() === false) {
+    toast.error("Voce não tem permissão para acessar esta página!");
+    return <Redirect to="/home" />;
+  }
+
+  if (token == null) {
+    return <Redirect to="/login" />;
+  }
+
+  function verificarDiaDaSemana() {
+    var semana = [
+      "domingo",
+      "segunda",
+      "terca",
+      "quarta",
+      "quinta",
+      "sexta",
+      "sabado",
+    ];
+    const diaSemana = semana[new Date().getDay()];
+    if (grupo[diaSemana] == 0) {
+      return false;
+    }
+  }
+
+  function verificarHorario() {
+    var horaAtual =  new Date().toLocaleTimeString();
+    if(horaAtual > grupo.horaInicio && horaAtual < grupo.horaFim){
+      return true;
+    }
+    return false;
+  }
+
+  function verificarAcessos() {
+    for (let i = 0; i < acessos.length; i++) {
+      if (acessos[i].path.includes(path)) {
+        if (acessos[i].situacao === false) {
+          return false;
+        }
       }
-    />
-  )
+    }
+  }
+
+  return <Route {...rest} render={() => <Component {...rest} />} />;
 }
 
 export default PrivateRoutes;

@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 import { usePusherContext } from "../../context/PusherContext";
 import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
 import { infoAlert } from "../../utils/alert";
+import { encrypt } from "../../utils/crypto";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -28,6 +29,7 @@ function LoginPage() {
   function redirecionar(response) {
     localStorage.setItem("token", response.data.access_token);
     localStorage.setItem("config", JSON.stringify(response.data.config));
+    localStorage.setItem("grupo", encrypt(JSON.stringify(response.data.grupo)));
     setToLS("user", response.data.user);
     pusherContext.useIsLogged.setIsLogged(true);
     history.push("/home");

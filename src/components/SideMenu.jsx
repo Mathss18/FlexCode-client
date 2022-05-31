@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
 
 function SideMenu({ children }) {
   const renders = useRef(0);
-  console.log('[RENDERS SIDE MENU: ]', renders.current++);
+  console.log("[RENDERS SIDE MENU: ]", renders.current++);
 
   const classes = useStyles();
   const history = useHistory();
@@ -105,19 +105,19 @@ function SideMenu({ children }) {
 
   const handleOpenProdutosList = () => {
     setOpenProdutoList(!openProdutoList);
-  }
+  };
 
   const handleOpenFinanceiroList = () => {
     setOpenFinanceiroList(!openFinanceiroList);
-  }
+  };
 
   const handleOpenEstoqueList = () => {
     setOpenEstoqueList(!openEstoqueList);
-  }
+  };
 
   const handleOpenNotaFiscalList = () => {
     setOpenNotaFiscalList(!openNotaFiscalList);
-  }
+  };
 
   return (
     <div className={classes.root}>
@@ -151,35 +151,58 @@ function SideMenu({ children }) {
             return (
               <>
                 <ListItem button onClick={eval(item.click)} key={index}>
-                  <ListItemIcon>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText className={item.className} primary={item.title} />
-                  {(() => { if (item.collapse) { return eval(item.state[0]) ? <ExpandLess /> : <ExpandMore /> } })()}
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText
+                    className={item.className}
+                    primary={item.title}
+                  />
+                  {(() => {
+                    if (item.collapse) {
+                      return eval(item.state[0]) ? (
+                        <ExpandLess />
+                      ) : (
+                        <ExpandMore />
+                      );
+                    }
+                  })()}
                 </ListItem>
                 {item.collapse && (
-                  <Collapse in={eval(item.state[0])} timeout="auto" unmountOnExit>
+                  <Collapse
+                    in={eval(item.state[0])}
+                    timeout="auto"
+                    unmountOnExit
+                  >
                     {item.children.map((child, index) => {
                       return (
-                        <List onClick={() => history.push(`${child.path}`)} disablePadding key={index}>
+                        <List
+                          onClick={() => history.push(`${child.path}`)}
+                          disablePadding
+                          key={index}
+                        >
                           <ListItem button className={classes.nested}>
-                            <ListItemIcon>
-                              {child.icon}
-                            </ListItemIcon>
-                            <ListItemText className={child.className} primary={child.title} />
+                            <ListItemIcon>{child.icon}</ListItemIcon>
+                            <ListItemText
+                              className={child.className}
+                              primary={child.title}
+                            />
                           </ListItem>
                         </List>
-                      )
+                      );
                     })}
                   </Collapse>
                 )}
               </>
-            )
+            );
           })}
         </List>
         <Divider />
       </Drawer>
-      <main id="content-container-full" className={clsx(classes.content, { [classes.contentShift]: openSideMenu })}>
+      <main
+        id="content-container-full"
+        className={clsx(classes.content, {
+          [classes.contentShift]: openSideMenu,
+        })}
+      >
         <div className={classes.drawerHeader} />
         {children}
       </main>
