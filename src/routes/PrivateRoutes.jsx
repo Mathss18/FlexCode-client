@@ -75,7 +75,7 @@ function PrivateRoutes({ Component, ...rest }) {
 
   function verificarAcessos() {
     for (let i = 0; i < acessos.length; i++) {
-      if (acessos[i].path.includes(path)) {
+      if (path.includes(acessos[i].path)) {
         if (acessos[i].situacao === false) {
           return false;
         }
