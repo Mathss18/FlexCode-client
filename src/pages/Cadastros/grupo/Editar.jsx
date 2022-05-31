@@ -29,6 +29,7 @@ import { confirmAlert, errorAlert, infoAlert, successAlert } from "../../../util
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import { menu } from "../../../constants/menu";
 import { useEffect } from "react";
+import differenceBy from 'lodash/differenceBy'
 
 const initialValues = {
   nome: "",
@@ -95,6 +96,16 @@ function EditarGrupoPage() {
 
           acessos: JSON.parse(response.data["data"].acessos)
         });
+        // const myDifferences = differenceBy(initialValues.acessos, JSON.parse(response.data["data"].acessos), 'path')
+        // console.log(myDifferences);
+        // if(myDifferences.length > 0){
+        //   myDifferences.map(item => {
+        //     formik.setFieldValue(`acessos[${initialValues.acessos.indexOf(item)}]`, {
+        //       path: item.path,
+        //       situacao: false,
+        //     })
+        //   })
+        // }
 
         console.log("[RESPONSE]", formik.values);
       })
@@ -365,7 +376,7 @@ function EditarGrupoPage() {
                                 checked={
                                   formik.values.acessos.find(
                                     (acesso) => acesso.path === item.path
-                                  ).situacao
+                                  )?.situacao
                                 }
                                 onChange={(e) => {
                                   handleOnChange(item.path);
@@ -402,7 +413,7 @@ function EditarGrupoPage() {
                                     checked={
                                       formik.values.acessos.find(
                                         (acesso) => acesso.path === child.path
-                                      ).situacao
+                                      )?.situacao
                                     }
                                     onChange={(e) => {
                                       handleOnChange(child.path);

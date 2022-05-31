@@ -30,6 +30,7 @@ function LoginPage() {
     localStorage.setItem("token", response.data.access_token);
     localStorage.setItem("config", JSON.stringify(response.data.config));
     localStorage.setItem("grupo", encrypt(JSON.stringify(response.data.grupo)));
+    localStorage.setItem("foto", response.data.foto);
     setToLS("user", response.data.user);
     pusherContext.useIsLogged.setIsLogged(true);
     history.push("/home");

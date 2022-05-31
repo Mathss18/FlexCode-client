@@ -1,6 +1,5 @@
 import { Avatar } from "@mui/material";
 import Badge from "@material-ui/core/Badge";
-import userPicture from "../assets/user2.jpg";
 
 import PersonIcon from "@mui/icons-material/Person";
 import SendIcon from "@mui/icons-material/Send";
@@ -23,6 +22,7 @@ function UserMenu() {
   );
   const pusherContext = usePusherContext();
   const user = getFromLS("user");
+  const foto = localStorage.getItem("foto");
   const history = useHistory();
   var indexCurrentStatus;
   const wrapperRef = useRef(null);
@@ -73,7 +73,7 @@ function UserMenu() {
   function handleOnOpen(event) {
     var itemClicado = event.target.classList[0];
 
-    if (itemClicado === "MuiAvatar-img") {
+    if (itemClicado !== "user-status") {
       setOpen((open) => !open);
     } else if (itemClicado === "user-status") {
       indexCurrentStatus = status.findIndex((item) => item.selected === true);
@@ -127,12 +127,12 @@ function UserMenu() {
           </Tooltip>
         }
       >
-        <Avatar
-          alt="Travis Howard"
+        {<Avatar
+          alt={user.nome}
           className={"user-photo"}
-          src={userPicture}
+          src={foto}
           sx={{ width: 48, height: 48 }}
-        />
+        >{user.nome[0]}</Avatar>}
       </Badge>
       <div className={[open ? "active" : "inactive", "user-list"].join(" ")}>
         <h3>

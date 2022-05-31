@@ -27,21 +27,21 @@ function PrivateRoutes({ Component, ...rest }) {
   if (verificarDiaDaSemana() === false) {
     errorAlert("Voce não tem permissão para acessar o sistema hoje!");
     localStorage.removeItem("token");
-    setTimeout(()=>{
+    setTimeout(() => {
       return <Redirect to="/home" />;
-    },1000)
+    }, 1000);
   }
   // ==== VERIFICAÇÃO DE HORARIO ====
-  if(verificarHorario() === false){
+  if (verificarHorario() === false) {
     errorAlert("Voce não tem permissão para acessar o sistema nesse horário!");
     localStorage.removeItem("token");
-    setTimeout(()=>{
+    setTimeout(() => {
       return <Redirect to="/home" />;
-    },1000)
+    }, 1000);
   }
   // ==== VERIFICAÇÃO DE ACESSO ====
   if (verificarAcessos() === false) {
-    toast.error("Voce não tem permissão para acessar esta página!");
+    toast.error("Você não tem permissão para acessar esta página!");
     return <Redirect to="/home" />;
   }
 
@@ -66,8 +66,8 @@ function PrivateRoutes({ Component, ...rest }) {
   }
 
   function verificarHorario() {
-    var horaAtual =  new Date().toLocaleTimeString();
-    if(horaAtual > grupo.horaInicio && horaAtual < grupo.horaFim){
+    var horaAtual = new Date().toLocaleTimeString();
+    if (horaAtual > grupo.horaInicio && horaAtual < grupo.horaFim) {
       return true;
     }
     return false;
@@ -81,6 +81,7 @@ function PrivateRoutes({ Component, ...rest }) {
         }
       }
     }
+    return true;
   }
 
   return <Route {...rest} render={() => <Component {...rest} />} />;
