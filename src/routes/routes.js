@@ -96,6 +96,8 @@ import EditarNotasFiscaisPage from "../pages/NotasFiscais/nfe/Editar";
 import ListarRelatorios from "../pages/Relatorios/Listar"
 import RendimentosVsDespesas from "../pages/Relatorios/RendimentosVsDespesas";
 import PatrimonioAoLongoDoTempo from "../pages/Relatorios/PatrimonioAoLongoDoTempo";
+import VendaReport from "../reports/Vendas/VendaReport";
+import CompraReport from "../reports/Compras/CompraReport";
 
 
 export default function Routes({themeSetter}) {
@@ -112,6 +114,8 @@ export default function Routes({themeSetter}) {
         <Route path="/ordens-servicos-acompanhamento/:encrypted" exact component={ListarOrdensServicosAcompanhamento}></Route>
         <Route path="/ordens-servicos/relatorio" exact component={OrdermServicoReport}></Route>
         <Route path="/orcamentos/relatorio" exact component={OrcamentoReport}></Route>
+        <Route path="/vendas/relatorio" exact component={VendaReport}></Route>
+        <Route path="/compras/relatorio" exact component={CompraReport}></Route>
 
 
         <PrivateRoutes>

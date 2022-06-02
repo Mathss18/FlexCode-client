@@ -77,7 +77,7 @@ function ListarVendas() {
   function handleOnClickPdfButton(event, item) {
     const BASE_URL = window.location.origin;
     const data = btoa(JSON.stringify(item));
-    localStorage.setItem("compraReport", data);
+    localStorage.setItem("vendaReport", data);
 
     window.open(`${BASE_URL}/vendas/relatorio`, "_blank");
   }

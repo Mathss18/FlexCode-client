@@ -466,7 +466,7 @@ function EditarComprasPage() {
   useEffect(() => {
     if (formik.values.tipoFormaPagamento == '0') return
     var formaPaga = formasPagamentosOriginal.current.filter((formaPagamento) => {
-      return formaPagamento.id == formik.values.forma_pagamento_id.value;
+      return formaPagamento.id == formik.values?.forma_pagamento_id?.value;
     });
     if(formaPaga.length == 1){
       formik.setFieldValue("intervaloParcelas", formaPaga[0].intervaloParcelas);
