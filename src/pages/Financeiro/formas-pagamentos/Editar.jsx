@@ -25,8 +25,8 @@ import { useParams } from "react-router-dom";
 const initialValues = {
   nome: "",
   conta_bancaria_id: 0,
-  numeroMaximoParcelas: '',
-  intervaloParcelas: '',
+  numeroMaximoParcelas: "",
+  intervaloParcelas: "",
 };
 
 function EditarFormasPagamentosPage() {
@@ -45,9 +45,9 @@ function EditarFormasPagamentosPage() {
 
   function handleOnSubmit(values) {
     api
-      .post("/formas-pagamentos", values)
+      .put("/formas-pagamentos/" + id, values)
       .then((response) => {
-        successAlert("Sucesso", "Porcentagens de Lucros Cadastrada", () =>
+        successAlert("Sucesso", "Porcentagens de Lucros Editada", () =>
           history.push("/formas-pagamentos")
         );
       })
@@ -76,35 +76,35 @@ function EditarFormasPagamentosPage() {
       });
   }
 
-
   useEffect(() => {
     fullScreenLoader.setLoading(true);
-    api.get("/contas-bancarias").then((response) => {
-      setContasBancarias(response.data['data']);
-    })
+    api
+      .get("/contas-bancarias")
+      .then((response) => {
+        setContasBancarias(response.data["data"]);
+      })
       .catch((error) => {
         console.log("Erro:" + error);
       })
       .finally(() => fullScreenLoader.setLoading(false));
-
   }, []);
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
-    api.get("/formas-pagamentos/" + id).then((response) => {
-      formik.setValues(response.data['data']);
-    })
+    api
+      .get("/formas-pagamentos/" + id)
+      .then((response) => {
+        formik.setValues(response.data["data"]);
+      })
       .catch((error) => {
         console.log("Erro:" + error);
       })
       .finally(() => fullScreenLoader.setLoading(false));
-
   }, []);
-
 
   function handleOnChange(event) {
     const { name, value } = event.target;
-    formik.setValues({ ...formik.values, [name]: value }); // Altera o State 
+    formik.setValues({ ...formik.values, [name]: value }); // Altera o State
   }
 
   return (
@@ -129,9 +129,7 @@ function EditarFormasPagamentosPage() {
                 name="nome"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={
-                  formik.touched.nome && Boolean(formik.errors.nome)
-                }
+                error={formik.touched.nome && Boolean(formik.errors.nome)}
                 helperText={formik.touched.nome && formik.errors.nome}
               />
             </Grid>
@@ -145,8 +143,14 @@ function EditarFormasPagamentosPage() {
                 name="numeroMaximoParcelas"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.numeroMaximoParcelas && Boolean(formik.errors.numeroMaximoParcelas)}
-                helperText={formik.touched.numeroMaximoParcelas && formik.errors.numeroMaximoParcelas}
+                error={
+                  formik.touched.numeroMaximoParcelas &&
+                  Boolean(formik.errors.numeroMaximoParcelas)
+                }
+                helperText={
+                  formik.touched.numeroMaximoParcelas &&
+                  formik.errors.numeroMaximoParcelas
+                }
               />
             </Grid>
             <Grid item xs={3}>
@@ -159,12 +163,22 @@ function EditarFormasPagamentosPage() {
                 name="intervaloParcelas"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.intervaloParcelas && Boolean(formik.errors.intervaloParcelas)}
-                helperText={formik.touched.intervaloParcelas && formik.errors.intervaloParcelas}
+                error={
+                  formik.touched.intervaloParcelas &&
+                  Boolean(formik.errors.intervaloParcelas)
+                }
+                helperText={
+                  formik.touched.intervaloParcelas &&
+                  formik.errors.intervaloParcelas
+                }
               />
             </Grid>
             <Grid item xs={3}>
-              <FormControl variant="outlined" fullWidth name="conta_bancaria_id">
+              <FormControl
+                variant="outlined"
+                fullWidth
+                name="conta_bancaria_id"
+              >
                 <InputLabel>Conta Bancária *</InputLabel>
                 <Select
                   className={"input-select"}
@@ -173,18 +187,29 @@ function EditarFormasPagamentosPage() {
                   value={formik.values.conta_bancaria_id}
                   onChange={handleOnChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.conta_bancaria_id && Boolean(formik.errors.conta_bancaria_id)}
+                  error={
+                    formik.touched.conta_bancaria_id &&
+                    Boolean(formik.errors.conta_bancaria_id)
+                  }
                 >
                   <MenuItem value={null}> Nenhum</MenuItem>
                   {contasBancarias &&
                     contasBancarias.map((conta) => {
-                      return <MenuItem value={conta.id} key={conta.id}>{conta.nome}</MenuItem>
+                      return (
+                        <MenuItem value={conta.id} key={conta.id}>
+                          {conta.nome}
+                        </MenuItem>
+                      );
                     })}
                 </Select>
-                {formik.touched.conta_bancaria_id && Boolean(formik.errors.conta_bancaria_id)
-                  ? <FormHelperText>{formik.errors.conta_bancaria_id}</FormHelperText>
-                  : ''
-                }
+                {formik.touched.conta_bancaria_id &&
+                Boolean(formik.errors.conta_bancaria_id) ? (
+                  <FormHelperText>
+                    {formik.errors.conta_bancaria_id}
+                  </FormHelperText>
+                ) : (
+                  ""
+                )}
               </FormControl>
             </Grid>
           </Grid>
