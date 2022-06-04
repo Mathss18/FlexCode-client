@@ -30,8 +30,9 @@ import {
   textAreaAlert,
 } from "../../../../../utils/alert";
 import api from "../../../../../services/api";
-import { Slide } from "@material-ui/core";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import ModalFotoProduto from "./ModalFotoProduto";
+import toast from "react-hot-toast";
 
 export function Fazendo() {
   const { idUsuario } = useParams();
@@ -149,6 +150,150 @@ export function Fazendo() {
     search();
   }, []);
 
+  // === Produtos ===
+  function marcarProduto(element) {
+    var jsonAntigo = JSON.parse(element.pivot.situacao);
+    if (jsonAntigo == null) {
+      // ==== se não tiver nada, cria um novo json ====
+      var json = [
+        {
+          usuario_id: idUsuario,
+          situacao: true,
+        },
+      ];
+      postMarcarProduto(element, json);
+
+      return;
+    }
+
+    const existe = jsonAntigo.find(
+      (element) => element.usuario_id === idUsuario
+    );
+    if (!!existe) {
+      // ==== se já existir um registro daquele usuario, modifica o registro ====
+      var jsonNovo = jsonAntigo.map((item) => {
+        if (item.usuario_id === idUsuario) {
+          item.situacao = !item.situacao;
+        }
+        return item;
+      });
+      postMarcarProduto(element, jsonNovo);
+      return;
+    }
+
+    // ==== se não existir um registro daquele usuario, cria um pra ele ====
+    jsonAntigo.push({
+      usuario_id: idUsuario,
+      situacao: true,
+    });
+    postMarcarProduto(element, jsonAntigo);
+  }
+
+  function postMarcarProduto(element, json) {
+    api
+      .post("/ordens-servicos-funcionarios-produtos-marcar", {
+        ordem_servico_id: element.pivot.ordem_servico_id,
+        produto_id: element.pivot.produto_id,
+        situacao: json,
+      })
+      .then((response) => {
+        toast.success("Produto marcado com sucesso!");
+      })
+      .catch((error) => {
+        errorAlert("Atenção", error?.response?.data?.message);
+      })
+      .finally(() => {
+        setOpen(false);
+        search();
+      });
+  }
+
+  function isProdutoMarked(element) {
+    var jsonAntigo = JSON.parse(element.pivot.situacao);
+    if (jsonAntigo == null) {
+      return false;
+    }
+    const existe = jsonAntigo.find(
+      (element) => element.usuario_id === idUsuario
+    );
+    if (!!existe && existe.situacao) {
+      return true;
+    }
+    return false;
+  }
+
+  // === Serviços ===
+  function marcarServico(element) {
+    var jsonAntigo = JSON.parse(element.pivot.situacao);
+    if (jsonAntigo == null) {
+      // ==== se não tiver nada, cria um novo json ====
+      var json = [
+        {
+          usuario_id: idUsuario,
+          situacao: true,
+        },
+      ];
+      postMarcarServico(element, json);
+
+      return;
+    }
+
+    const existe = jsonAntigo.find(
+      (element) => element.usuario_id === idUsuario
+    );
+    if (!!existe) {
+      // ==== se já existir um registro daquele usuario, modifica o registro ====
+      var jsonNovo = jsonAntigo.map((item) => {
+        if (item.usuario_id === idUsuario) {
+          item.situacao = !item.situacao;
+        }
+        return item;
+      });
+      postMarcarServico(element, jsonNovo);
+      return;
+    }
+
+    // ==== se não existir um registro daquele usuario, cria um pra ele ====
+    jsonAntigo.push({
+      usuario_id: idUsuario,
+      situacao: true,
+    });
+    postMarcarServico(element, jsonAntigo);
+  }
+
+  function postMarcarServico(element, json) {
+    api
+      .post("/ordens-servicos-funcionarios-servicos-marcar", {
+        ordem_servico_id: element.pivot.ordem_servico_id,
+        servico_id: element.pivot.servico_id,
+        situacao: json,
+      })
+      .then((response) => {
+        toast.success("Servico marcado com sucesso!");
+      })
+      .catch((error) => {
+        errorAlert("Atenção", error?.response?.data?.message);
+      })
+      .finally(() => {
+        setOpen(false);
+        search();
+      });
+  }
+
+  function isServicoMarked(element) {
+    var jsonAntigo = JSON.parse(element.pivot.situacao);
+    if (jsonAntigo == null) {
+      return false;
+    }
+    const existe = jsonAntigo.find(
+      (element) => element.usuario_id === idUsuario
+    );
+    if (!!existe && existe.situacao) {
+      return true;
+    }
+    return false;
+  }
+
   const DialogHeader = () => {
     return (
       <AppBar sx={{ position: "relative" }}>
@@ -187,30 +332,49 @@ export function Fazendo() {
               <ListItem
                 key={index}
                 button
-                secondaryAction={
-                  <IconButton edge="end">
-                    <PhotoIcon style={{ fill: "grey" }} />
-                  </IconButton>
-                }
                 onClick={() => {
                   setProdutoSelecionado(element);
                   setOpenFotoModal(true);
                 }}
               >
                 <ListItemAvatar>
-                  <Avatar style={{ background: "grey" }}>
-                    <BubbleChartIcon style={{ fill: "white" }} />
+                  <Avatar
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      marcarProduto(element);
+                    }}
+                    style={{
+                      background:
+                        isProdutoMarked(element) === true
+                          ? "#00ff00"
+                          : "#ff0000",
+                    }}
+                  >
+                    {isProdutoMarked(element) === true ? (
+                      <CheckIcon style={{ fill: "#000" }} />
+                    ) : (
+                      <CloseIcon style={{ fill: "#000" }} />
+                    )}
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                  style={{ flex: "none" }}
+                  style={{
+                    flex: "none",
+                  }}
                   primary={element.nome}
                   secondary={"Código Interno: " + element.codigoInterno}
                 />
                 <ListItemText
-                  style={{ flex: "none", marginLeft: 48 }}
+                  style={{
+                    flex: "none",
+                    marginLeft: 48,
+                  }}
                   primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={"Observações: " + element.pivot.observacao ?? ""}
+                  secondary={
+                    "Observações: " + element.pivot.observacao == null
+                      ? ""
+                      : element.pivot.observacao
+                  }
                 />
               </ListItem>
             );
@@ -227,18 +391,25 @@ export function Fazendo() {
           <h3 style={{ textAlign: "center" }}>Serviços</h3>
           {dados["ordem_servico"].servicos.map((element, index) => {
             return (
-              <ListItem
-                key={index}
-                button
-                secondaryAction={
-                  <IconButton edge="end">
-                    <PhotoIcon style={{ fill: "grey" }} />
-                  </IconButton>
-                }
-              >
+              <ListItem key={index} button>
                 <ListItemAvatar>
-                  <Avatar style={{ background: "grey" }}>
-                    <BuildIcon style={{ fill: "white" }} />
+                  <Avatar
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      marcarServico(element);
+                    }}
+                    style={{
+                      background:
+                        isServicoMarked(element) === true
+                          ? "#00ff00"
+                          : "#ff0000",
+                    }}
+                  >
+                    {isServicoMarked(element) === true ? (
+                      <CheckIcon style={{ fill: "#000" }} />
+                    ) : (
+                      <CloseIcon style={{ fill: "#000" }} />
+                    )}
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
@@ -249,7 +420,11 @@ export function Fazendo() {
                 <ListItemText
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={"Observações: " + element.pivot.observacao ?? " "}
+                  secondary={
+                    "Observações: " + element.pivot.observacao == null
+                      ? ""
+                      : element.pivot.observacao
+                  }
                 />
               </ListItem>
             );

@@ -106,6 +106,34 @@ export function Finalizadas() {
     search();
   }, []);
 
+  function isProdutoMarked(element) {
+    var jsonAntigo = JSON.parse(element.pivot.situacao);
+    if (jsonAntigo == null) {
+      return false;
+    }
+    const existe = jsonAntigo.find(
+      (element) => element.usuario_id === idUsuario
+    );
+    if (!!existe && existe.situacao) {
+      return true;
+    }
+    return false;
+  }
+
+  function isServicoMarked(element) {
+    var jsonAntigo = JSON.parse(element.pivot.situacao);
+    if (jsonAntigo == null) {
+      return false;
+    }
+    const existe = jsonAntigo.find(
+      (element) => element.usuario_id === idUsuario
+    );
+    if (!!existe && existe.situacao) {
+      return true;
+    }
+    return false;
+  }
+
   const DialogHeader = () => {
     return (
       <AppBar sx={{ position: "relative" }}>
@@ -144,19 +172,25 @@ export function Finalizadas() {
               <ListItem
                 key={index}
                 button
-                secondaryAction={
-                  <IconButton edge="end">
-                    <PhotoIcon style={{ fill: "grey" }} />
-                  </IconButton>
-                }
                 onClick={() => {
                   setProdutoSelecionado(element);
                   setOpenFotoModal(true);
                 }}
               >
                 <ListItemAvatar>
-                  <Avatar style={{ background: "grey" }}>
-                    <BubbleChartIcon style={{ fill: "white" }} />
+                  <Avatar
+                    style={{
+                      background:
+                        isProdutoMarked(element) === true
+                          ? "#00ff00"
+                          : "#ff0000",
+                    }}
+                  >
+                    {isProdutoMarked(element) === true ? (
+                      <CheckIcon style={{ fill: "#000" }} />
+                    ) : (
+                      <CloseIcon style={{ fill: "#000" }} />
+                    )}
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
@@ -167,7 +201,11 @@ export function Finalizadas() {
                 <ListItemText
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={"Observações: " + element.pivot.observacao ?? ""}
+                  secondary={
+                    "Observações: " + element.pivot.observacao == null
+                      ? ""
+                      : element.pivot.observacao
+                  }
                 />
               </ListItem>
             );
@@ -187,15 +225,21 @@ export function Finalizadas() {
               <ListItem
                 key={index}
                 button
-                secondaryAction={
-                  <IconButton edge="end">
-                    <PhotoIcon style={{ fill: "grey" }} />
-                  </IconButton>
-                }
               >
                 <ListItemAvatar>
-                  <Avatar style={{ background: "grey" }}>
-                    <BuildIcon style={{ fill: "white" }} />
+                  <Avatar
+                    style={{
+                      background:
+                        isServicoMarked(element) === true
+                          ? "#00ff00"
+                          : "#ff0000",
+                    }}
+                  >
+                    {isServicoMarked(element) === true ? (
+                      <CheckIcon style={{ fill: "#000" }} />
+                    ) : (
+                      <CloseIcon style={{ fill: "#000" }} />
+                    )}
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
@@ -206,7 +250,11 @@ export function Finalizadas() {
                 <ListItemText
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={"Observações: " + element.pivot.observacao ?? " "}
+                  secondary={
+                    "Observações: " + element.pivot.observacao == null
+                      ? ""
+                      : element.pivot.observacao
+                  }
                 />
               </ListItem>
             );
@@ -220,7 +268,7 @@ export function Finalizadas() {
   const DialogFooter = () => {
     return (
       <>
-        <Grid container style={{margin: 12, width: 'fit-content'}}>
+        <Grid container style={{ margin: 12, width: "fit-content" }}>
           <Grid item>
             <h3>Observações:</h3>
             <p>{dados?.observacao}</p>

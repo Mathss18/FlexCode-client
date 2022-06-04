@@ -187,11 +187,6 @@ export function Abertas() {
               <ListItem
                 key={index}
                 button
-                secondaryAction={
-                  <IconButton edge="end">
-                    <PhotoIcon style={{ fill: "grey" }} />
-                  </IconButton>
-                }
                 onClick={() => {
                   setProdutoSelecionado(element);
                   setOpenFotoModal(true);
@@ -210,7 +205,11 @@ export function Abertas() {
                 <ListItemText
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={"Observações: " + element.pivot.observacao ?? ""}
+                  secondary={
+                    "Observações: " + element.pivot.observacao == null
+                      ? ""
+                      : element.pivot.observacao
+                  }
                 />
               </ListItem>
             );
@@ -227,15 +226,7 @@ export function Abertas() {
           <h3 style={{ textAlign: "center" }}>Serviços</h3>
           {dados["ordem_servico"].servicos.map((element, index) => {
             return (
-              <ListItem
-                key={index}
-                button
-                secondaryAction={
-                  <IconButton edge="end">
-                    <PhotoIcon style={{ fill: "grey" }} />
-                  </IconButton>
-                }
-              >
+              <ListItem key={index} button>
                 <ListItemAvatar>
                   <Avatar style={{ background: "grey" }}>
                     <BuildIcon style={{ fill: "white" }} />
@@ -249,7 +240,11 @@ export function Abertas() {
                 <ListItemText
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={"Observações: " + element.pivot.observacao ?? " "}
+                  secondary={
+                    "Observações: " + element.pivot.observacao == null
+                      ? ""
+                      : element.pivot.observacao
+                  }
                 />
               </ListItem>
             );
@@ -266,7 +261,11 @@ export function Abertas() {
 
   return (
     <>
-      <ModalFotoProduto open={openFotoModal} setOpen={setOpenFotoModal} item={produtoSelecionado}/>
+      <ModalFotoProduto
+        open={openFotoModal}
+        setOpen={setOpenFotoModal}
+        item={produtoSelecionado}
+      />
       <Dialog
         fullScreen
         open={open}
