@@ -115,6 +115,7 @@ export function Dados() {
           <FormControl variant="outlined" fullWidth name="habilitaNotaFiscal">
             <InputLabel>Habilitar Nota Fiscal?</InputLabel>
             <Select
+              readOnly
               className={"input-select"}
               label="Habilitar Nota Fiscal?"
               name="habilitaNotaFiscal"

@@ -1,5 +1,4 @@
 import "./orcamento.css";
-import logo from "./img.jpg";
 import { useEffect, useState } from "react";
 import { Fab } from "@material-ui/core";
 import PrintIcon from "@mui/icons-material/Print";
@@ -62,7 +61,7 @@ export default function OrcamentoReport() {
     <>
       <div className="containerReport">
         <div className="containerHeader">
-          <img src={logo} alt="logo" className="containerImg" />
+          <img src={empresaConfig.logo} alt="logo" className="containerImg" />
           <div className="headerLeft" style={{ display: "flex", gap: 10 }}>
             <div>
               <h3>{empresaConfig?.nome}</h3>

@@ -3,6 +3,7 @@ import { Card, CardContent, Typography, CardActions } from "@material-ui/core";
 import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 import TrendingDownIcon from "@material-ui/icons/TrendingDown";
 import BarChartIcon from "@material-ui/icons/BarChart";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -102,6 +103,7 @@ const useStyles = makeStyles((theme) => ({
 
 function DashboardCard({ dados, type }) {
   const classes = useStyles();
+  const history = useHistory();
   if (type === "green") {
     return (
       <Card className={classes.card + " " + classes.card_green}>
@@ -129,8 +131,8 @@ function DashboardCard({ dados, type }) {
 
         {/*---- Card Footer* ----*/}
         <CardActions className={classes.card_green_footer}>
-          <a size="small" className={classes.card_title}>
-            Ir para calendario de contas
+          <a size="small" className={classes.card_title} onClick={()=>history.push('/money')}>
+            Ir para calendário de contas
           </a>
         </CardActions>
       </Card>
@@ -162,8 +164,8 @@ function DashboardCard({ dados, type }) {
 
         {/*---- Card Footer* ----*/}
         <CardActions className={classes.card_red_footer}>
-          <a size="small" className={classes.card_title}>
-            Ir para calendario de contas
+          <a size="small" className={classes.card_title} onClick={()=>history.push('/money')}>
+            Ir para calendário de contas
           </a>
         </CardActions>
       </Card>
@@ -211,8 +213,8 @@ function DashboardCard({ dados, type }) {
 
         {/*---- Card Footer* ----*/}
         <CardActions className={classes.card_blue_footer}>
-          <a size="small" className={classes.card_title}>
-            Ir para fulxo de caixa
+          <a size="small" className={classes.card_title} onClick={()=>history.push('/money')}>
+            Ir para calendário de contas
           </a>
         </CardActions>
       </Card>

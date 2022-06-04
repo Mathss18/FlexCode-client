@@ -1,5 +1,4 @@
 import "./ordemServico.css";
-import logo from "./img.jpg";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import { Fab } from "@material-ui/core";
@@ -68,7 +67,7 @@ export default function OrdermServicoReport(texto) {
     <>
       <div className="containerReport">
         <div className="containerHeader">
-          <img src={logo} alt="logo" className="containerImg" />
+          <img src={empresaConfig.logo} alt="logo" className="containerImg" />
           <div className="headerLeft" style={{ display: "flex", gap: 10 }}>
             <div>
               <h3>{empresaConfig?.nome}</h3>
