@@ -150,7 +150,7 @@ export default function OrcamentoReport() {
                   return (
                     <tr className="trOrcamento" key={index}>
                       <td className="tdOrcamento" width={"7%"}>{index + 1}</td>
-                      <td className="tdOrcamento">{produto?.nome}</td>
+                      <td className="tdOrcamento">{produto?.codigoInterno +' • '+produto?.nome}</td>
                       <td className="tdOrcamento">{produto?.pivot.observacao}</td>
                       <td className="tdOrcamento">{produto?.pivot.quantidade}</td>
                       <td className="tdOrcamento">
@@ -207,7 +207,7 @@ export default function OrcamentoReport() {
                   return (
                     <tr className="trOrcamento" key={index}>
                       <td className="tdOrcamento" width={"7%"}>{index + 1}</td>
-                      <td className="tdOrcamento">{servico?.nome}</td>
+                      <td className="tdOrcamento">{servico?.codigoInterno +' • '+servico?.nome}</td>
                       <td className="tdOrcamento">{servico?.pivot.observacao}</td>
                       <td className="tdOrcamento">{servico?.pivot.quantidade}</td>
                       <td className="tdOrcamento">

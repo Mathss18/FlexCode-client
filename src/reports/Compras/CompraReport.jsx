@@ -137,7 +137,7 @@ export default function CompraReport() {
                   return (
                     <tr className="trCompra" key={index}>
                       <td className="tdCompra" width={"7%"}>{index + 1}</td>
-                      <td className="tdCompra">{produto?.nome}</td>
+                      <td className="tdCompra">{produto?.codigoInterno +' • '+produto?.nome}</td>
                       <td className="tdCompra">{produto?.pivot.observacao}</td>
                       <td className="tdCompra">{produto?.pivot.quantidade}</td>
                       <td className="tdCompra">
