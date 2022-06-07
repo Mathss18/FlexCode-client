@@ -67,7 +67,7 @@ function ListarProdutos() {
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
-    api.get("/produtos")
+    api.get("/produtos-mini")
       .then((response) => {
           response.data["data"].forEach((element) => {
             var array = [
