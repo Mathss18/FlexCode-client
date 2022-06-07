@@ -48,7 +48,7 @@ const initialValues = {
   nNF: "",
   serie: "",
   ambienteNfe: "1",
-  aliquota: "",
+  aliquota: 0,
   proxyIp: "",
   proxyPort: "",
   proxyUser: "",
@@ -607,6 +607,9 @@ function CadastrarConfiguracaoPage() {
                 name="aliquota"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                inputProps={{
+                  step: "any"
+                }}
                 error={
                   formik.touched.aliquota && Boolean(formik.errors.aliquota)
                 }
