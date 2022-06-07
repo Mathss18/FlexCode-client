@@ -18,6 +18,10 @@ export const GlobalStyles = createGlobalStyle`
     cursor: pointer; // cursor tipo pointer ao passar o mouse sobre links
   }
 
+  .app-default-text-color{
+    color: ${({ theme }) => theme.colors.text}; // cor padrao do texto da aplicação
+  }
+
   ::-webkit-scrollbar {
     width: 12px;
     background-color: transparent;
