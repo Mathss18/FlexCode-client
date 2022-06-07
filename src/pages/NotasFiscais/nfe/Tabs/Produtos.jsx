@@ -93,12 +93,13 @@ export default function Produtos() {
           <Autocomplete
             fullWidth
             disableClearable={true}
-            onKeyUp={(e)=>{
-              params.row.nome = e.target.value
+            onKeyUp={(e) => {
+              console.log(params)
+              params.row.nome = e.target.value;
             }}
             value={
               params.row.produto_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : { label: params.row.nome, value: params.row.produto_id }
             }
             name="produto_id"
@@ -181,7 +182,7 @@ export default function Produtos() {
           produtosOriginal.current = response.data["data"];
 
           array.push({
-            label: produto.nome,
+            label: produto.codigoInterno + " • " + produto.nome,
             value: produto.id,
             preco: produto.custoFinal,
             cfop: produto.cfop,
