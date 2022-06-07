@@ -182,7 +182,7 @@ export default function Produtos() {
           produtosOriginal.current = response.data["data"];
 
           array.push({
-            label: produto.codigoInterno + " • " + produto.nome,
+            label: produto.codigoInterno + " / " + produto.nome,
             value: produto.id,
             preco: produto.custoFinal,
             cfop: produto.cfop,
