@@ -87,7 +87,7 @@ export function Fazendo() {
     textAreaAlert().then((response) => {
       fullScreenLoader.setLoading(true);
       api
-        .put("/ordens-servicos-funcionarios/" + element.id, {
+        .put("/minhas-tarefas/" + element.id, {
           ...element,
           status: 2,
           observacao: response,
@@ -108,7 +108,7 @@ export function Fazendo() {
   function search() {
     fullScreenLoader.setLoading(true);
     api
-      .get("/ordens-servicos-funcionarios/" + idUsuario + "/fazendo")
+      .get("/minhas-tarefas/" + idUsuario + "/fazendo")
       .then((response) => {
         response.data["data"].forEach((element) => {
           var array = [
@@ -191,7 +191,7 @@ export function Fazendo() {
 
   function postMarcarProduto(element, json) {
     api
-      .post("/ordens-servicos-funcionarios-produtos-marcar", {
+      .post("/minhas-tarefas-produtos-marcar", {
         ordem_servico_id: element.pivot.ordem_servico_id,
         produto_id: element.pivot.produto_id,
         situacao: json,
@@ -263,7 +263,7 @@ export function Fazendo() {
 
   function postMarcarServico(element, json) {
     api
-      .post("/ordens-servicos-funcionarios-servicos-marcar", {
+      .post("/minhas-tarefas-servicos-marcar", {
         ordem_servico_id: element.pivot.ordem_servico_id,
         servico_id: element.pivot.servico_id,
         situacao: json,

@@ -88,7 +88,7 @@ export function Abertas() {
   function moveToFazendo(element) {
     fullScreenLoader.setLoading(true);
     api
-      .put("/ordens-servicos-funcionarios/" + element.id, {
+      .put("/minhas-tarefas/" + element.id, {
         ...element,
         status: 1,
         dataFinalizado: moment().format("YYYY-MM-DD"),
@@ -107,7 +107,7 @@ export function Abertas() {
   function search() {
     fullScreenLoader.setLoading(true);
     api
-      .get("/ordens-servicos-funcionarios/" + idUsuario + "/abertas")
+      .get("/minhas-tarefas/" + idUsuario + "/abertas")
       .then((response) => {
         response.data["data"].forEach((element) => {
           var array = [

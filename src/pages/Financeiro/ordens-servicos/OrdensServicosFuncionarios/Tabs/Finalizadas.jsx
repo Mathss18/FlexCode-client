@@ -71,7 +71,7 @@ export function Finalizadas() {
 
   function search() {
     api
-      .get("/ordens-servicos-funcionarios/" + idUsuario + "/finalizadas")
+      .get("/minhas-tarefas/" + idUsuario + "/finalizadas")
       .then((response) => {
         response.data["data"].forEach((element) => {
           var array = [

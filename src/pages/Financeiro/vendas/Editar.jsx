@@ -295,7 +295,6 @@ function EditarVendasPage() {
       field: "dataVencimento",
       headerName: "Data Vencimento",
       flex: 1,
-      type: "date",
       editable: true,
       sortable: false,
       headerAlign: 'letf',

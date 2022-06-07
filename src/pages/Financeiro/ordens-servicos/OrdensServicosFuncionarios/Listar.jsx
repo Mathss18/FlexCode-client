@@ -15,7 +15,7 @@ function ListarOrdensServicosFuncionariosPage() {
     const user = JSON.parse(localStorage.getItem("user"));
     if(idUsuario != user.id){
       toast.error('Você pode ver somente suas tarefas.');
-      history.push(`/ordens-servicos-funcionarios/${user.id}`);
+      history.push(`/minhas-tarefas/${user.id}`);
     }
     
   },[])
