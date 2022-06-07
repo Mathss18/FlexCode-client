@@ -320,7 +320,7 @@ function EditarComprasPage() {
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
-            label: produto.nome,
+            label: produto.codigoInterno + " • " + produto.nome,
             value: produto.id,
             preco: produto.custoFinal,
           });

@@ -95,7 +95,6 @@ function CadastrarOrcamentosPage() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            
             options={produtos}
             renderInput={(params) => (
               <TextField
@@ -189,7 +188,6 @@ function CadastrarOrcamentosPage() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            
             options={servicos}
             renderInput={(params) => (
               <TextField
@@ -314,12 +312,12 @@ function CadastrarOrcamentosPage() {
     api
       .get("/produtos")
       .then((response) => {
-        produtosOriginal.current = response.data['data'];
+        produtosOriginal.current = response.data["data"];
 
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
-            label: produto.nome,
+            label: produto.codigoInterno + " • " + produto.nome,
             value: produto.id,
             preco: produto.custoFinal,
           });
@@ -336,7 +334,7 @@ function CadastrarOrcamentosPage() {
         var array = [];
         response.data["data"].forEach((servico) => {
           array.push({
-            label: servico.nome,
+            label: servico.codigoInterno + " • " + servico.nome,
             value: servico.id,
             preco: servico.valor,
           });
@@ -619,7 +617,6 @@ function CadastrarOrcamentosPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                
                 options={clientes}
                 renderInput={(params) => (
                   <TextField
@@ -688,7 +685,6 @@ function CadastrarOrcamentosPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                
                 options={transportadoras}
                 renderInput={(params) => (
                   <TextField
