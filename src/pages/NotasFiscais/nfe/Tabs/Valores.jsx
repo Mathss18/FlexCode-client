@@ -55,7 +55,6 @@ export default function Valores() {
       field: "dataVencimento",
       headerName: "Data Vencimento",
       flex: 1,
-      type: "date",
       editable: true,
       sortable: false,
       headerAlign: "letf",
@@ -279,6 +278,7 @@ export default function Valores() {
   // ==== Funções de parcelas ====
 
   function handleParcelaRowStateChange(dataGrid) {
+    console.log('aui')
     if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsParcelas))
       return;
     if (objectToArray(dataGrid.rows.idRowsLookup).length != rowsParcelas.length)
