@@ -30,7 +30,7 @@ function ListarProdutos() {
       options: rowConfig,
     },
     {
-      name: "Valor Custo",
+      name: "Custo Final",
       options: rowConfig,
     },
     {
@@ -74,7 +74,7 @@ function ListarProdutos() {
               element["nome"],
               element["codigoInterno"],
               element["grupo_produto"]["nome"],
-              `R$: ${element['valorCusto'].toFixed(empresaConfig.quantidadeCasasDecimaisValor)}`,
+              `R$: ${element['custoFinal'].toFixed(empresaConfig.quantidadeCasasDecimaisValor)}`,
               `${element["quantidadeAtual"]} ${element["unidade_produto"]?.sigla ?? ''}`,
               element?.cliente?.nome,
               element["fornecedores"].map((item,index)=>{
