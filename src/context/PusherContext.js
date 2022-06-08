@@ -65,7 +65,7 @@ function PusherContextProvider({ children }) {
     setPrivateChannel(pusher.subscribe("private-chat-"+window.location.hostname.split(".")[0]+'-'+ user?.id));
 
     // Se inscreve no canal publico
-    setPublicChannel(pusher.subscribe("presence-chat"+window.location.hostname.split(".")[0]));
+    setPublicChannel(pusher.subscribe("presence-chat-"+window.location.hostname.split(".")[0]));
   }, [pusher]);
 
   // Use effect para se inscrever nos eventos e setar o callback
