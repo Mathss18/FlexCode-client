@@ -861,6 +861,7 @@ function CadastrarComprasPage() {
                   rows={rowsProdutos}
                   columns={columnsProdutos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   onStateChange={handleProductRowStateChange}
                   components={{
@@ -1172,6 +1173,7 @@ function CadastrarComprasPage() {
                   onStateChange={handleParcelaRowStateChange}
                   disableVirtualization
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   components={{
                     NoRowsOverlay: () => (
