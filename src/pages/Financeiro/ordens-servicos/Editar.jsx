@@ -923,6 +923,7 @@ function EditarOrcamentosPage() {
                   rows={rowsProdutos}
                   columns={columnsProdutos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   onStateChange={handleProductRowStateChange}
                   components={{
