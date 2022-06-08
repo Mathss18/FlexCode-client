@@ -44,9 +44,9 @@ function ListarOrdensServicosFuncionariosPage() {
           <h3>Dados das Ordens de Serviços</h3>
         </div>
         <Tabs style={{marginBottom: '24px'}} value={currentTab} onChange={handleTabChange}>
-          <Tab label="Abertas" style={{color: 'white'}}/>
-          <Tab label="Fazendo" style={{color: 'white'}}/>
-          <Tab label="Finalizadas" style={{color: 'white'}}/>
+          <Tab label="Abertas"/>
+          <Tab label="Fazendo"/>
+          <Tab label="Finalizadas"/>
         </Tabs>
 
         <TabPanel value={currentTab} index={0}><Abertas /></TabPanel>

@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { Grid, Divider, Button, Box, Tabs, Tab, AppBar } from "@material-ui/core";
+import { Divider, Tabs, Tab } from "@mui/material";
 import { useHistory, useParams } from "react-router-dom";
 import { useProdutoContext } from "../../../context/GerenciarProdutosContext";
 import api from "../../../services/api";

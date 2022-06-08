@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Divider, Tabs, Tab } from "@material-ui/core";
+import { Divider, Tabs, Tab } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import Produtos from "./Tabs/Produtos";
