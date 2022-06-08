@@ -39,13 +39,13 @@ function EditarProduto() {
           <h3>Dados da Unidade de Produtos</h3>
         </div>
         <Tabs style={{marginBottom: '24px'}} value={currentTab} onChange={handleTabChange}>
-          <Tab label="Dados" icon={<AssignmentIcon />} />
-          <Tab label="Detalhes" icon={<AssignmentIcon />} />
-          <Tab label="Valores" icon={<AssignmentIcon />} />
-          <Tab label="Estoque" icon={<AssignmentIcon />} />
-          <Tab label="Fotos" icon={<AssignmentIcon />} />
-          <Tab label="Fiscal" icon={<AssignmentIcon />} />
-          <Tab label="Fornecedores" icon={<AssignmentIcon />} />
+          <Tab label="Dados" className="app-default-text-color" icon={<AssignmentIcon />} />
+          <Tab label="Detalhes" className="app-default-text-color" icon={<AssignmentIcon />} />
+          <Tab label="Valores" className="app-default-text-color" icon={<AssignmentIcon />} />
+          <Tab label="Estoque" className="app-default-text-color" icon={<AssignmentIcon />} />
+          <Tab label="Fotos" className="app-default-text-color" icon={<AssignmentIcon />} />
+          <Tab label="Fiscal" className="app-default-text-color" icon={<AssignmentIcon />} />
+          <Tab label="Fornecedores" className="app-default-text-color" icon={<AssignmentIcon />} />
         </Tabs>
 
         <TabPanel value={currentTab} index={0}><Dados /></TabPanel>

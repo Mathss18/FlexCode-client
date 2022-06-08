@@ -35,9 +35,9 @@ function CadastrarNotasFiscais() {
           value={currentTab}
           onChange={handleTabChange}
         >
-          <Tab label="Dados" />
-          <Tab label="Produtos" />
-          <Tab label="Valores" />
+          <Tab label="Dados" className="app-default-text-color" />
+          <Tab label="Produtos" className="app-default-text-color" />
+          <Tab label="Valores" className="app-default-text-color" />
         </Tabs>
 
         <TabPanel value={currentTab} index={0}>
