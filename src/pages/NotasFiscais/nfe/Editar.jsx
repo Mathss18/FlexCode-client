@@ -116,14 +116,23 @@ function EditarNotasFiscaisPage() {
     });
   }
 
-  function sendNfeEmail(tipo, content) {
+  async function sendNfeEmail(tipo, content) {
+    var emailFavorecido = '';
+    if(notaFiscal?.tipoFavorecido === 'clientes'){
+      const response = await api.get('/clientes/'+notaFiscal?.favorecido_id)
+      emailFavorecido = response.data.data.email;
+    }
+    else if(notaFiscal?.tipoFavorecido === 'fornecedores'){
+      const response = await api.get('/fornecedores/'+notaFiscal?.favorecido_id)
+      emailFavorecido = response.data.data.email;
+    }
     fullScreenLoader.setLoading(true);
     var mes = moment(notaFiscal?.created_at).format("MM");
     var ano = moment(notaFiscal?.created_at).format("YYYY");
 
     api
       .post("/notas-fiscais-email-nfe", {
-        email: "theus.7@hotmail.com",
+        email: emailFavorecido,
         titulo: `${notaFiscal?.favorecido_nome}, ${content.title}`,
         conteudo: `Segue em anexo os ducomentos referente a Nfe chave: ${notaFiscal.chaveNF}`,
         mes: mes,
