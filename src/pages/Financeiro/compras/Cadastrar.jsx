@@ -1171,7 +1171,6 @@ function CadastrarComprasPage() {
                   rows={rowsParcelas}
                   columns={columnsParcelas}
                   onStateChange={handleParcelaRowStateChange}
-                  disableVirtualization
                   hideFooter={true}
                   disableVirtualization
                   disableColumnMenu={true}

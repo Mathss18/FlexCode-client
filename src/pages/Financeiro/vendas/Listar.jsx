@@ -185,7 +185,7 @@ function ListarVendas() {
       },
       indFinal: 1,
       indPres: "2",
-      transportadora_id: { label: item.transportadora.nome, value: item.transportadora.id },
+      transportadora_id: { label: item?.transportadora?.nome, value: item?.transportadora?.id },
       modFrete: 2,
       frete: item.frete,
       produtos: item.produtos.map((item, index) => {
