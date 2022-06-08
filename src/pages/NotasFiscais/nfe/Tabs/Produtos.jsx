@@ -175,7 +175,7 @@ export default function Produtos() {
   useEffect(() => {
     fullScreenLoader.setLoading(true);
     api
-      .get("/produtos")
+      .get("/produtos-mini")
       .then((response) => {
         var array = [];
         response.data["data"].forEach((produto) => {
