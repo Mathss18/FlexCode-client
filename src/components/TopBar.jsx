@@ -90,7 +90,7 @@ function TopBar() {
         </IconButton>
 
         <IconButton className={"topbar-icon"} color="inherit">
-          <Badge badgeContent={10} color="secondary">
+          <Badge badgeContent={0} color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>
