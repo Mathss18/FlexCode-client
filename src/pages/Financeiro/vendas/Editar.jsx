@@ -40,6 +40,7 @@ import DragAndDrop from "../../../components/dragdrop/DragAndDrop";
 import toast from "react-hot-toast";
 import ModalTabelaPreco from "../modalTabelaPreco/ModalTabelaPreco";
 import CalculateIcon from '@mui/icons-material/Calculate';
+import { brPrice } from "../../../constants/datagridCurrencyFormatter";
 
 
 const initialValues = {
@@ -113,7 +114,7 @@ function EditarVendasPage() {
             disableClearable={true}
             value={
               params.row.produto_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : { label: params.row.nome, value: params.row.produto_id }
             }
             name="produto_id"
@@ -157,6 +158,7 @@ function EditarVendasPage() {
       sortable: false,
       headerAlign: 'letf',
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -166,6 +168,7 @@ function EditarVendasPage() {
       sortable: false,
       headerAlign: 'letf',
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -211,7 +214,7 @@ function EditarVendasPage() {
             disableClearable={true}
             value={
               params.row.servico_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : { label: params.row.nome, value: params.row.servico_id }
             }
             name="servico_id"
@@ -255,6 +258,7 @@ function EditarVendasPage() {
       sortable: false,
       headerAlign: 'letf',
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -264,6 +268,7 @@ function EditarVendasPage() {
       sortable: false,
       headerAlign: 'letf',
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -307,6 +312,7 @@ function EditarVendasPage() {
       headerAlign: 'letf',
       type: "number",
       flex: 1,
+      ...brPrice
     },
     {
       field: "forma_pagamento_id",
@@ -321,7 +327,7 @@ function EditarVendasPage() {
             disableClearable={true}
             value={
               params.row.forma_pagamento_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : { label: params.row.nome, value: params.row.forma_pagamento_id }
             }
             name="forma_pagamento_id"

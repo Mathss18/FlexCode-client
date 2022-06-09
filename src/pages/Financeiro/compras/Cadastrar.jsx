@@ -38,6 +38,7 @@ import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import DragAndDrop from "../../../components/dragdrop/DragAndDrop";
 import toast from "react-hot-toast";
+import { brPrice } from "../../../constants/datagridCurrencyFormatter";
 const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
 const initialValues = {
@@ -138,6 +139,7 @@ function CadastrarComprasPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -147,6 +149,7 @@ function CadastrarComprasPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -189,6 +192,7 @@ function CadastrarComprasPage() {
       headerAlign: "letf",
       type: "number",
       flex: 1,
+      ...brPrice
     },
     {
       field: "forma_pagamento_id",
@@ -203,7 +207,7 @@ function CadastrarComprasPage() {
             disableClearable={true}
             value={
               params.row.forma_pagamento_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : {
                     label: params.row.nome,
                     value: params.row.forma_pagamento_id,

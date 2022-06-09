@@ -22,6 +22,7 @@ import { useFullScreenLoader } from "../../../../context/FullScreenLoaderContext
 import api from "../../../../services/api";
 import { errorAlert } from "../../../../utils/alert";
 import { useNotaFiscalContext } from "../../../../context/NotaFiscalContext";
+import { brPrice } from "../../../../constants/datagridCurrencyFormatter";
 
 export default function Produtos() {
   const notaFiscalContext = useNotaFiscalContext();
@@ -88,8 +89,6 @@ export default function Produtos() {
       headerAlign: "letf",
       renderCell: (params) => (
         <>
-          {/* {console.clear()}
-          {console.log(params)} */}
           <Autocomplete
             fullWidth
             disableClearable={true}
@@ -139,6 +138,7 @@ export default function Produtos() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -148,6 +148,7 @@ export default function Produtos() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "excluir",

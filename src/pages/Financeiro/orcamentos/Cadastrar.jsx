@@ -34,6 +34,7 @@ import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import toast from "react-hot-toast";
 import ModalTabelaPreco from "../modalTabelaPreco/ModalTabelaPreco";
+import { brPrice } from "../../../constants/datagridCurrencyFormatter";
 
 const initialValues = {
   numero: "",
@@ -130,6 +131,7 @@ function CadastrarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -139,6 +141,7 @@ function CadastrarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -223,6 +226,7 @@ function CadastrarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -232,6 +236,7 @@ function CadastrarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
