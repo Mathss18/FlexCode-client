@@ -37,6 +37,7 @@ import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import toast from "react-hot-toast";
 import ModalTabelaPreco from "../modalTabelaPreco/ModalTabelaPreco";
 import CalculateIcon from "@mui/icons-material/Calculate";
+import { brPrice } from "../../../constants/datagridCurrencyFormatter";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -136,6 +137,7 @@ function CadastrarOrdensServicoPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -145,6 +147,7 @@ function CadastrarOrdensServicoPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -230,6 +233,7 @@ function CadastrarOrdensServicoPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -239,6 +243,7 @@ function CadastrarOrdensServicoPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",

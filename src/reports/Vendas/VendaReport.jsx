@@ -151,7 +151,7 @@ export default function VendaReport() {
                   return (
                     <tr className="trVenda" key={index}>
                       <td className="tdVenda" width={"7%"}>{index + 1}</td>
-                      <td className="tdVenda">{produto?.codigoInterno +' • '+produto?.nome}</td>
+                      <td className="tdVenda">{produto?.codigoInterno +' / '+produto?.nome}</td>
                       <td className="tdVenda">{produto?.pivot.observacao}</td>
                       <td className="tdVenda">{produto?.pivot.quantidade}</td>
                       <td className="tdVenda">
@@ -208,7 +208,7 @@ export default function VendaReport() {
                   return (
                     <tr className="trVenda" key={index}>
                       <td className="tdVenda" width={"7%"}>{index + 1}</td>
-                      <td className="tdVenda">{servico?.codigoInterno +' • '+servico?.nome}</td>
+                      <td className="tdVenda">{servico?.codigoInterno +' / '+servico?.nome}</td>
                       <td className="tdVenda">{servico?.pivot.observacao}</td>
                       <td className="tdVenda">{servico?.pivot.quantidade}</td>
                       <td className="tdVenda">

@@ -163,7 +163,7 @@ export default function OrdermServicoReport(texto) {
                   return (
                     <tr className="trOrdemServico" key={index}>
                       <td className="tdOrdemServico" width={"7%"}>{index + 1}</td>
-                      <td className="tdOrdemServico">{produto?.codigoInterno +' • '+produto?.nome}</td>
+                      <td className="tdOrdemServico">{produto?.codigoInterno +' / '+produto?.nome}</td>
                       <td className="tdOrdemServico">{produto?.pivot.observacao}</td>
                       <td className="tdOrdemServico">{produto?.pivot.quantidade}</td>
                       <td className="tdOrdemServico">
@@ -220,7 +220,7 @@ export default function OrdermServicoReport(texto) {
                   return (
                     <tr className="trOrdemServico" key={index}>
                       <td className="tdOrdemServico" width={"7%"}>{index + 1}</td>
-                      <td className="tdOrdemServico">{servico?.codigoInterno +' • '+servico?.nome}</td>
+                      <td className="tdOrdemServico">{servico?.codigoInterno +' / '+servico?.nome}</td>
                       <td className="tdOrdemServico">{servico?.pivot.observacao}</td>
                       <td className="tdOrdemServico">{servico?.pivot.quantidade}</td>
                       <td className="tdOrdemServico">
