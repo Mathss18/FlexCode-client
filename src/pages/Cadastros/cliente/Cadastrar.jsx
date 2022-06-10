@@ -19,7 +19,7 @@ import LocationOnIcon from "@material-ui/icons/LocationOn";
 import FormHelperText from "@mui/material/FormHelperText";
 import buscarCep from "../../../services/cep";
 import InputMask from "react-input-mask";
-import { infoAlert, successAlert,errorAlert } from "../../../utils/alert";
+import { infoAlert, successAlert, errorAlert } from "../../../utils/alert";
 import { clienteValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 
@@ -31,6 +31,8 @@ const initialValues = {
   nome: "",
   cpfCnpj: "",
   email: "",
+  emailDocumento: "",
+  observacao: "",
   contato: "",
   rua: "",
   cidade: "",
@@ -38,6 +40,7 @@ const initialValues = {
   cep: "",
   bairro: "",
   estado: "",
+  complemento: "",
   telefone: "",
   celular: "",
   codigoMunicipio: "",
@@ -116,7 +119,10 @@ function CadastrarClientePage() {
                   label="Tipo de Cliente "
                   name="tipoCliente"
                   value={formik.values.tipoCliente}
-                  onChange={(e)=>{formik.handleChange(e); formik.setFieldValue('cpfCnpj', '')}}
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                    formik.setFieldValue("cpfCnpj", "");
+                  }}
                   onBlur={formik.handleBlur}
                   error={
                     formik.touched.tipoCliente &&
@@ -197,13 +203,15 @@ function CadastrarClientePage() {
                 label="Inscrição Estadual"
                 value={formik.values.inscricaoEstadual}
                 name="inscricaoEstadual"
-                InputProps={{
-                  // endAdornment: (
-                  //   <Tooltip title="Digite ISENTO caso não haja Inscrição Estadual">
-                  //     <HelpIcon />
-                  //   </Tooltip>
-                  // ),
-                }}
+                InputProps={
+                  {
+                    // endAdornment: (
+                    //   <Tooltip title="Digite ISENTO caso não haja Inscrição Estadual">
+                    //     <HelpIcon />
+                    //   </Tooltip>
+                    // ),
+                  }
+                }
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
@@ -270,6 +278,25 @@ function CadastrarClientePage() {
                 helperText={formik.touched.email && formik.errors.email}
               />
             </Grid>
+            <Grid item xs={3}>
+              <TextField
+                variant="outlined"
+                label="Email Documentos"
+                fullWidth
+                placeholder="Separar emails por vírgula"
+                value={formik.values.emailDocumento}
+                name="emailDocumento"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.emailDocumento &&
+                  Boolean(formik.errors.emailDocumento)
+                }
+                helperText={
+                  formik.touched.emailDocumento && formik.errors.emailDocumento
+                }
+              />
+            </Grid>
 
             <Grid item xs={3}>
               <TextField
@@ -282,6 +309,24 @@ function CadastrarClientePage() {
                 onBlur={formik.handleBlur}
                 error={formik.touched.contato && Boolean(formik.errors.contato)}
                 helperText={formik.touched.contato && formik.errors.contato}
+              />
+            </Grid>
+
+            <Grid item xs={6}>
+              <TextField
+                variant="outlined"
+                label="Observação"
+                fullWidth
+                value={formik.values.observacao}
+                name="observacao"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.observacao && Boolean(formik.errors.observacao)
+                }
+                helperText={
+                  formik.touched.observacao && formik.errors.observacao
+                }
               />
             </Grid>
           </Grid>
@@ -460,6 +505,26 @@ function CadastrarClientePage() {
                 )}
               </InputMask>
             </Grid>
+
+            <Grid item xs={3}>
+              <TextField
+                variant="outlined"
+                label="Complemento"
+                fullWidth
+                value={formik.values.complemento}
+                name="complemento"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.complemento &&
+                  Boolean(formik.errors.complemento)
+                }
+                helperText={
+                  formik.touched.complemento && formik.errors.complemento
+                }
+              />
+            </Grid>
+
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
