@@ -75,14 +75,12 @@ function ListarNotasFiscaisPage() {
             element["nNF"],
             element["tpNF"] == 1 ? "Entrada" : "Saída",
             element["venda_id"] ? (
-              <Tooltip title="Visualizar venda">
-                <a
-                  href={`./vendas/editar/${element["venda_id"]}`}
-                  target="_blank"
-                >
-                  {element["venda_id"]}
-                </a>
-              </Tooltip>
+              <a
+                href={`./vendas/editar/${element["venda_id"]}`}
+                target="_blank"
+              >
+                {element["venda_id"]}
+              </a>
             ) : (
               <></>
             ),
