@@ -40,6 +40,7 @@ import DragAndDrop from "../../../components/dragdrop/DragAndDrop";
 import toast from "react-hot-toast";
 import ModalTabelaPreco from "../modalTabelaPreco/ModalTabelaPreco";
 import CalculateIcon from '@mui/icons-material/Calculate';
+import { brPrice } from "../../../constants/datagridCurrencyFormatter";
 
 
 const initialValues = {
@@ -113,7 +114,7 @@ function EditarVendasPage() {
             disableClearable={true}
             value={
               params.row.produto_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : { label: params.row.nome, value: params.row.produto_id }
             }
             name="produto_id"
@@ -157,6 +158,7 @@ function EditarVendasPage() {
       sortable: false,
       headerAlign: 'letf',
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -166,6 +168,7 @@ function EditarVendasPage() {
       sortable: false,
       headerAlign: 'letf',
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -211,7 +214,7 @@ function EditarVendasPage() {
             disableClearable={true}
             value={
               params.row.servico_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : { label: params.row.nome, value: params.row.servico_id }
             }
             name="servico_id"
@@ -255,6 +258,7 @@ function EditarVendasPage() {
       sortable: false,
       headerAlign: 'letf',
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -264,6 +268,7 @@ function EditarVendasPage() {
       sortable: false,
       headerAlign: 'letf',
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -295,7 +300,6 @@ function EditarVendasPage() {
       field: "dataVencimento",
       headerName: "Data Vencimento",
       flex: 1,
-      type: "date",
       editable: true,
       sortable: false,
       headerAlign: 'letf',
@@ -308,6 +312,7 @@ function EditarVendasPage() {
       headerAlign: 'letf',
       type: "number",
       flex: 1,
+      ...brPrice
     },
     {
       field: "forma_pagamento_id",
@@ -322,7 +327,7 @@ function EditarVendasPage() {
             disableClearable={true}
             value={
               params.row.forma_pagamento_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : { label: params.row.nome, value: params.row.forma_pagamento_id }
             }
             name="forma_pagamento_id"
@@ -432,7 +437,7 @@ function EditarVendasPage() {
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
-            label: produto.nome,
+            label: produto.codigoInterno + " / " + produto.nome,
             value: produto.id,
             preco: produto.custoFinal,
           });
@@ -449,7 +454,7 @@ function EditarVendasPage() {
         var array = [];
         response.data["data"].forEach((servico) => {
           array.push({
-            label: servico.nome,
+            label: servico.codigoInterno + " / " + servico.nome,
             value: servico.id,
             preco: servico.valor,
           });
@@ -1135,6 +1140,7 @@ function EditarVendasPage() {
                   rows={rowsProdutos}
                   columns={columnsProdutos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   onStateChange={handleProductRowStateChange}
                   components={{
@@ -1187,6 +1193,7 @@ function EditarVendasPage() {
                   rows={rowsServicos}
                   columns={columnsServicos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   components={{
                     NoRowsOverlay: () => (
@@ -1463,8 +1470,8 @@ function EditarVendasPage() {
                   rows={rowsParcelas}
                   columns={columnsParcelas}
                   onStateChange={handleParcelaRowStateChange}
-                  disableVirtualization
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   components={{
                     NoRowsOverlay: () => (

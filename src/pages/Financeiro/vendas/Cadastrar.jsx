@@ -40,6 +40,7 @@ import DragAndDrop from "../../../components/dragdrop/DragAndDrop";
 import toast from "react-hot-toast";
 import ModalTabelaPreco from "../modalTabelaPreco/ModalTabelaPreco";
 import CalculateIcon from "@mui/icons-material/Calculate";
+import { brPrice } from "../../../constants/datagridCurrencyFormatter";
 
 const initialValues = {
   numero: "",
@@ -146,6 +147,7 @@ function CadastrarVendasPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -155,6 +157,7 @@ function CadastrarVendasPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -238,6 +241,7 @@ function CadastrarVendasPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -247,6 +251,7 @@ function CadastrarVendasPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -278,7 +283,6 @@ function CadastrarVendasPage() {
       field: "dataVencimento",
       headerName: "Data Vencimento",
       flex: 1,
-      type: "date",
       editable: true,
       sortable: false,
       headerAlign: "letf",
@@ -291,6 +295,7 @@ function CadastrarVendasPage() {
       headerAlign: "letf",
       type: "number",
       flex: 1,
+      ...brPrice
     },
     {
       field: "forma_pagamento_id",
@@ -435,7 +440,7 @@ function CadastrarVendasPage() {
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
-            label: produto.nome,
+            label: produto.codigoInterno + " / " + produto.nome,
             value: produto.id,
             preco: produto.custoFinal,
           });
@@ -452,7 +457,7 @@ function CadastrarVendasPage() {
         var array = [];
         response.data["data"].forEach((servico) => {
           array.push({
-            label: servico.nome,
+            label: servico.codigoInterno + " / " + servico.nome,
             value: servico.id,
             preco: servico.valor,
           });
@@ -1061,6 +1066,7 @@ function CadastrarVendasPage() {
                   rows={rowsProdutos}
                   columns={columnsProdutos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   onStateChange={handleProductRowStateChange}
                   components={{
@@ -1120,6 +1126,7 @@ function CadastrarVendasPage() {
                   rows={rowsServicos}
                   columns={columnsServicos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   components={{
                     NoRowsOverlay: () => (
@@ -1429,8 +1436,8 @@ function CadastrarVendasPage() {
                   rows={rowsParcelas}
                   columns={columnsParcelas}
                   onStateChange={handleParcelaRowStateChange}
-                  disableVirtualization
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   components={{
                     NoRowsOverlay: () => (

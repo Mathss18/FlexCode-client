@@ -37,6 +37,7 @@ import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import toast from "react-hot-toast";
 import ModalTabelaPreco from "../modalTabelaPreco/ModalTabelaPreco";
 import CalculateIcon from "@mui/icons-material/Calculate";
+import { brPrice } from "../../../constants/datagridCurrencyFormatter";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -136,6 +137,7 @@ function CadastrarOrdensServicoPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -145,6 +147,7 @@ function CadastrarOrdensServicoPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -230,6 +233,7 @@ function CadastrarOrdensServicoPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -239,6 +243,7 @@ function CadastrarOrdensServicoPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -320,7 +325,7 @@ function CadastrarOrdensServicoPage() {
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
-            label: produto.nome,
+            label: produto.codigoInterno + " / " + produto.nome,
             value: produto.id,
             preco: produto.custoFinal,
           });
@@ -337,7 +342,7 @@ function CadastrarOrdensServicoPage() {
         var array = [];
         response.data["data"].forEach((servico) => {
           array.push({
-            label: servico.nome,
+            label: servico.codigoInterno + " / " + servico.nome,
             value: servico.id,
             preco: servico.valor,
           });
@@ -850,6 +855,7 @@ function CadastrarOrdensServicoPage() {
                   rows={rowsProdutos}
                   columns={columnsProdutos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   onStateChange={handleProductRowStateChange}
                   components={{
@@ -909,6 +915,7 @@ function CadastrarOrdensServicoPage() {
                   rows={rowsServicos}
                   columns={columnsServicos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   components={{
                     NoRowsOverlay: () => (

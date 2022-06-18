@@ -1,5 +1,4 @@
 import "./ordemServico.css";
-import logo from "./img.jpg";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import { Fab } from "@material-ui/core";
@@ -68,7 +67,7 @@ export default function OrdermServicoReport(texto) {
     <>
       <div className="containerReport">
         <div className="containerHeader">
-          <img src={logo} alt="logo" className="containerImg" />
+          <img src={empresaConfig.logo} alt="logo" className="containerImg" />
           <div className="headerLeft" style={{ display: "flex", gap: 10 }}>
             <div>
               <h3>{empresaConfig?.nome}</h3>
@@ -164,7 +163,7 @@ export default function OrdermServicoReport(texto) {
                   return (
                     <tr className="trOrdemServico" key={index}>
                       <td className="tdOrdemServico" width={"7%"}>{index + 1}</td>
-                      <td className="tdOrdemServico">{produto?.nome}</td>
+                      <td className="tdOrdemServico">{produto?.codigoInterno +' / '+produto?.nome}</td>
                       <td className="tdOrdemServico">{produto?.pivot.observacao}</td>
                       <td className="tdOrdemServico">{produto?.pivot.quantidade}</td>
                       <td className="tdOrdemServico">
@@ -221,7 +220,7 @@ export default function OrdermServicoReport(texto) {
                   return (
                     <tr className="trOrdemServico" key={index}>
                       <td className="tdOrdemServico" width={"7%"}>{index + 1}</td>
-                      <td className="tdOrdemServico">{servico?.nome}</td>
+                      <td className="tdOrdemServico">{servico?.codigoInterno +' / '+servico?.nome}</td>
                       <td className="tdOrdemServico">{servico?.pivot.observacao}</td>
                       <td className="tdOrdemServico">{servico?.pivot.quantidade}</td>
                       <td className="tdOrdemServico">

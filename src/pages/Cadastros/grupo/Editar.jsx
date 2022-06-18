@@ -25,11 +25,16 @@ import moment from "moment";
 import "moment/locale/pt-br";
 import { grupoValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
-import { confirmAlert, errorAlert, infoAlert, successAlert } from "../../../utils/alert";
+import {
+  confirmAlert,
+  errorAlert,
+  infoAlert,
+  successAlert,
+} from "../../../utils/alert";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import { menu } from "../../../constants/menu";
 import { useEffect } from "react";
-import differenceBy from 'lodash/differenceBy'
+import differenceBy from "lodash/differenceBy";
 
 const initialValues = {
   nome: "",
@@ -48,6 +53,12 @@ const initialValues = {
 };
 
 menu.map((item) => {
+  // Rotas fora do arquivo menu.js
+  initialValues.acessos.push({
+    path: '/configuracoes',
+    situacao: false,
+  });
+
   if (!item.collapse) {
     initialValues.acessos.push({
       path: item.path,
@@ -94,7 +105,7 @@ function EditarGrupoPage() {
           sabado: response.data["data"].sabado,
           domingo: response.data["data"].domingo,
 
-          acessos: JSON.parse(response.data["data"].acessos)
+          acessos: JSON.parse(response.data["data"].acessos),
         });
         // const myDifferences = differenceBy(initialValues.acessos, JSON.parse(response.data["data"].acessos), 'path')
         // console.log(myDifferences);
@@ -128,11 +139,11 @@ function EditarGrupoPage() {
   function handleOnSubmit(values) {
     const params = {
       ...formik.values,
-      acessos: JSON.stringify(formik.values.acessos)
-    }
+      acessos: JSON.stringify(formik.values.acessos),
+    };
 
     api
-      .put("/grupos/"+id, params)
+      .put("/grupos/" + id, params)
       .then((response) => {
         history.push("/grupos");
         successAlert("Sucesso", "Grupo Cadastrado");
@@ -155,7 +166,7 @@ function EditarGrupoPage() {
     api
       .delete("/grupos/" + id)
       .then((result) => {
-        history.push("/grupos")
+        history.push("/grupos");
         successAlert("Sucesso", "Grupo Excluido");
       })
       .catch((error) => {
@@ -349,6 +360,41 @@ function EditarGrupoPage() {
           >
             <AssignmentIcon />
             <h3>Configurações de acesso</h3>
+          </div>
+          {/* Rotas fora do arquivo menu.js */}
+          <div
+            style={{
+              boxShadow:
+                "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+              marginBottom: 8,
+            }}
+          >
+            <>
+              <ListItem button>
+                <ListItemIcon>{<SettingsIcon />}</ListItemIcon>
+                <ListItemText
+                  className={"sidemenu-text"}
+                  primary={"Configurações"}
+                />
+
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={
+                        formik.values.acessos.find(
+                          (acesso) => acesso.path === "/configuracoes"
+                        )?.situacao
+                      }
+                      onChange={(e) => {
+                        handleOnChange("/configuracoes");
+                      }}
+                      name={"/configuracoes"}
+                      type="checkbox"
+                    />
+                  }
+                />
+              </ListItem>
+            </>
           </div>
           {menu.map((item, index) => {
             return (

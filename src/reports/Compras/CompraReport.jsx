@@ -1,8 +1,8 @@
 import "./compra.css";
-import logo from "./img.jpg";
 import { useEffect, useState } from "react";
 import { Fab } from "@material-ui/core";
 import PrintIcon from "@mui/icons-material/Print";
+const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
 export default function CompraReport() {
   const [dados, setDados] = useState(null);
@@ -48,7 +48,7 @@ export default function CompraReport() {
     <>
       <div className="containerReport">
         <div className="containerHeader">
-          <img src={logo} alt="logo" className="containerImg" />
+          <img src={empresaConfig.logo} alt="logo" className="containerImg" />
           <div className="headerLeft" style={{ display: "flex", gap: 10 }}>
             <div>
               <h3>{empresaConfig?.nome}</h3>
@@ -137,7 +137,7 @@ export default function CompraReport() {
                   return (
                     <tr className="trCompra" key={index}>
                       <td className="tdCompra" width={"7%"}>{index + 1}</td>
-                      <td className="tdCompra">{produto?.nome}</td>
+                      <td className="tdCompra">{produto?.codigoInterno +' / '+produto?.nome}</td>
                       <td className="tdCompra">{produto?.pivot.observacao}</td>
                       <td className="tdCompra">{produto?.pivot.quantidade}</td>
                       <td className="tdCompra">

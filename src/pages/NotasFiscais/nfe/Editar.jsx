@@ -116,28 +116,37 @@ function EditarNotasFiscaisPage() {
     });
   }
 
-  function sendNfeEmail(tipo, content) {
+  async function sendNfeEmail(tipo, content) {
+    var emailsParaEnviar = [];
+
+    const response = await api.get(
+      `/${notaFiscal?.tipoFavorecido}/` + notaFiscal?.favorecido_id
+    );
+    emailsParaEnviar = response.data.data.emailDocumento?.split(",");
+
     fullScreenLoader.setLoading(true);
     var mes = moment(notaFiscal?.created_at).format("MM");
     var ano = moment(notaFiscal?.created_at).format("YYYY");
 
-    api
-      .post("/notas-fiscais-email-nfe", {
-        email: "theus.7@hotmail.com",
-        titulo: `${notaFiscal?.favorecido_nome}, ${content.title}`,
-        conteudo: `Segue em anexo os ducomentos referente a Nfe chave: ${notaFiscal.chaveNF}`,
-        mes: mes,
-        ano: ano,
-        chave: notaFiscal.chaveNF,
-        tipo: tipo, // nfe / cc / cancelada
-      })
-      .then((response) => {
-        successAlert("Sucesso", response.data.message);
-      })
-      .catch((error) => {
-        errorAlert("Atenção", error?.response?.data?.message);
-      })
-      .finally(() => fullScreenLoader.setLoading(false));
+    emailsParaEnviar.forEach((item) => {
+      api
+        .post("/notas-fiscais-email-nfe", {
+          email: item?.trim(),
+          titulo: `${notaFiscal?.favorecido_nome}, ${content.title}`,
+          conteudo: `Segue em anexo os ducomentos referente a Nfe chave: ${notaFiscal.chaveNF}`,
+          mes: mes,
+          ano: ano,
+          chave: notaFiscal.chaveNF,
+          tipo: tipo, // nfe / cc / cancelada
+        })
+        .then((response) => {
+          successAlert("Sucesso", response.data.message);
+        })
+        .catch((error) => {
+          errorAlert("Atenção", error?.response?.data?.message);
+        })
+        .finally(() => fullScreenLoader.setLoading(false));
+    });
   }
 
   return (

@@ -1,5 +1,4 @@
 import "./orcamento.css";
-import logo from "./img.jpg";
 import { useEffect, useState } from "react";
 import { Fab } from "@material-ui/core";
 import PrintIcon from "@mui/icons-material/Print";
@@ -62,7 +61,7 @@ export default function OrcamentoReport() {
     <>
       <div className="containerReport">
         <div className="containerHeader">
-          <img src={logo} alt="logo" className="containerImg" />
+          <img src={empresaConfig.logo} alt="logo" className="containerImg" />
           <div className="headerLeft" style={{ display: "flex", gap: 10 }}>
             <div>
               <h3>{empresaConfig?.nome}</h3>
@@ -151,7 +150,7 @@ export default function OrcamentoReport() {
                   return (
                     <tr className="trOrcamento" key={index}>
                       <td className="tdOrcamento" width={"7%"}>{index + 1}</td>
-                      <td className="tdOrcamento">{produto?.nome}</td>
+                      <td className="tdOrcamento">{produto?.codigoInterno +' / '+produto?.nome}</td>
                       <td className="tdOrcamento">{produto?.pivot.observacao}</td>
                       <td className="tdOrcamento">{produto?.pivot.quantidade}</td>
                       <td className="tdOrcamento">
@@ -208,7 +207,7 @@ export default function OrcamentoReport() {
                   return (
                     <tr className="trOrcamento" key={index}>
                       <td className="tdOrcamento" width={"7%"}>{index + 1}</td>
-                      <td className="tdOrcamento">{servico?.nome}</td>
+                      <td className="tdOrcamento">{servico?.codigoInterno +' / '+servico?.nome}</td>
                       <td className="tdOrcamento">{servico?.pivot.observacao}</td>
                       <td className="tdOrcamento">{servico?.pivot.quantidade}</td>
                       <td className="tdOrcamento">

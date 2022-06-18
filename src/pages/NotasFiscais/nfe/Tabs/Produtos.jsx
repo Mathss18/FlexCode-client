@@ -22,6 +22,7 @@ import { useFullScreenLoader } from "../../../../context/FullScreenLoaderContext
 import api from "../../../../services/api";
 import { errorAlert } from "../../../../utils/alert";
 import { useNotaFiscalContext } from "../../../../context/NotaFiscalContext";
+import { brPrice } from "../../../../constants/datagridCurrencyFormatter";
 
 export default function Produtos() {
   const notaFiscalContext = useNotaFiscalContext();
@@ -88,17 +89,16 @@ export default function Produtos() {
       headerAlign: "letf",
       renderCell: (params) => (
         <>
-          {/* {console.clear()}
-          {console.log(params)} */}
           <Autocomplete
             fullWidth
             disableClearable={true}
-            onKeyUp={(e)=>{
-              params.row.nome = e.target.value
+            onKeyUp={(e) => {
+              console.log(params)
+              params.row.nome = e.target.value;
             }}
             value={
               params.row.produto_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : { label: params.row.nome, value: params.row.produto_id }
             }
             name="produto_id"
@@ -138,6 +138,7 @@ export default function Produtos() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -147,6 +148,7 @@ export default function Produtos() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "excluir",
@@ -174,14 +176,14 @@ export default function Produtos() {
   useEffect(() => {
     fullScreenLoader.setLoading(true);
     api
-      .get("/produtos")
+      .get("/produtos-mini")
       .then((response) => {
         var array = [];
         response.data["data"].forEach((produto) => {
           produtosOriginal.current = response.data["data"];
 
           array.push({
-            label: produto.nome,
+            label: produto.codigoInterno + " / " + produto.nome,
             value: produto.id,
             preco: produto.custoFinal,
             cfop: produto.cfop,

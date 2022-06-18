@@ -38,6 +38,7 @@ import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import DragAndDrop from "../../../components/dragdrop/DragAndDrop";
 import toast from "react-hot-toast";
+import { brPrice } from "../../../constants/datagridCurrencyFormatter";
 
 const initialValues = {
   numero: "",
@@ -103,7 +104,7 @@ function EditarComprasPage() {
             disableClearable={true}
             value={
               params.row.produto_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : { label: params.row.nome, value: params.row.produto_id }
             }
             name="produto_id"
@@ -146,6 +147,7 @@ function EditarComprasPage() {
       sortable: false,
       headerAlign: 'letf',
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -155,6 +157,7 @@ function EditarComprasPage() {
       sortable: false,
       headerAlign: 'letf',
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -185,7 +188,6 @@ function EditarComprasPage() {
       field: "dataVencimento",
       headerName: "Data Vencimento",
       flex: 1,
-      type: "date",
       editable: true,
       sortable: false,
       headerAlign: 'letf',
@@ -198,6 +200,7 @@ function EditarComprasPage() {
       headerAlign: 'letf',
       type: "number",
       flex: 1,
+      ...brPrice
     },
     {
       field: "forma_pagamento_id",
@@ -212,7 +215,7 @@ function EditarComprasPage() {
             disableClearable={true}
             value={
               params.row.forma_pagamento_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : { label: params.row.nome, value: params.row.forma_pagamento_id }
             }
             name="forma_pagamento_id"
@@ -320,7 +323,7 @@ function EditarComprasPage() {
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
-            label: produto.nome,
+            label: produto.codigoInterno + " / " + produto.nome,
             value: produto.id,
             preco: produto.custoFinal,
           });
@@ -923,6 +926,7 @@ function EditarComprasPage() {
                   rows={rowsProdutos}
                   columns={columnsProdutos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   onStateChange={handleProductRowStateChange}
                   components={{
@@ -1198,8 +1202,8 @@ function EditarComprasPage() {
                   rows={rowsParcelas}
                   columns={columnsParcelas}
                   onStateChange={handleParcelaRowStateChange}
-                  disableVirtualization
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   components={{
                     NoRowsOverlay: () => (

@@ -38,6 +38,7 @@ import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import DragAndDrop from "../../../components/dragdrop/DragAndDrop";
 import toast from "react-hot-toast";
+import { brPrice } from "../../../constants/datagridCurrencyFormatter";
 const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
 const initialValues = {
@@ -138,6 +139,7 @@ function CadastrarComprasPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -147,6 +149,7 @@ function CadastrarComprasPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -177,7 +180,6 @@ function CadastrarComprasPage() {
       field: "dataVencimento",
       headerName: "Data Vencimento",
       flex: 1,
-      type: "date",
       editable: true,
       sortable: false,
       headerAlign: "letf",
@@ -190,6 +192,7 @@ function CadastrarComprasPage() {
       headerAlign: "letf",
       type: "number",
       flex: 1,
+      ...brPrice
     },
     {
       field: "forma_pagamento_id",
@@ -204,7 +207,7 @@ function CadastrarComprasPage() {
             disableClearable={true}
             value={
               params.row.forma_pagamento_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : {
                     label: params.row.nome,
                     value: params.row.forma_pagamento_id,
@@ -329,7 +332,7 @@ function CadastrarComprasPage() {
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
-            label: produto.nome,
+            label: produto.codigoInterno + " / " + produto.nome,
             value: produto.id,
             preco: produto.custoFinal,
           });
@@ -862,6 +865,7 @@ function CadastrarComprasPage() {
                   rows={rowsProdutos}
                   columns={columnsProdutos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   onStateChange={handleProductRowStateChange}
                   components={{
@@ -1171,8 +1175,8 @@ function CadastrarComprasPage() {
                   rows={rowsParcelas}
                   columns={columnsParcelas}
                   onStateChange={handleParcelaRowStateChange}
-                  disableVirtualization
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   components={{
                     NoRowsOverlay: () => (

@@ -30,7 +30,7 @@ function ListarProdutos() {
       options: rowConfig,
     },
     {
-      name: "Valor Custo",
+      name: "Custo Final",
       options: rowConfig,
     },
     {
@@ -67,14 +67,14 @@ function ListarProdutos() {
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
-    api.get("/produtos")
+    api.get("/produtos-mini")
       .then((response) => {
           response.data["data"].forEach((element) => {
             var array = [
               element["nome"],
               element["codigoInterno"],
               element["grupo_produto"]["nome"],
-              `R$: ${element['valorCusto'].toFixed(empresaConfig.quantidadeCasasDecimaisValor)}`,
+              `R$: ${element['custoFinal'].toFixed(empresaConfig.quantidadeCasasDecimaisValor)}`,
               `${element["quantidadeAtual"]} ${element["unidade_produto"]?.sigla ?? ''}`,
               element?.cliente?.nome,
               element["fornecedores"].map((item,index)=>{

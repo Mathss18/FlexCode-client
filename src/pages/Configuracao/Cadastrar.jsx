@@ -48,13 +48,14 @@ const initialValues = {
   nNF: "",
   serie: "",
   ambienteNfe: "1",
-  aliquota: "",
+  aliquota: 0,
   proxyIp: "",
   proxyPort: "",
   proxyUser: "",
   proxyPass: "",
   servidorSmtp: "",
   portaSmtp: "",
+  encryptionSmtp: "",
   // emailSmtp:'',
   usuarioSmtp: "",
   senhaSmtp: "",
@@ -606,6 +607,9 @@ function CadastrarConfiguracaoPage() {
                 name="aliquota"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                inputProps={{
+                  step: "any"
+                }}
                 error={
                   formik.touched.aliquota && Boolean(formik.errors.aliquota)
                 }
@@ -850,7 +854,7 @@ function CadastrarConfiguracaoPage() {
                 }
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
               <TextField
                 variant="outlined"
                 label="Senha"
@@ -865,6 +869,34 @@ function CadastrarConfiguracaoPage() {
                 }
                 helperText={formik.touched.senhaSmtp && formik.errors.senhaSmtp}
               />
+            </Grid>
+            <Grid item xs={1}>
+              <FormControl variant="outlined" fullWidth>
+                <InputLabel>Encriptação *</InputLabel>
+                <Select
+                  className={"input-select"}
+                  label="Encriptação *"
+                  name="encryptionSmtp"
+                  value={formik.values.encryptionSmtp}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={
+                    formik.touched.encryptionSmtp &&
+                    Boolean(formik.errors.encryptionSmtp)
+                  }
+                >
+                  <MenuItem value={'tls'}>TLS</MenuItem>
+                  <MenuItem value={'ssl'}>SSL</MenuItem>
+                </Select>
+                {formik.touched.encryptionSmtp &&
+                Boolean(formik.errors.encryptionSmtp) ? (
+                  <FormHelperText>
+                    {formik.errors.encryptionSmtp}
+                  </FormHelperText>
+                ) : (
+                  ""
+                )}
+              </FormControl>
             </Grid>
           </Grid>
 

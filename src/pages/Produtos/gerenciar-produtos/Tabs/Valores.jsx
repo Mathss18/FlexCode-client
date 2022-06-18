@@ -155,19 +155,21 @@ export function Valores() {
                     <Typography
                       sx={{ fontSize: 14 }}
                       color="text.secondary"
+                      className="app-default-text-color"
                       gutterBottom
                     >
                       {item.descricao}
                     </Typography>
-                    <Typography variant="h5" component="div">
+                    <Typography variant="h5" component="div" className="app-default-text-color">
                       Valor venda: R${" "}
                       {((parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) + (parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) * (item.porcentagem / 100)).toFixed(empresaConfig.quantidadeCasasDecimaisValor)}
                     </Typography>
                     <Typography
                       sx={{ mb: 1.5 }}
                       color="text.secondary"
+                      className="app-default-text-color"
                     ></Typography>
-                    <Typography variant="body2">
+                    <Typography variant="body2" className="app-default-text-color">
                       {item.porcentagem}% de lucro
                       <br />
                       Comissão do vendedor: R${" "}

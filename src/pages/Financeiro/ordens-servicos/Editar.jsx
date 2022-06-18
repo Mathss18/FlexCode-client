@@ -38,6 +38,7 @@ import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import { useParams } from "react-router-dom";
 import ModalTabelaPreco from "../modalTabelaPreco/ModalTabelaPreco";
 import CalculateIcon from "@mui/icons-material/Calculate";
+import { brPrice } from "../../../constants/datagridCurrencyFormatter";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -101,7 +102,7 @@ function EditarOrcamentosPage() {
             disableClearable={true}
             value={
               params.row.produto_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : { label: params.row.nome, value: params.row.produto_id }
             }
             onChange={(event, value) => handleClienteChange(params, value)}
@@ -144,6 +145,7 @@ function EditarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -153,6 +155,7 @@ function EditarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -200,7 +203,7 @@ function EditarOrcamentosPage() {
             disableClearable={true}
             value={
               params.row.servico_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : { label: params.row.nome, value: params.row.servico_id }
             }
             onChange={(event, value) => handleServicoChange(params, value)}
@@ -243,6 +246,7 @@ function EditarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -252,6 +256,7 @@ function EditarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -393,7 +398,7 @@ function EditarOrcamentosPage() {
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
-            label: produto.nome,
+            label: produto.codigoInterno + " / " + produto.nome,
             value: produto.id,
             preco: produto.custoFinal,
           });
@@ -410,7 +415,7 @@ function EditarOrcamentosPage() {
         var array = [];
         response.data["data"].forEach((servico) => {
           array.push({
-            label: servico.nome,
+            label: servico.codigoInterno + " / " + servico.nome,
             value: servico.id,
             preco: servico.valor,
           });
@@ -923,6 +928,7 @@ function EditarOrcamentosPage() {
                   rows={rowsProdutos}
                   columns={columnsProdutos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   onStateChange={handleProductRowStateChange}
                   components={{
@@ -982,6 +988,7 @@ function EditarOrcamentosPage() {
                   rows={rowsServicos}
                   columns={columnsServicos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   components={{
                     NoRowsOverlay: () => (

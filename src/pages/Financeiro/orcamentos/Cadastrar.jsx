@@ -34,6 +34,7 @@ import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import toast from "react-hot-toast";
 import ModalTabelaPreco from "../modalTabelaPreco/ModalTabelaPreco";
+import { brPrice } from "../../../constants/datagridCurrencyFormatter";
 
 const initialValues = {
   numero: "",
@@ -95,7 +96,6 @@ function CadastrarOrcamentosPage() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            
             options={produtos}
             renderInput={(params) => (
               <TextField
@@ -131,6 +131,7 @@ function CadastrarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -140,6 +141,7 @@ function CadastrarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -189,7 +191,6 @@ function CadastrarOrcamentosPage() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            
             options={servicos}
             renderInput={(params) => (
               <TextField
@@ -225,6 +226,7 @@ function CadastrarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -234,6 +236,7 @@ function CadastrarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -314,12 +317,12 @@ function CadastrarOrcamentosPage() {
     api
       .get("/produtos")
       .then((response) => {
-        produtosOriginal.current = response.data['data'];
+        produtosOriginal.current = response.data["data"];
 
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
-            label: produto.nome,
+            label: produto.codigoInterno + " / " + produto.nome,
             value: produto.id,
             preco: produto.custoFinal,
           });
@@ -336,7 +339,7 @@ function CadastrarOrcamentosPage() {
         var array = [];
         response.data["data"].forEach((servico) => {
           array.push({
-            label: servico.nome,
+            label: servico.codigoInterno + " / " + servico.nome,
             value: servico.id,
             preco: servico.valor,
           });
@@ -619,7 +622,6 @@ function CadastrarOrcamentosPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                
                 options={clientes}
                 renderInput={(params) => (
                   <TextField
@@ -688,7 +690,6 @@ function CadastrarOrcamentosPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                
                 options={transportadoras}
                 renderInput={(params) => (
                   <TextField
@@ -742,6 +743,7 @@ function CadastrarOrcamentosPage() {
                   rows={rowsProdutos}
                   columns={columnsProdutos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   onStateChange={handleProductRowStateChange}
                   components={{
@@ -801,6 +803,7 @@ function CadastrarOrcamentosPage() {
                   rows={rowsServicos}
                   columns={columnsServicos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   components={{
                     NoRowsOverlay: () => (

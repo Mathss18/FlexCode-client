@@ -44,6 +44,11 @@ var initialValues = {
   acessos: [],
 };
 
+// Rotas fora do arquivo menu.js
+initialValues.acessos.push({
+  path: "/configuracoes",
+  situacao: false,
+});
 menu.map((item) => {
   if (!item.collapse) {
     initialValues.acessos.push({
@@ -85,8 +90,8 @@ function CadastrarGrupoPage() {
   function handleOnSubmit() {
     const params = {
       ...formik.values,
-      acessos: JSON.stringify(formik.values.acessos)
-    }
+      acessos: JSON.stringify(formik.values.acessos),
+    };
 
     api
       .post("/grupos", params)
@@ -289,6 +294,41 @@ function CadastrarGrupoPage() {
             <AssignmentIcon />
             <h3>Configurações de acesso</h3>
           </div>
+          {/* Rotas fora do arquivo menu.js */}
+          <div
+            style={{
+              boxShadow:
+                "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+              marginBottom: 8,
+            }}
+          >
+            <>
+              <ListItem button>
+                <ListItemIcon>{<SettingsIcon />}</ListItemIcon>
+                <ListItemText
+                  className={"sidemenu-text"}
+                  primary={"Configurações"}
+                />
+
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={
+                        formik.values.acessos.find(
+                          (acesso) => acesso.path === "/configuracoes"
+                        )?.situacao
+                      }
+                      onChange={(e) => {
+                        handleOnChange("/configuracoes");
+                      }}
+                      name={"/configuracoes"}
+                      type="checkbox"
+                    />
+                  }
+                />
+              </ListItem>
+            </>
+          </div>
           {menu.map((item, index) => {
             return (
               <div
@@ -315,7 +355,7 @@ function CadastrarGrupoPage() {
                                 checked={
                                   formik.values.acessos.find(
                                     (acesso) => acesso.path === item.path
-                                  ).situacao
+                                  )?.situacao
                                 }
                                 onChange={(e) => {
                                   handleOnChange(item.path);

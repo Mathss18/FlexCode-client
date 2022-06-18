@@ -177,7 +177,7 @@ export default function Routes({themeSetter}) {
             <Route path="/ordens-servicos/novo" exact component={CadastrarOrdensServicoPage}></Route>
             <Route path="/ordens-servicos/editar/:id" exact component={EditarOrdensServicoPage} ></Route>
 
-            <Route path="/ordens-servicos-funcionarios/:idUsuario" exact component={ListarOrdensServicosFuncionariosPage} ></Route>
+            <Route path="/minhas-tarefas/:idUsuario" exact component={ListarOrdensServicosFuncionariosPage} ></Route>
           
             <Route path="/orcamentos" exact component={ListarOrcamentosPage}></Route>
             <Route path="/orcamentos/novo" exact component={CadastrarOrcamentosPage}></Route>

@@ -22,17 +22,20 @@ const initialValues = {
   inscricaoEstadual: '',
   nome: '',
   cpfCnpj: '',
-  email: '',
-  contato: '',
-  rua: '',
-  cidade: '',
-  numero: '',
-  cep: '',
-  bairro: '',
-  estado: '',
-  telefone: '',
-  celular: '',
-  codigoMunicipio: '',
+  email: "",
+  emailDocumento: "",
+  observacao: "",
+  contato: "",
+  rua: "",
+  cidade: "",
+  numero: "",
+  cep: "",
+  bairro: "",
+  estado: "",
+  complemento: "",
+  telefone: "",
+  celular: "",
+  codigoMunicipio: "",
 
 
 }
@@ -269,6 +272,21 @@ function CadastrarTransportadoraPage() {
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
+                label="Email Documentos"
+                fullWidth
+                placeholder="Separar emails por vírgula"
+                value={formik.values.emailDocumento}
+                name="emailDocumento"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.emailDocumento && Boolean(formik.errors.emailDocumento)}
+                helperText={formik.touched.emailDocumento && formik.errors.emailDocumento}
+              />
+            </Grid>
+
+            <Grid item xs={3}>
+              <TextField
+                variant="outlined"
                 label="Contato"
                 fullWidth
                 value={formik.values.contato}
@@ -279,6 +297,21 @@ function CadastrarTransportadoraPage() {
                 helperText={formik.touched.contato && formik.errors.contato}
               />
             </Grid>
+
+            <Grid item xs={6}>
+              <TextField
+                variant="outlined"
+                label="Observação"
+                fullWidth
+                value={formik.values.observacao}
+                name="observacao"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.observacao && Boolean(formik.errors.observacao)}
+                helperText={formik.touched.observacao && formik.errors.observacao}
+              />
+            </Grid>
+
           </Grid>
           <br />
           <Divider />
@@ -461,6 +494,27 @@ function CadastrarTransportadoraPage() {
                 )}
               </InputMask>
             </Grid>
+
+            <Grid item xs={3}>
+              <TextField
+                variant="outlined"
+                label="Complemento"
+                fullWidth
+                value={formik.values.complemento}
+                name="complemento"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.complemento &&
+                  Boolean(formik.errors.complemento)
+                }
+                helperText={
+                  formik.touched.complemento &&
+                  formik.errors.complemento
+                }
+              />
+            </Grid>
+
             <Grid item xs={3}>
               <TextField
                 variant="outlined"

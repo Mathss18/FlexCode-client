@@ -34,6 +34,7 @@ import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import { useParams } from "react-router-dom";
 import { orcamentoValidation } from "../../../validators/validationSchema";
+import { brPrice } from "../../../constants/datagridCurrencyFormatter";
 
 const initialValues = {
   numero: "",
@@ -87,7 +88,7 @@ function EditarOrdensServicoPage() {
             disableClearable={true}
             value={
               params.row.produto_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : { label: params.row.nome, value: params.row.produto_id }
             }
             onChange={(event, value) => handleClienteChange(params, value)}
@@ -130,6 +131,7 @@ function EditarOrdensServicoPage() {
       sortable: false,
       headerAlign: 'letf',
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -139,6 +141,7 @@ function EditarOrdensServicoPage() {
       sortable: false,
       headerAlign: 'letf',
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -180,7 +183,7 @@ function EditarOrdensServicoPage() {
             disableClearable={true}
             value={
               params.row.servico_id == ""
-                ? { label: "", value: null }
+                ? undefined
                 : { label: params.row.nome, value: params.row.servico_id }
             }
             onChange={(event, value) => handleServicoChange(params, value)}
@@ -223,6 +226,7 @@ function EditarOrdensServicoPage() {
       sortable: false,
       headerAlign: 'letf',
       flex: 1,
+      ...brPrice
     },
     {
       field: "total",
@@ -232,6 +236,7 @@ function EditarOrdensServicoPage() {
       sortable: false,
       headerAlign: 'letf',
       flex: 1,
+      ...brPrice
     },
     {
       field: "observacao",
@@ -373,7 +378,7 @@ function EditarOrdensServicoPage() {
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
-            label: produto.nome,
+            label: produto.codigoInterno + " / " + produto.nome,
             value: produto.id,
             preco: produto.custoFinal,
           });
@@ -390,7 +395,7 @@ function EditarOrdensServicoPage() {
         var array = [];
         response.data["data"].forEach((servico) => {
           array.push({
-            label: servico.nome,
+            label: servico.codigoInterno + " / " + servico.nome,
             value: servico.id,
             preco: servico.valor,
           });
@@ -763,6 +768,7 @@ function EditarOrdensServicoPage() {
                   rows={rowsProdutos}
                   columns={columnsProdutos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   onStateChange={handleProductRowStateChange}
                   components={{
@@ -815,6 +821,7 @@ function EditarOrdensServicoPage() {
                   rows={rowsServicos}
                   columns={columnsServicos}
                   hideFooter={true}
+                  disableVirtualization
                   disableColumnMenu={true}
                   components={{
                     NoRowsOverlay: () => (

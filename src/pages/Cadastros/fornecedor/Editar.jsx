@@ -21,7 +21,12 @@ import FormHelperText from "@mui/material/FormHelperText";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import buscarCep from "../../../services/cep";
 import InputMask from "react-input-mask";
-import { confirmAlert, infoAlert, successAlert,errorAlert } from "../../../utils/alert";
+import {
+  confirmAlert,
+  infoAlert,
+  successAlert,
+  errorAlert,
+} from "../../../utils/alert";
 import { fornecedorValidation } from "../../../validators/validationSchema";
 import { useFormik } from "formik";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
@@ -34,6 +39,8 @@ const initialValues = {
   nome: "",
   cpfCnpj: "",
   email: "",
+  emailDocumento: "",
+  observacao: "",
   contato: "",
   rua: "",
   cidade: "",
@@ -41,6 +48,7 @@ const initialValues = {
   cep: "",
   bairro: "",
   estado: "",
+  complemento: "",
   telefone: "",
   celular: "",
   codigoMunicipio: "",
@@ -92,18 +100,16 @@ function EditarFornecedorPage() {
   function handleOnSubmit(values) {
     // Removendo máscaras antes de enviar dados para API
     try {
-      values.cep = values.cep.replace(/[^\d]/g, '');
-      values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, '');
-      values.telefone = values.telefone.replace(/[^\d]/g, '');
-      values.celular = values.celular.replace(/[^\d]/g, '');
-    } catch (error) {
-      
-    }
-    
+      values.cep = values.cep.replace(/[^\d]/g, "");
+      values.cpfCnpj = values.cpfCnpj.replace(/[^\d]/g, "");
+      values.telefone = values.telefone.replace(/[^\d]/g, "");
+      values.celular = values.celular.replace(/[^\d]/g, "");
+    } catch (error) {}
+
     api
       .put("/fornecedores/" + id, values)
       .then((response) => {
-        history.push("/fornecedores")
+        history.push("/fornecedores");
         successAlert("Sucesso", "Fornecedor Editado");
       })
       .catch((error) => {
@@ -124,7 +130,7 @@ function EditarFornecedorPage() {
     api
       .delete("/fornecedores/" + id)
       .then((result) => {
-        history.push("/fornecedores")
+        history.push("/fornecedores");
         successAlert("Sucesso", "Fornecedor Excluido");
       })
       .catch((error) => {
@@ -143,7 +149,7 @@ function EditarFornecedorPage() {
           <h3>Dados Pessoais</h3>
         </div>
         <form onSubmit={formik.handleSubmit}>
-        <Grid container spacing={2}>
+          <Grid container spacing={2}>
             <Grid item xs={3}>
               <FormControl variant="outlined" fullWidth name="tipoFornecedor">
                 <InputLabel>Tipo de Fornecedor</InputLabel>
@@ -152,7 +158,10 @@ function EditarFornecedorPage() {
                   label="Tipo de Fornecedor"
                   name="tipoFornecedor"
                   value={formik.values.tipoFornecedor}
-                  onChange={(e)=>{formik.handleChange(e); formik.setFieldValue('cpfCnpj', '')}}
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                    formik.setFieldValue("cpfCnpj", "");
+                  }}
                   onBlur={formik.handleBlur}
                   error={
                     formik.touched.tipoFornecedor &&
@@ -164,7 +173,9 @@ function EditarFornecedorPage() {
                 </Select>
                 {formik.touched.tipoFornecedor &&
                 Boolean(formik.errors.tipoFornecedor) ? (
-                  <FormHelperText>{formik.errors.tipoFornecedor}</FormHelperText>
+                  <FormHelperText>
+                    {formik.errors.tipoFornecedor}
+                  </FormHelperText>
                 ) : (
                   ""
                 )}
@@ -233,13 +244,15 @@ function EditarFornecedorPage() {
                 label="Inscrição Estadual"
                 value={formik.values.inscricaoEstadual}
                 name="inscricaoEstadual"
-                InputProps={{
-                  // endAdornment: (
-                  //   <Tooltip title="Digite ISENTO caso não haja Inscrição Estadual">
-                  //     <HelpIcon />
-                  //   </Tooltip>
-                  // ),
-                }}
+                InputProps={
+                  {
+                    // endAdornment: (
+                    //   <Tooltip title="Digite ISENTO caso não haja Inscrição Estadual">
+                    //     <HelpIcon />
+                    //   </Tooltip>
+                    // ),
+                  }
+                }
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
@@ -310,6 +323,25 @@ function EditarFornecedorPage() {
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
+                label="Email Documentos"
+                fullWidth
+                placeholder="Separar emails por vírgula"
+                value={formik.values.emailDocumento}
+                name="emailDocumento"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.emailDocumento &&
+                  Boolean(formik.errors.emailDocumento)
+                }
+                helperText={
+                  formik.touched.emailDocumento && formik.errors.emailDocumento
+                }
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                variant="outlined"
                 label="Contato"
                 fullWidth
                 value={formik.values.contato}
@@ -320,6 +352,21 @@ function EditarFornecedorPage() {
                 helperText={formik.touched.contato && formik.errors.contato}
               />
             </Grid>
+
+            <Grid item xs={6}>
+              <TextField
+                variant="outlined"
+                label="Observação"
+                fullWidth
+                value={formik.values.observacao}
+                name="observacao"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.observacao && Boolean(formik.errors.observacao)}
+                helperText={formik.touched.observacao && formik.errors.observacao}
+              />
+            </Grid>
+
           </Grid>
           <br />
           <Divider />
@@ -335,8 +382,8 @@ function EditarFornecedorPage() {
           </div>
           <Grid container spacing={2}>
             <Grid item xs={3}>
-               <InputMask
-                mask={'99999-999'}
+              <InputMask
+                mask={"99999-999"}
                 value={formik.values.cep}
                 onChange={formik.handleChange}
                 onBlur={handleCepChange}
@@ -347,12 +394,8 @@ function EditarFornecedorPage() {
                     label="Cep"
                     fullWidth
                     name="cep"
-                    error={
-                      formik.touched.cep && Boolean(formik.errors.cep)
-                    }
-                    helperText={
-                      formik.touched.cep && formik.errors.cep
-                    }
+                    error={formik.touched.cep && Boolean(formik.errors.cep)}
+                    helperText={formik.touched.cep && formik.errors.cep}
                   />
                 )}
               </InputMask>
@@ -458,7 +501,7 @@ function EditarFornecedorPage() {
             </Grid>
             <Grid item xs={3}>
               <InputMask
-                mask={'(99) 9999-9999'}
+                mask={"(99) 9999-9999"}
                 value={formik.values.telefone}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -480,8 +523,8 @@ function EditarFornecedorPage() {
               </InputMask>
             </Grid>
             <Grid item xs={3}>
-            <InputMask
-                mask={'(99) 9 9999-9999'}
+              <InputMask
+                mask={"(99) 9 9999-9999"}
                 value={formik.values.celular}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -495,13 +538,32 @@ function EditarFornecedorPage() {
                     error={
                       formik.touched.celular && Boolean(formik.errors.celular)
                     }
-                    helperText={
-                      formik.touched.celular && formik.errors.celular
-                    }
+                    helperText={formik.touched.celular && formik.errors.celular}
                   />
                 )}
               </InputMask>
             </Grid>
+
+            <Grid item xs={3}>
+              <TextField
+                variant="outlined"
+                label="Complemento"
+                fullWidth
+                value={formik.values.complemento}
+                name="complemento"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.complemento &&
+                  Boolean(formik.errors.complemento)
+                }
+                helperText={
+                  formik.touched.complemento &&
+                  formik.errors.complemento
+                }
+              />
+            </Grid>
+
             <Grid item xs={3}>
               <TextField
                 variant="outlined"
