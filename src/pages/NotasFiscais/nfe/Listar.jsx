@@ -80,7 +80,7 @@ function ListarNotasFiscaisPage() {
                   href={`./vendas/editar/${element["venda_id"]}`}
                   target="_blank"
                 >
-                  <LocalAtmIcon />
+                  {element["venda_id"]}
                 </a>
               </Tooltip>
             ) : (
