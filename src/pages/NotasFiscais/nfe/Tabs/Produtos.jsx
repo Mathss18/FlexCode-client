@@ -149,7 +149,7 @@ export default function Produtos() {
       field: "total",
       headerName: "Total",
       type: "number",
-      editable: totalManual,
+      editable: true,
       sortable: false,
       headerAlign: "letf",
       flex: 1,
@@ -372,7 +372,7 @@ export default function Produtos() {
           <AssignmentIcon />
           <h3>Adicionar Produtos</h3>
           <div style={{ marginLeft: "auto" }}>
-            <FormControlLabel
+            {/* <FormControlLabel
               control={
                 <Switch
                   checked={totalManual}
@@ -383,7 +383,7 @@ export default function Produtos() {
               }
               labelPlacement="right"
               label="Ajutar totais manualmente?"
-            />
+            /> */}
             <Button
               style={{
                 marginLeft: "auto",
