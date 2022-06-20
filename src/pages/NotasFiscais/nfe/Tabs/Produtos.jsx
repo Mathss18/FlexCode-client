@@ -144,7 +144,7 @@ export default function Produtos() {
       field: "total",
       headerName: "Total",
       type: "number",
-      editable: false,
+      editable: true,
       sortable: false,
       headerAlign: "letf",
       flex: 1,
