@@ -6,6 +6,7 @@ import {
   InputAdornment,
   Tooltip,
   Checkbox,
+  FormLabel,
 } from "@material-ui/core";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { Autocomplete } from "@mui/material";
@@ -347,7 +348,8 @@ export default function Produtos() {
         >
           <AssignmentIcon />
           <h3>Adicionar Produtos</h3>
-          <Tooltip title="Somar frete ao total" arrow>
+          <FormLabel>Total Manual?</FormLabel>
+          <Tooltip title="Modificar os totais da NFe" arrow>
             <Checkbox
               checked={totalManual}
               onChange={()=>{setTotalManual(!totalManual)}}
