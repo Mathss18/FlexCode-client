@@ -405,6 +405,7 @@ export default function Produtos() {
                 columns={columnsProdutos}
                 hideFooter={true}
                 disableColumnMenu={true}
+                disableVirtualization
                 onStateChange={handleProductRowStateChange}
                 components={{
                   NoRowsOverlay: () => (
