@@ -350,27 +350,29 @@ export default function Produtos() {
         >
           <AssignmentIcon />
           <h3>Adicionar Produtos</h3>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={totalManual}
-                onChange={()=>setTotalManual(!totalManual)}
-                name="totalManual"
-                type="checkbox"
-              />
-            }
-            labelPlacement="right"
-            label="Ajutar totais manualmente?"
-          />
-          <Button
-            style={{ marginLeft: "auto", height: 28, fontSize: 12 }}
-            className={"btn btn-primary"}
-            startIcon={<AddIcon />}
-            onClick={addProductRow}
-            disabled={isBtnDisabled}
-          >
-            Produto
-          </Button>
+          <div>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={totalManual}
+                  onChange={() => setTotalManual(!totalManual)}
+                  name="totalManual"
+                  type="checkbox"
+                />
+              }
+              labelPlacement="right"
+              label="Ajutar totais manualmente?"
+            />
+            <Button
+              style={{ marginLeft: "auto", height: 28, fontSize: 12 }}
+              className={"btn btn-primary"}
+              startIcon={<AddIcon />}
+              onClick={addProductRow}
+              disabled={isBtnDisabled}
+            >
+              Produto
+            </Button>
+          </div>
         </div>
 
         <Grid container spacing={3}>
