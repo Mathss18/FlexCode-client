@@ -5,6 +5,7 @@ import {
   Button,
   InputAdornment,
   Tooltip,
+  Checkbox,
 } from "@material-ui/core";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { Autocomplete } from "@mui/material";
@@ -37,6 +38,8 @@ export default function Produtos() {
   const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
   const produtosOriginal = useRef(null);
   const produto = useRef(null);
+
+  const [totalManual, setTotalManual] = useState(false);
 
   function interceptKeys(event) {
     event = event || window.event; // IE support
@@ -93,7 +96,7 @@ export default function Produtos() {
             fullWidth
             disableClearable={true}
             onKeyUp={(e) => {
-              console.log(params)
+              console.log(params);
               params.row.nome = e.target.value;
             }}
             value={
@@ -138,7 +141,7 @@ export default function Produtos() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "total",
@@ -148,7 +151,7 @@ export default function Produtos() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "excluir",
@@ -298,10 +301,12 @@ export default function Produtos() {
           console.log("Preço original mudado");
         }
 
-        objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
-          objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
-          Number(row.quantidade)
-        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
+        if(!totalManual){
+          objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
+            objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
+            Number(row.quantidade)
+          ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
+        }
       }
     });
     setRowsProdutos(objectToArray(dataGrid.rows.idRowsLookup));
@@ -342,6 +347,14 @@ export default function Produtos() {
         >
           <AssignmentIcon />
           <h3>Adicionar Produtos</h3>
+          <Tooltip title="Somar frete ao total" arrow>
+            <Checkbox
+              checked={totalManual}
+              onChange={()=>{setTotalManual(!totalManual)}}
+              name="totalManual"
+              inputProps={{ "aria-label": "controlled" }}
+            />
+          </Tooltip>
           <Button
             style={{ marginLeft: "auto", height: 28, fontSize: 12 }}
             className={"btn btn-primary"}
