@@ -350,15 +350,6 @@ export default function Produtos() {
         >
           <AssignmentIcon />
           <h3>Adicionar Produtos</h3>
-          <Button
-            style={{ marginLeft: "auto", height: 28, fontSize: 12 }}
-            className={"btn btn-primary"}
-            startIcon={<AddIcon />}
-            onClick={addProductRow}
-            disabled={isBtnDisabled}
-          >
-            Produto
-          </Button>
           <FormControlLabel
             control={
               <Switch
@@ -368,9 +359,18 @@ export default function Produtos() {
                 type="checkbox"
               />
             }
-            labelPlacement="top"
+            labelPlacement="right"
             label="Ajutar totais manualmente?"
           />
+          <Button
+            style={{ marginLeft: "auto", height: 28, fontSize: 12 }}
+            className={"btn btn-primary"}
+            startIcon={<AddIcon />}
+            onClick={addProductRow}
+            disabled={isBtnDisabled}
+          >
+            Produto
+          </Button>
         </div>
 
         <Grid container spacing={3}>
