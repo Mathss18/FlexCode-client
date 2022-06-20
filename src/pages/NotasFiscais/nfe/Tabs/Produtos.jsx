@@ -19,7 +19,7 @@ import {
   objectToArray,
 } from "../../../../utils/functions";
 import CalculateIcon from "@mui/icons-material/Calculate";
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ModalTabelaPreco from "../../../Financeiro/modalTabelaPreco/ModalTabelaPreco";
 import { useFullScreenLoader } from "../../../../context/FullScreenLoaderContext";
 import api from "../../../../services/api";
@@ -149,7 +149,7 @@ export default function Produtos() {
       field: "total",
       headerName: "Total",
       type: "number",
-      editable: true,
+      editable: totalManual,
       sortable: false,
       headerAlign: "letf",
       flex: 1,
@@ -268,12 +268,20 @@ export default function Produtos() {
     ]);
     console.log(rowsProdutos);
   }
-  
+
   function duplicateProducts() {
-    setRowsProdutos([
-      ...rowsProdutos,
-      ...rowsProdutos
-    ]);
+    const productsToBeDuplicated = rowsProdutos?.map((item, i) => {
+      return {
+        id: new Date().getTime() + i,
+        produto_id: item.produto_id,
+        nome: item.nome,
+        cfop: item.cfop,
+        quantidade: item.quantidade,
+        preco: item.preco,
+        total: item.total,
+      };
+    });
+    setRowsProdutos([...rowsProdutos, ...productsToBeDuplicated]);
   }
 
   function removeProductRow(params) {
@@ -310,7 +318,14 @@ export default function Produtos() {
           console.log("Preço original mudado");
         }
 
-        if (!totalManual) {
+        // if (!totalManual) {
+        //   objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
+        //     objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
+        //     Number(row.quantidade)
+        //   ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
+        // }
+
+        if (objectToArray(dataGrid.rows.idRowsLookup)[index].total < 0) {
           objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
             objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
             Number(row.quantidade)
@@ -370,7 +385,12 @@ export default function Produtos() {
               label="Ajutar totais manualmente?"
             />
             <Button
-              style={{ marginLeft: "auto", height: 28, fontSize: 12 }}
+              style={{
+                marginLeft: "auto",
+                height: 28,
+                fontSize: 12,
+                marginRight: 8,
+              }}
               className={"btn btn-primary"}
               startIcon={<ContentCopyIcon />}
               onClick={duplicateProducts}
