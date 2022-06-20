@@ -7,6 +7,8 @@ import {
   Tooltip,
   Checkbox,
   FormLabel,
+  FormControlLabel,
+  Switch,
 } from "@material-ui/core";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { Autocomplete } from "@mui/material";
@@ -302,7 +304,7 @@ export default function Produtos() {
           console.log("Preço original mudado");
         }
 
-        if(!totalManual){
+        if (!totalManual) {
           objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
             objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
             Number(row.quantidade)
@@ -348,15 +350,6 @@ export default function Produtos() {
         >
           <AssignmentIcon />
           <h3>Adicionar Produtos</h3>
-          <FormLabel>Total Manual?</FormLabel>
-          <Tooltip title="Modificar os totais da NFe" arrow>
-            <Checkbox
-              checked={totalManual}
-              onChange={()=>{setTotalManual(!totalManual)}}
-              name="totalManual"
-              inputProps={{ "aria-label": "controlled" }}
-            />
-          </Tooltip>
           <Button
             style={{ marginLeft: "auto", height: 28, fontSize: 12 }}
             className={"btn btn-primary"}
@@ -366,6 +359,18 @@ export default function Produtos() {
           >
             Produto
           </Button>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={totalManual}
+                onChange={()=>setTotalManual(!totalManual)}
+                name="totalManual"
+                type="checkbox"
+              />
+            }
+            labelPlacement="top"
+            label="Ajutar totais manualmente?"
+          />
         </div>
 
         <Grid container spacing={3}>
