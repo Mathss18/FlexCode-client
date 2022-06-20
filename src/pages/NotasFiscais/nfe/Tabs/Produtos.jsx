@@ -5,8 +5,6 @@ import {
   Button,
   InputAdornment,
   Tooltip,
-  Checkbox,
-  FormLabel,
   FormControlLabel,
   Switch,
 } from "@material-ui/core";
@@ -21,6 +19,7 @@ import {
   objectToArray,
 } from "../../../../utils/functions";
 import CalculateIcon from "@mui/icons-material/Calculate";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ModalTabelaPreco from "../../../Financeiro/modalTabelaPreco/ModalTabelaPreco";
 import { useFullScreenLoader } from "../../../../context/FullScreenLoaderContext";
 import api from "../../../../services/api";
@@ -269,6 +268,13 @@ export default function Produtos() {
     ]);
     console.log(rowsProdutos);
   }
+  
+  function duplicateProducts() {
+    setRowsProdutos([
+      ...rowsProdutos,
+      ...rowsProdutos
+    ]);
+  }
 
   function removeProductRow(params) {
     var indexToBeDeleted = rowsProdutos.map((row, index) => {
@@ -350,7 +356,7 @@ export default function Produtos() {
         >
           <AssignmentIcon />
           <h3>Adicionar Produtos</h3>
-          <div>
+          <div style={{ marginLeft: "auto" }}>
             <FormControlLabel
               control={
                 <Switch
@@ -363,6 +369,15 @@ export default function Produtos() {
               labelPlacement="right"
               label="Ajutar totais manualmente?"
             />
+            <Button
+              style={{ marginLeft: "auto", height: 28, fontSize: 12 }}
+              className={"btn btn-primary"}
+              startIcon={<ContentCopyIcon />}
+              onClick={duplicateProducts}
+              disabled={isBtnDisabled}
+            >
+              Duplicar
+            </Button>
             <Button
               style={{ marginLeft: "auto", height: 28, fontSize: 12 }}
               className={"btn btn-primary"}
