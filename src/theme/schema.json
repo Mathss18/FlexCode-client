@@ -3,7 +3,6 @@
 
     "light": {
       "id": "T_001",
-      "cu":"cu",
       "name": "Light",
       "colors": {
         "body": "#f3f8fd",
