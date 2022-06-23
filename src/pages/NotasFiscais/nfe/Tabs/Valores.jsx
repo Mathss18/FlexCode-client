@@ -15,6 +15,7 @@ import {
   Radio,
   IconButton,
   Tooltip,
+  Switch,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import CheckIcon from "@material-ui/icons/Check";
@@ -49,6 +50,7 @@ export default function Valores() {
   const formasPagamentosOriginal = useRef([]);
   const fullScreenLoader = useFullScreenLoader();
   const empresaConfig = JSON.parse(localStorage.getItem("config"));
+  const [totalManual, setTotalManual] = useState(false);
 
   const columnsParcelas = [
     {
@@ -278,7 +280,8 @@ export default function Valores() {
   // ==== Funções de parcelas ====
 
   function handleParcelaRowStateChange(dataGrid) {
-    console.log('aui')
+    if(totalManual) return;
+
     if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsParcelas))
       return;
     if (objectToArray(dataGrid.rows.idRowsLookup).length != rowsParcelas.length)
@@ -418,6 +421,18 @@ export default function Valores() {
           <AssignmentIcon />
           <h3>Pagamento</h3>
           <div style={{ marginLeft: "auto" }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={totalManual}
+                  onChange={() => setTotalManual(!totalManual)}
+                  name="totalManual"
+                  type="checkbox"
+                />
+              }
+              labelPlacement="right"
+              label="Ajutar valores manualmente?"
+            />
             <FormControl>
               <RadioGroup
                 value={notaFiscalContext.formik.values.tipoFormaPagamento}

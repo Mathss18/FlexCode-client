@@ -372,18 +372,6 @@ export default function Produtos() {
           <AssignmentIcon />
           <h3>Adicionar Produtos</h3>
           <div style={{ marginLeft: "auto" }}>
-            {/* <FormControlLabel
-              control={
-                <Switch
-                  checked={totalManual}
-                  onChange={() => setTotalManual(!totalManual)}
-                  name="totalManual"
-                  type="checkbox"
-                />
-              }
-              labelPlacement="right"
-              label="Ajutar totais manualmente?"
-            /> */}
             <Button
               style={{
                 marginLeft: "auto",
