@@ -194,7 +194,7 @@ function ListarExtratos() {
           ];
           data.push(array);
         });
-        if(response.data["data"][0]?.conta_bancaria){
+        if (response.data["data"][0]?.conta_bancaria) {
           data.push([
             "-",
             new Date(
@@ -210,7 +210,6 @@ function ListarExtratos() {
             "",
           ]);
         }
-        
 
         setTransacoes(data);
       })
@@ -250,7 +249,7 @@ function ListarExtratos() {
         variant="outlined"
         startIcon={<ArrowCircleUpIcon />}
         className={"btn btn-primary btn-spacing"}
-        >
+      >
         Novo Rendimento
       </Button>
       <Button
@@ -275,7 +274,12 @@ function ListarExtratos() {
                 contaBancaria?.nome ?? ""
               }`}</h2>
               <h4 className="dialogTitle">
-                {`Saldo: R$: ${contaBancaria?.saldo?.toFixed(2) ?? ""}`}
+                {`Saldo: ${
+                  contaBancaria?.saldo?.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }) ?? ""
+                }`}
               </h4>
             </>
           );
