@@ -264,7 +264,7 @@ function CalendarioPage() {
             });
           }
         }}
-        eventOrder={'dataTransacaoRegistrada'}
+        eventOrder={'-dataTransacaoRegistrada'}
         events={transacoes}
         dateClick={handleDayClick}
         eventClick={handleEventClick}
