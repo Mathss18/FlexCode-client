@@ -89,7 +89,7 @@ export default function Produtos() {
     {
       field: "produto_id",
       headerName: "Produto",
-      flex: 2,
+      flex: 4,
       sortable: false,
       headerAlign: "letf",
       renderCell: (params) => (
