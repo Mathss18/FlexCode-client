@@ -46,7 +46,7 @@ function GraficoPatrimonioAoLongoDoTempo({ dados }) {
       {
         name: "Patrimônio",
         data: dados?.map(item=>(
-          item.balancoFinal.toFixed(2)
+          item.balancoFinal
         )),
       },
     ],
