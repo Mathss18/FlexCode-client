@@ -58,11 +58,15 @@ function ListarVendas() {
   }
 
   function handleOnClickNfeButton(event, element) {
+    if (element.situacao != 1) {
+      errorAlert("Só é possivel emitir NFe com a venda Realizada");
+      return;
+    }
     confirmAlert(
       "Atenção!",
       "Realmente deseja gerar a nota fiscal?",
       () => {
-        criarNfe(element);
+        criarNfe(element.statu);
       },
       () => {
         // negado
@@ -185,7 +189,9 @@ function ListarVendas() {
       },
       indFinal: 1,
       indPres: "2",
-      transportadora_id: { label: item?.transportadora?.nome, value: item?.transportadora?.id },
+      transportadora_id: item?.transportadora?.id
+        ? { label: item?.transportadora?.nome, value: item?.transportadora?.id }
+        : null,
       modFrete: 2,
       frete: item.frete,
       produtos: item.produtos.map((item, index) => {
@@ -209,7 +215,10 @@ function ListarVendas() {
         };
       }),
       totalProdutos: 0,
-      forma_pagamento_id: { label: item.forma_pagamento.nome, value: item.forma_pagamento.id },
+      forma_pagamento_id: {
+        label: item.forma_pagamento.nome,
+        value: item.forma_pagamento.id,
+      },
       quantidadeParcelas: item.quantidadeParcelas,
       intervaloParcelas: item.intervaloParcelas,
       tipoFormaPagamento: item.tipoFormaPagamento,
@@ -226,7 +235,7 @@ function ListarVendas() {
     };
 
     notaFiscalContext.formik.setValues(params);
-    history.push('/notas-fiscais/novo');
+    history.push("/notas-fiscais/novo");
   }
 
   useEffect(() => {
