@@ -58,6 +58,7 @@ function ListarVendas() {
   }
 
   function handleOnClickNfeButton(event, element) {
+    console.log(element);
     if (element.situacao != 1) {
       errorAlert("Só é possivel emitir NFe com a venda Realizada");
       return;
@@ -66,7 +67,7 @@ function ListarVendas() {
       "Atenção!",
       "Realmente deseja gerar a nota fiscal?",
       () => {
-        criarNfe(element.statu);
+        criarNfe(element);
       },
       () => {
         // negado
