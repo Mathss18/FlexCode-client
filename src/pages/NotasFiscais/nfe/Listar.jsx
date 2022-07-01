@@ -74,18 +74,7 @@ function ListarNotasFiscaisPage() {
           var array = [
             element["nNF"],
             element["tpNF"] == 1 ? "Entrada" : "Saída",
-            element["venda_id"] ? (
-              <Tooltip title="Visualizar venda">
-                <a
-                  href={`./vendas/editar/${element["venda_id"]}`}
-                  target="_blank"
-                >
-                  <LocalAtmIcon />
-                </a>
-              </Tooltip>
-            ) : (
-              <></>
-            ),
+            element["venda_id"],
             element["chaveNF"],
             element["favorecido_nome"],
             `R$: ` + element["totalProdutos"],

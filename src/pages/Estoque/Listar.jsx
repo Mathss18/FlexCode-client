@@ -32,7 +32,7 @@ const empresaConfig = JSON.parse(localStorage.getItem("config"));
 const initialValues = {
   quantidade: "",
   valorUnitario: "",
-  tipo: 0,
+  tipo: 1,
   observacao: "",
 };
 
@@ -96,6 +96,7 @@ function ListarEstoques() {
 
   function handleClickAjusteManual(event, element) {
     formik.resetForm();
+    formik.setFieldValue("valorUnitario", element?.produto?.custoFinal)
     setSelectedEstoque(element);
     setOpen(true);
   }

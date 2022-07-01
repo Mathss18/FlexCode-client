@@ -10,78 +10,10 @@ function PrivateRoutes({ Component, ...rest }) {
   useEffect(() => {
     setToken(localStorage.getItem("token"));
   }, []);
-  try {
-    var path = rest.location.pathname;
-    var grupo = JSON.parse(decrypt(localStorage.getItem("grupo")));
-    var acessos = JSON.parse(grupo.acessos);
-  } catch (error) {
-    toast.error("Erro ao carregar acessos, fale com o suporte!");
-    return <Redirect to="/login" />;
-  }
 
-  // console.log(path);
-  // console.log(grupo);
-  // console.log(acessos)
-
-  // ==== VERIFICAÇÃO DE DIA DA SEMANA ====
-  if (verificarDiaDaSemana() === false) {
-    errorAlert("Voce não tem permissão para acessar o sistema hoje!");
-    localStorage.removeItem("token");
-    setTimeout(() => {
-      return <Redirect to="/home" />;
-    }, 1000);
-  }
-  // ==== VERIFICAÇÃO DE HORARIO ====
-  if (verificarHorario() === false) {
-    errorAlert("Voce não tem permissão para acessar o sistema nesse horário!");
-    localStorage.removeItem("token");
-    setTimeout(() => {
-      return <Redirect to="/home" />;
-    }, 1000);
-  }
-  // ==== VERIFICAÇÃO DE ACESSO ====
-  if (verificarAcessos() === false) {
-    toast.error("Você não tem permissão para acessar esta página!");
-    return <Redirect to="/home" />;
-  }
 
   if (token == null) {
     return <Redirect to="/login" />;
-  }
-
-  function verificarDiaDaSemana() {
-    var semana = [
-      "domingo",
-      "segunda",
-      "terca",
-      "quarta",
-      "quinta",
-      "sexta",
-      "sabado",
-    ];
-    const diaSemana = semana[new Date().getDay()];
-    if (grupo[diaSemana] == 0) {
-      return false;
-    }
-  }
-
-  function verificarHorario() {
-    var horaAtual = new Date().toLocaleTimeString();
-    if (horaAtual > grupo.horaInicio && horaAtual < grupo.horaFim) {
-      return true;
-    }
-    return false;
-  }
-
-  function verificarAcessos() {
-    for (let i = 0; i < acessos.length; i++) {
-      if (path.includes(acessos[i].path)) {
-        if (acessos[i].situacao === false) {
-          return false;
-        }
-      }
-    }
-    return true;
   }
 
   return <Route {...rest} render={() => <Component {...rest} />} />;

@@ -100,6 +100,7 @@ function TableTransacoes({
               print: false,
               filter: false,
               viewColumns: false,
+              rowsPerPage: Infinity,
               customFooter: () => {
                 return <></>;
               },

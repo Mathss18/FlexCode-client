@@ -649,8 +649,8 @@ export const GlobalStyles = createGlobalStyle`
     margin: 3px;
   }
 
-  .fc-day-today{
-    background: 'lime';
+  .fc-day-today > div{
+    background: #283d607d !important;
   }
 
   .fc-daygrid-day-frame{

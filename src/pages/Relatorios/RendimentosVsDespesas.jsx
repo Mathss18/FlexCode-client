@@ -159,6 +159,7 @@ function RendimentosVsDespesas() {
             year: "numeric",
             month: "2-digit",
             day: "2-digit",
+            timeZone: 'UTC'
           })}
         </TableCell>
         <TableCell>{row.conta_bancaria_nome}</TableCell>
@@ -227,10 +228,12 @@ function RendimentosVsDespesas() {
             year: "numeric",
             month: "2-digit",
             day: "2-digit",
+            timeZone: 'UTC'
           })} - ${new Date(state[0].endDate).toLocaleString("pt-BR", {
             year: "numeric",
             month: "2-digit",
             day: "2-digit",
+            timeZone: 'UTC'
           })}`}
         </Button>
         <FormControl sx={{ m: 1, width: 200 }} size="small">

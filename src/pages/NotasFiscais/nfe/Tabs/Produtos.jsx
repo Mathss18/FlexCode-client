@@ -5,6 +5,8 @@ import {
   Button,
   InputAdornment,
   Tooltip,
+  FormControlLabel,
+  Switch,
 } from "@material-ui/core";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { Autocomplete } from "@mui/material";
@@ -17,6 +19,7 @@ import {
   objectToArray,
 } from "../../../../utils/functions";
 import CalculateIcon from "@mui/icons-material/Calculate";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ModalTabelaPreco from "../../../Financeiro/modalTabelaPreco/ModalTabelaPreco";
 import { useFullScreenLoader } from "../../../../context/FullScreenLoaderContext";
 import api from "../../../../services/api";
@@ -37,6 +40,8 @@ export default function Produtos() {
   const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
   const produtosOriginal = useRef(null);
   const produto = useRef(null);
+
+  const [totalManual, setTotalManual] = useState(false);
 
   function interceptKeys(event) {
     event = event || window.event; // IE support
@@ -84,7 +89,7 @@ export default function Produtos() {
     {
       field: "produto_id",
       headerName: "Produto",
-      flex: 2,
+      flex: 4,
       sortable: false,
       headerAlign: "letf",
       renderCell: (params) => (
@@ -93,7 +98,7 @@ export default function Produtos() {
             fullWidth
             disableClearable={true}
             onKeyUp={(e) => {
-              console.log(params)
+              console.log(params);
               params.row.nome = e.target.value;
             }}
             value={
@@ -138,17 +143,17 @@ export default function Produtos() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "total",
       headerName: "Total",
       type: "number",
-      editable: false,
+      editable: true,
       sortable: false,
       headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "excluir",
@@ -264,6 +269,21 @@ export default function Produtos() {
     console.log(rowsProdutos);
   }
 
+  function duplicateProducts() {
+    const productsToBeDuplicated = rowsProdutos?.map((item, i) => {
+      return {
+        id: new Date().getTime() + i,
+        produto_id: item.produto_id,
+        nome: item.nome,
+        cfop: item.cfop,
+        quantidade: item.quantidade,
+        preco: item.preco,
+        total: item.total,
+      };
+    });
+    setRowsProdutos([...rowsProdutos, ...productsToBeDuplicated]);
+  }
+
   function removeProductRow(params) {
     var indexToBeDeleted = rowsProdutos.map((row, index) => {
       if (row.id === params.id) return index;
@@ -298,10 +318,19 @@ export default function Produtos() {
           console.log("Preço original mudado");
         }
 
-        objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
-          objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
-          Number(row.quantidade)
-        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
+        // if (!totalManual) {
+        //   objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
+        //     objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
+        //     Number(row.quantidade)
+        //   ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
+        // }
+
+        if (objectToArray(dataGrid.rows.idRowsLookup)[index].total < 0) {
+          objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
+            objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
+            Number(row.quantidade)
+          ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
+        }
       }
     });
     setRowsProdutos(objectToArray(dataGrid.rows.idRowsLookup));
@@ -342,15 +371,31 @@ export default function Produtos() {
         >
           <AssignmentIcon />
           <h3>Adicionar Produtos</h3>
-          <Button
-            style={{ marginLeft: "auto", height: 28, fontSize: 12 }}
-            className={"btn btn-primary"}
-            startIcon={<AddIcon />}
-            onClick={addProductRow}
-            disabled={isBtnDisabled}
-          >
-            Produto
-          </Button>
+          <div style={{ marginLeft: "auto" }}>
+            <Button
+              style={{
+                marginLeft: "auto",
+                height: 28,
+                fontSize: 12,
+                marginRight: 8,
+              }}
+              className={"btn btn-primary"}
+              startIcon={<ContentCopyIcon />}
+              onClick={duplicateProducts}
+              disabled={isBtnDisabled}
+            >
+              Duplicar
+            </Button>
+            <Button
+              style={{ marginLeft: "auto", height: 28, fontSize: 12 }}
+              className={"btn btn-primary"}
+              startIcon={<AddIcon />}
+              onClick={addProductRow}
+              disabled={isBtnDisabled}
+            >
+              Produto
+            </Button>
+          </div>
         </div>
 
         <Grid container spacing={3}>
@@ -368,6 +413,7 @@ export default function Produtos() {
                 columns={columnsProdutos}
                 hideFooter={true}
                 disableColumnMenu={true}
+                disableVirtualization
                 onStateChange={handleProductRowStateChange}
                 components={{
                   NoRowsOverlay: () => (

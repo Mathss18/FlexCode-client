@@ -28,7 +28,6 @@ function CalendarioPage() {
   const [modalTransacaoOpen, setModalTransacaoOpen] = useState(false);
   const fullScreenLoader = useFullScreenLoader();
   const [datasView, setDatasView] = useState(null);
-  const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
   function getInitialView() {
     if (window.screen.width < 500) {
@@ -265,6 +264,7 @@ function CalendarioPage() {
             });
           }
         }}
+        eventOrder={'-dataTransacaoRegistrada'}
         events={transacoes}
         dateClick={handleDayClick}
         eventClick={handleEventClick}

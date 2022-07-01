@@ -15,6 +15,7 @@ import {
   Radio,
   IconButton,
   Tooltip,
+  Switch,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import CheckIcon from "@material-ui/icons/Check";
@@ -49,6 +50,7 @@ export default function Valores() {
   const formasPagamentosOriginal = useRef([]);
   const fullScreenLoader = useFullScreenLoader();
   const empresaConfig = JSON.parse(localStorage.getItem("config"));
+  const [totalManual, setTotalManual] = useState(false);
 
   const columnsParcelas = [
     {
@@ -235,7 +237,10 @@ export default function Valores() {
           month: "2-digit",
           day: "2-digit",
         });
-      } else if (parcela.dataVencimento === null || parcela.dataVencimento === "") {
+      } else if (
+        parcela.dataVencimento === null ||
+        parcela.dataVencimento === ""
+      ) {
         errorAlert(
           "Por favor, selecione uma data de vencimento válida a parcela número " +
             (index + 1)
@@ -260,10 +265,10 @@ export default function Valores() {
       .post("/notas-fiscais", params)
       .then((response) => {
         successAlert("Nota Fiscal emitida com sucesso!");
-        history.push('/notas-fiscais/editar/' + response.data['data'].id);
+        history.push("/notas-fiscais/editar/" + response.data["data"].id);
       })
       .catch((error) => {
-        errorAlert('Erro',error?.response?.data?.message);
+        errorAlert("Erro", error?.response?.data?.message);
       })
       .finally(() => {
         notaFiscalContext.formik.setSubmitting(false);
@@ -278,7 +283,7 @@ export default function Valores() {
   // ==== Funções de parcelas ====
 
   function handleParcelaRowStateChange(dataGrid) {
-    console.log('aui')
+
     if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsParcelas))
       return;
     if (objectToArray(dataGrid.rows.idRowsLookup).length != rowsParcelas.length)
@@ -290,56 +295,79 @@ export default function Valores() {
     var resto = 0;
     var totalParcelas = 0;
 
-    objectToArray(dataGrid.rows.idRowsLookup).forEach((row, index) => {
-      // Caso o preço daquela row tenha sido alterado, entrara no if
-      if (
-        objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela !=
-        rowsParcelas[index].valorParcela
-      ) {
-        resto =
-          Number(total) -
-          (Number(acumulador) +
-            Number(
-              objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela
-            )); // Calcula o restante TOTAL para ser dividido entra as parcelas restantes
-        var restoCadaParcela = resto / (parcelas - (index + 1)); // Calcula o restante INDIVIDUAL para ser dividido entre as parcelas restantes
+    if (!totalManual) {
+      objectToArray(dataGrid.rows.idRowsLookup).forEach((row, index) => {
+        // Caso o preço daquela row tenha sido alterado, entrara no if
+        if (
+          objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela !=
+          rowsParcelas[index].valorParcela
+        ) {
+          resto =
+            Number(total) -
+            (Number(acumulador) +
+              Number(
+                objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela
+              )); // Calcula o restante TOTAL para ser dividido entra as parcelas restantes
+          var restoCadaParcela = resto / (parcelas - (index + 1)); // Calcula o restante INDIVIDUAL para ser dividido entre as parcelas restantes
 
-        // Para cada parcela restante, altera o valor da parcela (se o valor restante for negativo, o valor da parcela será 0)
-        for (let i = index + 1; i < parcelas; i++) {
-          if (restoCadaParcela > 0) {
-            objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela =
-              restoCadaParcela.toFixed(empresaConfig.quantidadeCasasDecimaisValor);
-          } else {
-            objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = 0;
+          // Para cada parcela restante, altera o valor da parcela (se o valor restante for negativo, o valor da parcela será 0)
+          for (let i = index + 1; i < parcelas; i++) {
+            if (restoCadaParcela > 0) {
+              objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela =
+                restoCadaParcela.toFixed(
+                  empresaConfig.quantidadeCasasDecimaisValor
+                );
+            } else {
+              objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = 0;
+            }
           }
+        } else {
+          acumulador = acumulador + Number(rowsParcelas[index].valorParcela); // Acumula o valor das parcelas que não foram alteradas
         }
-      } else {
-        acumulador = acumulador + Number(rowsParcelas[index].valorParcela); // Acumula o valor das parcelas que não foram alteradas
+
+        totalParcelas += Number(
+          objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela
+        ); // Soma os valores de todas as parcelas (usado somente para calcular a diferença)
+      });
+
+      var diferenca = total - totalParcelas;
+      diferenca = Number(
+        diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+      );
+
+      // se hover diferença, adiciona a diferença na ultima parcela
+      if (Number(diferenca) !== 0) {
+        objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela =
+          Number(
+            objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela
+          ) +
+          Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
       }
 
-      totalParcelas += Number(
-        objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela
-      ); // Soma os valores de todas as parcelas (usado somente para calcular a diferença)
-    });
-
-    var diferenca = total - totalParcelas;
-    diferenca = Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
-
-    // se hover diferença, adiciona a diferença na ultima parcela
-    if (Number(diferenca) !== 0) {
-      objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela =
-        Number(
-          objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela
-        ) + Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
+      setRowsParcelas(
+        objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
+          row.valorParcela =
+            row.valorParcela > 0
+              ? Number(row.valorParcela).toFixed(
+                  empresaConfig.quantidadeCasasDecimaisValor
+                )
+              : 0;
+          return row;
+        })
+      );
+    } else {
+      setRowsParcelas(
+        objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
+          row.valorParcela =
+            row.valorParcela > 0
+              ? Number(row.valorParcela).toFixed(
+                  empresaConfig.quantidadeCasasDecimaisValor
+                )
+              : 0;
+          return row;
+        })
+      );
     }
-
-    setRowsParcelas(
-      objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
-        row.valorParcela =
-          row.valorParcela > 0 ? Number(row.valorParcela).toFixed(empresaConfig.quantidadeCasasDecimaisValor) : 0;
-        return row;
-      })
-    );
   }
 
   function refreshParcelas() {
@@ -354,7 +382,8 @@ export default function Valores() {
       notaFiscalContext.formik.values.quantidadeParcelas;
     diferenca = (
       notaFiscalContext.formik.values.totalFinal -
-      diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor) * notaFiscalContext.formik.values.quantidadeParcelas
+      diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor) *
+        notaFiscalContext.formik.values.quantidadeParcelas
     ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
 
     for (
@@ -418,6 +447,18 @@ export default function Valores() {
           <AssignmentIcon />
           <h3>Pagamento</h3>
           <div style={{ marginLeft: "auto" }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={totalManual}
+                  onChange={() => setTotalManual(!totalManual)}
+                  name="totalManual"
+                  type="checkbox"
+                />
+              }
+              labelPlacement="right"
+              label="Ajutar valores manualmente?"
+            />
             <FormControl>
               <RadioGroup
                 value={notaFiscalContext.formik.values.tipoFormaPagamento}

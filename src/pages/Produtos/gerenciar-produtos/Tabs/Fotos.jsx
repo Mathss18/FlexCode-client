@@ -33,7 +33,7 @@ export function Fotos() {
     </div>
     <Grid container spacing={3}>
       <Grid item xs={8}>
-        <DragAndDrop state={[files, setFiles]} listImages></DragAndDrop>
+        <DragAndDrop state={[files, setFiles]} listFiles></DragAndDrop>
       </Grid>
     </Grid>
   </>
