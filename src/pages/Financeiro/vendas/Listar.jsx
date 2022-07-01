@@ -59,7 +59,7 @@ function ListarVendas() {
 
   function handleOnClickNfeButton(event, element) {
     console.log(element);
-    if (element.situacao != 1) {
+    if (element.situacao !== "Realizada") {
       errorAlert("Só é possivel emitir NFe com a venda Realizada");
       return;
     }
