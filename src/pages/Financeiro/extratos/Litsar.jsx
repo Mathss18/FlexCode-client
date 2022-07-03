@@ -166,7 +166,7 @@ function ListarExtratos() {
                 }
               }}
               style={{
-                color: element.tipo === "rendimento" ? "#007f45" : "#c62b2b",
+                color: element.tipo === "rendimento" ? "#539e61" : "#c06058",
                 cursor: "pointer",
               }}
             >{`R$: ${
@@ -201,7 +201,7 @@ function ListarExtratos() {
               response.data["data"][0]?.conta_bancaria["created_at"]
             ).toLocaleString(),
             "[SISTEMA] SALDO INICIAL",
-            <b style={{ color: "#007f45" }}>
+            <b style={{ color: "#539e61" }}>
               R$:{" "}
               {response.data["data"][0]?.conta_bancaria.saldoInicial.toFixed(2)}
             </b>,

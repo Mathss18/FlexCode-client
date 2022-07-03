@@ -174,17 +174,17 @@ function RendimentosVsDespesas() {
     if (situacao === "Ambas") {
       var total =
         values?.rendimentosTotal[0]?.valor - values?.despesasTotal[0]?.valor;
-      return total >= 0 ? "#007f45" : "#c62b2b";
+      return total >= 0 ? "#539e61" : "#c06058";
     } else if (situacao === "Abertas") {
       var total =
         values?.rendimentosAbertosTotal[0]?.valor -
         values?.despesasAbertasTotal[0]?.valor;
-      return total >= 0 ? "#007f45" : "#c62b2b";
+      return total >= 0 ? "#539e61" : "#c06058";
     } else if (situacao === "Registradas") {
       var total =
         values?.rendimentosRegistradosTotal[0]?.valor -
         values?.despesasRegistradasTotal[0]?.valor;
-      return total >= 0 ? "#007f45" : "#c62b2b";
+      return total >= 0 ? "#539e61" : "#c06058";
     }
   }
 
@@ -292,7 +292,7 @@ function RendimentosVsDespesas() {
                     <b>TOTAL RENDIMENTOS:</b>
                   </TableCell>
                   <TableCell align="right">
-                    <b style={{ color: "#007f45" }}>
+                    <b style={{ color: "#539e61" }}>
                       {situacao === "Ambas"
                         ? values?.rendimentosTotal[0]?.valor?.toFixed(2)
                         : situacao === "Abertas"
@@ -343,7 +343,7 @@ function RendimentosVsDespesas() {
                     <b>VALOR DESPESAS:</b>
                   </TableCell>
                   <TableCell align="right">
-                    <b style={{ color: "#c62b2b" }}>
+                    <b style={{ color: "#c06058" }}>
                       {situacao === "Ambas"
                         ? values?.despesasTotal[0]?.valor?.toFixed(2)
                         : situacao === "Abertas"

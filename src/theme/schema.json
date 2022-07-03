@@ -5,7 +5,7 @@
       "id": "T_001",
       "name": "Light",
       "colors": {
-        "body": "#f3f8fd",
+        "body": "#f2f2e4",
         "text": "#000000",
         "border": "#e0e0e0",
         "input": {

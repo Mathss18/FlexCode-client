@@ -40,9 +40,10 @@ function CalendarioPage() {
   function renderEventContent(eventInfo) {
     return (
       <>
-        <span>{`${
+        {/* <b>{`${
           eventInfo.event.title
-        } - R$: ${eventInfo.event.extendedProps.valor.toFixed(2)}`}</span>
+        } - R$: ${eventInfo.event.extendedProps.valor.toFixed(2)}`}</b> */}
+        <b>{`${eventInfo.event.title}`}</b>
       </>
     );
   }
@@ -74,18 +75,20 @@ function CalendarioPage() {
     console.log(transacoesFromSelectedDay);
     transacoesFromSelectedDay.forEach((element) => {
       var array = [
-        <Tooltip title={element["situacao"] === "aberta" ? 'Aberta' : 'Registrada'}>
+        <Tooltip
+          title={element["situacao"] === "aberta" ? "Aberta" : "Registrada"}
+        >
           <div
             style={{
               backgroundColor:
                 element["situacao"] === "aberta"
                   ? element["tipo"] === "rendimento"
-                    ? "#007f45"
-                    : "#c62b2b"
+                    ? "#539e61"
+                    : "#c06058"
                   : "transparent",
               border: "2px solid",
               borderColor:
-                element["tipo"] === "rendimento" ? "#007f45" : "#c62b2b",
+                element["tipo"] === "rendimento" ? "#539e61" : "#c06058",
               width: "15px",
               height: "15px",
               borderRadius: "20px",
@@ -95,14 +98,13 @@ function CalendarioPage() {
         moment(element["start"]).format("DD/MM/YYYY"),
         element["title"],
         element["conta_bancaria"]["nome"],
-        element["valor"].toFixed(2),
-        // <b
-        //   style={{
-        //     color: element["situacao"] === "aberta" ? "#1976d2" : "#ff9920",
-        //   }}
-        // >
-        //   {element["situacao"]}
-        // </b>,
+        <b
+          style={{
+            color: element["situacao"] === "aberta" ? "#539e61" : "#c06058",
+          }}
+        >
+          {element["valor"].toFixed(2)}
+        </b>,
         <>
           <EditIcon
             className={"btn btn-lista"}
@@ -200,16 +202,16 @@ function CalendarioPage() {
             backgroundColor: (() => {
               if (transacao.situacao === "aberta") {
                 if (transacao.tipo === "rendimento") {
-                  return "#007f45";
+                  return "#539e61";
                 } else {
-                  return "#c62b2b";
+                  return "#c06058";
                 }
               } else {
                 return "transparent";
               }
             })(),
             borderColor:
-              transacao.tipo === "rendimento" ? "#007f45" : "#c62b2b",
+              transacao.tipo === "rendimento" ? "#539e61" : "#c06058",
             fontSize: "12px",
             favorecido_id: {
               value: transacao.favorecido_id,
@@ -264,7 +266,7 @@ function CalendarioPage() {
             });
           }
         }}
-        eventOrder={'-dataTransacaoRegistrada'}
+        eventOrder={"-dataTransacaoRegistrada"}
         events={transacoes}
         dateClick={handleDayClick}
         eventClick={handleEventClick}

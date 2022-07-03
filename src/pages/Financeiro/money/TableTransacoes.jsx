@@ -7,7 +7,7 @@ import {
   DialogContent,
   Grid,
 } from "@material-ui/core";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import { config, rowConfig } from "../../../config/tablesConfig";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";

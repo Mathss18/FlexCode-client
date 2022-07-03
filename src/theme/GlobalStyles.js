@@ -659,4 +659,11 @@ export const GlobalStyles = createGlobalStyle`
     cursor: pointer;
   }
 
+  .fc-event-main > b{
+    color: ${({ theme }) => theme.colors.text}; // cor padrao do texto da aplicação
+    font-size: 14px;
+    letter-spacing: 1px;
+    font-family: Arima,sans-serif !important;
+  }
+
 `;
