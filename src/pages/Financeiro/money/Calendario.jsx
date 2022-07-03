@@ -43,7 +43,7 @@ function CalendarioPage() {
         {/* <b>{`${
           eventInfo.event.title
         } - R$: ${eventInfo.event.extendedProps.valor.toFixed(2)}`}</b> */}
-        <b>{`${eventInfo.event.title}`}</b>
+        <span>{`${eventInfo.event.title}`}</span>
       </>
     );
   }
