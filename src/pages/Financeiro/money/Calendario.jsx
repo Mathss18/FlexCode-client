@@ -100,7 +100,7 @@ function CalendarioPage() {
         element["conta_bancaria"]["nome"],
         <b
           style={{
-            color: element["situacao"] === "aberta" ? "#539e61" : "#c06058",
+            color: element["tipo"] === "rendimento" ? "#539e61" : "#c06058",
           }}
         >
           {element["valor"].toFixed(2)}
