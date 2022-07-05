@@ -25,7 +25,7 @@ function PrivateRoutes({ Component, ...rest }) {
 
   // ==== VERIFICAÇÃO DE DIA DA SEMANA ====
   if (verificarDiaDaSemana() === false) {
-    errorAlert("Voce não tem permissão para acessar o sistema hoje!");
+    errorAlert("Você não tem permissão para acessar o sistema hoje!");
     localStorage.removeItem("token");
     setTimeout(() => {
       return <Redirect to="/home" />;
@@ -33,7 +33,7 @@ function PrivateRoutes({ Component, ...rest }) {
   }
   // ==== VERIFICAÇÃO DE HORARIO ====
   if (verificarHorario() === false) {
-    errorAlert("Voce não tem permissão para acessar o sistema nesse horário!");
+    errorAlert("Você não tem permissão para acessar o sistema nesse horário!");
     localStorage.removeItem("token");
     setTimeout(() => {
       return <Redirect to="/home" />;
