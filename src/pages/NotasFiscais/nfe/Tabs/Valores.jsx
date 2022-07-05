@@ -228,6 +228,8 @@ export default function Valores() {
       return;
     }
 
+
+
     const rowParcelasSanitezed = rowsParcelas.map((parcela, index) => {
       if (typeof parcela.dataVencimento === "object") {
         parcela.dataVencimento = new Date(
@@ -260,6 +262,11 @@ export default function Valores() {
       parcelas: rowParcelasSanitezed,
     };
 
+    console.log(params)
+    notaFiscalContext.formik.setSubmitting(false);
+    return;
+    
+
     fullScreenLoader.setLoading(true);
     api
       .post("/notas-fiscais", params)
@@ -283,7 +290,6 @@ export default function Valores() {
   // ==== Funções de parcelas ====
 
   function handleParcelaRowStateChange(dataGrid) {
-
     if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsParcelas))
       return;
     if (objectToArray(dataGrid.rows.idRowsLookup).length != rowsParcelas.length)
@@ -314,9 +320,7 @@ export default function Valores() {
           for (let i = index + 1; i < parcelas; i++) {
             if (restoCadaParcela > 0) {
               objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela =
-                restoCadaParcela.toFixed(
-                  empresaConfig.quantidadeCasasDecimaisValor
-                );
+                restoCadaParcela.toFixed(2);
             } else {
               objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = 0;
             }
@@ -331,27 +335,20 @@ export default function Valores() {
       });
 
       var diferenca = total - totalParcelas;
-      diferenca = Number(
-        diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor)
-      );
+      diferenca = Number(diferenca.toFixed(2));
 
       // se hover diferença, adiciona a diferença na ultima parcela
       if (Number(diferenca) !== 0) {
         objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela =
           Number(
             objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela
-          ) +
-          Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
+          ) + Number(diferenca.toFixed(2));
       }
 
       setRowsParcelas(
         objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
           row.valorParcela =
-            row.valorParcela > 0
-              ? Number(row.valorParcela).toFixed(
-                  empresaConfig.quantidadeCasasDecimaisValor
-                )
-              : 0;
+            row.valorParcela > 0 ? Number(row.valorParcela).toFixed(2) : 0;
           return row;
         })
       );
@@ -359,11 +356,7 @@ export default function Valores() {
       setRowsParcelas(
         objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
           row.valorParcela =
-            row.valorParcela > 0
-              ? Number(row.valorParcela).toFixed(
-                  empresaConfig.quantidadeCasasDecimaisValor
-                )
-              : 0;
+            row.valorParcela > 0 ? Number(row.valorParcela).toFixed(2) : 0;
           return row;
         })
       );
@@ -382,9 +375,9 @@ export default function Valores() {
       notaFiscalContext.formik.values.quantidadeParcelas;
     diferenca = (
       notaFiscalContext.formik.values.totalFinal -
-      diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor) *
+      diferenca.toFixed(2) *
         notaFiscalContext.formik.values.quantidadeParcelas
-    ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
+    ).toFixed(2);
 
     for (
       let i = 0;
@@ -401,7 +394,7 @@ export default function Valores() {
         valorParcela: Number(
           Number(notaFiscalContext.formik.values.totalFinal) /
             Number(notaFiscalContext.formik.values.quantidadeParcelas)
-        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor),
+        ).toFixed(2),
         forma_pagamento_id:
           notaFiscalContext.formik.values.forma_pagamento_id.value,
         nome: notaFiscalContext.formik.values.forma_pagamento_id.label,
