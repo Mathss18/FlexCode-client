@@ -262,11 +262,10 @@ export default function Valores() {
       parcelas: rowParcelasSanitezed,
     };
 
-    console.log(params)
-    notaFiscalContext.formik.setSubmitting(false);
-    return;
+    // console.log(params)
+    // notaFiscalContext.formik.setSubmitting(false);
+    // return;
     
-
     fullScreenLoader.setLoading(true);
     api
       .post("/notas-fiscais", params)
