@@ -350,6 +350,63 @@ export const comprasValidation = yup.object().shape({
   observacaoInterna: yup.string().nullable(),
 });
 
+export const comprasValidationEdit = yup.object().shape({
+  numero: yup
+    .number("")
+    .required("O Número é obrigatório")
+    .min(0, "O valor não pode ser negativo"),
+  fornecedor_id: yup
+    .object()
+    .shape({
+      label: yup.string().required(""),
+      value: yup.number().required(""),
+    })
+    .nullable()
+    .required("Fornecedor é obrigatorio"),
+  dataEntrada: yup.string().required("A data de entrada é obrigatória"),
+  situacao: yup.number("").required("A situação é obrigatória").min(0),
+  numeroNF: yup.string().required("O número da NFe é obrigatório"),
+  frete: yup
+    .number("")
+    .required("O frete é obrigatório")
+    .min(0, "O valor não pode ser negativo"),
+  impostos: yup
+    .number("")
+    .required("Impotos são obrigatórios")
+    .min(0, "O valor não pode ser negativo"),
+  desconto: yup
+    .number("")
+    .required("O desconto é obrigatório")
+    .min(0, "O valor não pode ser negativo"),
+  total: yup
+    .number("")
+    .required("O total é obrigatório")
+    .min(0, "O valor não pode ser negativo"),
+  forma_pagamento_id: yup
+    .object()
+    .shape({
+      label: yup.string().required(""),
+      value: yup.number().required(""),
+    })
+    .nullable()
+    .required("Forma de pagamento é obrigatorio"),
+  tipoFormaPagamento: yup
+    .string("")
+    .required("O tipo de pagamento é obrigatório"),
+  intervaloParcelas: yup
+    .number("")
+    .required("O intervalo de parcelas é obrigatório"),
+  quantidadeParcelas: yup
+    .number("")
+    .required("A quantidade de parcelas é obrigatória"),
+  dataPrimeiraParcela: yup
+    .string("")
+    .required("A data da primeira parcela obrigatória"),
+
+  observacao: yup.string().nullable(),
+  observacaoInterna: yup.string().nullable(),
+});
+
 export const formasPagamentoValidation = yup.object().shape({
   nome: yup.string("").required("O Nome é obrigatório"),
   conta_bancaria_id: yup

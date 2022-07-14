@@ -33,7 +33,7 @@ import {
   isArrayEqual,
   objectToArray,
 } from "../../../utils/functions";
-import { comprasValidation } from "../../../validators/validationSchema";
+import { comprasValidationEdit } from "../../../validators/validationSchema";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import DragAndDrop from "../../../components/dragdrop/DragAndDrop";
@@ -87,7 +87,7 @@ function EditarComprasPage() {
     onSubmit: (event) => {
       handleOnSubmit(event);
     },
-    validationSchema: comprasValidation,
+    validationSchema: comprasValidationEdit,
   });
 
   const columnsProdutos = [
