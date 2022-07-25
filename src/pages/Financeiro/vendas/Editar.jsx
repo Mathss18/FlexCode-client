@@ -986,7 +986,7 @@ function EditarVendasPage() {
         setOpen={setOpenModalTabelaPreco}
         produto={produto.current}
       />
-      <form onSubmit={formik.handleSubmit} style={{pointerEvents: isCancelada.current ? 'none': isRealizada.current ? 'none' : 'auto'}}>
+      <form onSubmit={formik.handleSubmit} style={{pointerEvents: isCancelada.current ? 'none': 'auto'}}>
         <div style={{ marginTop: 0, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
@@ -1036,7 +1036,7 @@ function EditarVendasPage() {
                 )}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={4} style={{pointerEvents: isCancelada.current ? 'none': isRealizada.current ? 'auto' : 'auto'}}>
               <FormControl variant="outlined" fullWidth name="situacao">
                 <InputLabel>Situação *</InputLabel>
                 <Select
@@ -1065,6 +1065,7 @@ function EditarVendasPage() {
           <Grid container spacing={3} style={{ marginTop: 8 }}>
             <Grid item xs={4}>
               <TextField
+                disabled={isRealizada.current}
                 variant="outlined"
                 label="Data Entrada *"
                 fullWidth
@@ -1084,6 +1085,7 @@ function EditarVendasPage() {
             </Grid>
             <Grid item xs={8}>
               <Autocomplete
+                disabled={isRealizada.current}
                 value={formik.values.transportadora_id}
                 name="transportadora_id"
                 onChange={(event, value) =>
@@ -1492,7 +1494,7 @@ function EditarVendasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div style={{ marginTop: 38, pointerEvents: isRealizada.current ? 'none' : 'auto', boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1511,7 +1513,7 @@ function EditarVendasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div style={{ marginTop: 38, pointerEvents: isRealizada.current ? 'none' : 'auto', boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
