@@ -256,9 +256,9 @@ function Vendas() {
 
       <Grid container spacing={2}>
         <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
-          <h2 style={{margin: 8}}>
+          <h2>
             Vendas Realizadas
-            <b style={{ color: "#539e61" }}>
+            <b style={{ color: "#539e61", margin: 8 }}>
               {totalRealizadas.toLocaleString("pt-BR", {
                 style: "currency",
                 currency: "BRL",
@@ -331,9 +331,9 @@ function Vendas() {
         </Grid>
 
         <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
-          <h2 style={{margin: 8}}>
+          <h2>
             Vendas Abertas
-            <b style={{ color: "#539e61" }}>
+            <b style={{ color: "#539e61", margin: 8}}>
               {totalRealizadas.toLocaleString("pt-BR", {
                 style: "currency",
                 currency: "BRL",
