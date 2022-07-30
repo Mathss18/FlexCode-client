@@ -334,7 +334,7 @@ function Vendas() {
           <h2>
             Vendas Abertas
             <b style={{ color: "#539e61", margin: 8}}>
-              {totalRealizadas.toLocaleString("pt-BR", {
+              {totalAbertas.toLocaleString("pt-BR", {
                 style: "currency",
                 currency: "BRL",
               })}
