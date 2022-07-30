@@ -256,7 +256,15 @@ function Vendas() {
 
       <Grid container spacing={2}>
         <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
-          <h2>Vendas Realizadas</h2>
+          <h2 style={{margin: 8}}>
+            Vendas Realizadas
+            <b style={{ color: "#539e61" }}>
+              {totalRealizadas.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}
+            </b>
+          </h2>
           <TableContainer>
             <Table size="small" aria-label="a dense table">
               <TableHead>
@@ -323,7 +331,15 @@ function Vendas() {
         </Grid>
 
         <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
-          <h2>Vendas Abertas</h2>
+          <h2 style={{margin: 8}}>
+            Vendas Abertas
+            <b style={{ color: "#539e61" }}>
+              {totalRealizadas.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}
+            </b>
+          </h2>
           <TableContainer>
             <Table size="small" aria-label="a dense table">
               <TableHead>
