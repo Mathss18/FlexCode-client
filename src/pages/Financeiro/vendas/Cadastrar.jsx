@@ -973,6 +973,7 @@ function CadastrarVendasPage() {
                 >
                   <MenuItem value={0}>Aberta</MenuItem>
                   <MenuItem value={1}>Realizada</MenuItem>
+                  <MenuItem value={3}>Parcial</MenuItem>
                   <MenuItem value={2}>Cancelada</MenuItem>
                 </Select>
                 {formik.touched.situacao && Boolean(formik.errors.situacao) ? (

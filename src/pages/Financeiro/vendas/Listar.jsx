@@ -59,8 +59,8 @@ function ListarVendas() {
 
   function handleOnClickNfeButton(event, element) {
     console.log(element);
-    if (element.situacao !== "Realizada") {
-      errorAlert("Só é possivel emitir NFe com a venda Realizada");
+    if (element.situacao !== "Parcial") {
+      errorAlert("Só é possivel emitir NFe com a situação da venda Realizada ou Parcial");
       return;
     }
     confirmAlert(
@@ -252,6 +252,9 @@ function ListarVendas() {
           } else if (element["situacao"] === 2) {
             element["situacao"] = "Cancelada";
           }
+          else if (element["situacao"] === 3) {
+            element["situacao"] = "Parcial";
+          }
           var array = [
             element["numero"],
             element["cliente"]["nome"],
@@ -263,7 +266,9 @@ function ListarVendas() {
                   ? "primary"
                   : element["situacao"] === "Realizada"
                   ? "secondary"
-                  : "error"
+                  : element["situacao"] === "Cancelada"
+                  ? "error"
+                  : "warning"
               }
               size="small"
               style={{
