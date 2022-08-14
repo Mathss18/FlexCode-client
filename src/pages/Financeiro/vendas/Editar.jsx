@@ -528,7 +528,7 @@ function EditarVendasPage() {
         var prods = [];
         response.data["data"].produtos.map((item, index) => {
           prods.push({
-            id: item.id,
+            id: new Date().getTime() + index,
             observacao: item.pivot.observacao,
             preco: item.pivot.preco,
             produto_id: item.pivot.produto_id,
@@ -542,7 +542,7 @@ function EditarVendasPage() {
         var servs = [];
         response.data["data"].servicos.map((item, index) => {
           servs.push({
-            id: item.id,
+            id: new Date().getTime() + index,
             observacao: item.pivot.observacao,
             preco: item.pivot.preco,
             servico_id: item.pivot.servico_id,
@@ -556,7 +556,7 @@ function EditarVendasPage() {
         var parcs = [];
         response.data["data"].parcelas.map((item, index) => {
           parcs.push({
-            id: item.id,
+            id: new Date().getTime() + index,
             dataVencimento: item.dataVencimento,
             valorParcela: item.valorParcela.toFixed(empresaConfig.quantidadeCasasDecimaisValor),
             forma_pagamento_id: item.forma_pagamento.id,
@@ -569,7 +569,7 @@ function EditarVendasPage() {
         var anexos = [];
         response.data["data"].anexos.map((item, index) => {
           anexos.push({
-            id: item.id,
+            id: new Date().getTime() + index,
             url: item.url,
             nome: item.nome,
             tamanho: item.tamanho,

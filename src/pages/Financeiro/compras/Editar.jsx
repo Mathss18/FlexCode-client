@@ -399,7 +399,7 @@ function EditarComprasPage() {
         var prods = [];
         response.data["data"].produtos.map((item, index) => {
           prods.push({
-            id: item.id,
+            id: new Date().getTime() + index,
             observacao: item.pivot.observacao,
             preco: item.pivot.preco,
             produto_id: item.pivot.produto_id,
@@ -413,7 +413,7 @@ function EditarComprasPage() {
         var parcs = [];
         response.data["data"].parcelas.map((item, index) => {
           parcs.push({
-            id: item.id,
+            id: new Date().getTime() + index,
             dataVencimento: item.dataVencimento,
             valorParcela: item.valorParcela.toFixed(empresaConfig.quantidadeCasasDecimaisValor),
             forma_pagamento_id: item.forma_pagamento.id,
@@ -426,7 +426,7 @@ function EditarComprasPage() {
         var anexos = [];
         response.data["data"].anexos.map((item, index) => {
           anexos.push({
-            id: item.id,
+            id: new Date().getTime() + index,
             url: item.url,
             nome: item.nome,
             tamanho: item.tamanho,
