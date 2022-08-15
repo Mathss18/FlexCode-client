@@ -59,7 +59,7 @@ function ListarVendas() {
 
   function handleOnClickNfeButton(event, element) {
     console.log(element);
-    if (element.situacao !== "Parcial") {
+    if (element.situacao === "Aberta" || element.situacao === "Cancelada") {
       errorAlert("Só é possivel emitir NFe com a situação da venda Realizada ou Parcial");
       return;
     }
