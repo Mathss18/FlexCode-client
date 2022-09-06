@@ -41,6 +41,7 @@ export function Fazendo() {
   const [ordensServicosFuncionarios, setOrdensServicosFuncionarios] = useState(
     []
   );
+  const [situacaoProduto, setSituacaoProduto] = useState({});
   const fullScreenLoader = useFullScreenLoader();
   const [open, setOpen] = useState(false);
   const [dados, setDados] = useState({});
@@ -70,7 +71,6 @@ export function Fazendo() {
   const data = [];
 
   function handleOnClickShowButton(event, element) {
-    console.log(element);
     setDados(element);
     setOpen(true);
   }
@@ -146,13 +146,27 @@ export function Fazendo() {
       });
   }
 
+  function searchSituacao(id, tipo) {
+    if (tipo === "produto") {
+      fullScreenLoader.setLoading(true);
+      return api.get("/minhas-tarefas/getSituacao/" + id);
+    }
+
+    if (tipo === "servico") {
+      fullScreenLoader.setLoading(true);
+      return api.get("/minhas-tarefas/getServico/" + id);
+    }
+  }
+
   useEffect(() => {
     search();
   }, []);
 
   // === Produtos ===
-  function marcarProduto(element) {
-    var jsonAntigo = JSON.parse(element.pivot.situacao);
+  async function marcarProduto(element) {
+    const response = await searchSituacao(element.pivot.id, "produto");
+    var jsonAntigo = JSON.parse(response.data.data.situacao);
+
     if (jsonAntigo == null) {
       // ==== se não tiver nada, cria um novo json ====
       var json = [
@@ -223,8 +237,11 @@ export function Fazendo() {
   }
 
   // === Serviços ===
-  function marcarServico(element) {
-    var jsonAntigo = JSON.parse(element.pivot.situacao);
+  async function marcarServico(element) {
+    const response = await searchSituacao(element.pivot.id, "servico");
+    var jsonAntigo = JSON.parse(response.data.data.situacao);
+
+    // var jsonAntigo = JSON.parse(element.pivot.situacao);
     if (jsonAntigo == null) {
       // ==== se não tiver nada, cria um novo json ====
       var json = [
