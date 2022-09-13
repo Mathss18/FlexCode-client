@@ -162,7 +162,7 @@ export function Valores() {
                     </Typography>
                     <Typography variant="h5" component="div" className="app-default-text-color">
                       Valor venda: R${" "}
-                      {((parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) + (parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) * (item.porcentagem / 100)).toFixed(empresaConfig.quantidadeCasasDecimaisValor)}
+                      {((parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) + (parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) * (item.porcentagem / 100)).toLocaleString("pt-BR", {style: "currency", currency: "BRL"})}
                     </Typography>
                     <Typography
                       sx={{ mb: 1.5 }}
@@ -173,7 +173,7 @@ export function Valores() {
                       {item.porcentagem}% de lucro
                       <br />
                       Comissão do vendedor: R${" "}
-                      {(((parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) + (parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) * (item.porcentagem / 100)) * (produtoContext.formik.values.comissao/100)).toFixed(empresaConfig.quantidadeCasasDecimaisValor)}
+                      {(((parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) + (parseFloat(produtoContext.formik.values.valorCusto) + parseFloat(produtoContext.formik.values.despesasAdicionais) + parseFloat(produtoContext.formik.values.outrasDespesas)) * (item.porcentagem / 100)) * (produtoContext.formik.values.comissao/100)).toLocaleString("pt-BR", {style: "currency", currency: "BRL"})}
                     </Typography>
                   </CardContent>
                 </Card>

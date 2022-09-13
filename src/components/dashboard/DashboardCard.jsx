@@ -126,7 +126,13 @@ function DashboardCard({ dados, type }) {
             component="h2"
           >
             {/* <b>R$: {dados?.rendimentosAbertosHoje?.toFixed(2)?.replace('.',',')}</b> */}
-            <b> R$: {dados?.rendimentosAbertosHoje?.toLocaleString("pt-BR")}</b>
+            <b>
+              {" "}
+              {dados?.rendimentosAbertosHoje?.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}
+            </b>
           </Typography>
         </CardContent>
 
@@ -165,7 +171,10 @@ function DashboardCard({ dados, type }) {
           >
             <b>
               {/* R$: {dados?.despesasAbertasHoje?.toFixed(2)?.replace(".", ",")} */}
-              R$: {dados?.despesasAbertasHoje?.toLocaleString("pt-BR")}
+              {dados?.despesasAbertasHoje?.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}
             </b>
           </Typography>
         </CardContent>
@@ -212,9 +221,9 @@ function DashboardCard({ dados, type }) {
               component="h2"
             >
               <b>
-                R$:{" "}
+                {" "}
                 {/* {dados?.rendimentosFechadosMes?.toFixed(2)?.replace(".", ",")} */}
-                {dados?.rendimentosFechadosMes?.toLocaleString("pt-BR")}
+                {dados?.rendimentosFechadosMes?.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})}
               </b>
             </Typography>
             <Typography
@@ -224,7 +233,7 @@ function DashboardCard({ dados, type }) {
             >
               <b>
                 {/* R$: {dados?.despesasFechadasMes?.toFixed(2)?.replace(".", ",")} */}
-                R$: {dados?.despesasFechadasMes?.toLocaleString("pt-BR")}
+                {dados?.despesasFechadasMes?.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})}
               </b>
             </Typography>
           </div>
