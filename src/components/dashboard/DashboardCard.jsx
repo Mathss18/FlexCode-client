@@ -2,7 +2,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Card, CardContent, Typography, CardActions } from "@material-ui/core";
 import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 import TrendingDownIcon from "@material-ui/icons/TrendingDown";
-import BarChartIcon from "@material-ui/icons/BarChart";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -104,6 +103,7 @@ const useStyles = makeStyles((theme) => ({
 function DashboardCard({ dados, type }) {
   const classes = useStyles();
   const history = useHistory();
+
   if (type === "green") {
     return (
       <Card className={classes.card + " " + classes.card_green}>
@@ -125,13 +125,18 @@ function DashboardCard({ dados, type }) {
             variant="h5"
             component="h2"
           >
-            <b>R$: {dados?.rendimentosAbertosHoje?.toFixed(2)?.replace('.',',')}</b>
+            {/* <b>R$: {dados?.rendimentosAbertosHoje?.toFixed(2)?.replace('.',',')}</b> */}
+            <b> R$: {dados?.rendimentosAbertosHoje?.toLocaleString("pt-BR")}</b>
           </Typography>
         </CardContent>
 
         {/*---- Card Footer* ----*/}
         <CardActions className={classes.card_green_footer}>
-          <a size="small" className={classes.card_title} onClick={()=>history.push('/money')}>
+          <a
+            size="small"
+            className={classes.card_title}
+            onClick={() => history.push("/money")}
+          >
             Ir para calendário de contas
           </a>
         </CardActions>
@@ -158,13 +163,20 @@ function DashboardCard({ dados, type }) {
             variant="h5"
             component="h2"
           >
-            <b>R$: {dados?.despesasAbertasHoje?.toFixed(2)?.replace('.',',')}</b>
+            <b>
+              {/* R$: {dados?.despesasAbertasHoje?.toFixed(2)?.replace(".", ",")} */}
+              R$: {dados?.despesasAbertasHoje?.toLocaleString("pt-BR")}
+            </b>
           </Typography>
         </CardContent>
 
         {/*---- Card Footer* ----*/}
         <CardActions className={classes.card_red_footer}>
-          <a size="small" className={classes.card_title} onClick={()=>history.push('/money')}>
+          <a
+            size="small"
+            className={classes.card_title}
+            onClick={() => history.push("/money")}
+          >
             Ir para calendário de contas
           </a>
         </CardActions>
@@ -199,21 +211,32 @@ function DashboardCard({ dados, type }) {
               variant="h5"
               component="h2"
             >
-              <b>R$: {dados?.rendimentosFechadosMes?.toFixed(2)?.replace('.',',')}</b>
+              <b>
+                R$:{" "}
+                {/* {dados?.rendimentosFechadosMes?.toFixed(2)?.replace(".", ",")} */}
+                {dados?.rendimentosFechadosMes?.toLocaleString("pt-BR")}
+              </b>
             </Typography>
             <Typography
               className={classes.card_title}
               variant="h5"
               component="h2"
             >
-              <b>R$: {dados?.despesasFechadasMes?.toFixed(2)?.replace('.',',')}</b>
+              <b>
+                {/* R$: {dados?.despesasFechadasMes?.toFixed(2)?.replace(".", ",")} */}
+                R$: {dados?.despesasFechadasMes?.toLocaleString("pt-BR")}
+              </b>
             </Typography>
           </div>
         </CardContent>
 
         {/*---- Card Footer* ----*/}
         <CardActions className={classes.card_blue_footer}>
-          <a size="small" className={classes.card_title} onClick={()=>history.push('/money')}>
+          <a
+            size="small"
+            className={classes.card_title}
+            onClick={() => history.push("/money")}
+          >
             Ir para calendário de contas
           </a>
         </CardActions>
