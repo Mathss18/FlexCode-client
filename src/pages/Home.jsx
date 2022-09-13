@@ -101,11 +101,11 @@ function Home() {
               </div>
             </Grid>
           </Grid>
-          <Grid container spacing={3}>
+          {/* <Grid container spacing={3}>
             <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
               <DashboardCard type="blue" dados={dados} />
             </Grid>
-          </Grid>
+          </Grid> */}
         </div>
       )}
     </>
