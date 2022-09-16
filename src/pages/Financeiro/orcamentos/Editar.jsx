@@ -373,7 +373,7 @@ function EditarOrdensServicoPage() {
 
   useEffect(() => {
     api
-      .get("/produtos")
+      .get("/produtos-mini")
       .then((response) => {
         var array = [];
         response.data["data"].forEach((produto) => {
