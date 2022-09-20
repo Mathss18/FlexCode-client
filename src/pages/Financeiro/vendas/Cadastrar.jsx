@@ -433,7 +433,7 @@ function CadastrarVendasPage() {
 
   useEffect(() => {
     api
-      .get("/produtos")
+      .get("/produtos-mini")
       .then((response) => {
         produtosOriginal.current = response.data["data"];
 
