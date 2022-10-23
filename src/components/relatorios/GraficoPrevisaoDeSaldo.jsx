@@ -10,7 +10,7 @@ function GraficoPrevisaoDeSaldo({ dados }) {
       text: "Previsão de saldo",
     },
     subtitle: {
-      text: "Veja a evolução do pratimônio de sua empresa",
+      text: "Veja a evolução do saldo de sua empresa",
     },
     legend: {
       layout: "vertical",

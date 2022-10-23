@@ -24,7 +24,7 @@ function PrevisaoDeSaldo() {
   const [state, setState] = useState([
     {
       startDate: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
-      endDate: new Date(new Date().getFullYear(), date.getMonth() + 1, 0),
+      endDate: new Date(new Date().getFullYear(), date.getMonth() + 1, date.getDate()),
       key: "selection",
     },
   ]);
@@ -45,12 +45,6 @@ function PrevisaoDeSaldo() {
         )}`
       )
       .then((response) => {
-        response.data["data"].valores.forEach((item) => {
-          item.data.forEach((element, index) => {
-            element[index] = parseFloat(element[index].toFixed(2));
-          });
-        });
-        console.log(response.data.data);
         setDados(response.data["data"]);
       })
       .finally(() => {
