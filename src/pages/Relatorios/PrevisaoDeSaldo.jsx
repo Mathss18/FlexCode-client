@@ -45,6 +45,12 @@ function PrevisaoDeSaldo() {
         )}`
       )
       .then((response) => {
+        response.data["data"].valores.forEach((item) => {
+          item.data.forEach((element, index) => {
+            element[index] = parseFloat(element[index].toFixed(2));
+          });
+        });
+        console.log(response.data.data);
         setDados(response.data["data"]);
       })
       .finally(() => {
@@ -67,7 +73,9 @@ function PrevisaoDeSaldo() {
             showSelectionPreview={true}
             moveRangeOnFirstSelection={false}
             months={2}
-            minDate={new Date(date.getFullYear(), date.getMonth(), date.getDate())}
+            minDate={
+              new Date(date.getFullYear(), date.getMonth(), date.getDate())
+            }
             ranges={state}
             direction="horizontal"
             locale={locales.pt}
