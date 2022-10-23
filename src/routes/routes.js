@@ -99,6 +99,7 @@ import PatrimonioAoLongoDoTempo from "../pages/Relatorios/PatrimonioAoLongoDoTem
 import VendaReport from "../reports/Vendas/VendaReport";
 import CompraReport from "../reports/Compras/CompraReport";
 import Vendas from "../pages/Relatorios/Vendas";
+import PrevisaoDeSaldo from "../pages/Relatorios/PrevisaoDeSaldo";
 
 
 export default function Routes({themeSetter}) {
@@ -216,6 +217,7 @@ export default function Routes({themeSetter}) {
             <Route path="/relatorios" exact component={ListarRelatorios}></Route>
             <Route path="/relatorios/rendimentosVsDespesas" exact component={RendimentosVsDespesas}></Route>
             <Route path="/relatorios/patrimonioAoLongoDoTempo" exact component={PatrimonioAoLongoDoTempo}></Route>
+            <Route path="/relatorios/previsaoDeSaldo" exact component={PrevisaoDeSaldo}></Route>
             <Route path="/relatorios/vendas" exact component={Vendas}></Route>
 
             <Route path="/chat" exact component={Chat}></Route>
