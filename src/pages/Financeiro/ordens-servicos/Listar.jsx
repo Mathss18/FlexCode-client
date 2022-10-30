@@ -13,6 +13,7 @@ import moment from "moment";
 import FullScreenDialog from "../../../components/dialog/FullScreenDialog";
 import AppBarDialog from "./components/AppBarDialog";
 import BodyDialog from "./components/BodyDialog";
+import { errorAlert } from "../../../utils/alert";
 
 function ListarOrdensServicos() {
   const history = useHistory();
@@ -82,11 +83,15 @@ function ListarOrdensServicos() {
   }
 
   function handleOnClickAccessTime(event, id) {
+    fullScreenLoader.setLoading(true);
+    setDadosOrdemServico([]);
     api
       .get(`/ordens-servicos-progresso/${id}`)
       .then((response) => {
         setDadosOrdemServico(response.data.data);
-        console.log("Response", response);
+      })
+      .catch((error)=>{
+        errorAlert("Atenção", "Erro ao trazer informações");
       })
       .finally(() => {
         fullScreenLoader.setLoading(false);
