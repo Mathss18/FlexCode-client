@@ -90,7 +90,8 @@ function ListarOrdensServicos() {
       .then((response) => {
         setDadosOrdemServico(response.data.data);
       })
-      .catch((error)=>{
+      .catch((error) => {
+        setOpen(false);
         errorAlert("Atenção", "Erro ao trazer informações");
       })
       .finally(() => {
