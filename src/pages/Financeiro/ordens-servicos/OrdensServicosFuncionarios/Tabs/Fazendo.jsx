@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import { config, rowConfig } from "../../../../../config/tablesConfig";
 import { useFullScreenLoader } from "../../../../../context/FullScreenLoaderContext";
@@ -20,9 +20,6 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useParams } from "react-router-dom";
-import BubbleChartIcon from "@mui/icons-material/BubbleChart";
-import PhotoIcon from "@mui/icons-material/Photo";
-import BuildIcon from "@mui/icons-material/Build";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {
   confirmAlert,
@@ -30,7 +27,6 @@ import {
   textAreaAlert,
 } from "../../../../../utils/alert";
 import api from "../../../../../services/api";
-import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import ModalFotoProduto from "./ModalFotoProduto";
 import toast from "react-hot-toast";
 
@@ -41,7 +37,6 @@ export function Fazendo() {
   const [ordensServicosFuncionarios, setOrdensServicosFuncionarios] = useState(
     []
   );
-  const [situacaoProduto, setSituacaoProduto] = useState({});
   const fullScreenLoader = useFullScreenLoader();
   const [open, setOpen] = useState(false);
   const [dados, setDados] = useState({});

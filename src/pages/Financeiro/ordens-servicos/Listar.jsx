@@ -4,17 +4,24 @@ import { useHistory } from "react-router-dom";
 import { Button, Chip, Tooltip } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
-import SearchIcon from "@material-ui/icons/Search";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import { config, rowConfig } from "../../../config/tablesConfig";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import api from "../../../services/api";
 import moment from "moment";
+import FullScreenDialog from "../../../components/dialog/FullScreenDialog";
+import AppBarDialog from "./components/AppBarDialog";
+import BodyDialog from "./components/BodyDialog";
 
 function ListarOrdensServicos() {
   const history = useHistory();
   const [ordensServicos, setOrdensServicos] = useState([]);
   const fullScreenLoader = useFullScreenLoader();
+  const [selectedFuncionario, setSelectedFuncionario] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [dadosOrdemServico, setDadosOrdemServico] = useState([]);
+
   const columns = [
     {
       name: "Número",
@@ -42,14 +49,49 @@ function ListarOrdensServicos() {
     },
   ];
 
-  const data = [];
+  const DialogHeader = () => {
+    return (
+      <>
+        <AppBarDialog
+          nomesFuncionarios={dadosOrdemServico?.nomesFuncionarios}
+          setSelectedFuncionario={setSelectedFuncionario}
+        />
+      </>
+    );
+  };
 
-  function handleOnClickShowButton(event, id) {
-    history.push("/clientes/mostrar/" + id);
-  }
+  const DialogBody = () => {
+    return (
+      <>
+        <BodyDialog
+          selectedFuncionario={selectedFuncionario}
+          ordemServico={dadosOrdemServico}
+        />
+      </>
+    );
+  };
+
+  const DialogFooter = () => {
+    return <></>;
+  };
+
+  const data = [];
 
   function handleOnClickEditButton(event, id) {
     history.push("/ordens-servicos/editar/" + id);
+  }
+
+  function handleOnClickAccessTime(event, id) {
+    api
+      .get(`/ordens-servicos-progresso/${id}`)
+      .then((response) => {
+        setDadosOrdemServico(response.data.data);
+        console.log("Response", response);
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      });
+    setOpen(true);
   }
 
   function handleOnClickPdfButton(event, item) {
@@ -98,7 +140,11 @@ function ListarOrdensServicos() {
                   : "error"
               }
               size="small"
-              style={{ width: "90px", backgroundColor: element["situacao"] === "Cancelada" ? '#c55959' : '' }}
+              style={{
+                width: "90px",
+                backgroundColor:
+                  element["situacao"] === "Cancelada" ? "#c55959" : "",
+              }}
             />,
             moment(element["dataEntrada"]).format("DD/MM/YYYY") +
               " " +
@@ -115,7 +161,12 @@ function ListarOrdensServicos() {
                   onClick={(event) => handleOnClickPdfButton(event, element)}
                 />
               </Tooltip>
-              {/* <SearchIcon className={'btn btn-lista'} onClick={(event) => handleOnClickShowButton(event, element['id'])} /> */}
+              <AccessTimeIcon
+                className={"btn btn-lista"}
+                onClick={(event) => {
+                  handleOnClickAccessTime(event, element["id"]);
+                }}
+              />
               <EditIcon
                 className={"btn btn-lista"}
                 onClick={(event) =>
@@ -135,6 +186,13 @@ function ListarOrdensServicos() {
 
   return (
     <>
+      <FullScreenDialog
+        open={open}
+        setOpen={setOpen}
+        Header={DialogHeader}
+        Body={DialogBody}
+        Footer={DialogFooter}
+      />
       <Button
         onClick={() => history.push("/ordens-servicos/novo")}
         variant="outlined"
