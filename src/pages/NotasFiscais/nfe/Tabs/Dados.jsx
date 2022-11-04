@@ -44,6 +44,7 @@ export default function Dados() {
 
     var aux = [];
     var grupoAtual = "";
+    let index = 0;
     for (var prop in cfop) {
       // Se o CFOP terminar em _000, é um grupo
       if (prop[1] == "0" && prop[2] == "0" && prop[3] == "0") {
@@ -57,11 +58,15 @@ export default function Dados() {
 
       // Retira os CFOPs que são grupos (terminal com _000 ou __00)
       if (prop[1] == "0" && prop[2] == "0" && prop[3] == "0") {
-        aux.pop();
+        // aux.pop();
+        // aux.slice(index, 1);
       }
       if (prop[2] == "0" && prop[3] == "0") {
-        aux.pop();
+        // aux.pop();
+        // aux.slice(index, 1);
       }
+
+      index++;
     }
     setCfops(aux);
   }, []);
