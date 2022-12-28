@@ -18,6 +18,9 @@ function ListarRelatorios() {
       <Grid item>
         <CardRelatorio title="Previsão de Saldo" click={()=>{history.push('/relatorios/previsaoDeSaldo')}}/>
       </Grid>
+      <Grid item>
+        <CardRelatorio title="Estoque" click={()=>{history.push('/relatorios/estoque')}}/>
+      </Grid>
     </Grid>
   );
 }

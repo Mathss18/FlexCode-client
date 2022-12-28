@@ -100,6 +100,7 @@ import VendaReport from "../reports/Vendas/VendaReport";
 import CompraReport from "../reports/Compras/CompraReport";
 import Vendas from "../pages/Relatorios/Vendas";
 import PrevisaoDeSaldo from "../pages/Relatorios/PrevisaoDeSaldo";
+import Estoque from "../pages/Relatorios/Estoque";
 
 
 export default function Routes({themeSetter}) {
@@ -215,6 +216,7 @@ export default function Routes({themeSetter}) {
             <Route path="/configuracoes/editar/:id" exact component={EditarConfiguracaoPage}></Route>
 
             <Route path="/relatorios" exact component={ListarRelatorios}></Route>
+            <Route path="/relatorios/estoque" exact component={Estoque}></Route>
             <Route path="/relatorios/rendimentosVsDespesas" exact component={RendimentosVsDespesas}></Route>
             <Route path="/relatorios/patrimonioAoLongoDoTempo" exact component={PatrimonioAoLongoDoTempo}></Route>
             <Route path="/relatorios/previsaoDeSaldo" exact component={PrevisaoDeSaldo}></Route>
