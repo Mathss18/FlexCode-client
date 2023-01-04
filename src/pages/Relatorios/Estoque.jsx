@@ -9,6 +9,7 @@ export default function Estoque() {
   const [estoque, setEstoque] = useState([]);
   const data = [];
   const [totalEstoque, setTotalEstoque] = useState(0);
+  const empresaConfig = JSON.parse(localStorage.getItem("config"));
   const columns = [
     {
       name: "Nome",
@@ -51,9 +52,9 @@ export default function Estoque() {
             element["nome"],
             element["codigoInterno"],
             element["grupo_produto"]["nome"],
-            element["custoFinal"],
-            element["quantidadeAtual"],
-            totalEstoque,
+            element["custoFinal"].toLocaleString("pt-BR", {style:"currency", currency:"BRL"}),
+            element["quantidadeAtual"].toFixed(empresaConfig.quantidadeCasasDecimaisQuantidade),
+            totalEstoque.toLocaleString("pt-BR", {style:"currency", currency:"BRL"}),
           ];
           data.push(array);
         });
@@ -74,7 +75,7 @@ export default function Estoque() {
         options={config}
         className={"table-background"}
       />
-      <h3>TOTAL: {totalEstoque}</h3>
+      <h3>TOTAL: {totalEstoque.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})}</h3>
     </>
   );
 }
