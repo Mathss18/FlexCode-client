@@ -73,7 +73,7 @@ function ListarOrcamentos() {
           }
           var array = [
             element['numero'],
-            element['cliente']['nome'],
+            element?.cliente?.nome ?? '',
             element['situacao'],
             moment(element["dataEntrada"]).format('DD/MM/YYYY'),
             <>
