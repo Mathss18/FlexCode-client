@@ -103,7 +103,9 @@ function DetalhesDePagamento() {
           });
         });
         setRendimentosAbertosTotal(rendimentosAbertosTotal[0].valor ?? 0);
-        setRendimentosRegistradosTotal(rendimentosRegistradosTotal[0].valor ?? 0);
+        setRendimentosRegistradosTotal(
+          rendimentosRegistradosTotal[0].valor ?? 0
+        );
         console.log(response.data["data"]);
       })
       .finally(() => {
@@ -115,7 +117,13 @@ function DetalhesDePagamento() {
     const reqClientes = api.get("/clientes");
     const reqFornecedores = api.get("/fornecedores");
     const reqFuncionatios = api.get("/funcionarios");
-    Promise.all([reqClientes, reqFornecedores, reqFuncionatios])
+    const reqOutrosFavorecidos = api.get("/outros-favorecidos");
+    Promise.all([
+      reqClientes,
+      reqFornecedores,
+      reqFuncionatios,
+      reqOutrosFavorecidos,
+    ])
       .then((response) => {
         var array = [];
         response[0].data["data"].forEach((cliente) => {
@@ -137,6 +145,13 @@ function DetalhesDePagamento() {
             label: `[FUNCIONÁRIO] ${funcionario.nome}`,
             value: funcionario.id,
             type: "funcionarios",
+          });
+        });
+        response[3].data["data"].forEach((outroFavorecido) => {
+          array.push({
+            label: `[OUTROS] ${outroFavorecido.nome}`,
+            value: outroFavorecido.id,
+            type: "outros_favorecidos",
           });
         });
 
@@ -165,7 +180,12 @@ function DetalhesDePagamento() {
         <TableCell>{row.conta_bancaria_nome}</TableCell>
         <TableCell>{row.tipoFavorecido}</TableCell>
         <TableCell>{row.favorecido_nome}</TableCell>
-        <TableCell align="right">{row.valor.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})}</TableCell>
+        <TableCell align="right">
+          {row.valor.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          })}
+        </TableCell>
       </TableRow>
     );
   }
@@ -271,7 +291,10 @@ function DetalhesDePagamento() {
               </TableCell>
               <TableCell align="right">
                 <b style={{ color: "#539e61" }}>
-                  {rendimentosAbertosTotal.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})}
+                  {rendimentosAbertosTotal.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
                 </b>
               </TableCell>
             </TableRow>
@@ -305,7 +328,10 @@ function DetalhesDePagamento() {
               </TableCell>
               <TableCell align="right">
                 <b style={{ color: "#539e61" }}>
-                  {rendimentosRegistradosTotal.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})}
+                  {rendimentosRegistradosTotal.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
                 </b>
               </TableCell>
             </TableRow>
