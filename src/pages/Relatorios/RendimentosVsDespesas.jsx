@@ -165,7 +165,7 @@ function RendimentosVsDespesas() {
         <TableCell>{row.conta_bancaria_nome}</TableCell>
         <TableCell>{row.tipoFavorecido}</TableCell>
         <TableCell>{row.favorecido_nome}</TableCell>
-        <TableCell align="right">{row.valor.toFixed(2)}</TableCell>
+        <TableCell align="right">{row.valor.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})}</TableCell>
       </TableRow>
     );
   }
@@ -281,7 +281,7 @@ function RendimentosVsDespesas() {
                     <TableCell component="th" scope="row">
                       {row.categoria}
                     </TableCell>
-                    <TableCell align="right">{row.valor.toFixed(2)}</TableCell>
+                    <TableCell align="right">{row.valor.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})}</TableCell>
                   </TableRow>
                 ))}
                 <TableRow
@@ -294,9 +294,9 @@ function RendimentosVsDespesas() {
                   <TableCell align="right">
                     <b style={{ color: "#539e61" }}>
                       {situacao === "Ambas"
-                        ? values?.rendimentosTotal[0]?.valor?.toFixed(2)
+                        ? values?.rendimentosTotal[0]?.valor?.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})
                         : situacao === "Abertas"
-                        ? values?.rendimentosAbertosTotal[0]?.valor?.toFixed(2)
+                        ? values?.rendimentosAbertosTotal[0]?.valor?.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})
                         : values?.rendimentosRegistradosTotal[0]?.valor?.toFixed(
                             2
                           )}
@@ -332,7 +332,7 @@ function RendimentosVsDespesas() {
                     <TableCell component="th" scope="row">
                       {row.categoria}
                     </TableCell>
-                    <TableCell align="right">{row.valor.toFixed(2)}</TableCell>
+                    <TableCell align="right">{row.valor.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})}</TableCell>
                   </TableRow>
                 ))}
                 <TableRow
@@ -345,9 +345,9 @@ function RendimentosVsDespesas() {
                   <TableCell align="right">
                     <b style={{ color: "#c06058" }}>
                       {situacao === "Ambas"
-                        ? values?.despesasTotal[0]?.valor?.toFixed(2)
+                        ? values?.despesasTotal[0]?.valor?.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})
                         : situacao === "Abertas"
-                        ? values?.despesasAbertasTotal[0]?.valor?.toFixed(2)
+                        ? values?.despesasAbertasTotal[0]?.valor?.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})
                         : values?.despesasRegistradasTotal[0]?.valor?.toFixed(
                             2
                           )}
@@ -375,16 +375,16 @@ function RendimentosVsDespesas() {
                   ? (
                       values?.rendimentosTotal[0]?.valor -
                       values?.despesasTotal[0]?.valor
-                    )?.toFixed(2)
+                    )?.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})
                   : situacao === "Abertas"
                   ? (
                       values?.rendimentosAbertosTotal[0]?.valor -
                       values?.despesasAbertasTotal[0]?.valor
-                    )?.toFixed(2)
+                    )?.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})
                   : (
                       values?.rendimentosRegistradosTotal[0]?.valor -
                       values?.despesasRegistradasTotal[0]?.valor
-                    )?.toFixed(2)}
+                    )?.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})}
               </b>
             </TableCell>
           </TableRow>
