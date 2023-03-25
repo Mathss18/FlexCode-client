@@ -21,6 +21,9 @@ function ListarRelatorios() {
       <Grid item>
         <CardRelatorio title="Estoque" click={()=>{history.push('/relatorios/estoque')}}/>
       </Grid>
+      <Grid item>
+        <CardRelatorio title="Detalhes de Pagamento" click={()=>{history.push('/relatorios/detalhesDePagamento')}}/>
+      </Grid>
     </Grid>
   );
 }
