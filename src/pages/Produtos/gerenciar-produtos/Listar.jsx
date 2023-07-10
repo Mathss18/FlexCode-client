@@ -47,7 +47,7 @@ function ListarProdutos() {
       options: rowConfig,
     },
     {
-      name: "Cadastrado em",
+      name: "Atualizado em",
       options: rowConfig,
     },
     {
@@ -117,7 +117,7 @@ function ListarProdutos() {
               </>
             ),
 
-            new Date(element["created_at"]).toLocaleString(),
+            new Date(element["updated_at"]).toLocaleString(),
             <>
               {/* <SearchIcon className={"btn-lista"} onClick={(event) => handleOnClickShowButton(event, element["id"])} /> */}
               <EditIcon
