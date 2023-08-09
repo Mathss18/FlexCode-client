@@ -183,6 +183,7 @@ function ListarVendas() {
       tpNF: 1,
       finNFe: 1,
       natOp: [],
+      refNFe: null,
       clienteFornecedor_id: {
         label: item.cliente.nome,
         value: item.cliente.id,

@@ -3,6 +3,7 @@ export const initialValues = {
   tpNF: 1,
   finNFe: 1,
   natOp: [],
+  refNFe: null,
   clienteFornecedor_id: [],
   indFinal: 1,
   indPres: "2",

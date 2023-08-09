@@ -172,7 +172,7 @@ export default function Dados() {
         <h3>Detalhes</h3>
       </div>
       <Grid container spacing={3}>
-        <Grid item xs={3}>
+        <Grid item xs={2}>
           <FormControl variant="outlined" fullWidth name="tpNF">
             <InputLabel>Tipo *</InputLabel>
             <Select
@@ -200,7 +200,7 @@ export default function Dados() {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={2}>
           <FormControl variant="outlined" fullWidth name="finNFe">
             <InputLabel>Finalidade *</InputLabel>
             <Select
@@ -230,7 +230,7 @@ export default function Dados() {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <Autocomplete
             value={notaFiscalContext.formik.values.natOp}
             name="natOp"
@@ -249,6 +249,26 @@ export default function Dados() {
                 placeholder="Pesquise..."
               />
             )}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            variant="outlined"
+            label="Nfe Referência"
+            fullWidth
+            type="text"
+            value={notaFiscalContext.formik.values.refNFe}
+            name="refNFe"
+            onChange={notaFiscalContext.formik.handleChange}
+            onBlur={notaFiscalContext.formik.handleBlur}
+            error={
+              notaFiscalContext.formik.touched.refNFe &&
+              Boolean(notaFiscalContext.formik.errors.refNFe)
+            }
+            helperText={
+              notaFiscalContext.formik.touched.refNFe &&
+              notaFiscalContext.formik.errors.refNFe
+            }
           />
         </Grid>
         <Grid item xs={4}>
