@@ -2,6 +2,10 @@ import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
 
 function DashboarMelhoresClientes({ dados }) {
+  function formatBRL(value) {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+  }
+
   var pieColors = (function () {
     var colors = [],
       base = Highcharts.getOptions().colors[0],
@@ -43,7 +47,7 @@ function DashboarMelhoresClientes({ dados }) {
       text: "Clientes que mais compram neste mês",
     },
     tooltip: {
-      pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b>",
+      pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b><br/>Value: <b>" + formatBRL("{point.y}") + "</b>"
     },
     accessibility: {
       point: {
