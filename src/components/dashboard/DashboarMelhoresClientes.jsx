@@ -47,8 +47,17 @@ function DashboarMelhoresClientes({ dados }) {
       text: "Clientes que mais compram neste mês",
     },
     tooltip: {
-      pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b><br/>Value: <b>" + formatBRL("{point.y}") + "</b>"
-    },
+      formatter: function () {
+        return (
+          this.series.name +
+          ": <b>" +
+          this.point.percentage.toFixed(1) +
+          "%</b><br/>Valor: <b>" +
+          formatBRL(this.point.y) +
+          "</b>"
+        );
+      },
+    },    
     accessibility: {
       point: {
         valueSuffix: "%",
