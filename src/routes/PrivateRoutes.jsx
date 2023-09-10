@@ -66,12 +66,18 @@ function PrivateRoutes({ Component, ...rest }) {
   }
 
   function verificarHorario() {
-    var horaAtual = new Date().toLocaleTimeString();
-    if (horaAtual > grupo.horaInicio && horaAtual < grupo.horaFim) {
-      return true;
-    }
-    return false;
+    var now = new Date();
+    var currentTimeInSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+
+    var [inicioHour, inicioMinute, inicioSecond] = grupo.horaInicio.split(":").map(Number);
+    var inicioTimeInSeconds = inicioHour * 3600 + inicioMinute * 60 + inicioSecond;
+
+    var [fimHour, fimMinute, fimSecond] = grupo.horaFim.split(":").map(Number);
+    var fimTimeInSeconds = fimHour * 3600 + fimMinute * 60 + fimSecond;
+
+    return currentTimeInSeconds > inicioTimeInSeconds && currentTimeInSeconds < fimTimeInSeconds;
   }
+
 
   function verificarAcessos() {
     for (let i = 0; i < acessos.length; i++) {

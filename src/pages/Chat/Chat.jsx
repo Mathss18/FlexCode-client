@@ -77,6 +77,9 @@ function Chat() {
           el.qtdeMensagensNaoLidas = counts[el.id] ? counts[el.id] : 0;
         });
 
+        // Pega apenas usuarios ativos
+        const activeUsers = response.data["data"].filter(item => item.situacao);
+
         // Seta o array de usuarios colocando o usuario logado no inicio
         setUsuarios(moveObjectInArray(response.data["data"], userIndex, 0));
       })
