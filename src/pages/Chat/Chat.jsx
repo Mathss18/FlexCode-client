@@ -60,7 +60,10 @@ function Chat() {
     api
       .get("/usuarios")
       .then((response) => {
-        let userIndex = response.data["data"].findIndex(
+        // Pega apenas usuarios ativos
+        const activeUsers = response.data["data"].filter(item => item.situacao);
+
+        let userIndex = activeUsers.findIndex(
           (item) => user.id === item.id
         );
         console.log(userIndex);
@@ -73,12 +76,9 @@ function Chat() {
         });
 
         // Percorre o array de usuarios e adiciona o objeto counts ao usuario
-        response.data["data"].map((el) => {
+        activeUsers.map((el) => {
           el.qtdeMensagensNaoLidas = counts[el.id] ? counts[el.id] : 0;
-        });
-
-        // Pega apenas usuarios ativos
-        const activeUsers = response.data["data"].filter(item => item.situacao);
+        });       
 
         // Seta o array de usuarios colocando o usuario logado no inicio
         setUsuarios(moveObjectInArray(activeUsers, userIndex, 0));
