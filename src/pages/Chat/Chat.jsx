@@ -81,7 +81,7 @@ function Chat() {
         const activeUsers = response.data["data"].filter(item => item.situacao);
 
         // Seta o array de usuarios colocando o usuario logado no inicio
-        setUsuarios(moveObjectInArray(response.data["data"], userIndex, 0));
+        setUsuarios(moveObjectInArray(activeUsers, userIndex, 0));
       })
       .catch((error) => {
         console.log(error);
