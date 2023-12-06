@@ -96,6 +96,7 @@ import EditarNotasFiscaisPage from "../pages/NotasFiscais/nfe/Editar";
 import ListarRelatorios from "../pages/Relatorios/Listar"
 import RendimentosVsDespesas from "../pages/Relatorios/RendimentosVsDespesas";
 import PatrimonioAoLongoDoTempo from "../pages/Relatorios/PatrimonioAoLongoDoTempo";
+import VendasAoLongoDoTempo from "../pages/Relatorios/VendasAoLongoDoTempo";
 import VendaReport from "../reports/Vendas/VendaReport";
 import CompraReport from "../reports/Compras/CompraReport";
 import Vendas from "../pages/Relatorios/Vendas";
@@ -223,6 +224,7 @@ export default function Routes({themeSetter}) {
             <Route path="/relatorios/previsaoDeSaldo" exact component={PrevisaoDeSaldo}></Route>
             <Route path="/relatorios/vendas" exact component={Vendas}></Route>
             <Route path="/relatorios/detalhesDePagamento" exact component={DetalhesDePagamento}></Route>
+            <Route path="/relatorios/vendasAoLongoDoTempo" exact component={VendasAoLongoDoTempo}></Route>
 
             <Route path="/chat" exact component={Chat}></Route>
 
