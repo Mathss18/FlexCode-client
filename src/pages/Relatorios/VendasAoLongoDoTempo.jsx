@@ -19,7 +19,7 @@ import api from "../../services/api";
 import GraficoVendasAoLongoDoTempo from '../../components/relatorios/GraficoVendasAoLongoDoTempo'
 import { objectToArray } from "../../utils/functions";
 
-function VendaAoLongoDoTempo() {
+function VendasAoLongoDoTempo() {
   const history = useHistory();
   const fullScreenLoader = useFullScreenLoader();
   const [dados, setDados] = useState(null);
