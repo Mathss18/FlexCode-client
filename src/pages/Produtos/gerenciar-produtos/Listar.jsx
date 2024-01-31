@@ -19,6 +19,10 @@ function ListarProdutos() {
   const empresaConfig = JSON.parse(localStorage.getItem("config"));
   const columns = [
     {
+      name: "ID",
+      options: rowConfig,
+    },
+    {
       name: "Nome",
       options: rowConfig,
     },
@@ -75,6 +79,7 @@ function ListarProdutos() {
           var qtdFornecedores = element?.fornecedores?.length - 1;
           // console.log("Element", element.fornecedores.length)
           var array = [
+            element["id"],
             element["nome"],
             element["codigoInterno"],
             element["grupo_produto"]["nome"],
