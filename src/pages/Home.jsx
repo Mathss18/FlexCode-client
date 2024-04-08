@@ -6,6 +6,7 @@ import DashboarContasBancarias from "../components/dashboard/DashboarContasBanca
 import DashboardChart from "../components/dashboard/DashboardChart";
 import DashboardMap from "../components/dashboard/DashboardMap";
 import DashboarMetasVendas from "../components/dashboard/DashboarMetasVendas";
+import DashboardComissao from "../components/dashboard/DashboardComissao";
 import { useFullScreenLoader } from "../context/FullScreenLoaderContext";
 import api from "../services/api";
 import { errorAlert } from "../utils/alert";
@@ -25,6 +26,7 @@ function Home() {
   const fullScreenLoader = useFullScreenLoader();
   const [dados, setDados] = useState(null);
   const [accessToRelatorios, setAccessToRelatorios] = useState(false);
+  const [isSecretariaFM, setIsSecretariaFM] = useState(false);
 
   function temAcessoARelatorios() {
     try {
@@ -38,8 +40,20 @@ function Home() {
     }
   }
 
+  function isSecretariaFM() {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"))
+      if (user.email === "nathalia@flexmol.com") {
+        setIsSecretariaFM(true);
+      }
+    } catch (error) {
+      toast.error("Erro ao carregar acessos, fale com o suporte!");
+    }
+  }
+
   useEffect(() => {
     temAcessoARelatorios();
+    isSecretariaFM();
     fullScreenLoader.setLoading(true);
     api
       .get("/dashboards")
@@ -51,6 +65,84 @@ function Home() {
       })
       .finally(() => fullScreenLoader.setLoading(false));
   }, []);
+
+  function renderDash() {
+    if (accessToRelatorios) {
+      return (
+        <div style={{ width: "99%" }}>
+          <Grid container>
+            <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+              <h2>
+                Bem vindo, {JSON.parse(localStorage.getItem("user")).nome}
+              </h2>
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={3}>
+            <Grid item xl={4} lg={4} md={6} sm={12} xs={12}>
+              <DashboardCard type="green" dados={dados} />
+            </Grid>
+            <Grid item xl={4} lg={4} md={6} sm={12} xs={12}>
+              <DashboardCard type="red" dados={dados} />
+            </Grid>
+            <Grid item xl={4} lg={4} md={12} sm={12} xs={12}>
+              <DashboardCard type="blue" dados={dados} />
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={3}>
+            <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
+              <div className={"chart-container"}>
+                <DashboarContasBancarias dados={dados} />
+              </div>
+            </Grid>
+            <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
+              <div className={"chart-container"}>
+                <DashboardMap dados={dados} />
+              </div>
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={3}>
+            <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
+              <div className={"chart-container"}>
+                <DashboarMetasVendas dados={dados} />
+              </div>
+            </Grid>
+            <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
+              <div className={"chart-container"}>
+                <DashboarMelhoresClientes dados={dados} />
+              </div>
+            </Grid>
+          </Grid>
+          {/* <Grid container spacing={3}>
+            <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+              <DashboardCard type="blue" dados={dados} />
+            </Grid>
+          </Grid> */}
+        </div>
+      )
+    }
+    if (isSecretariaFM) {
+      return (
+        <div style={{ width: "99%" }}>
+          <Grid container>
+            <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+              <h2>
+                Bem vindo, {JSON.parse(localStorage.getItem("user")).nome}
+              </h2>
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={3}>
+            <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+              <DashboardComissao dados={dados} />
+            </Grid>
+          </Grid>
+        </div>
+      )
+    }
+  }
 
   return (
     <>
