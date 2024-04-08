@@ -43,7 +43,7 @@ function Home() {
   function isSecretaria() {
     try {
       const user = JSON.parse(localStorage.getItem("user"))
-      if (user.email === "nathalia@flexmol.com") {
+      if (user.email === "nathalia@flexmol.com.br") {
         setIsSecretariaFM(true);
       }
     } catch (error) {
