@@ -146,60 +146,7 @@ function Home() {
 
   return (
     <>
-      {accessToRelatorios && (
-        <div style={{ width: "99%" }}>
-          <Grid container>
-            <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-              <h2>
-                Bem vindo, {JSON.parse(localStorage.getItem("user")).nome}
-              </h2>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3}>
-            <Grid item xl={4} lg={4} md={6} sm={12} xs={12}>
-              <DashboardCard type="green" dados={dados} />
-            </Grid>
-            <Grid item xl={4} lg={4} md={6} sm={12} xs={12}>
-              <DashboardCard type="red" dados={dados} />
-            </Grid>
-            <Grid item xl={4} lg={4} md={12} sm={12} xs={12}>
-              <DashboardCard type="blue" dados={dados} />
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3}>
-            <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-              <div className={"chart-container"}>
-                <DashboarContasBancarias dados={dados} />
-              </div>
-            </Grid>
-            <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-              <div className={"chart-container"}>
-                <DashboardMap dados={dados} />
-              </div>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3}>
-            <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-              <div className={"chart-container"}>
-                <DashboarMetasVendas dados={dados} />
-              </div>
-            </Grid>
-            <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-              <div className={"chart-container"}>
-                <DashboarMelhoresClientes dados={dados} />
-              </div>
-            </Grid>
-          </Grid>
-          {/* <Grid container spacing={3}>
-            <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-              <DashboardCard type="blue" dados={dados} />
-            </Grid>
-          </Grid> */}
-        </div>
-      )}
+      {renderDash()}
     </>
   );
 }
