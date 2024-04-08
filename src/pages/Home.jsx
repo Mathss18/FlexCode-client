@@ -40,7 +40,7 @@ function Home() {
     }
   }
 
-  function isSecretariaFM() {
+  function isSecretaria() {
     try {
       const user = JSON.parse(localStorage.getItem("user"))
       if (user.email === "nathalia@flexmol.com") {
@@ -53,7 +53,7 @@ function Home() {
 
   useEffect(() => {
     temAcessoARelatorios();
-    isSecretariaFM();
+    isSecretaria();
     fullScreenLoader.setLoading(true);
     api
       .get("/dashboards")
