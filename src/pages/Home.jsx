@@ -75,7 +75,7 @@ function Home() {
               <h2>
                 Bem vindo, {JSON.parse(localStorage.getItem("user")).nome}
               </h2>
-              <DashboardComissao />
+              <DashboardComissao dados={dados} />
             </Grid>
           </Grid>
 

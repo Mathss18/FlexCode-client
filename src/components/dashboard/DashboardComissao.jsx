@@ -10,7 +10,7 @@ function DashboardComissao({ dados }) {
             return `Este mês estamos operando no zero a zero.`
         }
     }
-    return <div style={{ fontSize: 14 }}>{getTexto()}</div>
+    return <div style={{ fontSize: 18, marginBottom: 4 }}>{getTexto()}</div>
 }
 
 export default DashboardComissao;
