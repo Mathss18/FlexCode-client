@@ -135,7 +135,7 @@ function ListarExtratos() {
         var saldoParaCalculo = response.data["data"][0]?.conta_bancaria.saldo;
         response.data["data"].forEach((element, index) => {
           if (index !== 0) {
-            if (element.tipo === "rendimento")
+            if (response.data["data"][index - 1].tipo === "rendimento")
               saldoParaCalculo =
                 saldoParaCalculo + response.data["data"][index - 1].valor;
             else
@@ -143,7 +143,7 @@ function ListarExtratos() {
                 saldoParaCalculo - response.data["data"][index - 1].valor;
           }
           if (index + 1 === response.data["data"].length) {
-            if (element.tipo === "rendimento") {
+            if (response.data["data"][index - 1].tipo === "rendimento") {
               saldoParaCalculo =
                 response.data["data"][0].conta_bancaria.saldoInicial +
                 element["valor"];
@@ -174,7 +174,7 @@ function ListarExtratos() {
                 ? element["valor"].toFixed(2)
                 : (element["valor"] * -1).toFixed(2)
             }`}</b>,
-            `R$: ${saldoParaCalculo.toFixed(2)}`,
+            `R$: ${saldoParaCalculo.toLocaleString()}`, // 65.103,98
             <>
               <EditIcon
                 className={"btn-lista"}
