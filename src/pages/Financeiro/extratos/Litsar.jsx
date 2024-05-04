@@ -173,7 +173,7 @@ function ListarExtratos() {
                 ? element["valor"].toFixed(2)
                 : (element["valor"] * -1).toFixed(2)
               }`}</b>,
-            `R$: ${saldoParaCalculo.toLocaleString("pt-BR", {
+            `${saldoParaCalculo.toLocaleString("pt-BR", {
               style: "currency",
               currency: "BRL",
             })}`,
