@@ -137,10 +137,10 @@ function ListarExtratos() {
           if (index !== 0) {
             if (element.tipo === "rendimento")
               saldoParaCalculo =
-                saldoParaCalculo - response.data["data"][index - 1].valor;
+                saldoParaCalculo + response.data["data"][index - 1].valor;
             else
               saldoParaCalculo =
-                saldoParaCalculo + response.data["data"][index - 1].valor;
+                saldoParaCalculo - response.data["data"][index - 1].valor;
           }
           if (index + 1 === response.data["data"].length) {
             if (element.tipo === "rendimento") {
