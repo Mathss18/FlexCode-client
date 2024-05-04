@@ -137,19 +137,19 @@ function ListarExtratos() {
           if (index !== 0) {
             if (response.data["data"][index - 1].tipo === "rendimento")
               saldoParaCalculo =
-                saldoParaCalculo + response.data["data"][index - 1].valor;
+                saldoParaCalculo - response.data["data"][index - 1].valor;
             else
               saldoParaCalculo =
-                saldoParaCalculo - response.data["data"][index - 1].valor;
+                saldoParaCalculo + response.data["data"][index - 1].valor;
           }
           if (index + 1 === response.data["data"].length) {
             if (response.data["data"][index - 1].tipo === "rendimento") {
               saldoParaCalculo =
-                response.data["data"][0].conta_bancaria.saldoInicial +
+                response.data["data"][0].conta_bancaria.saldoInicial -
                 element["valor"];
             } else {
               saldoParaCalculo =
-                response.data["data"][0].conta_bancaria.saldoInicial -
+                response.data["data"][0].conta_bancaria.saldoInicial +
                 element["valor"];
             }
           }
