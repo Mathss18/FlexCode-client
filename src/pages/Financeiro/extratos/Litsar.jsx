@@ -169,12 +169,14 @@ function ListarExtratos() {
                 color: element.tipo === "rendimento" ? "#539e61" : "#c06058",
                 cursor: "pointer",
               }}
-            >{`R$: ${
-              element.tipo === "rendimento"
+            >{`R$: ${element.tipo === "rendimento"
                 ? element["valor"].toFixed(2)
                 : (element["valor"] * -1).toFixed(2)
-            }`}</b>,
-            `R$: ${saldoParaCalculo.toLocaleString()}`, // 65.103,98
+              }`}</b>,
+            `R$: ${saldoParaCalculo.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            })}`,
             <>
               <EditIcon
                 className={"btn-lista"}
@@ -206,7 +208,7 @@ function ListarExtratos() {
               {response.data["data"][0]?.conta_bancaria.saldoInicial.toFixed(2)}
             </b>,
             "R$: " +
-              response.data["data"][0]?.conta_bancaria.saldoInicial.toFixed(2),
+            response.data["data"][0]?.conta_bancaria.saldoInicial.toFixed(2),
             "",
           ]);
         }
@@ -270,16 +272,14 @@ function ListarExtratos() {
         title={(() => {
           return (
             <>
-              <h2 className="dialogTitle">{`Extrato ${
-                contaBancaria?.nome ?? ""
-              }`}</h2>
+              <h2 className="dialogTitle">{`Extrato ${contaBancaria?.nome ?? ""
+                }`}</h2>
               <h4 className="dialogTitle">
-                {`Saldo: ${
-                  contaBancaria?.saldo?.toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }) ?? ""
-                }`}
+                {`Saldo: ${contaBancaria?.saldo?.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }) ?? ""
+                  }`}
               </h4>
             </>
           );
