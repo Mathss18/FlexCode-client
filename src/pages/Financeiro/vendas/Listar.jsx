@@ -197,7 +197,8 @@ function ListarVendas() {
       modFrete: 2,
       frete: item.frete,
       produtos: item.produtos.map((prod, index) => {
-        if(item.situacao === "Parcial" && !prod.observacaoInterna){
+        console.log(item.situacao, prod)
+        if(item.situacao === "Parcial" && !prod.observacao){
           return {
             id: index,
             produto_id: prod.id,
