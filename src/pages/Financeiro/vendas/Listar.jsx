@@ -196,20 +196,17 @@ function ListarVendas() {
         : null,
       modFrete: 2,
       frete: item.frete,
-      produtos: item.produtos.map((prod, index) => {
-        console.log(item.situacao, prod)
-        if(item.situacao === "Parcial" && !prod.pivot.observacao){
-          return {
-            id: index,
-            produto_id: prod.id,
-            nome: prod.nome,
-            cfop: prod.cfop,
-            quantidade: prod.pivot.quantidade,
-            preco: prod.pivot.preco,
-            total: prod.pivot.total,
-          };
-        }
-      }),
+      produtos: item.produtos
+      .filter(prod => item.situacao === "Parcial" && !prod.pivot.observacao)
+      .map((prod, index) => ({
+          id: index,
+          produto_id: prod.id,
+          nome: prod.nome,
+          cfop: prod.cfop,
+          quantidade: prod.pivot.quantidade,
+          preco: prod.pivot.preco,
+          total: prod.pivot.total,
+      })),
       parcelas: item.parcelas.map((item, index) => {
         return {
           id: index,
