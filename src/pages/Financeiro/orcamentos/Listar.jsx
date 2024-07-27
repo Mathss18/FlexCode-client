@@ -74,7 +74,13 @@ function ListarOrcamentos() {
           var array = [
             element['numero'],
             element?.cliente?.nome ?? '',
-            element['situacao'],
+            <Chip
+              className="table-tag"
+              label={element["situacao"]}
+              color={element['situacao'] === "Aprovado" ? "primary" : element['situacao'] === "Aberto" ? "secondary" : "error"}
+              size="small"
+              style={{width: "90px", backgroundColor: element["situacao"] === "Reprovado" ? '#c55959' : ''}}
+            />,
             moment(element["dataEntrada"]).format('DD/MM/YYYY'),
             <>
               <Tooltip title={'Baixar PDF'} arrow>
