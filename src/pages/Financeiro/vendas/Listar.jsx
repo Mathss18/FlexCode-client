@@ -198,7 +198,7 @@ function ListarVendas() {
       frete: item.frete,
       produtos: item.produtos.map((prod, index) => {
         console.log(item.situacao, prod)
-        if(item.situacao === "Parcial" && !prod.observacao){
+        if(item.situacao === "Parcial" && !prod.pivot.observacao){
           return {
             id: index,
             produto_id: prod.id,
