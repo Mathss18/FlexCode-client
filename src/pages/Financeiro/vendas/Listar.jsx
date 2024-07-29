@@ -197,7 +197,7 @@ function ListarVendas() {
       modFrete: 2,
       frete: item.frete,
       produtos: item.produtos
-      .filter(prod => item.situacao === "Parcial" && !prod.pivot.observacao)
+      .filter(prod => item.situacao !== "Parcial" || !prod.pivot.observacao)
       .map((prod, index) => ({
           id: index,
           produto_id: prod.id,
