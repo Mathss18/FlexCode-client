@@ -104,6 +104,10 @@ import PrevisaoDeSaldo from "../pages/Relatorios/PrevisaoDeSaldo";
 import Estoque from "../pages/Relatorios/Estoque";
 import DetalhesDePagamento from "../pages/Relatorios/DetalhesDePagamento";
 
+import ListarMedidasPage from "../pages/Qualidade/medidas/Listar";
+import CadastrarMedidaPage from "../pages/Qualidade/medidas/Cadastrar";
+import EditarMedidaPage from "../pages/Qualidade/medidas/Editar";
+
 
 export default function Routes({themeSetter}) {
   return (
@@ -225,6 +229,10 @@ export default function Routes({themeSetter}) {
             <Route path="/relatorios/vendas" exact component={Vendas}></Route>
             <Route path="/relatorios/detalhesDePagamento" exact component={DetalhesDePagamento}></Route>
             <Route path="/relatorios/vendasAoLongoDoTempo" exact component={VendasAoLongoDoTempo}></Route>
+
+            <Route path="/medidas" exact component={ListarMedidasPage}></Route>
+            <Route path="/medidas/novo" exact component={CadastrarMedidaPage}></Route>
+            <Route path="/medidas/editar/:id" exact component={EditarMedidaPage}></Route>
 
             <Route path="/chat" exact component={Chat}></Route>
 

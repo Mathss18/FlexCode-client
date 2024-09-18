@@ -5,6 +5,7 @@ import SideMenuEstoqueContextProvider from "./SideMenuEstoqueContext";
 import SideMenuProdutoContextProvider from "./SideMenuProdutoContext";
 import SideMenuServicoContextProvider from "./SideMenuServicoContext";
 import SideMenuNotaFiscalContextProvider from "./SideMenuNotaFiscalContext";
+import SideMenuQualidadeContextProvider from "./SideMenuQualidadeContext";
 
 const SideMenuContext = createContext();
 
@@ -17,9 +18,11 @@ function SideMenuContextProvider({ children }) {
           <SideMenuServicoContextProvider>
             <SideMenuFinanceiroContextProvider>
               <SideMenuEstoqueContextProvider>
-                <SideMenuNotaFiscalContextProvider>
-                {children}
-                </SideMenuNotaFiscalContextProvider>
+                <SideMenuQualidadeContextProvider>
+                  <SideMenuNotaFiscalContextProvider>
+                    {children}
+                  </SideMenuNotaFiscalContextProvider>
+                </SideMenuQualidadeContextProvider>
               </SideMenuEstoqueContextProvider>
             </SideMenuFinanceiroContextProvider>
           </SideMenuServicoContextProvider>

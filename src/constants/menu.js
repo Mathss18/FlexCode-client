@@ -22,6 +22,8 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import RoomServiceIcon from '@mui/icons-material/RoomService';
 import BalanceIcon from '@mui/icons-material/Balance';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
+import CategoryIcon from '@mui/icons-material/Category';
+import ArchitectureIcon from '@mui/icons-material/Architecture';
 
 const user = JSON.parse(localStorage.getItem("user"));
 
@@ -294,6 +296,27 @@ export const menu = [
         title: 'Estoque',
         path: '/estoques',
         icon: <StorageIcon className={"sidemenu-text"} />,
+        className: 'sidemenu-text',
+        click: '()=>{}',
+        state: null,
+        collapse: false,
+        children: [],
+      },
+    ],
+  },
+  {
+    title: 'Qualidade',
+    path: null,
+    icon: <CategoryIcon className={"sidemenu-text"} />,
+    className: 'sidemenu-text',
+    click: 'handleOpenQualidadeList',
+    state: ['openQualidadeList', 'setOpenQualidadeList'],
+    collapse: true,
+    children: [
+      {
+        title: 'Medidas',
+        path: '/medidas',
+        icon: <ArchitectureIcon className={"sidemenu-text"} />,
         className: 'sidemenu-text',
         click: '()=>{}',
         state: null,

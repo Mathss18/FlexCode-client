@@ -26,6 +26,7 @@ import { menu } from "../constants/menu";
 import { useFinanceiroMenu } from "../context/side-menu/SideMenuFinanceiroContext";
 import { useEstoqueMenu } from "../context/side-menu/SideMenuEstoqueContext";
 import { useNotaFiscalMenu } from "../context/side-menu/SideMenuNotaFiscalContext";
+import { useQualidadeMenu } from "../context/side-menu/SideMenuQualidadeContext";
 
 const drawerWidth = 240;
 
@@ -86,6 +87,7 @@ function SideMenu({ children }) {
   const [openServicoList, setOpenServicoList] = useServicoMenu();
   const [openFinanceiroList, setOpenFinanceiroList] = useFinanceiroMenu();
   const [openEstoqueList, setOpenEstoqueList] = useEstoqueMenu();
+  const [openQualidadeList, setOpenQualidadeList] = useQualidadeMenu();
   const [openNotaFiscalList, setOpenNotaFiscalList] = useNotaFiscalMenu();
   const [openSideMenu, setOpenSideMenu] = useMenu();
 
@@ -114,6 +116,10 @@ function SideMenu({ children }) {
   const handleOpenEstoqueList = () => {
     setOpenEstoqueList(!openEstoqueList);
   };
+
+  const handleOpenQualidadeList = () => {
+    setOpenQualidadeList(!openQualidadeList);
+  }
 
   const handleOpenNotaFiscalList = () => {
     setOpenNotaFiscalList(!openNotaFiscalList);
