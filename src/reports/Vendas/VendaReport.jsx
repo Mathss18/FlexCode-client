@@ -310,7 +310,7 @@ export default function VendaReport() {
         </div>
 
         <div className="containerFooter">
-          <small>Impresso por Sistema ERP - Matheus Filho (19) 98136930</small>
+          <small>Impresso por Sistema ERP - Matheus Filho (19) 983136930</small>
         </div>
       </div>
 
