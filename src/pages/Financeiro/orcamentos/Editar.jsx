@@ -46,6 +46,7 @@ const initialValues = {
   dataEntrada: moment().format("YYYY-MM-DD"),
   frete: 0,
   outros: 0,
+  impostos: 0,
   desconto: 0,
   total: 0,
   observacao: "",
@@ -61,6 +62,7 @@ function EditarOrdensServicoPage() {
   const [rowsProdutos, setRowsProdutos] = useState([]);
   const [rowsServicos, setRowsServicos] = useState([]);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+  const calcularImpostos = useRef(true);
   const { id } = useParams();
   const fullScreenLoader = useFullScreenLoader();
   const empresaConfig = JSON.parse(localStorage.getItem("config"));
@@ -79,7 +81,7 @@ function EditarOrdensServicoPage() {
       headerName: "Produto",
       flex: 2,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       renderCell: (params) => (
         <>
           <Autocomplete
@@ -95,7 +97,6 @@ function EditarOrdensServicoPage() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            
             options={produtos}
             renderInput={(params) => (
               <TextField
@@ -117,45 +118,45 @@ function EditarOrdensServicoPage() {
     {
       field: "quantidade",
       headerName: "Quantidade",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "preco",
       headerName: "Preço Unitário",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "total",
       headerName: "Total",
-      type: 'number',
+      type: "number",
       editable: false,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "observacao",
       headerName: "Observação",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Excluir",
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       // flex: 1,
       renderCell: (params) => (
         <>
@@ -174,7 +175,7 @@ function EditarOrdensServicoPage() {
       headerName: "Serviço",
       flex: 2,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       renderCell: (params) => (
         <>
           <Autocomplete
@@ -190,7 +191,6 @@ function EditarOrdensServicoPage() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            
             options={servicos}
             renderInput={(params) => (
               <TextField
@@ -212,45 +212,45 @@ function EditarOrdensServicoPage() {
     {
       field: "quantidade",
       headerName: "Quantidade",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "preco",
       headerName: "Preço Unitário",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "total",
       headerName: "Total",
-      type: 'number',
+      type: "number",
       editable: false,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "observacao",
       headerName: "Observação",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Excluir",
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       // flex: 1,
       renderCell: (params) => (
         <>
@@ -269,7 +269,6 @@ function EditarOrdensServicoPage() {
     api
       .get("/orcamentos/" + id)
       .then((response) => {
-        
         if (response.data["data"].cliente_id) {
           response.data["data"].cliente_id = {
             value: response.data["data"].cliente.id,
@@ -292,6 +291,7 @@ function EditarOrdensServicoPage() {
           dataEntrada: response.data["data"].dataEntrada,
           frete: response.data["data"].frete,
           outros: response.data["data"].outros,
+          impostos: response.data["data"].impostos,
           desconto: response.data["data"].desconto,
           total: response.data["data"].total,
           observacao: response.data["data"].observacao,
@@ -343,7 +343,7 @@ function EditarOrdensServicoPage() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((cliente) => {
-          if(cliente.situacao === 1){
+          if (cliente.situacao === 1) {
             array.push({ label: cliente.nome, value: cliente.id });
           }
         });
@@ -360,8 +360,11 @@ function EditarOrdensServicoPage() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((transportadora) => {
-          if(transportadora.situacao === 1){
-            array.push({ label: transportadora.nome, value: transportadora.id });
+          if (transportadora.situacao === 1) {
+            array.push({
+              label: transportadora.nome,
+              value: transportadora.id,
+            });
           }
         });
         setTransportadoras(array);
@@ -407,13 +410,12 @@ function EditarOrdensServicoPage() {
 
   useEffect(() => {
     calcularTotalFinal();
-  }, [
-    rowsProdutos,
-    rowsServicos,
-    formik.values.frete,
-    formik.values.outros,
-    formik.values.desconto,
-  ]);
+  }, [formik.values.frete, formik.values.outros, formik.values.desconto]);
+
+  useEffect(() => {
+    calcularImpostos.current = true;
+    calcularTotalFinal();
+  }, [rowsProdutos, rowsServicos]);
 
   function handleOnSubmit(values) {
     if (rowsProdutos.length === 0 && rowsServicos.length === 0) {
@@ -601,27 +603,46 @@ function EditarOrdensServicoPage() {
   }
 
   function calcularTotalFinal() {
-    var total = 0;
+    let subTotal = 0;
+
     rowsProdutos.forEach((row) => {
-      total = total + Number(row.total);
+      subTotal += Number(row.total);
     });
     rowsServicos.forEach((row) => {
-      total = total + Number(row.total);
-      console.log("total", typeof total);
+      subTotal += Number(row.total);
     });
 
-    total = total + Number(formik.values.frete);
-    total = total + Number(formik.values.outros);
-    total = total - Number(formik.values.desconto);
+    subTotal += Number(formik.values.frete);
+    subTotal += Number(formik.values.outros);
+    subTotal -= Number(formik.values.desconto);
 
-    formik.setFieldValue("total", total);
-    formik.setFieldValue("total", total);
+    // If impostos is NOT zero, recalc it. Otherwise, keep what user set.
+    if (calcularImpostos.current && empresaConfig.crt == 3) {
+      let currentImpostos = formik.values.impostos;
+
+      const aliquotaIPI = 9.75;
+      currentImpostos = Number((subTotal * (aliquotaIPI / 100)).toFixed(2));
+      formik.setFieldValue("impostos", currentImpostos, false);
+
+      // Always recalc total, regardless of whether impostos is zero or not
+      const finalTotal = subTotal + Number(currentImpostos);
+      formik.setFieldValue("total", finalTotal, false);
+    } else {
+      formik.setFieldValue("total", subTotal, false);
+    }
   }
 
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
-        <div style={{ marginTop: 0, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 0,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -652,7 +673,6 @@ function EditarOrdensServicoPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                
                 options={clientes}
                 renderInput={(params) => (
                   <TextField
@@ -721,7 +741,6 @@ function EditarOrdensServicoPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                
                 options={transportadoras}
                 renderInput={(params) => (
                   <TextField
@@ -737,7 +756,14 @@ function EditarOrdensServicoPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -790,7 +816,14 @@ function EditarOrdensServicoPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -843,7 +876,14 @@ function EditarOrdensServicoPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -852,7 +892,7 @@ function EditarOrdensServicoPage() {
           </div>
 
           <Grid container spacing={3}>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
               <TextField
                 variant="outlined"
                 label="Frete"
@@ -871,7 +911,7 @@ function EditarOrdensServicoPage() {
                 helperText={formik.touched.frete && formik.errors.frete}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
               <TextField
                 variant="outlined"
                 label="Outros Custos"
@@ -890,7 +930,38 @@ function EditarOrdensServicoPage() {
                 helperText={formik.touched.outros && formik.errors.outros}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
+              <TextField
+                variant="outlined"
+                label="Impostos"
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">R$:</InputAdornment>
+                  ),
+                }}
+                type="number"
+                value={formik.values.impostos}
+                name="impostos"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                onBlurCapture={(e) => {
+                  if(empresaConfig.crt != 3)
+                  if (e.target.value == 0) {
+                    calcularImpostos.current = false;
+                    calcularTotalFinal();
+                  } else {
+                    calcularImpostos.current = true;
+                    calcularTotalFinal();
+                  }
+                }}
+                error={
+                  formik.touched.impostos && Boolean(formik.errors.impostos)
+                }
+                helperText={formik.touched.impostos && formik.errors.impostos}
+              />
+            </Grid>
+            <Grid item xs={2}>
               <TextField
                 variant="outlined"
                 label="Desconto"
@@ -911,7 +982,7 @@ function EditarOrdensServicoPage() {
                 helperText={formik.touched.desconto && formik.errors.desconto}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={4}>
               <TextField
                 variant="outlined"
                 label="Total Final"
@@ -934,7 +1005,14 @@ function EditarOrdensServicoPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >

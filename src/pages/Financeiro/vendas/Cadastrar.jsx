@@ -79,6 +79,7 @@ function CadastrarVendasPage() {
   const [rowsServicos, setRowsServicos] = useState([]);
   const [rowsParcelas, setRowsParcelas] = useState([]);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+  const calcularImpostos = useRef(true);
   const [files, setFiles] = useState([]);
   const formasPagamentosOriginal = useRef([]);
   const empresaConfig = JSON.parse(localStorage.getItem("config"));
@@ -147,7 +148,7 @@ function CadastrarVendasPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "total",
@@ -157,7 +158,7 @@ function CadastrarVendasPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "observacao",
@@ -241,7 +242,7 @@ function CadastrarVendasPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "total",
@@ -251,7 +252,7 @@ function CadastrarVendasPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "observacao",
@@ -295,7 +296,7 @@ function CadastrarVendasPage() {
       headerAlign: "letf",
       type: "number",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "forma_pagamento_id",
@@ -470,13 +471,15 @@ function CadastrarVendasPage() {
   useEffect(() => {
     calcularTotalFinal();
   }, [
-    rowsProdutos,
-    rowsServicos,
     formik.values.frete,
-    formik.values.impostos,
     formik.values.desconto,
     formik.values.somarFreteAoTotal,
   ]);
+
+  useEffect(() => {
+    calcularImpostos.current = true;
+    calcularTotalFinal();
+  }, [rowsProdutos, rowsServicos]);
 
   useEffect(() => {
     if (!formik.values.tipoFormaPagamento) return;
@@ -577,7 +580,12 @@ function CadastrarVendasPage() {
       0
     );
     if (
-      Number(totalParcelas.toFixed(empresaConfig.quantidadeCasasDecimaisValor)) != Number(formik.values.total.toFixed(empresaConfig.quantidadeCasasDecimaisValor))
+      Number(
+        totalParcelas.toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+      ) !=
+      Number(
+        formik.values.total.toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+      )
     ) {
       formik.setSubmitting(false);
       errorAlert(
@@ -605,7 +613,10 @@ function CadastrarVendasPage() {
           month: "2-digit",
           day: "2-digit",
         });
-      } else if (parcela.dataVencimento === null || parcela.dataVencimento === "") {
+      } else if (
+        parcela.dataVencimento === null ||
+        parcela.dataVencimento === ""
+      ) {
         errorAlert(
           "Por favor, selecione uma data de vencimento válida a parcela número " +
             (index + 1)
@@ -737,7 +748,9 @@ function CadastrarVendasPage() {
         for (let i = index + 1; i < parcelas; i++) {
           if (restoCadaParcela > 0) {
             objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela =
-              restoCadaParcela.toFixed(empresaConfig.quantidadeCasasDecimaisValor);
+              restoCadaParcela.toFixed(
+                empresaConfig.quantidadeCasasDecimaisValor
+              );
           } else {
             objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = 0;
           }
@@ -752,20 +765,27 @@ function CadastrarVendasPage() {
     });
 
     var diferenca = total - totalParcelas;
-    diferenca = Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
+    diferenca = Number(
+      diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+    );
 
     // se hover diferença, adiciona a diferença na ultima parcela
     if (Number(diferenca) !== 0) {
       objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela =
         Number(
           objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela
-        ) + Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
+        ) +
+        Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
     }
 
     setRowsParcelas(
       objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
         row.valorParcela =
-          row.valorParcela > 0 ? Number(row.valorParcela).toFixed(empresaConfig.quantidadeCasasDecimaisValor) : 0;
+          row.valorParcela > 0
+            ? Number(row.valorParcela).toFixed(
+                empresaConfig.quantidadeCasasDecimaisValor
+              )
+            : 0;
         return row;
       })
     );
@@ -787,7 +807,8 @@ function CadastrarVendasPage() {
     var diferenca = formik.values.total / formik.values.quantidadeParcelas;
     diferenca = (
       formik.values.total -
-      diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor) * formik.values.quantidadeParcelas
+      diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor) *
+        formik.values.quantidadeParcelas
     ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
 
     for (let i = 0; i < formik.values.quantidadeParcelas; i++) {
@@ -872,22 +893,36 @@ function CadastrarVendasPage() {
   }
 
   function calcularTotalFinal() {
-    var total = 0;
+    // 1. Compute subTotal (everything except impostos)
+    let subTotal = 0;
+
     rowsProdutos.forEach((row) => {
-      total = total + Number(row.total);
+      subTotal += Number(row.total);
     });
     rowsServicos.forEach((row) => {
-      total = total + Number(row.total);
+      subTotal += Number(row.total);
     });
 
-    if (formik.values.somarFreteAoTotal) {
-      total = total + Number(formik.values.frete);
-    }
-    total = total + Number(formik.values.impostos);
-    total = total - Number(formik.values.desconto);
+    subTotal += Number(formik.values.frete);
+    subTotal -= Number(formik.values.desconto);
 
-    formik.setFieldValue("total", total);
-    formik.setFieldValue("total", total);
+    if (formik.values.somarFreteAoTotal) {
+      subTotal += Number(formik.values.frete);
+    }
+
+    if (calcularImpostos.current && empresaConfig.crt == 3) {
+      let currentImpostos = formik.values.impostos;
+
+      const aliquotaIPI = 9.75;
+      currentImpostos = Number((subTotal * (aliquotaIPI / 100)).toFixed(2));
+      formik.setFieldValue("impostos", currentImpostos, false);
+
+      // Always recalc total, regardless of whether impostos is zero or not
+      const finalTotal = subTotal + Number(currentImpostos);
+      formik.setFieldValue("total", finalTotal, false);
+    } else {
+      formik.setFieldValue("total", subTotal, false);
+    }
   }
 
   return (
@@ -1218,6 +1253,16 @@ function CadastrarVendasPage() {
                 name="impostos"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                onBlurCapture={(e) => {
+                  if (empresaConfig.crt != 3) return;
+                  if (e.target.value == 0) {
+                    calcularImpostos.current = false;
+                    calcularTotalFinal();
+                  } else {
+                    calcularImpostos.current = true;
+                    calcularTotalFinal();
+                  }
+                }}
                 error={
                   formik.touched.impostos && Boolean(formik.errors.impostos)
                 }

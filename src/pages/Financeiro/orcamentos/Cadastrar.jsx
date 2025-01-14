@@ -50,9 +50,10 @@ const initialValues = {
   // horaSaida: null,
   frete: 0,
   outros: 0,
+  impostos: 0,
   desconto: 0,
   total: 0,
-  observacao: "",
+  observacao: "condições de pagamento: \nprazo de entrega: \nfrete: FOB",
   observacaoInterna: "",
 };
 
@@ -65,6 +66,7 @@ function CadastrarOrcamentosPage() {
   const [rowsProdutos, setRowsProdutos] = useState([]);
   const [rowsServicos, setRowsServicos] = useState([]);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+  const calcularImpostos = useRef(true);
   const empresaConfig = JSON.parse(localStorage.getItem("config"));
   // === Tabela de Preço
   const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
@@ -131,7 +133,7 @@ function CadastrarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "total",
@@ -141,7 +143,7 @@ function CadastrarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "observacao",
@@ -226,7 +228,7 @@ function CadastrarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "total",
@@ -236,7 +238,7 @@ function CadastrarOrcamentosPage() {
       sortable: false,
       headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "observacao",
@@ -351,13 +353,12 @@ function CadastrarOrcamentosPage() {
 
   useEffect(() => {
     calcularTotalFinal();
-  }, [
-    rowsProdutos,
-    rowsServicos,
-    formik.values.frete,
-    formik.values.outros,
-    formik.values.desconto,
-  ]);
+  }, [formik.values.frete, formik.values.outros, formik.values.desconto]);
+
+  useEffect(() => {
+    calcularImpostos.current = true;
+    calcularTotalFinal();
+  }, [rowsProdutos, rowsServicos]);
 
   const fullScreenLoader = useFullScreenLoader();
 
@@ -558,21 +559,33 @@ function CadastrarOrcamentosPage() {
   }
 
   function calcularTotalFinal() {
-    var total = 0;
+    // 1. Compute subTotal (everything except impostos)
+    let subTotal = 0;
+
     rowsProdutos.forEach((row) => {
-      total = total + Number(row.total);
+      subTotal += Number(row.total);
     });
     rowsServicos.forEach((row) => {
-      total = total + Number(row.total);
-      console.log("total", typeof total);
+      subTotal += Number(row.total);
     });
 
-    total = total + Number(formik.values.frete);
-    total = total + Number(formik.values.outros);
-    total = total - Number(formik.values.desconto);
+    subTotal += Number(formik.values.frete);
+    subTotal += Number(formik.values.outros);
+    subTotal -= Number(formik.values.desconto);
 
-    formik.setFieldValue("total", total);
-    formik.setFieldValue("total", total);
+    if (calcularImpostos.current && empresaConfig.crt == 3) {
+      let currentImpostos = formik.values.impostos;
+
+      const aliquotaIPI = 9.75;
+      currentImpostos = Number((subTotal * (aliquotaIPI / 100)).toFixed(2));
+      formik.setFieldValue("impostos", currentImpostos, false);
+
+      // Always recalc total, regardless of whether impostos is zero or not
+      const finalTotal = subTotal + Number(currentImpostos);
+      formik.setFieldValue("total", finalTotal, false);
+    } else {
+      formik.setFieldValue("total", subTotal, false);
+    }
   }
 
   return (
@@ -841,7 +854,7 @@ function CadastrarOrcamentosPage() {
           </div>
 
           <Grid container spacing={3}>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
               <TextField
                 variant="outlined"
                 label="Frete"
@@ -860,7 +873,7 @@ function CadastrarOrcamentosPage() {
                 helperText={formik.touched.frete && formik.errors.frete}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
               <TextField
                 variant="outlined"
                 label="Outros Custos"
@@ -879,7 +892,38 @@ function CadastrarOrcamentosPage() {
                 helperText={formik.touched.outros && formik.errors.outros}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
+              <TextField
+                variant="outlined"
+                label="Impostos"
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">R$:</InputAdornment>
+                  ),
+                }}
+                type="number"
+                value={formik.values.impostos}
+                name="impostos"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                onBlurCapture={(e) => {
+                  if(empresaConfig.crt != 3) return;
+                  if (e.target.value == 0) {
+                    calcularImpostos.current = false;
+                    calcularTotalFinal();
+                  } else {
+                    calcularImpostos.current = true;
+                    calcularTotalFinal();
+                  }
+                }}
+                error={
+                  formik.touched.impostos && Boolean(formik.errors.impostos)
+                }
+                helperText={formik.touched.impostos && formik.errors.impostos}
+              />
+            </Grid>
+            <Grid item xs={2}>
               <TextField
                 variant="outlined"
                 label="Desconto"
@@ -900,7 +944,7 @@ function CadastrarOrcamentosPage() {
                 helperText={formik.touched.desconto && formik.errors.desconto}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={4}>
               <TextField
                 variant="outlined"
                 label="Total Final"

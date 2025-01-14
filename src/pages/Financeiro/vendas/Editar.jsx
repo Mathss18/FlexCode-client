@@ -26,7 +26,7 @@ import api from "../../../services/api";
 import { DataGrid } from "@mui/x-data-grid";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
+import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import moment from "moment";
 import {
   deleteFromArrayByIndex,
@@ -39,9 +39,8 @@ import { errorAlert, infoAlert, successAlert } from "../../../utils/alert";
 import DragAndDrop from "../../../components/dragdrop/DragAndDrop";
 import toast from "react-hot-toast";
 import ModalTabelaPreco from "../modalTabelaPreco/ModalTabelaPreco";
-import CalculateIcon from '@mui/icons-material/Calculate';
+import CalculateIcon from "@mui/icons-material/Calculate";
 import { brPrice } from "../../../constants/datagridCurrencyFormatter";
-
 
 const initialValues = {
   numero: "",
@@ -50,7 +49,7 @@ const initialValues = {
   forma_pagamento_id: null,
   quantidadeParcelas: 1,
   intervaloParcelas: 0,
-  tipoFormaPagamento: '0', // 0 - À vista, 1 - A prazo
+  tipoFormaPagamento: "0", // 0 - À vista, 1 - A prazo
   somarFreteAoTotal: false,
   produtos: [],
   servicos: [],
@@ -66,12 +65,12 @@ const initialValues = {
   observacao: "",
   observacaoInterna: "",
 
-  qtdeMaximaParcelas: Infinity // Para não permitir que o usuário digite uma quantidade de parcelas maior que o permitido (Não faz parte do formulário em sí)
+  qtdeMaximaParcelas: Infinity, // Para não permitir que o usuário digite uma quantidade de parcelas maior que o permitido (Não faz parte do formulário em sí)
 };
 
 function EditarVendasPage() {
   const history = useHistory();
-  const {id} = useParams();
+  const { id } = useParams();
   const [clientes, setClientes] = useState([]);
   const [formasPagamentos, setFormasPagamentos] = useState([]);
   const [transportadoras, setTransportadoras] = useState([]);
@@ -83,13 +82,14 @@ function EditarVendasPage() {
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const [files, setFiles] = useState([]);
   const formasPagamentosOriginal = useRef([]);
+  const calcularImpostos = useRef(true);
   const isRealizada = useRef(false);
   const isCancelada = useRef(false);
   const empresaConfig = JSON.parse(localStorage.getItem("config"));
-   // === Tabela de Preço
-   const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
-   const produtosOriginal = useRef(null);
-   const produto = useRef(null);
+  // === Tabela de Preço
+  const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
+  const produtosOriginal = useRef(null);
+  const produto = useRef(null);
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -97,7 +97,6 @@ function EditarVendasPage() {
       handleOnSubmit(event);
     },
     validationSchema: vendasValidation,
-    
   });
 
   const columnsProdutos = [
@@ -106,7 +105,7 @@ function EditarVendasPage() {
       headerName: "Produto",
       flex: 2,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       renderCell: (params) => (
         <>
           <Autocomplete
@@ -122,7 +121,6 @@ function EditarVendasPage() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            
             options={produtos}
             renderInput={(params) => (
               <TextField
@@ -144,45 +142,45 @@ function EditarVendasPage() {
     {
       field: "quantidade",
       headerName: "Quantidade",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "preco",
       headerName: "Preço Unitário",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "total",
       headerName: "Total",
-      type: 'number',
+      type: "number",
       editable: false,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "observacao",
       headerName: "Observação",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Ações",
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       renderCell: (params) => (
         <>
           <DeleteIcon
@@ -206,7 +204,7 @@ function EditarVendasPage() {
       headerName: "Serviço",
       flex: 2,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       renderCell: (params) => (
         <>
           <Autocomplete
@@ -222,7 +220,6 @@ function EditarVendasPage() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            
             options={servicos}
             renderInput={(params) => (
               <TextField
@@ -244,45 +241,45 @@ function EditarVendasPage() {
     {
       field: "quantidade",
       headerName: "Quantidade",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
     },
     {
       field: "preco",
       headerName: "Preço Unitário",
-      type: 'number',
+      type: "number",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "total",
       headerName: "Total",
-      type: 'number',
+      type: "number",
       editable: false,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "observacao",
       headerName: "Observação",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 2,
     },
     {
       field: "excluir",
       headerName: "Excluir",
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       // flex: 1,
       renderCell: (params) => (
         <>
@@ -302,23 +299,23 @@ function EditarVendasPage() {
       flex: 1,
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
     },
     {
       field: "valorParcela",
       headerName: "Valor Parcela",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       type: "number",
       flex: 1,
-      ...brPrice
+      ...brPrice,
     },
     {
       field: "forma_pagamento_id",
       headerName: "Forma Pagamento",
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 1,
       renderCell: (params) => (
         <>
@@ -328,10 +325,15 @@ function EditarVendasPage() {
             value={
               params.row.forma_pagamento_id == ""
                 ? undefined
-                : { label: params.row.nome, value: params.row.forma_pagamento_id }
+                : {
+                    label: params.row.nome,
+                    value: params.row.forma_pagamento_id,
+                  }
             }
             name="forma_pagamento_id"
-            onChange={(event, value) => handleFormaPagamentoChange(params, value)}
+            onChange={(event, value) =>
+              handleFormaPagamentoChange(params, value)
+            }
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
@@ -358,7 +360,7 @@ function EditarVendasPage() {
       headerName: "Observação",
       editable: true,
       sortable: false,
-      headerAlign: 'letf',
+      headerAlign: "letf",
       flex: 2,
     },
     // {
@@ -377,14 +379,13 @@ function EditarVendasPage() {
     // },
   ];
 
-
   useEffect(() => {
     api
       .get("/clientes")
       .then((response) => {
         var array = [];
         response.data["data"].forEach((cliente) => {
-          if(cliente.situacao === 1){
+          if (cliente.situacao === 1) {
             array.push({ label: cliente.nome, value: cliente.id });
           }
         });
@@ -417,8 +418,11 @@ function EditarVendasPage() {
       .then((response) => {
         var array = [];
         response.data["data"].forEach((transportadora) => {
-          if(transportadora.situacao === 1){
-            array.push({ label: transportadora.nome, value: transportadora.id });
+          if (transportadora.situacao === 1) {
+            array.push({
+              label: transportadora.nome,
+              value: transportadora.id,
+            });
           }
         });
         setTransportadoras(array);
@@ -432,8 +436,8 @@ function EditarVendasPage() {
     api
       .get("/produtos-mini")
       .then((response) => {
-        produtosOriginal.current = response.data['data'];
-        
+        produtosOriginal.current = response.data["data"];
+
         var array = [];
         response.data["data"].forEach((produto) => {
           array.push({
@@ -444,7 +448,7 @@ function EditarVendasPage() {
         });
         setProdutos(array);
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }, []);
 
   useEffect(() => {
@@ -472,13 +476,13 @@ function EditarVendasPage() {
       .then((response) => {
         if (response.data["data"].situacao == 1) {
           isRealizada.current = true;
-        }
-        else if(response.data["data"].situacao == 2){
-          toast("Venda cancelada!, não é possivel fazer alterações", { type: "error" });
+        } else if (response.data["data"].situacao == 2) {
+          toast("Venda cancelada!, não é possivel fazer alterações", {
+            type: "error",
+          });
           isCancelada.current = true;
           isRealizada.current = true;
-        }
-        else{
+        } else {
           isRealizada.current = false;
           isCancelada.current = false;
         }
@@ -551,17 +555,19 @@ function EditarVendasPage() {
             nome: item.nome,
           });
         });
-        setRowsServicos(servs)
+        setRowsServicos(servs);
 
         var parcs = [];
         response.data["data"].parcelas.map((item, index) => {
           parcs.push({
             id: new Date().getTime() + index,
             dataVencimento: item.dataVencimento,
-            valorParcela: item.valorParcela.toFixed(empresaConfig.quantidadeCasasDecimaisValor),
+            valorParcela: item.valorParcela.toFixed(
+              empresaConfig.quantidadeCasasDecimaisValor
+            ),
             forma_pagamento_id: item.forma_pagamento.id,
             nome: item.forma_pagamento.nome,
-            observacao: item.observacao
+            observacao: item.observacao,
           });
         });
         setRowsParcelas(parcs);
@@ -589,36 +595,46 @@ function EditarVendasPage() {
   useEffect(() => {
     calcularTotalFinal();
   }, [
-    rowsProdutos,
-    rowsServicos,
     formik.values.frete,
-    formik.values.impostos,
     formik.values.desconto,
     formik.values.somarFreteAoTotal,
   ]);
 
   useEffect(() => {
+    calcularImpostos.current = true;
+    calcularTotalFinal();
+  }, [rowsProdutos, rowsServicos]);
+
+  useEffect(() => {
     if (!formik.values.tipoFormaPagamento) return;
     // Se for a vista, seta a quantidade de parcelas como 1 e o intervalo como 0
-    if (formik.values.tipoFormaPagamento == '0') {
+    if (formik.values.tipoFormaPagamento == "0") {
       formik.setFieldValue("quantidadeParcelas", 1);
       formik.setFieldValue("intervaloParcelas", 0);
     }
   }, [formik.values.tipoFormaPagamento]);
 
   useEffect(() => {
-    if (formik.values.tipoFormaPagamento == '0') return
-    var formaPaga = formasPagamentosOriginal.current.filter((formaPagamento) => {
-      return formaPagamento.id == formik.values.forma_pagamento_id.value;
-    });
-    if(formaPaga.length == 1){
+    if (formik.values.tipoFormaPagamento == "0") return;
+    var formaPaga = formasPagamentosOriginal.current.filter(
+      (formaPagamento) => {
+        return formaPagamento.id == formik.values.forma_pagamento_id.value;
+      }
+    );
+    if (formaPaga.length == 1) {
       formik.setFieldValue("intervaloParcelas", formaPaga[0].intervaloParcelas);
-      formik.setFieldValue("qtdeMaximaParcelas", formaPaga[0].numeroMaximoParcelas);
+      formik.setFieldValue(
+        "qtdeMaximaParcelas",
+        formaPaga[0].numeroMaximoParcelas
+      );
     }
-    if(formik.values.quantidadeParcelas > formik.values.qtdeMaximaParcelas){
-      toast("A quantidade máxima de parcelas para essa forma de pagamento é "+formik.values.qtdeMaximaParcelas, { type: "error" });
+    if (formik.values.quantidadeParcelas > formik.values.qtdeMaximaParcelas) {
+      toast(
+        "A quantidade máxima de parcelas para essa forma de pagamento é " +
+          formik.values.qtdeMaximaParcelas,
+        { type: "error" }
+      );
     }
-    
   }, [formik.values.forma_pagamento_id, formik.isSubmitting]);
 
   const fullScreenLoader = useFullScreenLoader();
@@ -675,20 +691,26 @@ function EditarVendasPage() {
     }
     if (rowsParcelas.length <= 0) {
       formik.setSubmitting(false);
-      errorAlert(
-        "A venda deve ter pelo menos uma parcela!"
-      );
+      errorAlert("A venda deve ter pelo menos uma parcela!");
       return;
     }
     if (rowsParcelas.find((parcela) => Number(parcela.valorParcela) < 0)) {
       formik.setSubmitting(false);
-      errorAlert(
-        "Por favor, selecione uma valor válido para cada parcela!"
-      );
+      errorAlert("Por favor, selecione uma valor válido para cada parcela!");
       return;
     }
-    const totalParcelas = rowsParcelas.reduce((acc, item) => acc + Number(item.valorParcela), 0);
-    if (Number(totalParcelas.toFixed(empresaConfig.quantidadeCasasDecimaisValor)) != Number(formik.values.total.toFixed(empresaConfig.quantidadeCasasDecimaisValor))) {
+    const totalParcelas = rowsParcelas.reduce(
+      (acc, item) => acc + Number(item.valorParcela),
+      0
+    );
+    if (
+      Number(
+        totalParcelas.toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+      ) !=
+      Number(
+        formik.values.total.toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+      )
+    ) {
       formik.setSubmitting(false);
       errorAlert(
         "Erro no calculo das parcelas!",
@@ -697,7 +719,7 @@ function EditarVendasPage() {
       return;
     }
 
-    if (formik.values.tipoFormaPagamento == '0' && rowsParcelas.length != 1) {
+    if (formik.values.tipoFormaPagamento == "0" && rowsParcelas.length != 1) {
       formik.setSubmitting(false);
       errorAlert(
         "Erro no calculo das parcelas!",
@@ -715,14 +737,17 @@ function EditarVendasPage() {
           month: "2-digit",
           day: "2-digit",
         });
-      } else if (parcela.dataVencimento === null || parcela.dataVencimento === "") {
+      } else if (
+        parcela.dataVencimento === null ||
+        parcela.dataVencimento === ""
+      ) {
         errorAlert(
           "Por favor, selecione uma data de vencimento válida a parcela número " +
             (index + 1)
         );
         return;
       }
-      
+
       return {
         ...parcela,
         valorParcela: Number(parcela.valorParcela),
@@ -735,16 +760,14 @@ function EditarVendasPage() {
       produtos: rowsProdutos,
       servicos: rowsServicos,
       parcelas: rowParcelasSanitezed,
-      anexos: files
+      anexos: files,
     };
 
     fullScreenLoader.setLoading(true);
     api
       .put("/vendas/" + id, params)
       .then((response) => {
-        successAlert("Sucesso", "Venda Editada", () =>
-          history.push("/vendas")
-        );
+        successAlert("Sucesso", "Venda Editada", () => history.push("/vendas"));
       })
       .catch((error) => {
         errorAlert("Atenção", error?.response?.data?.message);
@@ -784,9 +807,10 @@ function EditarVendasPage() {
 
   function openTabelaDePrecosModal(params) {
     const prod_id = params?.row?.produto_id;
-    produto.current = produtosOriginal.current.find((item)=> item.id === prod_id)
-    if(produto.current)
-      setOpenModalTabelaPreco(true)
+    produto.current = produtosOriginal.current.find(
+      (item) => item.id === prod_id
+    );
+    if (produto.current) setOpenModalTabelaPreco(true);
   }
 
   function handleProductRowStateChange(dataGrid) {
@@ -830,41 +854,63 @@ function EditarVendasPage() {
 
     objectToArray(dataGrid.rows.idRowsLookup).forEach((row, index) => {
       // Caso o preço daquela row tenha sido alterado, entrara no if
-      if (objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela != rowsParcelas[index].valorParcela) {
-        resto = Number(total) - (Number(acumulador) + Number(objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela)); // Calcula o restante TOTAL para ser dividido entra as parcelas restantes
+      if (
+        objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela !=
+        rowsParcelas[index].valorParcela
+      ) {
+        resto =
+          Number(total) -
+          (Number(acumulador) +
+            Number(
+              objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela
+            )); // Calcula o restante TOTAL para ser dividido entra as parcelas restantes
         var restoCadaParcela = resto / (parcelas - (index + 1)); // Calcula o restante INDIVIDUAL para ser dividido entre as parcelas restantes
 
         // Para cada parcela restante, altera o valor da parcela (se o valor restante for negativo, o valor da parcela será 0)
         for (let i = index + 1; i < parcelas; i++) {
           if (restoCadaParcela > 0) {
-            objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = restoCadaParcela.toFixed(empresaConfig.quantidadeCasasDecimaisValor);
-          } 
-          else {
+            objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela =
+              restoCadaParcela.toFixed(
+                empresaConfig.quantidadeCasasDecimaisValor
+              );
+          } else {
             objectToArray(dataGrid.rows.idRowsLookup)[i].valorParcela = 0;
           }
         }
-
-      }
-      else {
+      } else {
         acumulador = acumulador + Number(rowsParcelas[index].valorParcela); // Acumula o valor das parcelas que não foram alteradas
       }
 
-      totalParcelas += Number(objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela); // Soma os valores de todas as parcelas (usado somente para calcular a diferença)
-
+      totalParcelas += Number(
+        objectToArray(dataGrid.rows.idRowsLookup)[index].valorParcela
+      ); // Soma os valores de todas as parcelas (usado somente para calcular a diferença)
     });
 
     var diferenca = total - totalParcelas;
-    diferenca = Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
+    diferenca = Number(
+      diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+    );
 
     // se hover diferença, adiciona a diferença na ultima parcela
     if (Number(diferenca) !== 0) {
-      objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela = Number(objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela) + Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
+      objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela =
+        Number(
+          objectToArray(dataGrid.rows.idRowsLookup)[parcelas - 1].valorParcela
+        ) +
+        Number(diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor));
     }
 
-    setRowsParcelas(objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
-      row.valorParcela = row.valorParcela > 0 ? Number(row.valorParcela).toFixed(empresaConfig.quantidadeCasasDecimaisValor) : 0;
-      return row;
-    }));
+    setRowsParcelas(
+      objectToArray(dataGrid.rows.idRowsLookup).map((row) => {
+        row.valorParcela =
+          row.valorParcela > 0
+            ? Number(row.valorParcela).toFixed(
+                empresaConfig.quantidadeCasasDecimaisValor
+              )
+            : 0;
+        return row;
+      })
+    );
   }
 
   function handleClienteChange(params, value) {
@@ -881,13 +927,21 @@ function EditarVendasPage() {
     var aux = [];
 
     var diferenca = formik.values.total / formik.values.quantidadeParcelas;
-    diferenca = (formik.values.total - (diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor) * formik.values.quantidadeParcelas)).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
+    diferenca = (
+      formik.values.total -
+      diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor) *
+        formik.values.quantidadeParcelas
+    ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
 
     for (let i = 0; i < formik.values.quantidadeParcelas; i++) {
       aux.push({
         id: new Date().getTime() + i,
-        dataVencimento: moment(formik.values.dataPrimeiraParcela).add(formik.values.intervaloParcelas * i, 'days').format("DD/MM/YYYY"),
-        valorParcela: Number((Number(formik.values.total) / Number(formik.values.quantidadeParcelas))).toFixed(empresaConfig.quantidadeCasasDecimaisValor),
+        dataVencimento: moment(formik.values.dataPrimeiraParcela)
+          .add(formik.values.intervaloParcelas * i, "days")
+          .format("DD/MM/YYYY"),
+        valorParcela: Number(
+          Number(formik.values.total) / Number(formik.values.quantidadeParcelas)
+        ).toFixed(empresaConfig.quantidadeCasasDecimaisValor),
         forma_pagamento_id: formik.values.forma_pagamento_id.value,
         nome: formik.values.forma_pagamento_id.label,
         observacao: "",
@@ -895,99 +949,123 @@ function EditarVendasPage() {
     }
     // Se houver diferência, adiciona a última parcela com o valor da diferença
     if (Number(diferenca) !== 0) {
-      aux[aux.length - 1].valorParcela = Number(aux[aux.length - 1].valorParcela) + Number(diferenca);
+      aux[aux.length - 1].valorParcela =
+        Number(aux[aux.length - 1].valorParcela) + Number(diferenca);
     }
     setRowsParcelas(aux);
   }
-
 
   function handleFormaPagamentoChange(params, value) {
     params.row.forma_pagamento_id = value.value;
     params.row.nome = value.label;
   }
 
-    // ==== Funções de serviços ====
-    function addServicoRow() {
-      setRowsServicos([
-        ...rowsServicos,
-        {
-          id: new Date().getTime(),
-          servico_id: "",
-          quantidade: 0,
-          preco: 0,
-          total: 0,
-          observacao: "",
-        },
-      ]);
-    }
-  
-    function removeServicoRow(params) {
-      var indexToBeDeleted = rowsServicos.map((row, index) => {
-        if (row.id === params.id) return index;
-      });
-      indexToBeDeleted = indexToBeDeleted.filter((row) => row !== undefined);
-      setRowsServicos(deleteFromArrayByIndex(rowsServicos, ...indexToBeDeleted));
-    }
-  
-    function handleServicoRowStateChange(dataGrid) {
-      if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsServicos))
-        return;
-      if (objectToArray(dataGrid.rows.idRowsLookup).length != rowsServicos.length)
-        return;
-  
-      objectToArray(dataGrid.rows.idRowsLookup).forEach((row, index) => {
-        const selectdServico = servicos.find(
-          (servico) => servico.value === row.servico_id
-        );
-        if (selectdServico) {
-          if (objectToArray(dataGrid.rows.idRowsLookup)[index].preco <= 0) {
-            objectToArray(dataGrid.rows.idRowsLookup)[index].preco =
-              selectdServico.preco;
-          } else {
-            console.log("Preço original mudado");
-          }
-  
-          objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
-            objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
-            Number(row.quantidade)
-          ).toFixed(2);
+  // ==== Funções de serviços ====
+  function addServicoRow() {
+    setRowsServicos([
+      ...rowsServicos,
+      {
+        id: new Date().getTime(),
+        servico_id: "",
+        quantidade: 0,
+        preco: 0,
+        total: 0,
+        observacao: "",
+      },
+    ]);
+  }
+
+  function removeServicoRow(params) {
+    var indexToBeDeleted = rowsServicos.map((row, index) => {
+      if (row.id === params.id) return index;
+    });
+    indexToBeDeleted = indexToBeDeleted.filter((row) => row !== undefined);
+    setRowsServicos(deleteFromArrayByIndex(rowsServicos, ...indexToBeDeleted));
+  }
+
+  function handleServicoRowStateChange(dataGrid) {
+    if (isArrayEqual(objectToArray(dataGrid.rows.idRowsLookup), rowsServicos))
+      return;
+    if (objectToArray(dataGrid.rows.idRowsLookup).length != rowsServicos.length)
+      return;
+
+    objectToArray(dataGrid.rows.idRowsLookup).forEach((row, index) => {
+      const selectdServico = servicos.find(
+        (servico) => servico.value === row.servico_id
+      );
+      if (selectdServico) {
+        if (objectToArray(dataGrid.rows.idRowsLookup)[index].preco <= 0) {
+          objectToArray(dataGrid.rows.idRowsLookup)[index].preco =
+            selectdServico.preco;
+        } else {
+          console.log("Preço original mudado");
         }
-      });
-      setRowsServicos(objectToArray(dataGrid.rows.idRowsLookup));
-    }
-  
-    function handleServicoChange(params, value) {
-      params.row.servico_id = value.value;
-    }
+
+        objectToArray(dataGrid.rows.idRowsLookup)[index].total = (
+          objectToArray(dataGrid.rows.idRowsLookup)[index].preco *
+          Number(row.quantidade)
+        ).toFixed(2);
+      }
+    });
+    setRowsServicos(objectToArray(dataGrid.rows.idRowsLookup));
+  }
+
+  function handleServicoChange(params, value) {
+    params.row.servico_id = value.value;
+  }
 
   function calcularTotalFinal() {
-    var total = 0;
+    // 1. Compute subTotal (everything except impostos)
+    let subTotal = 0;
+
     rowsProdutos.forEach((row) => {
-      total = total + Number(row.total);
+      subTotal += Number(row.total);
     });
     rowsServicos.forEach((row) => {
-      total = total + Number(row.total);
+      subTotal += Number(row.total);
     });
 
-    if (formik.values.somarFreteAoTotal) {
-      total = total + Number(formik.values.frete);
-    }
-    total = total + Number(formik.values.impostos);
-    total = total - Number(formik.values.desconto);
+    subTotal += Number(formik.values.frete);
+    subTotal -= Number(formik.values.desconto);
 
-    formik.setFieldValue("total", total);
-    formik.setFieldValue("total", total);
+    if (formik.values.somarFreteAoTotal) {
+      subTotal += Number(formik.values.frete);
+    }
+
+    if (calcularImpostos.current && empresaConfig.crt == 3) {
+      let currentImpostos = formik.values.impostos;
+
+      const aliquotaIPI = 9.75;
+      currentImpostos = Number((subTotal * (aliquotaIPI / 100)).toFixed(2));
+      formik.setFieldValue("impostos", currentImpostos, false);
+
+      // Always recalc total, regardless of whether impostos is zero or not
+      const finalTotal = subTotal + Number(currentImpostos);
+      formik.setFieldValue("total", finalTotal, false);
+    } else {
+      formik.setFieldValue("total", subTotal, false);
+    }
   }
 
   return (
     <>
-    <ModalTabelaPreco
+      <ModalTabelaPreco
         open={openModalTabelaPreco}
         setOpen={setOpenModalTabelaPreco}
         produto={produto.current}
       />
-      <form onSubmit={formik.handleSubmit} style={{pointerEvents: isCancelada.current ? 'none': 'auto'}}>
-        <div style={{ marginTop: 0, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+      <form
+        onSubmit={formik.handleSubmit}
+        style={{ pointerEvents: isCancelada.current ? "none" : "auto" }}
+      >
+        <div
+          style={{
+            marginTop: 0,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1021,7 +1099,6 @@ function EditarVendasPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                
                 options={clientes}
                 renderInput={(params) => (
                   <TextField
@@ -1030,13 +1107,28 @@ function EditarVendasPage() {
                     {...params}
                     label="Cliente *"
                     placeholder="Pesquise..."
-                    error={formik.touched.cliente_id && Boolean(formik.errors.cliente_id)}
-                    helperText={formik.touched.cliente_id && formik.errors.cliente_id}
+                    error={
+                      formik.touched.cliente_id &&
+                      Boolean(formik.errors.cliente_id)
+                    }
+                    helperText={
+                      formik.touched.cliente_id && formik.errors.cliente_id
+                    }
                   />
                 )}
               />
             </Grid>
-            <Grid item xs={4} style={{pointerEvents: isCancelada.current ? 'none': isRealizada.current ? 'auto' : 'auto'}}>
+            <Grid
+              item
+              xs={4}
+              style={{
+                pointerEvents: isCancelada.current
+                  ? "none"
+                  : isRealizada.current
+                  ? "auto"
+                  : "auto",
+              }}
+            >
               <FormControl variant="outlined" fullWidth name="situacao">
                 <InputLabel>Situação *</InputLabel>
                 <Select
@@ -1095,7 +1187,6 @@ function EditarVendasPage() {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                
                 options={transportadoras}
                 renderInput={(params) => (
                   <TextField
@@ -1108,11 +1199,18 @@ function EditarVendasPage() {
                 )}
               />
             </Grid>
-            
           </Grid>
         </div>
 
-        <div style={{ pointerEvents: isRealizada.current ? 'none' : 'auto', marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            pointerEvents: isRealizada.current ? "none" : "auto",
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1165,7 +1263,15 @@ function EditarVendasPage() {
           </Grid>
         </div>
 
-        <div style={{ pointerEvents: isRealizada.current ? 'none' : 'auto', marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            pointerEvents: isRealizada.current ? "none" : "auto",
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1218,7 +1324,15 @@ function EditarVendasPage() {
           </Grid>
         </div>
 
-        <div style={{ pointerEvents: isRealizada.current ? 'none' : 'auto', marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            pointerEvents: isRealizada.current ? "none" : "auto",
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1243,7 +1357,7 @@ function EditarVendasPage() {
                           checked={formik.values.somarFreteAoTotal}
                           onChange={formik.handleChange}
                           name="somarFreteAoTotal"
-                          inputProps={{ 'aria-label': 'controlled' }}
+                          inputProps={{ "aria-label": "controlled" }}
                         />
                       </Tooltip>
                     </InputAdornment>
@@ -1251,10 +1365,7 @@ function EditarVendasPage() {
                 }}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => { }}
-                      edge="end"
-                    >
+                    <IconButton onClick={() => {}} edge="end">
                       {<CloseIcon />}
                     </IconButton>
                   </InputAdornment>
@@ -1283,7 +1394,19 @@ function EditarVendasPage() {
                 name="impostos"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.impostos && Boolean(formik.errors.impostos)}
+                onBlurCapture={(e) => {
+                  if (empresaConfig.crt != 3) return;
+                  if (e.target.value == 0) {
+                    calcularImpostos.current = false;
+                    calcularTotalFinal();
+                  } else {
+                    calcularImpostos.current = true;
+                    calcularTotalFinal();
+                  }
+                }}
+                error={
+                  formik.touched.impostos && Boolean(formik.errors.impostos)
+                }
                 helperText={formik.touched.impostos && formik.errors.impostos}
               />
             </Grid>
@@ -1331,26 +1454,46 @@ function EditarVendasPage() {
           </Grid>
         </div>
 
-        <div style={{ pointerEvents: isRealizada.current ? 'none' : 'auto', marginTop: 38, boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            pointerEvents: isRealizada.current ? "none" : "auto",
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
             <AssignmentIcon />
             <h3>Pagamento</h3>
-            <div style={{ marginLeft: 'auto' }}>
+            <div style={{ marginLeft: "auto" }}>
               <FormControl>
                 <RadioGroup
                   value={formik.values.tipoFormaPagamento}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   name="tipoFormaPagamento"
-                  row>
-                  <FormControlLabel value={'0'} control={<Radio />} label="À vista" />
-                  <FormControlLabel value={'1'} control={<Radio />} label="A prazo" />
+                  row
+                >
+                  <FormControlLabel
+                    value={"0"}
+                    control={<Radio />}
+                    label="À vista"
+                  />
+                  <FormControlLabel
+                    value={"1"}
+                    control={<Radio />}
+                    label="A prazo"
+                  />
                 </RadioGroup>
-                <FormHelperText>{formik.touched.tipoFormaPagamento && formik.errors.tipoFormaPagamento}</FormHelperText>
+                <FormHelperText>
+                  {formik.touched.tipoFormaPagamento &&
+                    formik.errors.tipoFormaPagamento}
+                </FormHelperText>
               </FormControl>
-              {rowsParcelas.length <= 0 ?
+              {rowsParcelas.length <= 0 ? (
                 <Button
                   style={{ height: 28, fontSize: 12, marginTop: 8 }}
                   className={"btn btn-primary"}
@@ -1360,7 +1503,7 @@ function EditarVendasPage() {
                 >
                   Parcelas
                 </Button>
-                :
+              ) : (
                 <Button
                   style={{ height: 28, fontSize: 12, marginTop: 8 }}
                   className={"btn btn-primary"}
@@ -1369,11 +1512,9 @@ function EditarVendasPage() {
                   disabled={isBtnDisabled}
                 >
                   Limpar
-                </Button>}
-
-
+                </Button>
+              )}
             </div>
-
           </div>
 
           <Grid container spacing={3}>
@@ -1381,11 +1522,12 @@ function EditarVendasPage() {
               <Autocomplete
                 value={formik.values.forma_pagamento_id}
                 name="forma_pagamento_id"
-                onChange={(event, value) => handleOnChange("forma_pagamento_id", value)}
+                onChange={(event, value) =>
+                  handleOnChange("forma_pagamento_id", value)
+                }
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                
                 options={formasPagamentos}
                 renderInput={(params) => (
                   <TextField
@@ -1394,8 +1536,14 @@ function EditarVendasPage() {
                     {...params}
                     label="Forma de pagamento *"
                     placeholder="Pesquise..."
-                    error={formik.touched.forma_pagamento_id && Boolean(formik.errors.forma_pagamento_id)}
-                    helperText={formik.touched.forma_pagamento_id && formik.errors.forma_pagamento_id}
+                    error={
+                      formik.touched.forma_pagamento_id &&
+                      Boolean(formik.errors.forma_pagamento_id)
+                    }
+                    helperText={
+                      formik.touched.forma_pagamento_id &&
+                      formik.errors.forma_pagamento_id
+                    }
                   />
                 )}
               />
@@ -1417,7 +1565,8 @@ function EditarVendasPage() {
                   Boolean(formik.errors.quantidadeParcelas)
                 }
                 helperText={
-                  formik.touched.quantidadeParcelas && formik.errors.quantidadeParcelas
+                  formik.touched.quantidadeParcelas &&
+                  formik.errors.quantidadeParcelas
                 }
               />
             </Grid>
@@ -1437,7 +1586,8 @@ function EditarVendasPage() {
                   Boolean(formik.errors.intervaloParcelas)
                 }
                 helperText={
-                  formik.touched.intervaloParcelas && formik.errors.intervaloParcelas
+                  formik.touched.intervaloParcelas &&
+                  formik.errors.intervaloParcelas
                 }
               />
             </Grid>
@@ -1456,7 +1606,8 @@ function EditarVendasPage() {
                   Boolean(formik.errors.dataPrimeiraParcela)
                 }
                 helperText={
-                  formik.touched.dataPrimeiraParcela && formik.errors.dataPrimeiraParcela
+                  formik.touched.dataPrimeiraParcela &&
+                  formik.errors.dataPrimeiraParcela
                 }
               />
             </Grid>
@@ -1495,7 +1646,15 @@ function EditarVendasPage() {
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, pointerEvents: isRealizada.current ? 'none' : 'auto', boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            pointerEvents: isRealizada.current ? "none" : "auto",
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
@@ -1507,14 +1666,25 @@ function EditarVendasPage() {
             <>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <DragAndDrop state={[files, setFiles]} listFiles></DragAndDrop>
+                  <DragAndDrop
+                    state={[files, setFiles]}
+                    listFiles
+                  ></DragAndDrop>
                 </Grid>
               </Grid>
             </>
           </Grid>
         </div>
 
-        <div style={{ marginTop: 38, pointerEvents: isRealizada.current ? 'none' : 'auto', boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)', padding: 24 }}>
+        <div
+          style={{
+            marginTop: 38,
+            pointerEvents: isRealizada.current ? "none" : "auto",
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
           <div
             style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
           >
