@@ -353,25 +353,14 @@ export default function OrcamentoReport() {
                     currency: "BRL",
                   })}
                 </td>
-                {empresaConfig.crt == 3 ? (
-                  <td className="tdOrcamento" style={{ color: "red" }}>
-                    <b>
-                      {(dados?.total + ipiValue || 0).toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
-                    </b>
-                  </td>
-                ) : (
-                  <td className="tdOrcamento" style={{ color: "red" }}>
-                    <b>
-                      {(dados?.total || 0).toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
-                    </b>
-                  </td>
-                )}
+                <td className="tdOrcamento" style={{ color: "red" }}>
+                  <b>
+                    {(dados?.total || 0).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </b>
+                </td>
               </tr>
             </table>
           </div>
