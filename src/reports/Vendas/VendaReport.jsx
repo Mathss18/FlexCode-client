@@ -75,8 +75,7 @@ export default function VendaReport() {
                 <b>CNPJ:</b> {empresaConfig?.cpfCnpj}
               </p>
               <p>
-                <b>Rua:</b>{" "}
-                {empresaConfig?.rua + ", " + empresaConfig?.numero}
+                <b>Rua:</b> {empresaConfig?.rua + ", " + empresaConfig?.numero}
               </p>
               <p>
                 <b>Cidade:</b> {empresaConfig?.cidade}
@@ -181,7 +180,9 @@ export default function VendaReport() {
                         <td className="tdVenda">
                           {produto?.codigoInterno + " / " + produto?.nome}
                         </td>
-                        <td className="tdVenda">{produto?.pivot?.observacao}</td>
+                        <td className="tdVenda">
+                          {produto?.pivot?.observacao}
+                        </td>
                         <td className="tdVenda">{qtd}</td>
                         <td className="tdVenda">
                           {vrUnit
@@ -194,7 +195,9 @@ export default function VendaReport() {
                         {empresaConfig.crt == 3 ? (
                           <td className="tdVenda">
                             {ipiUnit
-                              .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+                              .toFixed(
+                                empresaConfig.quantidadeCasasDecimaisValor
+                              )
                               .toLocaleString("pt-BR", {
                                 minimumFractionDigits:
                                   empresaConfig.quantidadeCasasDecimaisValor,
@@ -220,7 +223,9 @@ export default function VendaReport() {
                       <b>{totalProdutos?.quantidade}</b>
                     </td>
                     <td className="tdVenda"></td>
-                    {empresaConfig.crt == 3 ? <td className="tdVenda"></td> : null}
+                    {empresaConfig.crt == 3 ? (
+                      <td className="tdVenda"></td>
+                    ) : null}
                     {/* Se CRT = 3, soma IPI no valor total de produtos */}
                     {empresaConfig.crt == 3 ? (
                       <td className="tdVenda">
@@ -281,7 +286,9 @@ export default function VendaReport() {
                         <td className="tdVenda">
                           {servico?.pivot?.observacao}
                         </td>
-                        <td className="tdVenda">{servico?.pivot?.quantidade}</td>
+                        <td className="tdVenda">
+                          {servico?.pivot?.quantidade}
+                        </td>
                         <td className="tdVenda">
                           {servico?.pivot?.preco
                             .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
@@ -337,7 +344,9 @@ export default function VendaReport() {
                   {empresaConfig.crt == 3 ? (
                     <th className="thVenda">ICMS</th>
                   ) : null}
-                  {empresaConfig.crt == 3 ? <th className="thVenda">IPI</th> : null}
+                  {empresaConfig.crt == 3 ? (
+                    <th className="thVenda">IPI</th>
+                  ) : null}
                   <th className="thVenda">DESCONTO</th>
                   <th className="thVenda">TOTAL FINAL</th>
                 </tr>
@@ -387,30 +396,16 @@ export default function VendaReport() {
                       })}
                   </td>
 
-                  {empresaConfig.crt == 3 ? (
-                    // Soma IPI ao valor total
-                    <td className="tdVenda" style={{ color: "red" }}>
-                      <b>
-                        {(dados?.total + ipiValue)
-                          .toFixed(empresaConfig.quantidadeCasasDecimaisValor)
-                          .toLocaleString("pt-BR", {
-                            minimumFractionDigits:
-                              empresaConfig.quantidadeCasasDecimaisValor,
-                          })}
-                      </b>
-                    </td>
-                  ) : (
-                    <td className="tdVenda" style={{ color: "red" }}>
-                      <b>
-                        {dados?.total
-                          ?.toFixed(empresaConfig.quantidadeCasasDecimaisValor)
-                          ?.toLocaleString("pt-BR", {
-                            minimumFractionDigits:
-                              empresaConfig.quantidadeCasasDecimaisValor,
-                          })}
-                      </b>
-                    </td>
-                  )}
+                  <td className="tdVenda" style={{ color: "red" }}>
+                    <b>
+                      {dados?.total
+                        ?.toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+                        ?.toLocaleString("pt-BR", {
+                          minimumFractionDigits:
+                            empresaConfig.quantidadeCasasDecimaisValor,
+                        })}
+                    </b>
+                  </td>
                 </tr>
               </tbody>
             </table>
