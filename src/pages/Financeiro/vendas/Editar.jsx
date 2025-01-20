@@ -59,6 +59,8 @@ const initialValues = {
   dataEntrada: moment().format("YYYY-MM-DD"),
   dataPrimeiraParcela: moment().format("YYYY-MM-DD"),
   frete: 0,
+  icms: 0,
+  ipi: 0,
   impostos: 0,
   desconto: 0,
   total: 0,
@@ -521,6 +523,8 @@ function EditarVendasPage() {
           dataEntrada: response.data["data"].dataEntrada,
           dataPrimeiraParcela: response.data["data"].dataPrimeiraParcela,
           frete: response.data["data"].frete,
+          icms: response.data["data"].icms,
+          ipi: response.data["data"].ipi,
           desconto: response.data["data"].desconto,
           impostos: response.data["data"].impostos,
           total: response.data["data"].total,
@@ -1449,6 +1453,63 @@ function EditarVendasPage() {
                 onBlur={formik.handleBlur}
                 error={formik.touched.total && Boolean(formik.errors.total)}
                 helperText={formik.touched.total && formik.errors.total}
+              />
+            </Grid>
+          </Grid>
+        </div>
+
+        <div
+          style={{
+            marginTop: 38,
+            boxShadow:
+              "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+            padding: 24,
+          }}
+        >
+          <div
+            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+          >
+            <AssignmentIcon />
+            <h3>Nota Fiscal</h3>
+          </div>
+
+          <Grid container spacing={3}>
+            <Grid item xs={6}>
+              <TextField
+                variant="outlined"
+                label="ICMS"
+                fullWidth
+                type="number"
+                name="icms"
+                value={formik.values.icms || ""}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">R$:</InputAdornment>
+                  ),
+                }}
+                error={formik.touched.icms && Boolean(formik.errors.icms)}
+                helperText={formik.touched.icms && formik.errors.icms}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                variant="outlined"
+                label="IPI"
+                fullWidth
+                type="number"
+                name="ipi"
+                value={formik.values.ipi || ""}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">R$:</InputAdornment>
+                  ),
+                }}
+                error={formik.touched.ipi && Boolean(formik.errors.ipi)}
+                helperText={formik.touched.ipi && formik.errors.ipi}
               />
             </Grid>
           </Grid>
