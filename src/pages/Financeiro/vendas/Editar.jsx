@@ -704,12 +704,15 @@ function EditarVendasPage() {
       0
     );
     if (
+      formik.values.situacao != 1 &&
       Number(
         totalParcelas.toFixed(empresaConfig.quantidadeCasasDecimaisValor)
       ) !=
-      Number(
-        formik.values.total.toFixed(empresaConfig.quantidadeCasasDecimaisValor)
-      )
+        Number(
+          formik.values.total.toFixed(
+            empresaConfig.quantidadeCasasDecimaisValor
+          )
+        )
     ) {
       formik.setSubmitting(false);
       errorAlert(
@@ -719,7 +722,11 @@ function EditarVendasPage() {
       return;
     }
 
-    if (formik.values.tipoFormaPagamento == "0" && rowsParcelas.length != 1) {
+    if (
+      formik.values.situacao != 1 &&
+      formik.values.tipoFormaPagamento == "0" &&
+      rowsParcelas.length != 1
+    ) {
       formik.setSubmitting(false);
       errorAlert(
         "Erro no calculo das parcelas!",
