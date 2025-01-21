@@ -640,6 +640,7 @@ function EditarVendasPage() {
   const fullScreenLoader = useFullScreenLoader();
 
   function handleOnSubmit(values) {
+    console.log({ situacao: formik.values.situacao });
     if (rowsProdutos.length === 0 && rowsServicos.length === 0) {
       console.log(rowsProdutos.length);
       formik.setSubmitting(false);
@@ -703,30 +704,27 @@ function EditarVendasPage() {
       (acc, item) => acc + Number(item.valorParcela),
       0
     );
-    if (
-      formik.values.situacao != 1 &&
-      Number(
-        totalParcelas.toFixed(empresaConfig.quantidadeCasasDecimaisValor)
-      ) !=
+    if (formik.values.situacao == 1) {
+      if (
+        Number(
+          totalParcelas.toFixed(empresaConfig.quantidadeCasasDecimaisValor)
+        ) !=
         Number(
           formik.values.total.toFixed(
             empresaConfig.quantidadeCasasDecimaisValor
           )
         )
-    ) {
-      formik.setSubmitting(false);
-      errorAlert(
-        "Erro no calculo das parcelas!",
-        "A soma das parcelas deve ser igual ao valor final da venda"
-      );
-      return;
+      ) {
+        formik.setSubmitting(false);
+        errorAlert(
+          "Erro no calculo das parcelas!",
+          "A soma das parcelas deve ser igual ao valor final da venda"
+        );
+        return;
+      }
     }
 
-    if (
-      formik.values.situacao != 1 &&
-      formik.values.tipoFormaPagamento == "0" &&
-      rowsParcelas.length != 1
-    ) {
+    if (formik.values.tipoFormaPagamento == "0" && rowsParcelas.length != 1) {
       formik.setSubmitting(false);
       errorAlert(
         "Erro no calculo das parcelas!",
