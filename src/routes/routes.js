@@ -108,6 +108,7 @@ import ListarMedidasPage from "../pages/Qualidade/medidas/Listar";
 import CadastrarMedidaPage from "../pages/Qualidade/medidas/Cadastrar";
 import EditarMedidaPage from "../pages/Qualidade/medidas/Editar";
 import ReajusteDePrecos from "../pages/Relatorios/ReajusteDePrecos";
+import Imposto from "../pages/Relatorios/Imposto";
 
 
 export default function Routes({themeSetter}) {
@@ -231,6 +232,7 @@ export default function Routes({themeSetter}) {
             <Route path="/relatorios/detalhesDePagamento" exact component={DetalhesDePagamento}></Route>
             <Route path="/relatorios/vendasAoLongoDoTempo" exact component={VendasAoLongoDoTempo}></Route>
             <Route path="/relatorios/reajusteDePrecos" exact component={ReajusteDePrecos}></Route>
+            <Route path="/relatorios/imposto" exact component={Imposto}></Route>
 
             <Route path="/medidas" exact component={ListarMedidasPage}></Route>
             <Route path="/medidas/novo" exact component={CadastrarMedidaPage}></Route>
