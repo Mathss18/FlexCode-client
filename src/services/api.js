@@ -4,7 +4,7 @@ var dominio = window.location.hostname.split('.');
 var requestUrl = '';
 if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
   // requestUrl = `http://${dominio[0]}.api.${dominio[1]}:8000/api` // dev url
-  requestUrl = `https://teste.api.allmacoding.com/api` // TODO: Só usar em dev
+  requestUrl = `https://flexmol.api.allmacoding.com/api` // TODO: Só usar em dev
 } else {
   requestUrl = `https://${dominio[0]}.api.${dominio[1]}.com/api` // prod url
 }

@@ -6,7 +6,6 @@ import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import BalanceIcon from "@mui/icons-material/Balance";
 import LinearScaleIcon from "@mui/icons-material/LinearScale";
-import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { config, rowConfig } from "../../../config/tablesConfig";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
@@ -21,9 +20,10 @@ function ListarVendas() {
   const history = useHistory();
   const [vendas, setVendas] = useState([]);
   const ordensServicos = useRef([]);
-  const fullScreenLoader = useFullScreenLoader();
+  const { setLoading } = useFullScreenLoader(); // extract only setLoading
   const notaFiscalContext = useNotaFiscalContext();
   const empresaConfig = JSON.parse(localStorage.getItem("config"));
+
   const columns = [
     {
       name: "Número Venda",
@@ -55,78 +55,36 @@ function ListarVendas() {
     },
   ];
 
-  const data = [];
-
-  function handleOnClickShowButton(event, id) {
-    history.push("/clientes/mostrar/" + id);
-  }
-
-  function handleOnClickNfeButton(event, element) {
-    if (element.situacao === "Aberta" || element.situacao === "Cancelada") {
-      errorAlert(
-        "Só é possivel emitir NFe com a situação da venda Realizada ou Parcial"
-      );
-      return;
-    }
-    confirmAlert(
-      "Atenção!",
-      "Realmente deseja gerar a nota fiscal?",
-      () => {
-        criarNfe(element);
-      },
-      () => {
-        // negado
-      }
-    );
-  }
-
-  function handleOnClickEditButton(event, id) {
-    history.push("/vendas/editar/" + id);
-  }
-
-  function handleOnClickPdfButton(event, item) {
-    const BASE_URL = window.location.origin;
-    const data = btoa(JSON.stringify(item));
-    localStorage.setItem("vendaReport", data);
-
-    window.open(`${BASE_URL}/vendas/relatorio`, "_blank");
-  }
-
+  // ------- Utility functions ------
   function alreadyHasVendaLinked(id) {
-    if (ordensServicos.current.find((item) => item.venda_id === id)) {
-      return true;
-    } else {
-      return false;
-    }
+    return !!ordensServicos.current.find((item) => item.venda_id === id);
   }
 
   function getLikeVendaLinked(id) {
     return ordensServicos.current.find((item) => item.venda_id === id);
   }
 
-  async function handleOnClickOSButton(event, item) {
-    if (alreadyHasVendaLinked(item["id"])) {
+  // ------- Handlers -----------
+  function handleOnClickPdfButton(event, item) {
+    const BASE_URL = window.location.origin;
+    const dataEncoded = btoa(JSON.stringify(item));
+    localStorage.setItem("vendaReport", dataEncoded);
+    window.open(`${BASE_URL}/vendas/relatorio`, "_blank");
+  }
+
+  function handleOnClickOSButton(event, item) {
+    if (alreadyHasVendaLinked(item.id)) {
       confirmAlert(
         "Atenção!",
         "Essa venda já gerou uma OF, deseja continuar mesmo assim?",
         () => {
           criarOS(item);
-        },
-        () => {
-          // negado
         }
       );
     } else {
-      confirmAlert(
-        "Atenção!",
-        "Deseja mesmo criar uma OF?",
-        () => {
-          criarOS(item);
-        },
-        () => {
-          // negado
-        }
-      );
+      confirmAlert("Atenção!", "Deseja mesmo criar uma OF?", () => {
+        criarOS(item);
+      });
     }
   }
 
@@ -138,26 +96,22 @@ function ListarVendas() {
           numero: response.data["data"],
           venda_id: item.id,
           cliente_id: { label: item.cliente.nome, value: item.cliente.id },
-          produtos: item.produtos.map((item, index) => {
-            return {
-              id: index,
-              produto_id: item.id,
-              quantidade: item.pivot.quantidade,
-              preco: item.pivot.preco,
-              total: item.pivot.total,
-              observacao: item.pivot.observacao,
-            };
-          }),
-          servicos: item.servicos.map((item, index) => {
-            return {
-              id: index,
-              servico_id: item.id,
-              quantidade: item.pivot.quantidade,
-              preco: item.pivot.preco,
-              total: item.pivot.total,
-              observacao: item.pivot.observacao,
-            };
-          }),
+          produtos: item.produtos.map((prod, index) => ({
+            id: index,
+            produto_id: prod.id,
+            quantidade: prod.pivot.quantidade,
+            preco: prod.pivot.preco,
+            total: prod.pivot.total,
+            observacao: prod.pivot.observacao,
+          })),
+          servicos: item.servicos.map((srv, index) => ({
+            id: index,
+            servico_id: srv.id,
+            quantidade: srv.pivot.quantidade,
+            preco: srv.pivot.preco,
+            total: srv.pivot.total,
+            observacao: srv.pivot.observacao,
+          })),
           situacao: 0,
           dataEntrada: item.dataEntrada,
           horaEntrada: new Date().toLocaleTimeString(),
@@ -173,16 +127,28 @@ function ListarVendas() {
 
         api
           .post("/ordens-servicos", params)
-          .then((response) => {
-            history.push("/ordens-servicos/editar/" + response.data["data"].id);
+          .then((res) => {
+            history.push("/ordens-servicos/editar/" + res.data["data"].id);
           })
           .catch((error) => {
             errorAlert("Erro ao criar OF", error?.response?.data?.message);
           });
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("Erro ao buscar próximo número de ordem de serviço");
       });
+  }
+
+  function handleOnClickNfeButton(event, element) {
+    if (element.situacao === "Aberta" || element.situacao === "Cancelada") {
+      errorAlert(
+        "Só é possivel emitir NFe com a situação da venda Realizada ou Parcial"
+      );
+      return;
+    }
+    confirmAlert("Atenção!", "Realmente deseja gerar a nota fiscal?", () => {
+      criarNfe(element);
+    });
   }
 
   function criarNfe(item) {
@@ -215,15 +181,13 @@ function ListarVendas() {
           preco: prod.pivot.preco,
           total: prod.pivot.total,
         })),
-      parcelas: item.parcelas.map((item, index) => {
-        return {
-          id: index,
-          dataVencimento: item.dataVencimento,
-          valorParcela: item.valorParcela,
-          forma_pagamento_id: item.forma_pagamento.id,
-          nome: item.forma_pagamento.nome,
-        };
-      }),
+      parcelas: item.parcelas.map((p, index) => ({
+        id: index,
+        dataVencimento: p.dataVencimento,
+        valorParcela: p.valorParcela,
+        forma_pagamento_id: p.forma_pagamento.id,
+        nome: p.forma_pagamento.nome,
+      })),
       totalProdutos: 0,
       forma_pagamento_id: {
         label: item.forma_pagamento.nome,
@@ -248,55 +212,71 @@ function ListarVendas() {
     history.push("/notas-fiscais/novo");
   }
 
+  function handleOnClickEditButton(event, id) {
+    history.push("/vendas/editar/" + id);
+  }
+
+  // ---------- useEffect to fetch data in the desired order ----------
   useEffect(() => {
-    fullScreenLoader.setLoading(true);
-    api
-      .get("/vendas")
-      .then((response) => {
-        response.data["data"].forEach((element) => {
-          if (element["situacao"] === 0) {
-            element["situacao"] = "Aberta";
-          } else if (element["situacao"] === 1) {
-            element["situacao"] = "Realizada";
-          } else if (element["situacao"] === 2) {
-            element["situacao"] = "Cancelada";
-          } else if (element["situacao"] === 3) {
-            element["situacao"] = "Parcial";
+    // If you ONLY want to run once on mount, remove the dependency array entirely or use `[]`.
+    // If you want to re-fetch each time quantidadeCasasDecimaisValor changes, keep it:
+    setLoading(true);
+
+    (async () => {
+      try {
+        // 1) load ordens-servicos first
+        const responseOs = await api.get("/ordens-servicos");
+        ordensServicos.current = responseOs.data["data"];
+
+        // 2) then load vendas
+        const responseVendas = await api.get("/vendas");
+        const data = [];
+
+        responseVendas.data["data"].forEach((element) => {
+          // Convert numeric situacao into string
+          if (element.situacao === 0) {
+            element.situacao = "Aberta";
+          } else if (element.situacao === 1) {
+            element.situacao = "Realizada";
+          } else if (element.situacao === 2) {
+            element.situacao = "Cancelada";
+          } else if (element.situacao === 3) {
+            element.situacao = "Parcial";
           }
-          var array = [
-            element["numero"],
+
+          data.push([
+            element.numero,
             <Chip
+              key={`of-chip-${element.id}`}
               className="table-tag"
-              label={getLikeVendaLinked(element["id"])?.numero ?? "----"}
+              label={getLikeVendaLinked(element.id)?.numero ?? "----"}
               style={{
-                backgroundColor: (() => {
-                  if (getLikeVendaLinked(element["id"])?.numero) {
-                    return "#1976d2";
-                  } else {
-                    return "#000";
-                  }
-                })(),
+                backgroundColor: getLikeVendaLinked(element.id)?.numero
+                  ? "#1976d2"
+                  : "#000",
               }}
-              onClick={(event) => {
-                if (getLikeVendaLinked(element["id"])?.numero)
+              onClick={() => {
+                if (getLikeVendaLinked(element.id)?.numero) {
                   window.open(
-                    "/ordens-servicos/editar/" + getLikeVendaLinked(element["id"]).numero,
+                    "/ordens-servicos/editar/" +
+                      getLikeVendaLinked(element.id).numero,
                     "_blank"
                   );
+                }
               }}
               size="small"
             />,
-
-            element["cliente"]["nome"],
+            element.cliente.nome,
             <Chip
+              key={`situacao-${element.id}`}
               className="table-tag"
-              label={element["situacao"]}
+              label={element.situacao}
               color={
-                element["situacao"] === "Aberta"
+                element.situacao === "Aberta"
                   ? "primary"
-                  : element["situacao"] === "Realizada"
+                  : element.situacao === "Realizada"
                   ? "secondary"
-                  : element["situacao"] === "Cancelada"
+                  : element.situacao === "Cancelada"
                   ? "error"
                   : "warning"
               }
@@ -304,82 +284,71 @@ function ListarVendas() {
               style={{
                 width: "90px",
                 backgroundColor:
-                  element["situacao"] === "Cancelada" ? "#c55959" : "",
+                  element.situacao === "Cancelada" ? "#c55959" : "",
               }}
             />,
-            `R$: ${element["total"].toFixed(
+            `R$: ${element.total.toFixed(
               empresaConfig.quantidadeCasasDecimaisValor
             )}`,
-            moment(element["dataEntrada"]).format("DD/MM/YYYY"),
+            moment(element.dataEntrada).format("DD/MM/YYYY"),
             <>
-              <Tooltip title={"Baixar PDF"} arrow>
+              <Tooltip title="Baixar PDF" arrow>
                 <PictureAsPdfIcon
-                  className={"btn btn-lista"}
+                  className="btn btn-lista"
                   onClick={(event) => handleOnClickPdfButton(event, element)}
                 />
               </Tooltip>
-              <Tooltip title={"Gerar OF"} arrow>
+              <Tooltip title="Gerar OF" arrow>
                 <LinearScaleIcon
                   style={{
-                    backgroundColor: alreadyHasVendaLinked(element["id"])
+                    backgroundColor: alreadyHasVendaLinked(element.id)
                       ? "#c55959"
                       : "#2e7d32",
                   }}
-                  className={"btn btn-lista"}
+                  className="btn btn-lista"
                   onClick={(event) => handleOnClickOSButton(event, element)}
                 />
               </Tooltip>
-              <Tooltip title={"Gerar NF- e"} arrow>
+              <Tooltip title="Gerar NF-e" arrow>
                 <BalanceIcon
-                  className={"btn btn-lista"}
+                  className="btn btn-lista"
                   onClick={(event) => handleOnClickNfeButton(event, element)}
                 />
               </Tooltip>
               <EditIcon
-                className={"btn btn-lista"}
-                onClick={(event) =>
-                  handleOnClickEditButton(event, element["id"])
-                }
+                className="btn btn-lista"
+                onClick={(event) => handleOnClickEditButton(event, element.id)}
               />
             </>,
-          ];
-          data.push(array);
+          ]);
         });
+
         setVendas(data);
-      })
-      .finally(() => {
-        fullScreenLoader.setLoading(false);
-      });
-  }, []);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [empresaConfig.quantidadeCasasDecimaisValor, setLoading]);
 
-  useEffect(() => {
-    fullScreenLoader.setLoading(true);
-    api
-      .get("/ordens-servicos")
-      .then((response) => {
-        ordensServicos.current = response.data["data"];
-      })
-      .finally(() => {
-        fullScreenLoader.setLoading(false);
-      });
-  }, []);
-
+  // ---------- Render ----------
   return (
     <>
       <Button
         onClick={() => history.push("/vendas/novo")}
         variant="outlined"
         startIcon={<AddIcon />}
-        className={"btn btn-primary btn-spacing"}
+        className="btn btn-primary btn-spacing"
       >
         Adicionar
       </Button>
       <MUIDataTable
-        title={"Lista de Vendas"}
+        title="Lista de Vendas"
         data={vendas}
         columns={columns}
         options={config}
-        className={"table-background"}
+        className="table-background"
       />
     </>
   );
