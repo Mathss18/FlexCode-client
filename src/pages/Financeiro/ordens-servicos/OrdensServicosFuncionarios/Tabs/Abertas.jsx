@@ -19,6 +19,7 @@ import {
   ListItemText,
   Toolbar,
   Typography,
+  Chip, // <-- Import Chip
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useParams } from "react-router-dom";
@@ -37,7 +38,6 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 export function Abertas() {
   const { idUsuario } = useParams();
-
   const [ordensServicosFuncionarios, setOrdensServicosFuncionarios] = useState(
     []
   );
@@ -46,9 +46,11 @@ export function Abertas() {
   const [openFotoModal, setOpenFotoModal] = useState(false);
   const [produtoSelecionado, setProdutoSelecionado] = useState(null);
   const [dados, setDados] = useState({});
+
+  // Create a new column for "Situação"
   const columns = [
     {
-      name: "N° Ordem de Servico",
+      name: "N° OF",
       options: rowConfig,
     },
     {
@@ -61,6 +63,11 @@ export function Abertas() {
     },
     {
       name: "Data Entrega",
+      options: rowConfig,
+    },
+    {
+      // New "Situação" column
+      name: "Situação",
       options: rowConfig,
     },
     {
@@ -110,15 +117,53 @@ export function Abertas() {
       .get("/minhas-tarefas/" + idUsuario + "/abertas")
       .then((response) => {
         response.data["data"].forEach((element) => {
+          // Calculate how many days overdue
+          // We'll assume 'element["ordem_servico"].dataSaida' is the "Data Entrega"
+          const now = moment();
+          const dataSaida = moment(
+            element["ordem_servico"].dataSaida,
+            "YYYY-MM-DD"
+          );
+          const diff = now.diff(dataSaida, "days"); // how many days after dataSaida
+
+          let chipColor = "#4caf50"; // Default: green
+          let chipLabel = "Em dia";
+
+          if (diff === 1) {
+            // 1 day late => orange
+            chipColor = "#ec8232";
+            chipLabel = "Atraso leve";
+          } else if (diff > 2) {
+            // more than 2 days => red
+            chipColor = "#c55959";
+            chipLabel = "Atraso grave";
+          }
+          // If you'd like negative diff to remain green (not yet due), we keep the defaults
+
+          // Build the row array
           var array = [
-            element["ordem_servico"].numero,
-            element["ordem_servico"].cliente.nome,
+            element["ordem_servico"].numero, // N° OF
+            element["ordem_servico"].cliente.nome, // Cliente
             moment(element["ordem_servico"].dataEntrada).format("DD/MM/YYYY") +
               " " +
-              element["ordem_servico"].horaEntrada,
+              element["ordem_servico"].horaEntrada, // Data Abertura
             moment(element["ordem_servico"].dataSaida).format("DD/MM/YYYY") +
               " " +
-              element["ordem_servico"].horaSaida,
+              element["ordem_servico"].horaSaida, // Data Entrega
+
+            // Situação column with a Chip
+            <Chip
+              className="table-tag"
+              label={chipLabel}
+              size="small"
+              style={{
+                width: "120px",
+                backgroundColor: chipColor,
+                color: "#fff",
+              }}
+            />,
+
+            // Ações
             <>
               <MoreHorizIcon
                 className={"btn btn-lista"}
@@ -162,7 +207,7 @@ export function Abertas() {
             <CloseIcon />
           </IconButton>
           <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-            {`Ordem de serviço N° ${dados["ordem_servico"].numero}`}
+            {`Ordem de serviço N° ${dados["ordem_servico"]?.numero || ""}`}
           </Typography>
           <Button autoFocus color="inherit" onClick={() => setOpen(false)}>
             Fechar
@@ -178,11 +223,11 @@ export function Abertas() {
         <List
           style={{
             display:
-              dados["ordem_servico"].produtos.length !== 0 ? "block" : "none",
+              dados["ordem_servico"]?.produtos?.length !== 0 ? "block" : "none",
           }}
         >
           <h3 style={{ textAlign: "center" }}>Produtos</h3>
-          {dados["ordem_servico"].produtos.map((element, index) => {
+          {dados["ordem_servico"]?.produtos?.map((element, index) => {
             return (
               <ListItem
                 key={index}
@@ -206,9 +251,9 @@ export function Abertas() {
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
                   secondary={
-                    "Observações: " + element.pivot.observacao == null
-                      ? ""
-                      : element.pivot.observacao
+                    element.pivot.observacao
+                      ? "Observações: " + element.pivot.observacao
+                      : ""
                   }
                 />
               </ListItem>
@@ -220,11 +265,11 @@ export function Abertas() {
         <List
           style={{
             display:
-              dados["ordem_servico"].servicos.length !== 0 ? "block" : "none",
+              dados["ordem_servico"]?.servicos?.length !== 0 ? "block" : "none",
           }}
         >
           <h3 style={{ textAlign: "center" }}>Serviços</h3>
-          {dados["ordem_servico"].servicos.map((element, index) => {
+          {dados["ordem_servico"]?.servicos?.map((element, index) => {
             return (
               <ListItem key={index} button>
                 <ListItemAvatar>
@@ -241,9 +286,9 @@ export function Abertas() {
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
                   secondary={
-                    "Observações: " + element.pivot.observacao == null
-                      ? ""
-                      : element.pivot.observacao
+                    element.pivot.observacao
+                      ? "Observações: " + element.pivot.observacao
+                      : ""
                   }
                 />
               </ListItem>

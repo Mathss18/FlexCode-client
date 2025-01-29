@@ -9,6 +9,7 @@ import {
   AppBar,
   Avatar,
   Button,
+  Chip, // <-- Import Chip
   Divider,
   IconButton,
   List,
@@ -40,6 +41,8 @@ export function Fazendo() {
   const fullScreenLoader = useFullScreenLoader();
   const [open, setOpen] = useState(false);
   const [dados, setDados] = useState({});
+
+  // We add a new "Situação" column
   const columns = [
     {
       name: "N° Ordem de Servico",
@@ -55,6 +58,11 @@ export function Fazendo() {
     },
     {
       name: "Data Entrega",
+      options: rowConfig,
+    },
+    {
+      // New column for Situação
+      name: "Situação",
       options: rowConfig,
     },
     {
@@ -88,7 +96,7 @@ export function Fazendo() {
           observacao: response,
           dataFinalizado: moment().format("YYYY-MM-DD"),
         })
-        .then((response) => {
+        .then(() => {
           search();
         })
         .catch((error) => {
@@ -106,29 +114,65 @@ export function Fazendo() {
       .get("/minhas-tarefas/" + idUsuario + "/fazendo")
       .then((response) => {
         response.data["data"].forEach((element) => {
-          var array = [
-            element["ordem_servico"].numero,
-            element["ordem_servico"].cliente.nome,
+          // Calculate how many days overdue
+          const now = moment();
+          // We'll assume dataSaida is "Data Entrega"
+          const dataSaida = moment(
+            element["ordem_servico"].dataSaida,
+            "YYYY-MM-DD"
+          );
+          const diff = now.diff(dataSaida, "days"); // how many days after dataSaida
+
+          let chipLabel = "Em dia";
+          let chipColor = "#4caf50"; // green by default
+
+          if (diff === 1) {
+            // 1 day late => orange
+            chipColor = "#ec8232";
+            chipLabel = "Atraso leve";
+          } else if (diff > 2) {
+            // more than 2 days => red
+            chipColor = "#c55959";
+            chipLabel = "Atraso grave";
+          }
+
+          data.push([
+            element["ordem_servico"].numero, // N° Ordem de Servico
+            element["ordem_servico"].cliente.nome, // Cliente
             moment(element["ordem_servico"].dataEntrada).format("DD/MM/YYYY") +
               " " +
-              element["ordem_servico"].horaEntrada,
+              element["ordem_servico"].horaEntrada, // Data Abertura
             moment(element["ordem_servico"].dataSaida).format("DD/MM/YYYY") +
               " " +
-              element["ordem_servico"].horaSaida,
+              element["ordem_servico"].horaSaida, // Data Entrega
+
+            // Situação column
+            <Chip
+              key={`sit-${element.id}`}
+              className="table-tag"
+              label={chipLabel}
+              size="small"
+              style={{
+                width: "110px",
+                backgroundColor: chipColor,
+                color: "#fff",
+              }}
+            />,
+
+            // Ações column
             <>
               <MoreHorizIcon
-                className={"btn btn-lista"}
+                className="btn btn-lista"
                 onClick={(event) => {
                   handleOnClickShowButton(event, element);
                 }}
               />
               <CheckIcon
-                className={"btn btn-lista"}
+                className="btn btn-lista"
                 onClick={(event) => handleOnClickEditButton(event, element)}
               />
             </>,
-          ];
-          data.push(array);
+          ]);
         });
         setOrdensServicosFuncionarios(data);
 
@@ -146,7 +190,6 @@ export function Fazendo() {
       fullScreenLoader.setLoading(true);
       return api.get("/minhas-tarefas/getSituacao/" + id);
     }
-
     if (tipo === "servico") {
       fullScreenLoader.setLoading(true);
       return api.get("/minhas-tarefas/getServico/" + id);
@@ -155,6 +198,7 @@ export function Fazendo() {
 
   useEffect(() => {
     search();
+    // eslint-disable-next-line
   }, []);
 
   // === Produtos ===
@@ -171,16 +215,13 @@ export function Fazendo() {
         },
       ];
       postMarcarProduto(element, json);
-
       return;
     }
 
-    const existe = jsonAntigo.find(
-      (element) => element.usuario_id === idUsuario
-    );
-    if (!!existe) {
-      // ==== se já existir um registro daquele usuario, modifica o registro ====
-      var jsonNovo = jsonAntigo.map((item) => {
+    const existe = jsonAntigo.find((el) => el.usuario_id === idUsuario);
+    if (existe) {
+      // Se já existir um registro, alterna
+      const jsonNovo = jsonAntigo.map((item) => {
         if (item.usuario_id === idUsuario) {
           item.situacao = !item.situacao;
         }
@@ -190,7 +231,7 @@ export function Fazendo() {
       return;
     }
 
-    // ==== se não existir um registro daquele usuario, cria um pra ele ====
+    // Se não existir um registro daquele usuario, cria
     jsonAntigo.push({
       usuario_id: idUsuario,
       situacao: true,
@@ -205,7 +246,7 @@ export function Fazendo() {
         produto_id: element.pivot.produto_id,
         situacao: json,
       })
-      .then((response) => {
+      .then(() => {
         toast.success("Produto marcado com sucesso!");
       })
       .catch((error) => {
@@ -222,13 +263,8 @@ export function Fazendo() {
     if (jsonAntigo == null) {
       return false;
     }
-    const existe = jsonAntigo.find(
-      (element) => element.usuario_id === idUsuario
-    );
-    if (!!existe && existe.situacao) {
-      return true;
-    }
-    return false;
+    const existe = jsonAntigo.find((el) => el.usuario_id === idUsuario);
+    return !!existe && existe.situacao;
   }
 
   // === Serviços ===
@@ -236,9 +272,7 @@ export function Fazendo() {
     const response = await searchSituacao(element.pivot.id, "servico");
     var jsonAntigo = JSON.parse(response.data.data.situacao);
 
-    // var jsonAntigo = JSON.parse(element.pivot.situacao);
     if (jsonAntigo == null) {
-      // ==== se não tiver nada, cria um novo json ====
       var json = [
         {
           usuario_id: idUsuario,
@@ -246,16 +280,12 @@ export function Fazendo() {
         },
       ];
       postMarcarServico(element, json);
-
       return;
     }
 
-    const existe = jsonAntigo.find(
-      (element) => element.usuario_id === idUsuario
-    );
-    if (!!existe) {
-      // ==== se já existir um registro daquele usuario, modifica o registro ====
-      var jsonNovo = jsonAntigo.map((item) => {
+    const existe = jsonAntigo.find((el) => el.usuario_id === idUsuario);
+    if (existe) {
+      const jsonNovo = jsonAntigo.map((item) => {
         if (item.usuario_id === idUsuario) {
           item.situacao = !item.situacao;
         }
@@ -265,7 +295,6 @@ export function Fazendo() {
       return;
     }
 
-    // ==== se não existir um registro daquele usuario, cria um pra ele ====
     jsonAntigo.push({
       usuario_id: idUsuario,
       situacao: true,
@@ -280,7 +309,7 @@ export function Fazendo() {
         servico_id: element.pivot.servico_id,
         situacao: json,
       })
-      .then((response) => {
+      .then(() => {
         toast.success("Servico marcado com sucesso!");
       })
       .catch((error) => {
@@ -297,13 +326,8 @@ export function Fazendo() {
     if (jsonAntigo == null) {
       return false;
     }
-    const existe = jsonAntigo.find(
-      (element) => element.usuario_id === idUsuario
-    );
-    if (!!existe && existe.situacao) {
-      return true;
-    }
-    return false;
+    const existe = jsonAntigo.find((el) => el.usuario_id === idUsuario);
+    return !!existe && existe.situacao;
   }
 
   const DialogHeader = () => {
@@ -319,7 +343,7 @@ export function Fazendo() {
             <CloseIcon />
           </IconButton>
           <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-            {`Ordem de serviço N° ${dados["ordem_servico"].numero}`}
+            {`Ordem de serviço N° ${dados["ordem_servico"]?.numero || ""}`}
           </Typography>
           <Button autoFocus color="inherit" onClick={() => setOpen(false)}>
             Fechar
@@ -332,14 +356,15 @@ export function Fazendo() {
   const DialogBody = () => {
     return (
       <div>
+        {/* Produtos */}
         <List
           style={{
             display:
-              dados["ordem_servico"].produtos.length !== 0 ? "block" : "none",
+              dados["ordem_servico"]?.produtos?.length !== 0 ? "block" : "none",
           }}
         >
           <h3 style={{ textAlign: "center" }}>Produtos</h3>
-          {dados["ordem_servico"].produtos.map((element, index) => {
+          {dados["ordem_servico"]?.produtos?.map((element, index) => {
             return (
               <ListItem
                 key={index}
@@ -356,68 +381,12 @@ export function Fazendo() {
                       marcarProduto(element);
                     }}
                     style={{
-                      background:
-                        isProdutoMarked(element) === true
-                          ? "#00ff00"
-                          : "#ff0000",
+                      background: isProdutoMarked(element)
+                        ? "#00ff00"
+                        : "#ff0000",
                     }}
                   >
-                    {isProdutoMarked(element) === true ? (
-                      <CheckIcon style={{ fill: "#000" }} />
-                    ) : (
-                      <CloseIcon style={{ fill: "#000" }} />
-                    )}
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  style={{
-                    flex: "none",
-                  }}
-                  primary={element.nome}
-                  secondary={"Código Interno: " + element.codigoInterno}
-                />
-                <ListItemText
-                  style={{
-                    flex: "none",
-                    marginLeft: 48,
-                  }}
-                  primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={
-                    "Observações: " + element.pivot.observacao == null
-                      ? ""
-                      : element.pivot.observacao
-                  }
-                />
-              </ListItem>
-            );
-          })}
-          <Divider />
-        </List>
-
-        <List
-          style={{
-            display:
-              dados["ordem_servico"].servicos.length !== 0 ? "block" : "none",
-          }}
-        >
-          <h3 style={{ textAlign: "center" }}>Serviços</h3>
-          {dados["ordem_servico"].servicos.map((element, index) => {
-            return (
-              <ListItem key={index} button>
-                <ListItemAvatar>
-                  <Avatar
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      marcarServico(element);
-                    }}
-                    style={{
-                      background:
-                        isServicoMarked(element) === true
-                          ? "#00ff00"
-                          : "#ff0000",
-                    }}
-                  >
-                    {isServicoMarked(element) === true ? (
+                    {isProdutoMarked(element) ? (
                       <CheckIcon style={{ fill: "#000" }} />
                     ) : (
                       <CloseIcon style={{ fill: "#000" }} />
@@ -433,9 +402,59 @@ export function Fazendo() {
                   style={{ flex: "none", marginLeft: 48 }}
                   primary={"Quantidade: " + element.pivot.quantidade}
                   secondary={
-                    "Observações: " + element.pivot.observacao == null
-                      ? ""
-                      : element.pivot.observacao
+                    element.pivot.observacao
+                      ? "Observações: " + element.pivot.observacao
+                      : ""
+                  }
+                />
+              </ListItem>
+            );
+          })}
+          <Divider />
+        </List>
+
+        {/* Serviços */}
+        <List
+          style={{
+            display:
+              dados["ordem_servico"]?.servicos?.length !== 0 ? "block" : "none",
+          }}
+        >
+          <h3 style={{ textAlign: "center" }}>Serviços</h3>
+          {dados["ordem_servico"]?.servicos?.map((element, index) => {
+            return (
+              <ListItem key={index} button>
+                <ListItemAvatar>
+                  <Avatar
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      marcarServico(element);
+                    }}
+                    style={{
+                      background: isServicoMarked(element)
+                        ? "#00ff00"
+                        : "#ff0000",
+                    }}
+                  >
+                    {isServicoMarked(element) ? (
+                      <CheckIcon style={{ fill: "#000" }} />
+                    ) : (
+                      <CloseIcon style={{ fill: "#000" }} />
+                    )}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  style={{ flex: "none" }}
+                  primary={element.nome}
+                  secondary={"Código Interno: " + element.codigoInterno}
+                />
+                <ListItemText
+                  style={{ flex: "none", marginLeft: 48 }}
+                  primary={"Quantidade: " + element.pivot.quantidade}
+                  secondary={
+                    element.pivot.observacao
+                      ? "Observações: " + element.pivot.observacao
+                      : ""
                   }
                 />
               </ListItem>

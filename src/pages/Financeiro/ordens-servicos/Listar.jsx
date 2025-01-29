@@ -5,7 +5,7 @@ import { Button, Chip, Tooltip } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { config, rowConfig } from "../../../config/tablesConfig";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import api from "../../../services/api";
@@ -25,7 +25,11 @@ function ListarOrdensServicos() {
 
   const columns = [
     {
-      name: "Número",
+      name: "Número OF",
+      options: rowConfig,
+    },
+    {
+      name: "Número Venda",
       options: rowConfig,
     },
     {
@@ -132,24 +136,45 @@ function ListarOrdensServicos() {
           }
           var array = [
             element["numero"],
-            element["cliente"]["nome"],
             <Chip
               className="table-tag"
+              label={element["venda_id"] ?? "----"}
+              style={{
+                backgroundColor: (() => {
+                  if (element["venda_id"]) {
+                    return "#1976d2";
+                  } else {
+                    return "#000";
+                  }
+                })(),
+              }}
+              onClick={(event) => {
+                if (element["venda_id"])
+                  window.open(
+                    "/vendas/editar/" + element["venda_id"],
+                    "_blank"
+                  );
+              }}
+              size="small"
+            />,
+            element["cliente"]["nome"],
+            <Chip
+              className="table-tag warning"
               label={element["situacao"]}
-              color={
-                element["situacao"] === "Aberta"
-                  ? "primary"
-                  : element["situacao"] === "Fazendo"
-                  ? "secondary"
-                  : element["situacao"] === "Finalizada"
-                  ? "secondary"
-                  : "error"
-              }
               size="small"
               style={{
                 width: "90px",
-                backgroundColor:
-                  element["situacao"] === "Cancelada" ? "#c55959" : "",
+                backgroundColor: (() => {
+                  if (element["situacao"] === "Aberta") {
+                    return "#1976d2";
+                  } else if (element["situacao"] === "Fazendo") {
+                    return "#ec8232";
+                  } else if (element["situacao"] === "Finalizada") {
+                    return "#4caf50";
+                  } else if (element["situacao"] === "Cancelada") {
+                    return "#c55959";
+                  }
+                })(),
               }}
             />,
             moment(element["dataEntrada"]).format("DD/MM/YYYY") +
@@ -162,7 +187,7 @@ function ListarOrdensServicos() {
                 element["horaSaida"],
             <>
               <Tooltip title={"Baixar PDF"} arrow>
-                <InsertDriveFileIcon
+                <PictureAsPdfIcon
                   className={"btn btn-lista"}
                   onClick={(event) => handleOnClickPdfButton(event, element)}
                 />

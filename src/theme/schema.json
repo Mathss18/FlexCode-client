@@ -143,6 +143,9 @@
           },
           "error": {
             "background": "#c55959"
+          },
+          "warning": {
+            "background": "#ff9920"
           }
         }
       },

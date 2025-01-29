@@ -26,7 +26,11 @@ function ListarVendas() {
   const empresaConfig = JSON.parse(localStorage.getItem("config"));
   const columns = [
     {
-      name: "Número",
+      name: "Número Venda",
+      options: rowConfig,
+    },
+    {
+      name: "Número OF",
       options: rowConfig,
     },
     {
@@ -58,9 +62,10 @@ function ListarVendas() {
   }
 
   function handleOnClickNfeButton(event, element) {
-    console.log(element);
     if (element.situacao === "Aberta" || element.situacao === "Cancelada") {
-      errorAlert("Só é possivel emitir NFe com a situação da venda Realizada ou Parcial");
+      errorAlert(
+        "Só é possivel emitir NFe com a situação da venda Realizada ou Parcial"
+      );
       return;
     }
     confirmAlert(
@@ -95,11 +100,15 @@ function ListarVendas() {
     }
   }
 
+  function getLikeVendaLinked(id) {
+    return ordensServicos.current.find((item) => item.venda_id === id);
+  }
+
   async function handleOnClickOSButton(event, item) {
     if (alreadyHasVendaLinked(item["id"])) {
       confirmAlert(
         "Atenção!",
-        "Essa venda já gerou uma OS, deseja continuar mesmo assim?",
+        "Essa venda já gerou uma OF, deseja continuar mesmo assim?",
         () => {
           criarOS(item);
         },
@@ -110,7 +119,7 @@ function ListarVendas() {
     } else {
       confirmAlert(
         "Atenção!",
-        "Deseja mesmo criar uma OS?",
+        "Deseja mesmo criar uma OF?",
         () => {
           criarOS(item);
         },
@@ -165,11 +174,10 @@ function ListarVendas() {
         api
           .post("/ordens-servicos", params)
           .then((response) => {
-            console.log(response.data["data"]);
             history.push("/ordens-servicos/editar/" + response.data["data"].id);
           })
           .catch((error) => {
-            errorAlert("Erro ao criar OS", error?.response?.data?.message);
+            errorAlert("Erro ao criar OF", error?.response?.data?.message);
           });
       })
       .catch((error) => {
@@ -197,8 +205,8 @@ function ListarVendas() {
       modFrete: 2,
       frete: item.frete,
       produtos: item.produtos
-      .filter(prod => item.situacao !== "Parcial" || !prod.pivot.observacao)
-      .map((prod, index) => ({
+        .filter((prod) => item.situacao !== "Parcial" || !prod.pivot.observacao)
+        .map((prod, index) => ({
           id: index,
           produto_id: prod.id,
           nome: prod.nome,
@@ -206,7 +214,7 @@ function ListarVendas() {
           quantidade: prod.pivot.quantidade,
           preco: prod.pivot.preco,
           total: prod.pivot.total,
-      })),
+        })),
       parcelas: item.parcelas.map((item, index) => {
         return {
           id: index,
@@ -252,12 +260,33 @@ function ListarVendas() {
             element["situacao"] = "Realizada";
           } else if (element["situacao"] === 2) {
             element["situacao"] = "Cancelada";
-          }
-          else if (element["situacao"] === 3) {
+          } else if (element["situacao"] === 3) {
             element["situacao"] = "Parcial";
           }
           var array = [
             element["numero"],
+            <Chip
+              className="table-tag"
+              label={getLikeVendaLinked(element["id"])?.numero ?? "----"}
+              style={{
+                backgroundColor: (() => {
+                  if (getLikeVendaLinked(element["id"])?.numero) {
+                    return "#1976d2";
+                  } else {
+                    return "#000";
+                  }
+                })(),
+              }}
+              onClick={(event) => {
+                if (getLikeVendaLinked(element["id"])?.numero)
+                  window.open(
+                    "/ordens-servicos/editar/" + getLikeVendaLinked(element["id"]).numero,
+                    "_blank"
+                  );
+              }}
+              size="small"
+            />,
+
             element["cliente"]["nome"],
             <Chip
               className="table-tag"
@@ -289,8 +318,13 @@ function ListarVendas() {
                   onClick={(event) => handleOnClickPdfButton(event, element)}
                 />
               </Tooltip>
-              <Tooltip title={"Gerar OS"} arrow>
+              <Tooltip title={"Gerar OF"} arrow>
                 <LinearScaleIcon
+                  style={{
+                    backgroundColor: alreadyHasVendaLinked(element["id"])
+                      ? "#c55959"
+                      : "#2e7d32",
+                  }}
                   className={"btn btn-lista"}
                   onClick={(event) => handleOnClickOSButton(event, element)}
                 />
