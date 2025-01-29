@@ -129,11 +129,11 @@ export function Fazendo() {
           if (diff === 1) {
             // 1 day late => orange
             chipColor = "#ec8232";
-            chipLabel = "Atraso leve";
+            chipLabel = `${diff} dia de atraso`;
           } else if (diff > 2) {
             // more than 2 days => red
             chipColor = "#c55959";
-            chipLabel = "Atraso grave";
+            chipLabel = `${diff} dias de atraso`;
           }
 
           data.push([
