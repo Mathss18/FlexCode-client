@@ -15,6 +15,10 @@ export default function OrcamentoReport() {
   });
   const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
+  // Calcula a data de validade (data atual + 7 dias)
+  const validade = new Date();
+  validade.setDate(validade.getDate() + 7);
+
   useEffect(() => {
     const reportData = localStorage.getItem("orcamentoReport");
     setDados(JSON.parse(atob(reportData)));
@@ -366,25 +370,29 @@ export default function OrcamentoReport() {
           </div>
 
           <div className="containerTable">
+            <h4>OBSERVAÇÕES</h4>
             <table cellSpacing="0" className="tableObs">
-              <h4>OBSERVAÇÕES</h4>
-
               <tr className="trOrcamento">
                 <td className="tdOrcamento">{dados?.observacao}</td>
               </tr>
             </table>
           </div>
+        </div>
 
-          <div className="assinaturas">
-            <div className="assCliente">
-              <div className="linha"></div>
-              <p>Assinatura do Cliente</p>
-            </div>
+        {/* Frase adicionada com a data de validade */}
+        <div className="validade">
+          <p>Orçamento válido até: {validade.toLocaleDateString("pt-BR")}</p>
+        </div>
 
-            <div className="assResponsavel">
-              <div className="linha"></div>
-              <p>Assinatura do Responsável</p>
-            </div>
+        <div className="assinaturas">
+          <div className="assCliente">
+            <div className="linha"></div>
+            <p>Assinatura do Cliente</p>
+          </div>
+
+          <div className="assResponsavel">
+            <div className="linha"></div>
+            <p>Assinatura do Responsável</p>
           </div>
         </div>
 
