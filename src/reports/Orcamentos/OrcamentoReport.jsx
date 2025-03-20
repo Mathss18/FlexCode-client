@@ -16,7 +16,7 @@ export default function OrcamentoReport() {
   const empresaConfig = JSON.parse(localStorage.getItem("config"));
 
   // Calcula a data de validade (data atual + 7 dias)
-  const validade = new Date();
+  const validade = dados ? new Date(dados.dataEntrada) : new Date();
   validade.setDate(validade.getDate() + 7);
 
   useEffect(() => {
