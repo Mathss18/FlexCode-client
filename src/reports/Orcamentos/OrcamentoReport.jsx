@@ -166,10 +166,11 @@ export default function OrcamentoReport() {
                   const qtd = produto?.pivot?.quantidade || 0;
                   const vrUnit = produto?.pivot?.preco || 0;
                   const ipiUnit = vrUnit * 0.0975;
-                  let total =
-                    empresaConfig.crt == 3
-                      ? vrUnit * qtd + ipiUnit * qtd
-                      : vrUnit * qtd;
+                  // let total =
+                  //   empresaConfig.crt == 3
+                  //     ? vrUnit * qtd + ipiUnit * qtd
+                  //     : vrUnit * qtd;
+                  let total = vrUnit * qtd;
                   return (
                     <tr className="trOrcamento" key={index}>
                       <td className="tdOrcamento" width={"7%"}>
@@ -192,10 +193,11 @@ export default function OrcamentoReport() {
                       </td>
                       {empresaConfig.crt == 3 ? (
                         <td className="tdOrcamento">
-                          {ipiUnit.toLocaleString("pt-BR", {
+                          {/* {ipiUnit.toLocaleString("pt-BR", {
                             style: "currency",
                             currency: "BRL",
-                          })}
+                          })} */}
+                          9,75%
                         </td>
                       ) : null}
                       <td className="tdOrcamento">
@@ -220,11 +222,17 @@ export default function OrcamentoReport() {
                   ) : null}
                   {empresaConfig.crt == 3 ? (
                     <td className="tdOrcamento">
-                      <b>
+                      {/* <b>
                         {(
                           totalProdutos?.valor +
                             totalProdutos?.valor * (9.75 / 100) || 0
                         ).toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        })}
+                      </b> */}
+                      <b>
+                        {(totalProdutos?.valor || 0).toLocaleString("pt-BR", {
                           style: "currency",
                           currency: "BRL",
                         })}
