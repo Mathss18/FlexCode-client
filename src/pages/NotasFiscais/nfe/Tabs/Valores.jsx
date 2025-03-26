@@ -228,8 +228,6 @@ export default function Valores() {
       return;
     }
 
-
-
     const rowParcelasSanitezed = rowsParcelas.map((parcela, index) => {
       if (typeof parcela.dataVencimento === "object") {
         parcela.dataVencimento = new Date(
@@ -260,12 +258,13 @@ export default function Valores() {
     const params = {
       ...notaFiscalContext.formik.values,
       parcelas: rowParcelasSanitezed,
+      parcelasManual: totalManual ? 1 : 0,
     };
 
     // console.log(params)
     // notaFiscalContext.formik.setSubmitting(false);
     // return;
-    
+
     fullScreenLoader.setLoading(true);
     api
       .post("/notas-fiscais", params)
@@ -374,8 +373,7 @@ export default function Valores() {
       notaFiscalContext.formik.values.quantidadeParcelas;
     diferenca = (
       notaFiscalContext.formik.values.totalFinal -
-      diferenca.toFixed(2) *
-        notaFiscalContext.formik.values.quantidadeParcelas
+      diferenca.toFixed(2) * notaFiscalContext.formik.values.quantidadeParcelas
     ).toFixed(2);
 
     for (
