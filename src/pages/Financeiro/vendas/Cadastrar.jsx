@@ -313,9 +313,9 @@ function CadastrarVendasPage() {
               params.row.forma_pagamento_id == ""
                 ? { label: "", value: null }
                 : {
-                    label: params.row.nome,
-                    value: params.row.forma_pagamento_id,
-                  }
+                  label: params.row.nome,
+                  value: params.row.forma_pagamento_id,
+                }
             }
             name="forma_pagamento_id"
             onChange={(event, value) =>
@@ -448,7 +448,7 @@ function CadastrarVendasPage() {
         });
         setProdutos(array);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }, []);
 
   useEffect(() => {
@@ -465,7 +465,7 @@ function CadastrarVendasPage() {
         });
         setServicos(array);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }, []);
 
   useEffect(() => {
@@ -507,7 +507,7 @@ function CadastrarVendasPage() {
     if (formik.values.quantidadeParcelas > formik.values.qtdeMaximaParcelas) {
       toast(
         "A quantidade máxima de parcelas para essa forma de pagamento é " +
-          formik.values.qtdeMaximaParcelas,
+        formik.values.qtdeMaximaParcelas,
         { type: "error" }
       );
     }
@@ -619,7 +619,7 @@ function CadastrarVendasPage() {
       ) {
         errorAlert(
           "Por favor, selecione uma data de vencimento válida a parcela número " +
-            (index + 1)
+          (index + 1)
         );
         return;
       }
@@ -783,8 +783,8 @@ function CadastrarVendasPage() {
         row.valorParcela =
           row.valorParcela > 0
             ? Number(row.valorParcela).toFixed(
-                empresaConfig.quantidadeCasasDecimaisValor
-              )
+              empresaConfig.quantidadeCasasDecimaisValor
+            )
             : 0;
         return row;
       })
@@ -808,7 +808,7 @@ function CadastrarVendasPage() {
     diferenca = (
       formik.values.total -
       diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor) *
-        formik.values.quantidadeParcelas
+      formik.values.quantidadeParcelas
     ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
 
     for (let i = 0; i < formik.values.quantidadeParcelas; i++) {
@@ -893,37 +893,34 @@ function CadastrarVendasPage() {
   }
 
   function calcularTotalFinal() {
-    // 1. Compute subTotal (everything except impostos)
-    let subTotal = 0;
+    const frete = Number(formik.values.frete);
+    const desconto = Number(formik.values.desconto);
+    const somaFrete = formik.values.somarFreteAoTotal;
+    const aliquotaIPI = 9.75;
 
-    rowsProdutos.forEach((row) => {
-      subTotal += Number(row.total);
-    });
-    rowsServicos.forEach((row) => {
-      subTotal += Number(row.total);
-    });
+    // 1) Base só com produtos + serviços
+    let baseProdutosServicos = 0;
+    rowsProdutos.forEach(row => baseProdutosServicos += Number(row.total));
+    rowsServicos.forEach(row => baseProdutosServicos += Number(row.total));
 
-    subTotal += Number(formik.values.frete);
-    subTotal -= Number(formik.values.desconto);
+    // 2) Aplica desconto (se quiser descontar antes do imposto)
+    const baseParaImposto = baseProdutosServicos - desconto;
 
-    if (formik.values.somarFreteAoTotal) {
-      subTotal += Number(formik.values.frete);
+    // 3) Calcula imposto sobre baseParaImposto
+    let currentImpostos = 0;
+    if (calcularImpostos.current && empresaConfig.crt === 3) {
+      currentImpostos = Number((baseParaImposto * (aliquotaIPI / 100)).toFixed(2));
     }
+    formik.setFieldValue("impostos", currentImpostos, false);
 
-    if (calcularImpostos.current && empresaConfig.crt == 3) {
-      let currentImpostos = formik.values.impostos;
-
-      const aliquotaIPI = 9.75;
-      currentImpostos = Number((subTotal * (aliquotaIPI / 100)).toFixed(2));
-      formik.setFieldValue("impostos", currentImpostos, false);
-
-      // Always recalc total, regardless of whether impostos is zero or not
-      const finalTotal = subTotal + Number(currentImpostos);
-      formik.setFieldValue("total", finalTotal, false);
-    } else {
-      formik.setFieldValue("total", subTotal, false);
+    // 4) Monta o total: base + imposto + (frete, se for somar)
+    let total = baseParaImposto + currentImpostos;
+    if (somaFrete) {
+      total += frete;
     }
+    formik.setFieldValue("total", total, false);
   }
+
 
   return (
     <>
@@ -1224,7 +1221,7 @@ function CadastrarVendasPage() {
                 }}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton onClick={() => {}} edge="end">
+                    <IconButton onClick={() => { }} edge="end">
                       {<CloseIcon />}
                     </IconButton>
                   </InputAdornment>

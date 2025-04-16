@@ -326,9 +326,9 @@ function EditarVendasPage() {
               params.row.forma_pagamento_id == ""
                 ? undefined
                 : {
-                    label: params.row.nome,
-                    value: params.row.forma_pagamento_id,
-                  }
+                  label: params.row.nome,
+                  value: params.row.forma_pagamento_id,
+                }
             }
             name="forma_pagamento_id"
             onChange={(event, value) =>
@@ -448,7 +448,7 @@ function EditarVendasPage() {
         });
         setProdutos(array);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }, []);
 
   useEffect(() => {
@@ -465,7 +465,7 @@ function EditarVendasPage() {
         });
         setServicos(array);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }, []);
 
   useEffect(() => {
@@ -631,7 +631,7 @@ function EditarVendasPage() {
     if (formik.values.quantidadeParcelas > formik.values.qtdeMaximaParcelas) {
       toast(
         "A quantidade máxima de parcelas para essa forma de pagamento é " +
-          formik.values.qtdeMaximaParcelas,
+        formik.values.qtdeMaximaParcelas,
         { type: "error" }
       );
     }
@@ -748,7 +748,7 @@ function EditarVendasPage() {
       ) {
         errorAlert(
           "Por favor, selecione uma data de vencimento válida a parcela número " +
-            (index + 1)
+          (index + 1)
         );
         return;
       }
@@ -910,8 +910,8 @@ function EditarVendasPage() {
         row.valorParcela =
           row.valorParcela > 0
             ? Number(row.valorParcela).toFixed(
-                empresaConfig.quantidadeCasasDecimaisValor
-              )
+              empresaConfig.quantidadeCasasDecimaisValor
+            )
             : 0;
         return row;
       })
@@ -935,7 +935,7 @@ function EditarVendasPage() {
     diferenca = (
       formik.values.total -
       diferenca.toFixed(empresaConfig.quantidadeCasasDecimaisValor) *
-        formik.values.quantidadeParcelas
+      formik.values.quantidadeParcelas
     ).toFixed(empresaConfig.quantidadeCasasDecimaisValor);
 
     for (let i = 0; i < formik.values.quantidadeParcelas; i++) {
@@ -1020,37 +1020,34 @@ function EditarVendasPage() {
   }
 
   function calcularTotalFinal() {
-    // 1. Compute subTotal (everything except impostos)
-    let subTotal = 0;
+    const frete = Number(formik.values.frete);
+    const desconto = Number(formik.values.desconto);
+    const somaFrete = formik.values.somarFreteAoTotal;
+    const aliquotaIPI = 9.75;
 
-    rowsProdutos.forEach((row) => {
-      subTotal += Number(row.total);
-    });
-    rowsServicos.forEach((row) => {
-      subTotal += Number(row.total);
-    });
+    // 1) Base só com produtos + serviços
+    let baseProdutosServicos = 0;
+    rowsProdutos.forEach(row => baseProdutosServicos += Number(row.total));
+    rowsServicos.forEach(row => baseProdutosServicos += Number(row.total));
 
-    subTotal += Number(formik.values.frete);
-    subTotal -= Number(formik.values.desconto);
+    // 2) Subtrai desconto antes do imposto (se aplicável)
+    const baseParaImposto = baseProdutosServicos - desconto;
 
-    if (formik.values.somarFreteAoTotal) {
-      subTotal += Number(formik.values.frete);
+    // 3) Calcula imposto sobre baseParaImposto
+    let currentImpostos = 0;
+    if (calcularImpostos.current && empresaConfig.crt === 3) {
+      currentImpostos = Number((baseParaImposto * (aliquotaIPI / 100)).toFixed(2));
     }
+    formik.setFieldValue("impostos", currentImpostos, false);
 
-    if (calcularImpostos.current && empresaConfig.crt == 3) {
-      let currentImpostos = formik.values.impostos;
-
-      const aliquotaIPI = 9.75;
-      currentImpostos = Number((subTotal * (aliquotaIPI / 100)).toFixed(2));
-      formik.setFieldValue("impostos", currentImpostos, false);
-
-      // Always recalc total, regardless of whether impostos is zero or not
-      const finalTotal = subTotal + Number(currentImpostos);
-      formik.setFieldValue("total", finalTotal, false);
-    } else {
-      formik.setFieldValue("total", subTotal, false);
+    // 4) Monta o total: baseProdutosServicos + imposto + frete (se for somar)
+    let total = baseParaImposto + currentImpostos;
+    if (somaFrete) {
+      total += frete;
     }
+    formik.setFieldValue("total", total, false);
   }
+
 
   return (
     <>
@@ -1130,8 +1127,8 @@ function EditarVendasPage() {
                 pointerEvents: isCancelada.current
                   ? "none"
                   : isRealizada.current
-                  ? "auto"
-                  : "auto",
+                    ? "auto"
+                    : "auto",
               }}
             >
               <FormControl variant="outlined" fullWidth name="situacao">
@@ -1370,7 +1367,7 @@ function EditarVendasPage() {
                 }}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton onClick={() => {}} edge="end">
+                    <IconButton onClick={() => { }} edge="end">
                       {<CloseIcon />}
                     </IconButton>
                   </InputAdornment>
