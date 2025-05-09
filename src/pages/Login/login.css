@@ -134,3 +134,232 @@ footer {
   align-items: center;
   z-index: 3 !important;
 }
+
+.login-container {
+  overflow: hidden;
+  position: relative;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Pattern background */
+.pattern-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230078d4' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  z-index: 0;
+}
+
+.pattern-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(245,247,250,0.9) 100%);
+}
+
+.content-container {
+  position: relative;
+  z-index: 1;
+  padding: 0;
+}
+
+/* Grid layout */
+.login-grid {
+  width: 90%;
+  max-width: 1100px;
+  min-height: 500px;
+  margin: 0 auto;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo side */
+.logo-side {
+  background: linear-gradient(135deg, #004578 0%, #0078D4 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 400px;
+  padding: 2rem;
+}
+
+.logo-content {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+}
+
+.accent-bar {
+  width: 80px;
+  height: 6px;
+  background-color: white;
+  margin-bottom: 2rem;
+  border-radius: 3px;
+}
+
+.welcome-text {
+  font-weight: 300;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.logo-wrapper {
+  margin-top: 3rem;
+}
+
+.brand-name {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.brand-grupo {
+  font-weight: 700;
+}
+
+.brand-flex {
+  font-weight: 400;
+}
+
+.tagline {
+  font-size: 1.1rem;
+  opacity: 0.8;
+  font-weight: 300;
+}
+
+/* Form side */
+.form-side {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  padding: 2rem;
+}
+
+.login-paper {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 0;
+  box-shadow: none !important;
+  background-color: white;
+}
+
+.login-title {
+  font-weight: 600;
+  color: #323130;
+  margin-bottom: 0.5rem;
+}
+
+.login-subtitle {
+  color: #605E5C;
+}
+
+/* Form styling */
+.input-field {
+  margin-bottom: 1rem;
+}
+
+.white-input {
+  background-color: white !important;
+}
+
+.MuiOutlinedInput-root {
+  background-color: white !important;
+}
+
+.input-icon {
+  color: #0078D4;
+}
+
+.visibility-toggle {
+  color: #605E5C;
+}
+
+.login-button {
+  height: 48px;
+  border-radius: 4px;
+  background-color: #0078D4 !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #106EBE !important;
+  box-shadow: 0 4px 12px rgba(0, 120, 212, 0.3);
+}
+
+/* Footer */
+.modern-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 1rem;
+  color: #605E5C;
+
+/* Custom input label styling */
+.custom-label {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  color: #0078D4;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.label-icon {
+  font-size: 1.1rem !important;
+  margin-right: 6px;
+  color: #0078D4;
+}
+
+/* Ensure white background for inputs without labels */
+.no-label-input {
+  background-color: white !important;
+  border-radius: 6px;
+}
+
+.no-label-input input::placeholder {
+  color: #A19F9D;
+  opacity: 0.8;
+}
+
+/* Ensure proper height and padding without built-in label */
+.MuiOutlinedInput-root.no-label-input {
+  padding: 12px 14px;
+  height: 56px;
+}
+
+/* Adjust the focus state style */
+.MuiOutlinedInput-root.no-label-input.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #0078D4;
+  border-width: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 960px) {
+  .login-grid {
+    width: 95%;
+  }
+  
+  .logo-side {
+    padding: 2rem 1rem;
+    min-height: 250px;
+  }
+  
+  .form-side {
+    padding: 1.5rem;
+  }
+}
+}
