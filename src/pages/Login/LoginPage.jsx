@@ -25,6 +25,7 @@ import {
   Email,
   LockOutlined,
 } from "@material-ui/icons";
+import Logo from "../../assets/grupo-flex.png";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -100,10 +101,11 @@ function LoginPage() {
                 Bem-vindo à plataforma
               </Typography>
               <div className="logo-wrapper">
-                <Typography variant="h2" className="brand-name">
-                  <span className="brand-grupo">Grupo</span>
-                  <span className="brand-flex">Flex</span>
-                </Typography>
+                <img
+                  src={Logo}
+                  alt="Grupo Flex Logo"
+                  className="company-logo"
+                />
                 <div className="tagline">Flex Mol & Metal Flex</div>
               </div>
             </div>
@@ -137,7 +139,7 @@ function LoginPage() {
                       onChange={(event) => setEmail(event.target.value)}
                       placeholder="Digite seu e-mail"
                       InputProps={{
-                        className: "white-input no-label-input",
+                        className: "white-input",
                       }}
                       fullWidth
                       className="input-field"
@@ -174,7 +176,7 @@ function LoginPage() {
                             </IconButton>
                           </InputAdornment>
                         ),
-                        className: "white-input no-label-input",
+                        className: "white-input",
                       }}
                       fullWidth
                       className="input-field"
