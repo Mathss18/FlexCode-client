@@ -45,7 +45,6 @@ function Performance() {
   function handleClose() {
     setOpen(false);
   }
-
   const columns = [
     {
       name: "Nome",
@@ -56,6 +55,13 @@ function Performance() {
     },
     {
       name: "Total Produtos",
+      options: {
+        filter: true,
+        sort: true,
+      },
+    },
+    {
+      name: "Total Quantidade",
       options: {
         filter: true,
         sort: true,
@@ -91,11 +97,11 @@ function Performance() {
       },
     },
   ];
-
   const tableData =
     dados?.funcionarios_performance?.map((f) => [
       f.funcionario.nome,
       f.total_produtos_trabalhados,
+      f.total_quantidade_produtos,
       f.total_ordens_servico,
       null, // Para a coluna de ações
     ]) || [];
@@ -173,12 +179,17 @@ function Performance() {
               <strong>Período:</strong>{" "}
               {moment(dados.periodo?.data_inicio).format("DD/MM/YYYY")} até{" "}
               {moment(dados.periodo?.data_fim).format("DD/MM/YYYY")}
-            </Typography>
-            <Typography variant="body1">
+            </Typography>            <Typography variant="body1">
               <strong>Total de Funcionários:</strong> {dados.total_funcionarios}
             </Typography>
             <Typography variant="body1">
               <strong>Total de Logs:</strong> {dados.total_logs}
+            </Typography>
+            <Typography variant="body1">
+              <strong>Total de Produtos Trabalhados:</strong> {dados.funcionarios_performance?.reduce((total, f) => total + f.total_produtos_trabalhados, 0) || 0}
+            </Typography>
+            <Typography variant="body1">
+              <strong>Total de Quantidade Produzida:</strong> {dados.funcionarios_performance?.reduce((total, f) => total + f.total_quantidade_produtos, 0) || 0} unidades
             </Typography>
           </div>
 
@@ -233,7 +244,7 @@ function Performance() {
                       <Typography style={{ flex: 1 }}>
                         <strong>OF #{os.ordem_servico.numero}</strong> -{" "}
                         {os.ordem_servico.cliente.nome}
-                      </Typography>
+                      </Typography>{" "}
                       <Chip
                         className="table-tag"
                         label={`${os.total_produtos} Produto${
@@ -263,6 +274,7 @@ function Performance() {
                             boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                           }}
                         >
+                          {" "}
                           <CardContent style={{ padding: "12px !important" }}>
                             <Typography
                               variant="body2"
@@ -270,9 +282,27 @@ function Performance() {
                             >
                               {produto.nome}
                             </Typography>
-                            <Typography variant="caption" color="textSecondary">
-                              📅 Marcado em: {produto.data_marcacao}
-                            </Typography>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                marginTop: 4,
+                              }}
+                            >
+                              <Typography
+                                variant="caption"
+                                color="textSecondary"
+                              >
+                                📅 Marcado em: {produto.data_marcacao}
+                              </Typography>
+                              <Chip
+                                className="table-tag"
+                                label={`${produto.quantidade} un.`}
+                                size="small"
+                                color="secondary"
+                              />
+                            </div>
                           </CardContent>
                         </Card>
                       ))}
@@ -280,79 +310,105 @@ function Performance() {
                   </AccordionDetails>
                 </Accordion>
               ))}
-
               <Typography variant="h6" gutterBottom style={{ marginTop: 16 }}>
                 Produtos por Data
-              </Typography>
+              </Typography>{" "}
               {Object.entries(selectedFuncionario.produtos_por_data || {}).map(
-                ([data, produtos]) => (
-                  <Accordion
-                    key={data}
-                    style={{
-                      marginBottom: 8,
-                      border: "1px solid #e0e0e0",
-                      borderRadius: 8,
-                    }}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
+                ([data, produtos]) => {
+                  const quantidadeTotal = produtos.reduce(
+                    (total, item) => total + item.produto.quantidade,
+                    0
+                  );
+                  return (
+                    <Accordion
+                      key={data}
                       style={{
-                        backgroundColor: "#f8f9fa",
-                        borderRadius: "8px 8px 0 0",
+                        marginBottom: 8,
+                        border: "1px solid #e0e0e0",
+                        borderRadius: 8,
                       }}
                     >
-                      <div
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
                         style={{
-                          display: "flex",
-                          alignItems: "center",
-                          width: "100%",
+                          backgroundColor: "#f8f9fa",
+                          borderRadius: "8px 8px 0 0",
                         }}
                       >
-                        <Typography style={{ flex: 1 }}>
-                          <strong>📅 {data}</strong>
-                        </Typography>
-                        <Chip
-                          label={`${produtos.length} Produto${
-                            produtos.length > 1 ? "s" : ""
-                          }`}
-                          size="small"
-                          color="primary"
-                          style={{ marginLeft: 8 }}
-                        />
-                      </div>
-                    </AccordionSummary>
-                    <AccordionDetails style={{ backgroundColor: "#f8f9fa" }}>
-                      <div style={{ width: "100%" }}>
-                        {produtos.map((item, prodIndex) => (
-                          <Card
-                            key={prodIndex}
-                            style={{
-                              marginBottom: 8,
-                              backgroundColor: "#fff",
-                              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                            }}
-                          >
-                            <CardContent style={{ padding: "12px !important" }}>
-                              <Typography
-                                variant="body2"
-                                style={{ fontWeight: "bold", color: "#1976d2" }}
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            width: "100%",
+                          }}
+                        >
+                          <Typography style={{ flex: 1 }}>
+                            <strong>📅 {data}</strong>
+                          </Typography>                          <Chip
+                            className="table-tag"
+                            label={`${produtos.length} Produto${
+                              produtos.length > 1 ? "s" : ""
+                            } (${quantidadeTotal} un.)`}
+                            size="small"
+                            color="primary"
+                            style={{ marginLeft: 8 }}
+                          />
+                        </div>
+                      </AccordionSummary>
+                      <AccordionDetails style={{ backgroundColor: "#f8f9fa" }}>
+                        <div style={{ width: "100%" }}>
+                          {produtos.map((item, prodIndex) => (
+                            <Card
+                              key={prodIndex}
+                              style={{
+                                marginBottom: 8,
+                                backgroundColor: "#fff",
+                                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                              }}
+                            >
+                              {" "}
+                              <CardContent
+                                style={{ padding: "12px !important" }}
                               >
-                                {item.produto.nome}
-                              </Typography>
-                              <Typography
-                                variant="caption"
-                                color="textSecondary"
-                              >
-                                🏭 OF #{item.ordem_servico.numero} - ⏰{" "}
-                                {item.hora_marcacao}
-                              </Typography>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </AccordionDetails>
-                  </Accordion>
-                )
+                                <Typography
+                                  variant="body2"
+                                  style={{
+                                    fontWeight: "bold",
+                                    color: "#1976d2",
+                                  }}
+                                >
+                                  {item.produto.nome}
+                                </Typography>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    marginTop: 4,
+                                  }}
+                                >
+                                  <Typography
+                                    variant="caption"
+                                    color="textSecondary"
+                                  >
+                                    🏭 OF #{item.ordem_servico.numero} - ⏰{" "}
+                                    {item.hora_marcacao}
+                                  </Typography>
+                                  <Chip
+                                    className="table-tag"
+                                    label={`${item.produto.quantidade} un.`}
+                                    size="small"
+                                    color="secondary"
+                                  />
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>{" "}
+                      </AccordionDetails>
+                    </Accordion>
+                  );
+                }
               )}
             </div>
           )}
