@@ -27,6 +27,7 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
+import { config } from "../../config/tablesConfig";
 
 function Performance() {
   const fullScreenLoader = useFullScreenLoader();
@@ -99,42 +100,6 @@ function Performance() {
       null, // Para a coluna de ações
     ]) || [];
 
-  const options = {
-    filterType: "checkbox",
-    responsive: "vertical",
-    selectableRows: "none",
-    download: true,
-    print: true,
-    viewColumns: true,
-    textLabels: {
-      body: {
-        noMatch: "Nenhum registro encontrado",
-        toolTip: "Ordenar",
-      },
-      pagination: {
-        next: "Próxima Página",
-        previous: "Página Anterior",
-        rowsPerPage: "Linhas por página:",
-        displayRows: "de",
-      },
-      toolbar: {
-        search: "Pesquisar",
-        downloadCsv: "Download CSV",
-        print: "Imprimir",
-        viewColumns: "Ver Colunas",
-        filterTable: "Filtrar Tabela",
-      },
-      filter: {
-        all: "Todos",
-        title: "FILTROS",
-        reset: "RESETAR",
-      },
-      viewColumns: {
-        title: "Mostrar Colunas",
-        titleAria: "Mostrar/Esconder Colunas da Tabela",
-      },
-    },
-  };
   useEffect(() => {
     if (open) return;
 
@@ -221,7 +186,8 @@ function Performance() {
             title={"Performance dos Funcionários"}
             data={tableData}
             columns={columns}
-            options={options}
+            options={config}
+            className={"table-background"}
           />
         </div>
       )}
@@ -274,7 +240,7 @@ function Performance() {
                           os.total_produtos > 1 ? "s" : ""
                         }`}
                         size="small"
-                        color="default"
+                        color="primary"
                         style={{ marginLeft: 8 }}
                       />
                     </div>
@@ -350,7 +316,7 @@ function Performance() {
                             produtos.length > 1 ? "s" : ""
                           }`}
                           size="small"
-                          color="default"
+                          color="primary"
                           style={{ marginLeft: 8 }}
                         />
                       </div>
