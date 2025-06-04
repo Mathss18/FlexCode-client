@@ -106,6 +106,10 @@ export const GlobalStyles = createGlobalStyle`
     background: ${({ theme }) => theme.colors.input.background} !important; // cor de fundo input quando há elemento html dentro dele (nesse caso no inicio)
   }
 
+  .MuiOutlinedInput-multiline{
+    background: ${({ theme }) => theme.colors.input.background} !important; // cor de fundo input quando há elemento html dentro dele (nesse caso no inicio)
+  }
+
   /* ========= TOP BAR ========= */
 
   .topbar{
