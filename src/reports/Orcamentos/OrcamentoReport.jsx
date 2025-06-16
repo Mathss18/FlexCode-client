@@ -2,6 +2,7 @@ import "./orcamento.css";
 import { useEffect, useState } from "react";
 import { Fab } from "@material-ui/core";
 import PrintIcon from "@mui/icons-material/Print";
+import { getFromLS } from "../../utils/storage";
 
 export default function OrcamentoReport() {
   const [dados, setDados] = useState(null);
@@ -14,6 +15,7 @@ export default function OrcamentoReport() {
     valor: 0,
   });
   const empresaConfig = JSON.parse(localStorage.getItem("config"));
+  const usuarioLogado = getFromLS("user");
 
   // Calcula a data de validade (data atual + 7 dias)
   const validade = dados ? new Date(dados.dataEntrada) : new Date();
@@ -108,7 +110,6 @@ export default function OrcamentoReport() {
             </p>
           </div>
         </div>
-
         <div className="containerBody">
           <div className="containerTable">
             <h4 className="title">DADOS DO CLIENTE</h4>
@@ -386,12 +387,10 @@ export default function OrcamentoReport() {
             </table>
           </div>
         </div>
-
         {/* Frase adicionada com a data de validade */}
         <div className="validade">
           <p>Orçamento válido até: {validade.toLocaleDateString("pt-BR")}</p>
         </div>
-
         <div className="assinaturas">
           <div className="assCliente">
             <div className="linha"></div>
@@ -402,10 +401,17 @@ export default function OrcamentoReport() {
             <div className="linha"></div>
             <p>Assinatura do Responsável</p>
           </div>
-        </div>
-
-        <div className="containerFooter">
-          <small>Impresso por Sistema ERP - Matheus Filho (19) 98136930</small>
+        </div>{" "}
+        <div
+          className="containerFooter"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <small>Impresso por Sistema ERP - Matheus Filho (19) 983136930</small>
+          <small>Colaborador: {usuarioLogado?.nome || "Usuário"}</small>
         </div>
       </div>
 
