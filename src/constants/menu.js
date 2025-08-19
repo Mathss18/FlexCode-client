@@ -24,6 +24,7 @@ import BalanceIcon from '@mui/icons-material/Balance';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 import CategoryIcon from '@mui/icons-material/Category';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
+import BlockIcon from '@mui/icons-material/Block';
 
 const user = JSON.parse(localStorage.getItem("user"));
 
@@ -275,6 +276,16 @@ export const menu = [
         title: 'Notas Físcais',
         path: '/notas-fiscais',
         icon: <BalanceIcon className={"sidemenu-text"} />,
+        className: 'sidemenu-text',
+        click: '()=>{}',
+        state: null,
+        collapse: false,
+        children: [],
+      },
+      {
+        title: 'Inutilizar NFes',
+        path: '/notas-fiscais/inutilizar',
+        icon: <BlockIcon className={"sidemenu-text"} />,
         className: 'sidemenu-text',
         click: '()=>{}',
         state: null,

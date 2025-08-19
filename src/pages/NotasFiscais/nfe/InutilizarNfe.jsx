@@ -10,14 +10,30 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Alert,
   CircularProgress,
   IconButton,
   InputAdornment,
 } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import api from "../../../services/api";
-import { showAlert } from "../../../utils/alert";
+import { successAlert, errorAlert } from "../../../utils/alert";
+
+// Componente de alerta simples usando Paper
+const AlertComponent = ({ severity, children, ...props }) => (
+  <Paper
+    style={{
+      padding: '16px',
+      backgroundColor: severity === 'warning' ? '#fff3cd' : '#d4edda',
+      border: `1px solid ${severity === 'warning' ? '#fdbf47' : '#c3e6cb'}`,
+      borderRadius: '4px',
+      marginTop: '16px',
+      marginBottom: '16px'
+    }}
+    {...props}
+  >
+    {children}
+  </Paper>
+);
 
 export default function InutilizarNfe() {
   const [formData, setFormData] = useState({
@@ -101,7 +117,7 @@ export default function InutilizarNfe() {
 
   const handleConfirm = async () => {
     if (senha !== SENHA_REQUERIDA) {
-      showAlert("Senha incorreta!", "error");
+      errorAlert("Senha incorreta!");
       return;
     }
 
@@ -119,7 +135,7 @@ export default function InutilizarNfe() {
       const response = await api.post("/notas-fiscais/inutilizar", payload);
       
       if (response.data.success) {
-        showAlert("NFes inutilizadas com sucesso!", "success");
+        successAlert("NFes inutilizadas com sucesso!");
         
         // Resetar formulário
         setFormData({
@@ -135,7 +151,7 @@ export default function InutilizarNfe() {
           console.log("XML gerado:", response.data.data);
         }
       } else {
-        showAlert(response.data.message || "Erro ao inutilizar NFes", "error");
+        errorAlert(response.data.message || "Erro ao inutilizar NFes");
       }
     } catch (error) {
       console.error("Erro ao inutilizar NFes:", error);
@@ -150,11 +166,11 @@ export default function InutilizarNfe() {
         });
         
         setErrors(formattedErrors);
-        showAlert("Por favor, corrija os erros no formulário", "error");
+        errorAlert("Por favor, corrija os erros no formulário");
       } else if (error.response?.status === 500) {
-        showAlert(error.response.data.error || "Erro interno do servidor", "error");
+        errorAlert(error.response.data.error || "Erro interno do servidor");
       } else {
-        showAlert("Erro ao inutilizar NFes. Tente novamente.", "error");
+        errorAlert("Erro ao inutilizar NFes. Tente novamente.");
       }
     } finally {
       setLoading(false);
@@ -247,12 +263,12 @@ export default function InutilizarNfe() {
                   />
 
                   <Box mt={2}>
-                    <Alert severity="warning">
+                    <AlertComponent severity="warning">
                       <Typography variant="body2">
                         <strong>Atenção:</strong> A inutilização de NF-e é uma operação irreversível. 
                         Certifique-se de que os dados estão corretos antes de prosseguir.
                       </Typography>
-                    </Alert>
+                    </AlertComponent>
                   </Box>
 
                   <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
