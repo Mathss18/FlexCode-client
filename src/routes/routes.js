@@ -89,10 +89,11 @@ import CalendarioPage from "../pages/Financeiro/money/Calendario";
 import ListarExtratos from "../pages/Financeiro/extratos/Litsar";
 import ListarNotasFiscaisPage from "../pages/NotasFiscais/nfe/Listar";
 import CadastrarNotasFiscais from "../pages/NotasFiscais/nfe/Cadastrar";
+import EditarNotasFiscaisPage from "../pages/NotasFiscais/nfe/Editar";
+import InutilizarNfe from "../pages/NotasFiscais/nfe/InutilizarNfe";
 import ListarConfiguracoesPage from "../pages/Configuracao/Listar";
 import CadastrarConfiguracaoPage from "../pages/Configuracao/Cadastrar";
 import EditarConfiguracaoPage from "../pages/Configuracao/Editar";
-import EditarNotasFiscaisPage from "../pages/NotasFiscais/nfe/Editar";
 import ListarRelatorios from "../pages/Relatorios/Listar"
 import RendimentosVsDespesas from "../pages/Relatorios/RendimentosVsDespesas";
 import PatrimonioAoLongoDoTempo from "../pages/Relatorios/PatrimonioAoLongoDoTempo";
@@ -219,6 +220,7 @@ export default function Routes({themeSetter}) {
             <Route path="/notas-fiscais" exact component={ListarNotasFiscaisPage}></Route>
             <Route path="/notas-fiscais/novo" exact component={CadastrarNotasFiscais}></Route>
             <Route path="/notas-fiscais/editar/:id" exact component={EditarNotasFiscaisPage}></Route>
+            <Route path="/notas-fiscais/inutilizar" exact component={InutilizarNfe}></Route>
 
             <Route path="/configuracoes" exact component={ListarConfiguracoesPage}></Route>
             <Route path="/configuracoes/novo" exact component={CadastrarConfiguracaoPage}></Route>
