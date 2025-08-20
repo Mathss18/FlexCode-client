@@ -74,12 +74,12 @@ function ListarConfiguracoesPage() {
             />,
             <>
               {/* <SearchIcon className={'btn btn-lista'} onClick={(event) => handleOnClickShowButton(event, element['id'])} /> */}
-              <EditIcon
+              {/* <EditIcon
                 className={"btn btn-lista"}
                 onClick={(event) =>
                   handleOnClickEditButton(event, element["id"])
                 }
-              />
+              /> */}
             </>,
           ];
           data.push(array);
