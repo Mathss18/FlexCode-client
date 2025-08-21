@@ -878,7 +878,7 @@ export default function Valores() {
           </Grid>
           <Grid item>
             <Button
-              onClick={() => history.push("/orcamentos")}
+              onClick={() => history.push("/notas-fiscais")}
               variant="outlined"
               startIcon={<CloseIcon />}
               className={"btn btn-error btn-spacing"}

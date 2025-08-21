@@ -7,6 +7,7 @@ export const initialValues = {
   clienteFornecedor_id: [],
   indFinal: 1,
   indPres: "2",
+  usoEConsumo: false,
   transportadora_id: [],
   modFrete: 2,
   frete: 0,

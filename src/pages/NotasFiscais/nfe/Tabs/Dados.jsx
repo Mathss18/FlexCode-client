@@ -9,6 +9,8 @@ import {
   MenuItem,
   FormHelperText,
   InputAdornment,
+  FormControlLabel,
+  Switch,
 } from "@material-ui/core";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
 import AssignmentIcon from "@material-ui/icons/Assignment";
@@ -44,10 +46,9 @@ export default function Dados() {
 
     var aux = [];
     var grupoAtual = "";
-    let index = 0;
     for (var prop in cfop) {
       // Se o CFOP terminar em _000, é um grupo
-      if (prop[1] == "0" && prop[2] == "0" && prop[3] == "0") {
+      if (prop[1] === "0" && prop[2] === "0" && prop[3] === "0") {
         grupoAtual = prop + " - " + cfop[prop];
       }
       aux.push({
@@ -57,19 +58,17 @@ export default function Dados() {
       });
 
       // Retira os CFOPs que são grupos (terminal com _000 ou __00)
-      if (prop[1] == "0" && prop[2] == "0" && prop[3] == "0") {
+      if (prop[1] === "0" && prop[2] === "0" && prop[3] === "0") {
         // aux.pop();
         // aux.slice(index, 1);
       }
-      if (prop[2] == "0" && prop[3] == "0") {
+      if (prop[2] === "0" && prop[3] === "0") {
         // aux.pop();
         // aux.slice(index, 1);
       }
-
-      index++;
     }
     setCfops(aux);
-  }, []);
+  }, [cfops.length]);
 
   useEffect(() => {
     api
@@ -170,6 +169,26 @@ export default function Dados() {
       <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
         <OpenWithIcon />
         <h3>Detalhes</h3>
+        <div style={{ marginLeft: "auto" }}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={Boolean(notaFiscalContext.formik.values.usoEConsumo)}
+                onChange={(e) =>
+                  notaFiscalContext.formik.setFieldValue(
+                    "usoEConsumo",
+                    e.target.checked
+                  )
+                }
+                name="usoEConsumo"
+                type="checkbox"
+                color="primary"
+              />
+            }
+            labelPlacement="right"
+            label="Uso e Consumo?"
+          />
+        </div>
       </div>
       <Grid container spacing={3}>
         <Grid item xs={2}>
