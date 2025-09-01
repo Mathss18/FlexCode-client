@@ -24,6 +24,7 @@ import { useFormik } from "formik";
 import DragAndDrop from "../../components/dragdrop/DragAndDrop";
 import { useEffect, useState } from "react";
 import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 
 const initialValues = {
   nome: "",
@@ -72,6 +73,7 @@ function EditarConfiguracaoPage() {
   const [logo, setLogo] = useState([]);
   const [certificadoDigital, setCertificadoDigital] = useState([]);
   const fullScreenLoader = useFullScreenLoader();
+  const [locked, setLocked] = useState(true);
 
   useEffect(() => {
     fullScreenLoader.setLoading(true);
@@ -106,6 +108,7 @@ function EditarConfiguracaoPage() {
       .finally(() => {
         fullScreenLoader.setLoading(false);
       });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const formik = useFormik({
@@ -115,6 +118,18 @@ function EditarConfiguracaoPage() {
     },
     // validationSchema: clienteValidation,
   });
+
+  const commonProps = locked ? { disabled: true } : {};
+
+  function handleUnlock() {
+    const input = window.prompt("Digite a senha para desbloquear edição:");
+    if (input === "88121747Ma1@") {
+      setLocked(false);
+      successAlert("Desbloqueado", "Edição liberada.");
+    } else if (input !== null) {
+      errorAlert("Senha inválida", "Não foi possível desbloquear.");
+    }
+  }
 
   function handleOnSubmit(values) {
     // Removendo máscaras antes de enviar dados para API
@@ -173,10 +188,28 @@ function EditarConfiguracaoPage() {
       <div>
         <Divider />
         <div
-          style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+          style={{ display: "flex", alignItems: "center", flexWrap: "wrap", justifyContent: "space-between" }}
         >
-          <AssignmentIcon />
-          <h3>Dados da Configuração</h3>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <AssignmentIcon />
+            <h3 style={{ margin: 0 }}>Dados da Configuração</h3>
+          </div>
+          {locked ? (
+            <Tooltip title="Desbloqueia todos os campos (exceto alíquota, que já está liberada)">
+              <Button
+                onClick={handleUnlock}
+                variant="outlined"
+                startIcon={<LockOpenIcon />}
+                className={"btn btn-primary btn-spacing"}
+              >
+                Desbloquear edição
+              </Button>
+            </Tooltip>
+          ) : (
+            <div style={{ display: "flex", alignItems: "center", color: "#2e7d32", gap: 6 }}>
+              <LockOpenIcon /> Edição liberada
+            </div>
+          )}
         </div>
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
@@ -197,6 +230,7 @@ function EditarConfiguracaoPage() {
                     formik.touched.tipoEmpresa &&
                     Boolean(formik.errors.tipoEmpresa)
                   }
+                  {...commonProps}
                 >
                   <MenuItem value={"pf"}>Pessoa Física</MenuItem>
                   <MenuItem value={"pj"}>Pessoa Jurídica</MenuItem>
@@ -223,6 +257,7 @@ function EditarConfiguracaoPage() {
                   error={
                     formik.touched.situacao && Boolean(formik.errors.situacao)
                   }
+                  {...commonProps}
                 >
                   <MenuItem value={1}>Ativo</MenuItem>
                   <MenuItem value={0}>Inativo</MenuItem>
@@ -246,6 +281,7 @@ function EditarConfiguracaoPage() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={formik.touched.crt && Boolean(formik.errors.crt)}
+                  {...commonProps}
                 >
                   <MenuItem value={1}>Simples Nacional</MenuItem>
                   <MenuItem disabled value={2}>
@@ -280,6 +316,7 @@ function EditarConfiguracaoPage() {
                   formik.touched.inscricaoEstadual &&
                   formik.errors.inscricaoEstadual
                 }
+                {...commonProps}
               />
             </Grid>
 
@@ -294,6 +331,7 @@ function EditarConfiguracaoPage() {
                 onBlur={formik.handleBlur}
                 error={formik.touched.nome && Boolean(formik.errors.nome)}
                 helperText={formik.touched.nome && formik.errors.nome}
+                {...commonProps}
               />
             </Grid>
 
@@ -313,6 +351,7 @@ function EditarConfiguracaoPage() {
                 helperText={
                   formik.touched.nomeFantasia && formik.errors.nomeFantasia
                 }
+                {...commonProps}
               />
             </Grid>
 
@@ -326,6 +365,7 @@ function EditarConfiguracaoPage() {
                 value={formik.values.cpfCnpj}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                disabled={locked}
               >
                 {() => (
                   <TextField
@@ -337,6 +377,7 @@ function EditarConfiguracaoPage() {
                       formik.touched.cpfCnpj && Boolean(formik.errors.cpfCnpj)
                     }
                     helperText={formik.touched.cpfCnpj && formik.errors.cpfCnpj}
+                    {...commonProps}
                   />
                 )}
               </InputMask>
@@ -353,6 +394,7 @@ function EditarConfiguracaoPage() {
                 onBlur={formik.handleBlur}
                 error={formik.touched.email && Boolean(formik.errors.email)}
                 helperText={formik.touched.email && formik.errors.email}
+                {...commonProps}
               />
             </Grid>
 
@@ -369,6 +411,7 @@ function EditarConfiguracaoPage() {
                   formik.touched.emailNfe && Boolean(formik.errors.emailNfe)
                 }
                 helperText={formik.touched.emailNfe && formik.errors.emailNfe}
+                {...commonProps}
               />
             </Grid>
           </Grid>
@@ -391,6 +434,7 @@ function EditarConfiguracaoPage() {
                 value={formik.values.cep}
                 onChange={formik.handleChange}
                 onBlur={handleCepChange}
+                disabled={locked}
               >
                 {() => (
                   <TextField
@@ -400,6 +444,7 @@ function EditarConfiguracaoPage() {
                     name="cep"
                     error={formik.touched.cep && Boolean(formik.errors.cep)}
                     helperText={formik.touched.cep && formik.errors.cep}
+                    {...commonProps}
                   />
                 )}
               </InputMask>
@@ -415,6 +460,7 @@ function EditarConfiguracaoPage() {
                 onBlur={formik.handleBlur}
                 error={formik.touched.rua && Boolean(formik.errors.rua)}
                 helperText={formik.touched.rua && formik.errors.rua}
+                {...commonProps}
               />
             </Grid>
             <Grid item xs={3}>
@@ -428,6 +474,7 @@ function EditarConfiguracaoPage() {
                 onBlur={formik.handleBlur}
                 error={formik.touched.numero && Boolean(formik.errors.numero)}
                 helperText={formik.touched.numero && formik.errors.numero}
+                {...commonProps}
               />
             </Grid>
             <Grid item xs={3}>
@@ -441,6 +488,7 @@ function EditarConfiguracaoPage() {
                 onBlur={formik.handleBlur}
                 error={formik.touched.cidade && Boolean(formik.errors.cidade)}
                 helperText={formik.touched.cidade && formik.errors.cidade}
+                {...commonProps}
               />
             </Grid>
             <Grid item xs={3}>
@@ -454,6 +502,7 @@ function EditarConfiguracaoPage() {
                 onBlur={formik.handleBlur}
                 error={formik.touched.bairro && Boolean(formik.errors.bairro)}
                 helperText={formik.touched.bairro && formik.errors.bairro}
+                {...commonProps}
               />
             </Grid>
             <Grid item xs={3}>
@@ -467,6 +516,7 @@ function EditarConfiguracaoPage() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={formik.touched.estado && Boolean(formik.errors.estado)}
+                  {...commonProps}
                 >
                   <MenuItem value={"AC"}>Acre</MenuItem>
                   <MenuItem value={"AL"}>Alagoas</MenuItem>
@@ -509,6 +559,7 @@ function EditarConfiguracaoPage() {
                 value={formik.values.telefone}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                disabled={locked}
               >
                 {() => (
                   <TextField
@@ -522,6 +573,7 @@ function EditarConfiguracaoPage() {
                     helperText={
                       formik.touched.telefone && formik.errors.telefone
                     }
+                    {...commonProps}
                   />
                 )}
               </InputMask>
@@ -532,6 +584,7 @@ function EditarConfiguracaoPage() {
                 value={formik.values.celular}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                disabled={locked}
               >
                 {() => (
                   <TextField
@@ -543,6 +596,7 @@ function EditarConfiguracaoPage() {
                       formik.touched.celular && Boolean(formik.errors.celular)
                     }
                     helperText={formik.touched.celular && formik.errors.celular}
+                    {...commonProps}
                   />
                 )}
               </InputMask>
@@ -564,6 +618,7 @@ function EditarConfiguracaoPage() {
                   formik.touched.codigoMunicipio &&
                   formik.errors.codigoMunicipio
                 }
+                {...commonProps}
               />
             </Grid>
           </Grid>
@@ -592,6 +647,7 @@ function EditarConfiguracaoPage() {
                 onBlur={formik.handleBlur}
                 error={formik.touched.nNF && Boolean(formik.errors.nNF)}
                 helperText={formik.touched.nNF && formik.errors.nNF}
+                {...commonProps}
               />
             </Grid>
             <Grid item xs={3}>
@@ -605,6 +661,7 @@ function EditarConfiguracaoPage() {
                 onBlur={formik.handleBlur}
                 error={formik.touched.serie && Boolean(formik.errors.serie)}
                 helperText={formik.touched.serie && formik.errors.serie}
+                {...commonProps}
               />
             </Grid>
             <Grid item xs={3}>
@@ -621,6 +678,7 @@ function EditarConfiguracaoPage() {
                     formik.touched.ambienteNfe &&
                     Boolean(formik.errors.ambienteNfe)
                   }
+                  {...commonProps}
                 >
                   <MenuItem value={1}>Produção</MenuItem>
                   <MenuItem value={2}>Homologação (teste)</MenuItem>
@@ -666,6 +724,7 @@ function EditarConfiguracaoPage() {
                     formik.touched.quantidadeCasasDecimaisValor &&
                     Boolean(formik.errors.quantidadeCasasDecimaisValor)
                   }
+                  {...commonProps}
                 >
                   <MenuItem value={2}>2</MenuItem>
                   <MenuItem value={4}>4</MenuItem>
@@ -694,6 +753,7 @@ function EditarConfiguracaoPage() {
                     formik.touched.quantidadeCasasDecimaisQuantidade &&
                     Boolean(formik.errors.quantidadeCasasDecimaisQuantidade)
                   }
+                  {...commonProps}
                 >
                   <MenuItem value={2}>2</MenuItem>
                   <MenuItem value={4}>4</MenuItem>
@@ -726,6 +786,7 @@ function EditarConfiguracaoPage() {
                   formik.touched.registrosPorPagina &&
                   formik.errors.registrosPorPagina
                 }
+                {...commonProps}
               />
             </Grid>
             <Grid item xs={3}>
@@ -746,6 +807,7 @@ function EditarConfiguracaoPage() {
                   formik.touched.senhaCertificadoDigital &&
                   formik.errors.senhaCertificadoDigital
                 }
+                {...commonProps}
               />
             </Grid>
           </Grid>
@@ -774,6 +836,7 @@ function EditarConfiguracaoPage() {
                 onBlur={formik.handleBlur}
                 error={formik.touched.proxyIp && Boolean(formik.errors.proxyIp)}
                 helperText={formik.touched.proxyIp && formik.errors.proxyIp}
+                {...commonProps}
               />
             </Grid>
             <Grid item xs={3}>
@@ -789,6 +852,7 @@ function EditarConfiguracaoPage() {
                   formik.touched.proxyPort && Boolean(formik.errors.proxyPort)
                 }
                 helperText={formik.touched.proxyPort && formik.errors.proxyPort}
+                {...commonProps}
               />
             </Grid>
             <Grid item xs={3}>
@@ -805,6 +869,7 @@ function EditarConfiguracaoPage() {
                   formik.touched.proxyUser && Boolean(formik.errors.proxyUser)
                 }
                 helperText={formik.touched.proxyUser && formik.errors.proxyUser}
+                {...commonProps}
               />
             </Grid>
             <Grid item xs={3}>
@@ -821,6 +886,7 @@ function EditarConfiguracaoPage() {
                   formik.touched.proxyPass && Boolean(formik.errors.proxyPass)
                 }
                 helperText={formik.touched.proxyPass && formik.errors.proxyPass}
+                {...commonProps}
               />
             </Grid>
           </Grid>
@@ -854,6 +920,7 @@ function EditarConfiguracaoPage() {
                 helperText={
                   formik.touched.servidorSmtp && formik.errors.servidorSmtp
                 }
+                {...commonProps}
               />
             </Grid>
             <Grid item xs={3}>
@@ -869,6 +936,7 @@ function EditarConfiguracaoPage() {
                   formik.touched.portaSmtp && Boolean(formik.errors.portaSmtp)
                 }
                 helperText={formik.touched.portaSmtp && formik.errors.portaSmtp}
+                {...commonProps}
               />
             </Grid>
             <Grid item xs={3}>
@@ -888,6 +956,7 @@ function EditarConfiguracaoPage() {
                 helperText={
                   formik.touched.usuarioSmtp && formik.errors.usuarioSmtp
                 }
+                {...commonProps}
               />
             </Grid>
             <Grid item xs={2}>
@@ -904,6 +973,7 @@ function EditarConfiguracaoPage() {
                   formik.touched.senhaSmtp && Boolean(formik.errors.senhaSmtp)
                 }
                 helperText={formik.touched.senhaSmtp && formik.errors.senhaSmtp}
+                {...commonProps}
               />
             </Grid>
             <Grid item xs={1}>
@@ -920,6 +990,7 @@ function EditarConfiguracaoPage() {
                     formik.touched.encryptionSmtp &&
                     Boolean(formik.errors.encryptionSmtp)
                   }
+                  {...commonProps}
                 >
                   <MenuItem value={'tls'}>TLS</MenuItem>
                   <MenuItem value={'ssl'}>SSL</MenuItem>
@@ -951,14 +1022,28 @@ function EditarConfiguracaoPage() {
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <h4>Logo da empresa</h4>
-              <DragAndDrop state={[logo, setLogo]} listFiles></DragAndDrop>
+              <div style={locked ? { pointerEvents: 'none', opacity: 0.6 } : {}}>
+                <DragAndDrop state={[logo, setLogo]} listFiles></DragAndDrop>
+              </div>
+              {locked && (
+                <div style={{ fontSize: 12, color: '#666', marginTop: 4 }}>
+                  Campos bloqueados — desbloqueie para alterar anexos.
+                </div>
+              )}
             </Grid>
             <Grid item xs={6}>
               <h4>Cerfificado Digital (A1)</h4>
-              <DragAndDrop
-                state={[certificadoDigital, setCertificadoDigital]}
-                listFiles
-              ></DragAndDrop>
+              <div style={locked ? { pointerEvents: 'none', opacity: 0.6 } : {}}>
+                <DragAndDrop
+                  state={[certificadoDigital, setCertificadoDigital]}
+                  listFiles
+                ></DragAndDrop>
+              </div>
+              {locked && (
+                <div style={{ fontSize: 12, color: '#666', marginTop: 4 }}>
+                  Campos bloqueados — desbloqueie para alterar anexos.
+                </div>
+              )}
             </Grid>
           </Grid>
 
