@@ -77,7 +77,7 @@ function ListarNotasFiscaisPage() {
             element["venda_id"],
             element["chaveNF"],
             element["favorecido_nome"],
-            `R$: ` + element["totalProdutos"],
+            `R$: ` + element["totalFinal"],
             <Chip
               className="table-tag"
               label={element["situacao"]}
