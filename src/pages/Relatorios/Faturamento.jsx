@@ -211,7 +211,7 @@ function Faturamento() {
               Relatório de Faturamento - {dados.empresa}
             </Typography>
             <Typography variant="h6" sx={{ mt: 2, mb: 2, color: theme.colors.primary || '#1976d2' }}>
-              Total Geral: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(dados.total_geral)}
+              Total Geral: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(parseFloat(dados.total_geral) || 0)}
             </Typography>
           </Box>
           
