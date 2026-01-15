@@ -48,10 +48,13 @@ function Row({ row, theme }) {
         <TableCell align="right" sx={{ color: theme.colors.text }}>
           {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(row.total)}
         </TableCell>
+        <TableCell align="right" sx={{ color: theme.colors.text }}>
+          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(row.total_descontado_ipi)}
+        </TableCell>
         <TableCell align="right" sx={{ color: theme.colors.text }}>{row.quantidade_notas}</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0, backgroundColor: theme.colors.body }} colSpan={4}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0, backgroundColor: theme.colors.body }} colSpan={5}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 2, backgroundColor: theme.colors.body }}>
               <Typography variant="h6" gutterBottom component="div" sx={{ color: theme.colors.text }}>
@@ -64,6 +67,7 @@ function Row({ row, theme }) {
                     <TableCell sx={{ color: theme.colors.text }}>Favorecido</TableCell>
                     <TableCell sx={{ color: theme.colors.text }}>Chave</TableCell>
                     <TableCell align="right" sx={{ color: theme.colors.text }}>Valor</TableCell>
+                    <TableCell align="right" sx={{ color: theme.colors.text }}>Valor desc. IPI</TableCell>
                     <TableCell sx={{ color: theme.colors.text }}>Data</TableCell>
                   </TableRow>
                 </TableHead>
@@ -77,6 +81,9 @@ function Row({ row, theme }) {
                       <TableCell sx={{ color: theme.colors.text }}>{nota.chave}</TableCell>
                       <TableCell align="right" sx={{ color: theme.colors.text }}>
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(nota.valor)}
+                      </TableCell>
+                      <TableCell align="right" sx={{ color: theme.colors.text }}>
+                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(nota.valor_descontado_ipi)}
                       </TableCell>
                       <TableCell sx={{ color: theme.colors.text }}>{nota.data}</TableCell>
                     </TableRow>
@@ -213,6 +220,9 @@ function Faturamento() {
             <Typography variant="h6" sx={{ mt: 2, mb: 2, color: theme.colors.primary || '#1976d2' }}>
               Total Geral: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(parseFloat(dados.total_geral) || 0)}
             </Typography>
+            <Typography variant="h6" sx={{ mt: 2, mb: 2, color: theme.colors.primary || '#1976d2' }}>
+              Total Geral descontado IPI: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(parseFloat(dados.total_geral_descontado_ipi) || 0)}
+            </Typography>
           </Box>
           
           <TableContainer sx={{ backgroundColor: theme.colors.body }}>
@@ -222,6 +232,7 @@ function Faturamento() {
                   <TableCell sx={{ color: theme.colors.text }} />
                   <TableCell sx={{ color: theme.colors.text }}>Mês/Ano</TableCell>
                   <TableCell align="right" sx={{ color: theme.colors.text }}>Total</TableCell>
+                  <TableCell align="right" sx={{ color: theme.colors.text }}>Total descontado IPI</TableCell>
                   <TableCell align="right" sx={{ color: theme.colors.text }}>Quantidade de Notas</TableCell>
                 </TableRow>
               </TableHead>
