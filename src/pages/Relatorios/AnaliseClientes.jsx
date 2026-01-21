@@ -159,7 +159,7 @@ function AnaliseClientes() {
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
-                  <Typography color="textSecondary" gutterBottom>
+                  <Typography sx={{ color: theme?.colors?.text, opacity: 0.7 }} gutterBottom>
                     Clientes Ativos
                   </Typography>
                   <Typography variant="h4" style={{ color: theme?.colors?.text }}>
@@ -176,7 +176,7 @@ function AnaliseClientes() {
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
-                  <Typography color="textSecondary" gutterBottom>
+                  <Typography sx={{ color: theme?.colors?.text, opacity: 0.7 }} gutterBottom>
                     Clientes Inativos
                   </Typography>
                   <Typography variant="h4" style={{ color: "#f44336" }}>
@@ -193,7 +193,7 @@ function AnaliseClientes() {
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
-                  <Typography color="textSecondary" gutterBottom>
+                  <Typography sx={{ color: theme?.colors?.text, opacity: 0.7 }} gutterBottom>
                     Ticket Médio Geral
                   </Typography>
                   <Typography variant="h4" style={{ color: theme?.colors?.text }}>
@@ -215,33 +215,33 @@ function AnaliseClientes() {
             Top 20 Clientes por Faturamento
           </Typography>
           <Divider style={{ margin: "10px 0" }} />
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper} sx={{ backgroundColor: theme?.colors?.body }}>
             <Table size="small">
               <TableHead>
-                <TableRow>
-                  <TableCell><strong>Posição</strong></TableCell>
-                  <TableCell><strong>Cliente</strong></TableCell>
-                  <TableCell align="right"><strong>Total Vendas</strong></TableCell>
-                  <TableCell align="right"><strong>Faturamento</strong></TableCell>
-                  <TableCell align="right"><strong>Ticket Médio</strong></TableCell>
-                  <TableCell align="right"><strong>Última Compra</strong></TableCell>
+                <TableRow sx={{ backgroundColor: theme?.colors?.body }}>
+                  <TableCell sx={{ color: theme?.colors?.text }}><strong>Posição</strong></TableCell>
+                  <TableCell sx={{ color: theme?.colors?.text }}><strong>Cliente</strong></TableCell>
+                  <TableCell align="right" sx={{ color: theme?.colors?.text }}><strong>Total Vendas</strong></TableCell>
+                  <TableCell align="right" sx={{ color: theme?.colors?.text }}><strong>Faturamento</strong></TableCell>
+                  <TableCell align="right" sx={{ color: theme?.colors?.text }}><strong>Ticket Médio</strong></TableCell>
+                  <TableCell align="right" sx={{ color: theme?.colors?.text }}><strong>Última Compra</strong></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {data.topClientes.map((cliente, index) => (
-                  <TableRow key={cliente.id}>
-                    <TableCell>
+                  <TableRow key={cliente.id} sx={{ backgroundColor: theme?.colors?.body }}>
+                    <TableCell sx={{ color: theme?.colors?.text }}>
                       <Chip
                         label={index + 1}
                         color={index === 0 ? "primary" : index === 1 ? "secondary" : "default"}
                         size="small"
                       />
                     </TableCell>
-                    <TableCell>{cliente.nome}</TableCell>
-                    <TableCell align="right">{cliente.total_vendas}</TableCell>
-                    <TableCell align="right">{formatCurrency(cliente.faturamento_total)}</TableCell>
-                    <TableCell align="right">{formatCurrency(cliente.ticket_medio)}</TableCell>
-                    <TableCell align="right">{formatDate(cliente.ultima_compra)}</TableCell>
+                    <TableCell sx={{ color: theme?.colors?.text }}>{cliente.nome}</TableCell>
+                    <TableCell align="right" sx={{ color: theme?.colors?.text }}>{cliente.total_vendas}</TableCell>
+                    <TableCell align="right" sx={{ color: theme?.colors?.text }}>{formatCurrency(cliente.faturamento_total)}</TableCell>
+                    <TableCell align="right" sx={{ color: theme?.colors?.text }}>{formatCurrency(cliente.ticket_medio)}</TableCell>
+                    <TableCell align="right" sx={{ color: theme?.colors?.text }}>{formatDate(cliente.ultima_compra)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -258,32 +258,32 @@ function AnaliseClientes() {
             Clientes Inativos (mais de {diasInatividade} dias sem comprar)
           </Typography>
           <Divider style={{ margin: "10px 0" }} />
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper} sx={{ backgroundColor: theme?.colors?.body }}>
             <Table size="small">
               <TableHead>
-                <TableRow>
-                  <TableCell><strong>Cliente</strong></TableCell>
-                  <TableCell><strong>Email</strong></TableCell>
-                  <TableCell><strong>Telefone</strong></TableCell>
-                  <TableCell align="right"><strong>Última Compra</strong></TableCell>
-                  <TableCell align="right"><strong>Total Compras (Histórico)</strong></TableCell>
+                <TableRow sx={{ backgroundColor: theme?.colors?.body }}>
+                  <TableCell sx={{ color: theme?.colors?.text }}><strong>Cliente</strong></TableCell>
+                  <TableCell sx={{ color: theme?.colors?.text }}><strong>Email</strong></TableCell>
+                  <TableCell sx={{ color: theme?.colors?.text }}><strong>Telefone</strong></TableCell>
+                  <TableCell align="right" sx={{ color: theme?.colors?.text }}><strong>Última Compra</strong></TableCell>
+                  <TableCell align="right" sx={{ color: theme?.colors?.text }}><strong>Total Compras (Histórico)</strong></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {data.clientesInativos.map((cliente) => (
-                  <TableRow key={cliente.id}>
-                    <TableCell>{cliente.nome}</TableCell>
-                    <TableCell>{cliente.email}</TableCell>
-                    <TableCell>{cliente.telefone}</TableCell>
-                    <TableCell align="right">
+                  <TableRow key={cliente.id} sx={{ backgroundColor: theme?.colors?.body }}>
+                    <TableCell sx={{ color: theme?.colors?.text }}>{cliente.nome}</TableCell>
+                    <TableCell sx={{ color: theme?.colors?.text }}>{cliente.email}</TableCell>
+                    <TableCell sx={{ color: theme?.colors?.text }}>{cliente.telefone}</TableCell>
+                    <TableCell align="right" sx={{ color: theme?.colors?.text }}>
                       {cliente.ultima_compra ? formatDate(cliente.ultima_compra) : "Nunca"}
                     </TableCell>
-                    <TableCell align="right">{cliente.total_compras_historico}</TableCell>
+                    <TableCell align="right" sx={{ color: theme?.colors?.text }}>{cliente.total_compras_historico}</TableCell>
                   </TableRow>
                 ))}
                 {data.clientesInativos.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={5} align="center">
+                  <TableRow sx={{ backgroundColor: theme?.colors?.body }}>
+                    <TableCell colSpan={5} align="center" sx={{ color: theme?.colors?.text }}>
                       Nenhum cliente inativo encontrado
                     </TableCell>
                   </TableRow>
@@ -305,23 +305,23 @@ function AnaliseClientes() {
                 Ticket Médio por Cliente
               </Typography>
               <Divider style={{ margin: "10px 0" }} />
-              <TableContainer component={Paper} style={{ maxHeight: 400 }}>
+              <TableContainer component={Paper} style={{ maxHeight: 400 }} sx={{ backgroundColor: theme?.colors?.body }}>
                 <Table size="small" stickyHeader>
                   <TableHead>
-                    <TableRow>
-                      <TableCell><strong>Cliente</strong></TableCell>
-                      <TableCell align="right"><strong>Vendas</strong></TableCell>
-                      <TableCell align="right"><strong>Total</strong></TableCell>
-                      <TableCell align="right"><strong>Ticket Médio</strong></TableCell>
+                    <TableRow sx={{ backgroundColor: theme?.colors?.body }}>
+                      <TableCell sx={{ color: theme?.colors?.text, backgroundColor: theme?.colors?.body }}><strong>Cliente</strong></TableCell>
+                      <TableCell align="right" sx={{ color: theme?.colors?.text, backgroundColor: theme?.colors?.body }}><strong>Vendas</strong></TableCell>
+                      <TableCell align="right" sx={{ color: theme?.colors?.text, backgroundColor: theme?.colors?.body }}><strong>Total</strong></TableCell>
+                      <TableCell align="right" sx={{ color: theme?.colors?.text, backgroundColor: theme?.colors?.body }}><strong>Ticket Médio</strong></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {data.ticketMedio.map((cliente) => (
-                      <TableRow key={cliente.id}>
-                        <TableCell>{cliente.nome}</TableCell>
-                        <TableCell align="right">{cliente.total_vendas}</TableCell>
-                        <TableCell align="right">{formatCurrency(cliente.total_gasto)}</TableCell>
-                        <TableCell align="right">
+                      <TableRow key={cliente.id} sx={{ backgroundColor: theme?.colors?.body }}>
+                        <TableCell sx={{ color: theme?.colors?.text }}>{cliente.nome}</TableCell>
+                        <TableCell align="right" sx={{ color: theme?.colors?.text }}>{cliente.total_vendas}</TableCell>
+                        <TableCell align="right" sx={{ color: theme?.colors?.text }}>{formatCurrency(cliente.total_gasto)}</TableCell>
+                        <TableCell align="right" sx={{ color: theme?.colors?.text }}>
                           <strong>{formatCurrency(cliente.ticket_medio)}</strong>
                         </TableCell>
                       </TableRow>
@@ -342,27 +342,27 @@ function AnaliseClientes() {
                 Análise de Recorrência
               </Typography>
               <Divider style={{ margin: "10px 0" }} />
-              <TableContainer component={Paper} style={{ maxHeight: 400 }}>
+              <TableContainer component={Paper} style={{ maxHeight: 400 }} sx={{ backgroundColor: theme?.colors?.body }}>
                 <Table size="small" stickyHeader>
                   <TableHead>
-                    <TableRow>
-                      <TableCell><strong>Cliente</strong></TableCell>
-                      <TableCell align="right"><strong>Compras</strong></TableCell>
-                      <TableCell align="right"><strong>Intervalo Médio (dias)</strong></TableCell>
-                      <TableCell align="right"><strong>Total Gasto</strong></TableCell>
+                    <TableRow sx={{ backgroundColor: theme?.colors?.body }}>
+                      <TableCell sx={{ color: theme?.colors?.text, backgroundColor: theme?.colors?.body }}><strong>Cliente</strong></TableCell>
+                      <TableCell align="right" sx={{ color: theme?.colors?.text, backgroundColor: theme?.colors?.body }}><strong>Compras</strong></TableCell>
+                      <TableCell align="right" sx={{ color: theme?.colors?.text, backgroundColor: theme?.colors?.body }}><strong>Intervalo Médio (dias)</strong></TableCell>
+                      <TableCell align="right" sx={{ color: theme?.colors?.text, backgroundColor: theme?.colors?.body }}><strong>Total Gasto</strong></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {data.recorrencia.map((cliente) => (
-                      <TableRow key={cliente.id}>
-                        <TableCell>{cliente.nome}</TableCell>
-                        <TableCell align="right">
+                      <TableRow key={cliente.id} sx={{ backgroundColor: theme?.colors?.body }}>
+                        <TableCell sx={{ color: theme?.colors?.text }}>{cliente.nome}</TableCell>
+                        <TableCell align="right" sx={{ color: theme?.colors?.text }}>
                           <Chip label={cliente.total_vendas} color="primary" size="small" />
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell align="right" sx={{ color: theme?.colors?.text }}>
                           {Math.round(cliente.intervalo_medio_dias)} dias
                         </TableCell>
-                        <TableCell align="right">{formatCurrency(cliente.total_gasto)}</TableCell>
+                        <TableCell align="right" sx={{ color: theme?.colors?.text }}>{formatCurrency(cliente.total_gasto)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
