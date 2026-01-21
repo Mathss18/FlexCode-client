@@ -16,6 +16,12 @@ function ListarNotasFiscaisPage() {
   const [clientes, setClientes] = useState([]);
   const fullScreenLoader = useFullScreenLoader();
   const notaFiscalContext = useNotaFiscalContext();
+  const [total, setTotal] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchText, setSearchText] = useState("");
+  const [debouncedSearchText, setDebouncedSearchText] = useState(searchText);
+
   const columns = [
     {
       name: "Número",
@@ -51,6 +57,100 @@ function ListarNotasFiscaisPage() {
     },
   ];
 
+  const config = {
+    textLabels: {
+      body: {
+        noMatch: "Nenhum resultado encontrado.",
+        toolTip: "Filtrar",
+        columnHeaderTooltip: (column) => `Filtrar por ${column.label}`,
+      },
+      pagination: {
+        next: "Próxima",
+        previous: "Anterior",
+        rowsPerPage: "Linhas por página",
+        displayRows: "de",
+      },
+      toolbar: {
+        search: "Procurar",
+        downloadCsv: "Exportar para planilha",
+        print: "Imprimir",
+        viewColumns: "Ver Colunas",
+        filterTable: "Filtrar Tabela",
+      },
+      filter: {
+        all: "Todos",
+        title: "Filtros",
+        reset: "Limpar",
+      },
+      viewColumns: {
+        title: "Mostrar Colunas",
+        titleAria: "Mostrar/Esconder Colunas",
+      },
+      selectedRows: {
+        text: "linha(s) selecionadas",
+        delete: "Deletar",
+        deleteAria: "Deletar linhas selecionadas",
+      },
+    },
+    downloadOptions: {
+      filename: "dados.csv",
+      separator: ",",
+    },
+    setRowProps: (row, dataIndex, rowIndex) => {
+      var classRow = "";
+      if (rowIndex % 2 === 0) {
+        classRow = "row row-par";
+      } else {
+        classRow = "row row-impar";
+      }
+      return {
+        className: classRow,
+      };
+    },
+    onCellClick: (colData, cellMeta) => {
+      //console.log(cellMeta);
+    },
+    onRowsDelete: (rowsDeleted) => {
+      console.log(rowsDeleted);
+    },
+    rowsPerPageOptions: [5, 10, 15, 20],
+    selectableRowsHideCheckboxes: true,
+    filter: true,
+    filterType: "dropdown",
+    responsive: "vertical",
+    serverSide: true,
+    count: total,
+    rowsPerPage: itemsPerPage,
+    onTableChange: (action, tableState) => {
+      console.log(action, tableState);
+      switch (action) {
+        case "changePage":
+          setCurrentPage(tableState.page + 1);
+          break;
+        case "changeRowsPerPage":
+          setItemsPerPage(tableState.rowsPerPage);
+          setCurrentPage(1);
+          break;
+        case "search":
+          setSearchText(tableState.searchText);
+          setCurrentPage(1);
+          break;
+        default:
+          console.log("action not handled.");
+      }
+    },
+  };
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchText(searchText);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchText]);
+
   useEffect(() => {
     notaFiscalContext.formik.resetForm(); // Reseta o formik
   }, []);
@@ -65,13 +165,19 @@ function ListarNotasFiscaisPage() {
     history.push("/notas-fiscais/editar/" + id);
   }
 
-  useEffect(() => {
+  const fetchNotasFiscais = () => {
     fullScreenLoader.setLoading(true);
+    const params = {
+      itemsPerPage: itemsPerPage,
+      currentPage: currentPage,
+      searchText: debouncedSearchText,
+    };
+
     api
-      .get("/notas-fiscais")
+      .get("/notas-fiscais-mini", { params })
       .then((response) => {
-        response.data["data"].forEach((element) => {
-          var array = [
+        const fetchedData = response.data["data"].data.map((element) => {
+          return [
             element["nNF"],
             element["tpNF"] == 1 ? "Entrada" : "Saída",
             element["venda_id"],
@@ -90,7 +196,6 @@ function ListarNotasFiscaisPage() {
               }}
             />,
             <>
-              {/* <SearchIcon className={'btn btn-lista'} onClick={(event) => handleOnClickShowButton(event, element['id'])} /> */}
               <EditIcon
                 className={"btn btn-lista"}
                 onClick={(event) =>
@@ -99,15 +204,22 @@ function ListarNotasFiscaisPage() {
               />
             </>,
           ];
-          data.push(array);
         });
-        console.log(data);
-        setClientes(data);
+        console.log(fetchedData);
+        setClientes(fetchedData);
+        setTotal(response.data.data.totalItems);
       })
+      .catch((error) =>
+        console.error("There was an error fetching the notas fiscais", error)
+      )
       .finally(() => {
         fullScreenLoader.setLoading(false);
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    fetchNotasFiscais();
+  }, [currentPage, itemsPerPage, debouncedSearchText]);
 
   return (
     <>
