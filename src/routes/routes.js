@@ -113,6 +113,10 @@ import Imposto from "../pages/Relatorios/Imposto";
 import Performance from "../pages/Relatorios/Performance";
 import Faturamento from "../pages/Relatorios/Faturamento";
 import AnaliseClientes from "../pages/Relatorios/AnaliseClientes";
+import AnaliseProdutos from "../pages/Relatorios/AnaliseProdutos";
+import AnaliseFinanceira from "../pages/Relatorios/AnaliseFinanceira";
+import AnaliseOperacional from "../pages/Relatorios/AnaliseOperacional";
+import AnaliseFornecedores from "../pages/Relatorios/AnaliseFornecedores";
 
 
 export default function Routes({themeSetter}) {
@@ -241,6 +245,10 @@ export default function Routes({themeSetter}) {
             <Route path="/relatorios/performance" exact component={Performance}></Route>
             <Route path="/relatorios/faturamento" exact component={Faturamento}></Route>
             <Route path="/relatorios/analise-clientes" exact component={AnaliseClientes}></Route>
+            <Route path="/relatorios/analise-produtos" exact component={AnaliseProdutos}></Route>
+            <Route path="/relatorios/analise-financeira" exact component={AnaliseFinanceira}></Route>
+            <Route path="/relatorios/analise-operacional" exact component={AnaliseOperacional}></Route>
+            <Route path="/relatorios/analise-fornecedores" exact component={AnaliseFornecedores}></Route>
 
             <Route path="/medidas" exact component={ListarMedidasPage}></Route>
             <Route path="/medidas/novo" exact component={CadastrarMedidaPage}></Route>
