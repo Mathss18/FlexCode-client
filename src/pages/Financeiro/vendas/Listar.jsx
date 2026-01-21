@@ -20,9 +20,14 @@ function ListarVendas() {
   const history = useHistory();
   const [vendas, setVendas] = useState([]);
   const ordensServicos = useRef([]);
-  const { setLoading } = useFullScreenLoader(); // extract only setLoading
+  const { setLoading } = useFullScreenLoader();
   const notaFiscalContext = useNotaFiscalContext();
   const empresaConfig = JSON.parse(localStorage.getItem("config"));
+  const [total, setTotal] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchText, setSearchText] = useState("");
+  const [debouncedSearchText, setDebouncedSearchText] = useState(searchText);
 
   const columns = [
     {
@@ -216,23 +221,37 @@ function ListarVendas() {
     history.push("/vendas/editar/" + id);
   }
 
-  // ---------- useEffect to fetch data in the desired order ----------
+  // Debounce effect for search text
   useEffect(() => {
-    // If you ONLY want to run once on mount, remove the dependency array entirely or use `[]`.
-    // If you want to re-fetch each time quantidadeCasasDecimaisValor changes, keep it:
+    const handler = setTimeout(() => {
+      setDebouncedSearchText(searchText);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchText]);
+
+  // Fetch vendas with pagination
+  const fetchVendas = async () => {
     setLoading(true);
 
-    (async () => {
-      try {
-        // 1) load ordens-servicos first
-        const responseOs = await api.get("/ordens-servicos");
-        ordensServicos.current = responseOs.data["data"];
+    try {
+      // 1) load ordens-servicos first
+      const responseOs = await api.get("/ordens-servicos");
+      ordensServicos.current = responseOs.data["data"];
 
-        // 2) then load vendas
-        const responseVendas = await api.get("/vendas");
-        const data = [];
+      // 2) then load vendas with pagination
+      const params = {
+        itemsPerPage: itemsPerPage,
+        currentPage: currentPage,
+        searchText: debouncedSearchText,
+      };
 
-        responseVendas.data["data"].forEach((element) => {
+      const responseVendas = await api.get("/vendas-mini", { params });
+      const data = [];
+
+      responseVendas.data["data"].data.forEach((element) => {
           // Convert numeric situacao into string
           if (element.situacao === 0) {
             element.situacao = "Aberta";
@@ -324,13 +343,43 @@ function ListarVendas() {
         });
 
         setVendas(data);
+        setTotal(responseVendas.data.data.totalItems);
       } catch (error) {
         console.error(error);
       } finally {
         setLoading(false);
       }
-    })();
-  }, [empresaConfig.quantidadeCasasDecimaisValor, setLoading]);
+    };
+
+  useEffect(() => {
+    fetchVendas();
+  }, [currentPage, itemsPerPage, debouncedSearchText]);
+
+  // Configure table options with server-side pagination
+  const tableConfig = {
+    ...config,
+    serverSide: true,
+    count: total,
+    rowsPerPage: itemsPerPage,
+    onTableChange: (action, tableState) => {
+      console.log(action, tableState);
+      switch (action) {
+        case "changePage":
+          setCurrentPage(tableState.page + 1);
+          break;
+        case "changeRowsPerPage":
+          setItemsPerPage(tableState.rowsPerPage);
+          setCurrentPage(1);
+          break;
+        case "search":
+          setSearchText(tableState.searchText);
+          setCurrentPage(1);
+          break;
+        default:
+          console.log("action not handled.");
+      }
+    },
+  };
 
   // ---------- Render ----------
   return (
@@ -347,7 +396,7 @@ function ListarVendas() {
         title="Lista de Vendas"
         data={vendas}
         columns={columns}
-        options={config}
+        options={tableConfig}
         className="table-background"
       />
     </>

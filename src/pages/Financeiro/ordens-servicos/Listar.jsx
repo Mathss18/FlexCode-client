@@ -22,6 +22,11 @@ function ListarOrdensServicos() {
   const [selectedFuncionario, setSelectedFuncionario] = useState(null);
   const [open, setOpen] = useState(false);
   const [dadosOrdemServico, setDadosOrdemServico] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchText, setSearchText] = useState("");
+  const [debouncedSearchText, setDebouncedSearchText] = useState(searchText);
 
   const columns = [
     {
@@ -119,12 +124,31 @@ function ListarOrdensServicos() {
     // mywindow.close();
   }
 
+  // Debounce effect for search text
   useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchText(searchText);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchText]);
+
+  // Fetch ordens de serviço with pagination
+  const fetchOrdensServicos = () => {
     fullScreenLoader.setLoading(true);
+    const params = {
+      itemsPerPage: itemsPerPage,
+      currentPage: currentPage,
+      searchText: debouncedSearchText,
+    };
+
     api
-      .get("/ordens-servicos")
+      .get("/ordens-servicos-mini", { params })
       .then((response) => {
-        response.data["data"].forEach((element) => {
+        const data = [];
+        response.data["data"].data.forEach((element) => {
           if (element["situacao"] === 0) {
             element["situacao"] = "Aberta";
           } else if (element["situacao"] === 1) {
@@ -209,11 +233,42 @@ function ListarOrdensServicos() {
           data.push(array);
         });
         setOrdensServicos(data);
+        setTotal(response.data.data.totalItems);
       })
       .finally(() => {
         fullScreenLoader.setLoading(false);
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    fetchOrdensServicos();
+  }, [currentPage, itemsPerPage, debouncedSearchText]);
+
+  // Configure table options with server-side pagination
+  const tableConfig = {
+    ...config,
+    serverSide: true,
+    count: total,
+    rowsPerPage: itemsPerPage,
+    onTableChange: (action, tableState) => {
+      console.log(action, tableState);
+      switch (action) {
+        case "changePage":
+          setCurrentPage(tableState.page + 1);
+          break;
+        case "changeRowsPerPage":
+          setItemsPerPage(tableState.rowsPerPage);
+          setCurrentPage(1);
+          break;
+        case "search":
+          setSearchText(tableState.searchText);
+          setCurrentPage(1);
+          break;
+        default:
+          console.log("action not handled.");
+      }
+    },
+  };
 
   return (
     <>
@@ -236,7 +291,7 @@ function ListarOrdensServicos() {
         title={"Lista de Ordens de Serviços"}
         data={ordensServicos}
         columns={columns}
-        options={config}
+        options={tableConfig}
         className={"table-background"}
       />
     </>
