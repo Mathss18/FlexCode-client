@@ -112,6 +112,7 @@ import ReajusteDePrecos from "../pages/Relatorios/ReajusteDePrecos";
 import Imposto from "../pages/Relatorios/Imposto";
 import Performance from "../pages/Relatorios/Performance";
 import Faturamento from "../pages/Relatorios/Faturamento";
+import AnaliseClientes from "../pages/Relatorios/AnaliseClientes";
 
 
 export default function Routes({themeSetter}) {
@@ -239,6 +240,7 @@ export default function Routes({themeSetter}) {
             <Route path="/relatorios/imposto" exact component={Imposto}></Route>
             <Route path="/relatorios/performance" exact component={Performance}></Route>
             <Route path="/relatorios/faturamento" exact component={Faturamento}></Route>
+            <Route path="/relatorios/analise-clientes" exact component={AnaliseClientes}></Route>
 
             <Route path="/medidas" exact component={ListarMedidasPage}></Route>
             <Route path="/medidas/novo" exact component={CadastrarMedidaPage}></Route>
