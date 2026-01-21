@@ -23,6 +23,7 @@ import {
   Chip,
 } from "@mui/material";
 import { useFullScreenLoader } from "../../context/FullScreenLoaderContext";
+import { useTheme } from "../../theme/useTheme";
 import moment from "moment";
 import api from "../../services/api";
 import Table from "@mui/material/Table";
@@ -40,6 +41,7 @@ import RepeatIcon from "@mui/icons-material/Repeat";
 function AnaliseClientes() {
   const history = useHistory();
   const fullScreenLoader = useFullScreenLoader();
+  const { theme } = useTheme();
   const [open, setOpen] = useState(false);
   const [diasInatividade, setDiasInatividade] = useState(90);
   const [data, setData] = useState({
@@ -104,9 +106,12 @@ function AnaliseClientes() {
   }, [open, diasInatividade]);
 
   const formatCurrency = (value) => {
-    return `R$ ${parseFloat(value || 0).toFixed(
-      empresaConfig?.quantidadeCasasDecimaisValor || 2
-    )}`;
+    return new Intl.NumberFormat('pt-BR', { 
+      style: 'currency', 
+      currency: 'BRL',
+      minimumFractionDigits: empresaConfig?.quantidadeCasasDecimaisValor || 2,
+      maximumFractionDigits: empresaConfig?.quantidadeCasasDecimaisValor || 2
+    }).format(parseFloat(value || 0));
   };
 
   const formatDate = (date) => {
@@ -149,25 +154,25 @@ function AnaliseClientes() {
 
       {/* Cards de Estatísticas */}
       <Grid container spacing={2} style={{ marginBottom: "30px" }}>
-        <Grid item xs={12} md={3}>
-          <Card>
+        <Grid item xs={12} md={4}>
+          <Card style={{ backgroundColor: theme?.colors?.body }}>
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography color="textSecondary" gutterBottom>
                     Clientes Ativos
                   </Typography>
-                  <Typography variant="h4">
+                  <Typography variant="h4" style={{ color: theme?.colors?.text }}>
                     {data.estatisticas.total_clientes_ativos || 0}
                   </Typography>
                 </Box>
-                <GroupIcon style={{ fontSize: 50, color: "#1976d2" }} />
+                <GroupIcon style={{ fontSize: 50, color: theme?.colors?.primary || "#1976d2" }} />
               </Box>
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} md={3}>
-          <Card>
+        <Grid item xs={12} md={4}>
+          <Card style={{ backgroundColor: theme?.colors?.body }}>
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
@@ -183,36 +188,19 @@ function AnaliseClientes() {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} md={3}>
-          <Card>
-            <CardContent>
-              <Box display="flex" alignItems="center" justifyContent="space-between">
-                <Box>
-                  <Typography color="textSecondary" gutterBottom>
-                    Faturamento Total
-                  </Typography>
-                  <Typography variant="h5">
-                    {formatCurrency(data.estatisticas.faturamento_total_periodo)}
-                  </Typography>
-                </Box>
-                <AttachMoneyIcon style={{ fontSize: 50, color: "#4caf50" }} />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <Card>
+        <Grid item xs={12} md={4}>
+          <Card style={{ backgroundColor: theme?.colors?.body }}>
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography color="textSecondary" gutterBottom>
                     Ticket Médio Geral
                   </Typography>
-                  <Typography variant="h5">
+                  <Typography variant="h4" style={{ color: theme?.colors?.text }}>
                     {formatCurrency(data.estatisticas.ticket_medio_geral)}
                   </Typography>
                 </Box>
-                <TrendingUpIcon style={{ fontSize: 50, color: "#ff9800" }} />
+                <TrendingUpIcon style={{ fontSize: 50, color: theme?.colors?.primary || "#ff9800" }} />
               </Box>
             </CardContent>
           </Card>
@@ -220,10 +208,10 @@ function AnaliseClientes() {
       </Grid>
 
       {/* Top Clientes por Faturamento */}
-      <Card style={{ marginBottom: "20px" }}>
+      <Card style={{ marginBottom: "20px", backgroundColor: theme?.colors?.body }}>
         <CardContent>
-          <Typography variant="h6" gutterBottom style={{ display: "flex", alignItems: "center" }}>
-            <TrendingUpIcon style={{ marginRight: "10px" }} />
+          <Typography variant="h6" gutterBottom style={{ display: "flex", alignItems: "center", color: theme?.colors?.text }}>
+            <TrendingUpIcon style={{ marginRight: "10px", color: theme?.colors?.primary }} />
             Top 20 Clientes por Faturamento
           </Typography>
           <Divider style={{ margin: "10px 0" }} />
@@ -263,9 +251,9 @@ function AnaliseClientes() {
       </Card>
 
       {/* Clientes Inativos */}
-      <Card style={{ marginBottom: "20px" }}>
+      <Card style={{ marginBottom: "20px", backgroundColor: theme?.colors?.body }}>
         <CardContent>
-          <Typography variant="h6" gutterBottom style={{ display: "flex", alignItems: "center" }}>
+          <Typography variant="h6" gutterBottom style={{ display: "flex", alignItems: "center", color: theme?.colors?.text }}>
             <GroupIcon style={{ marginRight: "10px", color: "#f44336" }} />
             Clientes Inativos (mais de {diasInatividade} dias sem comprar)
           </Typography>
@@ -310,10 +298,10 @@ function AnaliseClientes() {
       <Grid container spacing={2}>
         {/* Ticket Médio */}
         <Grid item xs={12} md={6}>
-          <Card>
+          <Card style={{ backgroundColor: theme?.colors?.body }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom style={{ display: "flex", alignItems: "center" }}>
-                <AttachMoneyIcon style={{ marginRight: "10px" }} />
+              <Typography variant="h6" gutterBottom style={{ display: "flex", alignItems: "center", color: theme?.colors?.text }}>
+                <AttachMoneyIcon style={{ marginRight: "10px", color: theme?.colors?.primary }} />
                 Ticket Médio por Cliente
               </Typography>
               <Divider style={{ margin: "10px 0" }} />
@@ -347,10 +335,10 @@ function AnaliseClientes() {
 
         {/* Análise de Recorrência */}
         <Grid item xs={12} md={6}>
-          <Card>
+          <Card style={{ backgroundColor: theme?.colors?.body }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom style={{ display: "flex", alignItems: "center" }}>
-                <RepeatIcon style={{ marginRight: "10px" }} />
+              <Typography variant="h6" gutterBottom style={{ display: "flex", alignItems: "center", color: theme?.colors?.text }}>
+                <RepeatIcon style={{ marginRight: "10px", color: theme?.colors?.primary }} />
                 Análise de Recorrência
               </Typography>
               <Divider style={{ margin: "10px 0" }} />
@@ -389,6 +377,8 @@ function AnaliseClientes() {
       <Dialog
         open={open}
         onClose={handleClose}
+        maxWidth="lg"
+        fullWidth
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
