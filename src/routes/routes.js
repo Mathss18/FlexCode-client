@@ -117,6 +117,7 @@ import AnaliseProdutos from "../pages/Relatorios/AnaliseProdutos";
 import AnaliseFinanceira from "../pages/Relatorios/AnaliseFinanceira";
 import AnaliseOperacional from "../pages/Relatorios/AnaliseOperacional";
 import AnaliseFornecedores from "../pages/Relatorios/AnaliseFornecedores";
+import AnaliseDespesas from "../pages/Relatorios/AnaliseDespesas";
 
 
 export default function Routes({themeSetter}) {
@@ -249,6 +250,7 @@ export default function Routes({themeSetter}) {
             <Route path="/relatorios/analise-financeira" exact component={AnaliseFinanceira}></Route>
             <Route path="/relatorios/analise-operacional" exact component={AnaliseOperacional}></Route>
             <Route path="/relatorios/analise-fornecedores" exact component={AnaliseFornecedores}></Route>
+            <Route path="/relatorios/analise-despesas" exact component={AnaliseDespesas}></Route>
 
             <Route path="/medidas" exact component={ListarMedidasPage}></Route>
             <Route path="/medidas/novo" exact component={CadastrarMedidaPage}></Route>

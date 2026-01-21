@@ -22,6 +22,7 @@ function ListarRelatorios() {
         { title: "Análise Financeira", path: "/relatorios/analise-financeira" },
         { title: "Análise Operacional", path: "/relatorios/analise-operacional" },
         { title: "Análise de Fornecedores", path: "/relatorios/analise-fornecedores" },
+        { title: "Pra onde vai meu dinheiro", path: "/relatorios/analise-despesas" },
       ],
     },
     {
