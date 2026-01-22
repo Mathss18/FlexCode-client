@@ -237,8 +237,8 @@ function ListarVendas() {
     setLoading(true);
 
     try {
-      // 1) load ordens-servicos first
-      const responseOs = await api.get("/ordens-servicos");
+      // 1) load ordens-servicos first (usando rota otimizada)
+      const responseOs = await api.get("/ordens-servicos-mini");
       ordensServicos.current = responseOs.data["data"];
 
       // 2) then load vendas with pagination
