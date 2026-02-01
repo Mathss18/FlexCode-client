@@ -11,6 +11,7 @@ import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import api from "../../../services/api";
 import moment from "moment";
 import { Chip } from "@mui/material";
+import { currencyFormatter } from "../../../constants/datagridCurrencyFormatter";
 
 
 function ListarCompras() {
@@ -33,7 +34,27 @@ function ListarCompras() {
     },
     {
       name: 'Valor da compra',
-      options: rowConfig
+      options: {
+        ...rowConfig,
+        customBodyRender: (value) => {
+          let num;
+          let style = {};
+          if (typeof value === 'object' && value.props) {
+            const text = value.props.children;
+            style = value.props.style || {};
+            if (typeof text === 'string' && text.includes('R$')) {
+              const match = text.match(/R\$:?\s*([-\d.,]+)/);
+              if (match) num = Number(match[1].replace(/\./g, '').replace(',', '.'));
+            } else {
+              num = Number(text);
+            }
+          } else {
+            num = Number(value);
+          }
+          if (isNaN(num)) return <span style={style}>{value}</span>;
+          return <span style={style}>{currencyFormatter.format(num)}</span>;
+        }
+      }
     },
     {
       name: 'Data Entrada',
@@ -86,8 +107,8 @@ function ListarCompras() {
                   color={element['situacao'] === "Aberta" ? "primary" : element['situacao'] === "Recebida" ? "secondary" : "error"}
                   size="small"
                   style={{width: "90px", backgroundColor: element["situacao"] === "Cancelada" ? '#c55959' : ''}}
-            />,
-            `R$: ${element['total'].toFixed(empresaConfig.quantidadeCasasDecimaisValor)}`,
+            />, 
+            element['total'],
             moment(element["dataEntrada"]).format('DD/MM/YYYY'),
             <>
               <Tooltip title={'Baixar PDF'} arrow>

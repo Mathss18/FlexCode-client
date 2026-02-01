@@ -11,6 +11,10 @@ import {
   Checkbox,
   InputAdornment,
   Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import CheckIcon from "@material-ui/icons/Check";
@@ -75,6 +79,9 @@ function CadastrarOrdensServicoPage() {
   const [openModalTabelaPreco, setOpenModalTabelaPreco] = useState(false);
   const produtosOriginal = useRef(null);
   const produto = useRef(null);
+  const [stockDialogOpen, setStockDialogOpen] = useState(false);
+  const [produtosComEstoque, setProdutosComEstoque] = useState([]);
+  const [awaitingStockConfirmation, setAwaitingStockConfirmation] = useState(false);
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -362,6 +369,32 @@ function CadastrarOrdensServicoPage() {
     formik.values.desconto,
   ]);
 
+  useEffect(() => {
+    if (!stockDialogOpen && awaitingStockConfirmation) {
+      setAwaitingStockConfirmation(false);
+      const params = {
+        ...formik.values,
+        produtos: rowsProdutos,
+        servicos: rowsServicos,
+      };
+      fullScreenLoader.setLoading(true);
+      api
+        .post("/ordens-servicos", params)
+        .then((response) => {
+          successAlert("Sucesso", "Ordem de Serviço Cadastrada", () =>
+            history.push("/ordens-servicos")
+          );
+        })
+        .catch((error) => {
+          errorAlert("Atenção", error?.response?.data?.message);
+        })
+        .finally(() => {
+          fullScreenLoader.setLoading(false);
+          formik.setSubmitting(false);
+        });
+    }
+  }, [stockDialogOpen, awaitingStockConfirmation]);
+
   const fullScreenLoader = useFullScreenLoader();
 
   function handleOnSubmit(values) {
@@ -415,6 +448,11 @@ function CadastrarOrdensServicoPage() {
       return;
     }
 
+    if (verificarEstoqueProdutos(rowsProdutos)) {
+      formik.setSubmitting(false);
+      return;
+    }
+
     const params = {
       ...formik.values,
       produtos: rowsProdutos,
@@ -441,6 +479,28 @@ function CadastrarOrdensServicoPage() {
   function handleOnChange(name, value) {
     formik.setFieldValue(name, value); // Altera o formik
     console.log(formik.values);
+  }
+
+  function verificarEstoqueProdutos(produtosSelecionados) {
+    const produtosComEstoque = [];
+    produtosSelecionados.forEach((produtoSelecionado) => {
+      const produtoCompleto = produtosOriginal.current.find(
+        (p) => p.id === produtoSelecionado.produto_id
+      );
+      if (produtoCompleto && produtoCompleto.quantidadeAtual > 0) {
+        produtosComEstoque.push({
+          nome: produtoCompleto.nome,
+          quantidadeEmEstoque: produtoCompleto.quantidadeAtual,
+        });
+      }
+    });
+    if (produtosComEstoque.length > 0) {
+      setProdutosComEstoque(produtosComEstoque);
+      setStockDialogOpen(true);
+      setAwaitingStockConfirmation(true);
+      return true;
+    }
+    return false;
   }
 
   const setHoraEntrada = (e) => {
@@ -1124,6 +1184,20 @@ function CadastrarOrdensServicoPage() {
           </Grid>
         </div>
       </form>
+      <Dialog open={stockDialogOpen} onClose={() => setStockDialogOpen(false)}>
+        <DialogTitle>Produtos com Estoque Disponível</DialogTitle>
+        <DialogContent>
+          <p>Os seguintes produtos têm estoque disponível:</p>
+          <ul>
+            {produtosComEstoque.map((p, index) => (
+              <li key={index}>{p.nome} (Estoque: {p.quantidadeEmEstoque})</li>
+            ))}
+          </ul>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setStockDialogOpen(false)}>Fechar</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

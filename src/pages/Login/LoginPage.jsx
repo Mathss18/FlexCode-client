@@ -26,6 +26,7 @@ import {
   LockOutlined,
 } from "@material-ui/icons";
 import Logo from "../../assets/grupo-flex.png";
+import { useMenu } from "../../context/side-menu/SideMenuContext";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -34,6 +35,7 @@ function LoginPage() {
   const history = useHistory();
   const pusherContext = usePusherContext();
   const fullScreenLoader = useFullScreenLoader();
+  const [, setOpenMenu] = useMenu();
 
   var dados = {
     email: email,
@@ -51,6 +53,27 @@ function LoginPage() {
     localStorage.setItem("foto", response.data.foto);
     setToLS("user", response.data.user);
     pusherContext.useIsLogged.setIsLogged(true);
+
+    // If user belongs to the "Produção" group, close side menu and redirect directly to Minhas Tarefas
+    try {
+      const grupoNome = (response.data.grupo && response.data.grupo.nome) || "";
+      const isProducao = grupoNome.toLowerCase().includes("prod");
+      if (isProducao) {
+        try {
+          setOpenMenu(false);
+        } catch (err) {
+          // ignore if context not available
+        }
+        history.push(`/minhas-tarefas/${response.data.user.id}`);
+        return;
+      }
+      else{
+        setOpenMenu(true);
+      }
+    } catch (error) {
+      // ignore and fallback to home
+    }
+
     history.push("/home");
   }
 

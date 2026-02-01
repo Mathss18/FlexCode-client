@@ -10,6 +10,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import { useFullScreenLoader } from "../../../context/FullScreenLoaderContext";
 import { useNotaFiscalContext } from "../../../context/NotaFiscalContext";
 import LocalAtmIcon from "@mui/icons-material/LocalAtm";
+import { currencyFormatter } from "../../../constants/datagridCurrencyFormatter";
 
 function ListarNotasFiscaisPage() {
   const history = useHistory();
@@ -45,7 +46,35 @@ function ListarNotasFiscaisPage() {
     },
     {
       name: "Valor",
-      options: rowConfig,
+      options: {
+        ...rowConfig,
+        customBodyRender: (value) => {
+          let style = {};
+          let text;
+          if (typeof value === 'object' && value.props) {
+            text = value.props.children;
+            style = value.props.style || {};
+          } else {
+            text = value;
+          }
+
+          let numValue;
+          if (typeof text === 'string' && text.includes('R$')) {
+            const match = text.match(/R\$:?\s*([-\d.,]+)/);
+            if (match) {
+              // remove thousand separators and normalize decimal
+              numValue = Number(match[1].replace(/\./g, '').replace(',', '.'));
+            }
+          } else {
+            numValue = Number(text);
+          }
+
+          if (isNaN(numValue)) {
+            return <span style={style}>{text}</span>;
+          }
+          return <span style={style}>{currencyFormatter.format(numValue)}</span>;
+        },
+      },
     },
     {
       name: "Situação",
@@ -183,7 +212,7 @@ function ListarNotasFiscaisPage() {
             element["venda_id"],
             element["chaveNF"],
             element["favorecido_nome"],
-            `R$: ` + element["totalFinal"],
+            element["totalFinal"],
             <Chip
               className="table-tag"
               label={element["situacao"]}

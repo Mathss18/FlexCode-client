@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Divider, Tab, Tabs } from "@mui/material";
-import { Abertas, Fazendo, Finalizadas } from "./Tabs";
+import { Divider, Tab, Tabs, Box } from "@mui/material";
+import { EmAndamento, Finalizadas } from "./Tabs";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import { RefreshTarefasProvider } from "../../../../context/RefreshTarefasContext";
 
 function ListarOrdensServicosFuncionariosPage() {
   const history = useHistory();
@@ -30,36 +31,48 @@ function ListarOrdensServicosFuncionariosPage() {
   }
 
   return (
-    <>
-      <div>
-        <Divider />
-        <div
-          style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
-        >
-          <AssignmentIcon />
-          <h3>Dados das Ordens de Serviços</h3>
-        </div>
-        <Tabs
-          style={{ marginBottom: "24px" }}
-          value={currentTab}
-          onChange={handleTabChange}
-        >
-          <Tab label="Abertas" className="app-default-text-color" />
-          <Tab label="Fazendo" className="app-default-text-color" />
-          <Tab label="Finalizadas" className="app-default-text-color" />
-        </Tabs>
+    <RefreshTarefasProvider>
+      <>
+        <div>
+          <Divider />
+          <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap", mb: 3 }}>
+            <AssignmentIcon sx={{ mr: 1 }} />
+            <h3>Ordens de Serviço</h3>
+          </Box>
+          
+          <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
+            <Tabs
+              value={currentTab}
+              onChange={handleTabChange}
+              sx={{
+                "& .MuiTab-root": {
+                  textTransform: "uppercase",
+                  fontWeight: 600,
+                  fontSize: "0.875rem",
+                },
+                "& .Mui-selected": {
+                  color: "primary.main",
+                },
+              }}
+            >
+              <Tab label="Em Andamento" className="app-default-text-color" />
+              <Tab label="Finalizadas" className="app-default-text-color" />
+            </Tabs>
+          </Box>
 
-        <TabPanel value={currentTab} index={0}>
-          <Abertas />
-        </TabPanel>
-        <TabPanel value={currentTab} index={1}>
-          <Fazendo />
-        </TabPanel>
-        <TabPanel value={currentTab} index={2}>
-          <Finalizadas />
-        </TabPanel>
-      </div>
-    </>
+          <TabPanel value={currentTab} index={0}>
+            <Box sx={{ width: "100%", px: 2 }}>
+              <EmAndamento />
+            </Box>
+          </TabPanel>
+          <TabPanel value={currentTab} index={1}>
+            <Box sx={{ width: "100%", px: 2 }}>
+              <Finalizadas />
+            </Box>
+          </TabPanel>
+        </div>
+      </>
+    </RefreshTarefasProvider>
   );
 }
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import api from "../../../../../services/api";
 import { config, rowConfig } from "../../../../../config/tablesConfig";
+import { useRefreshTarefas } from "../../../../../context/RefreshTarefasContext";
 import CheckIcon from "@mui/icons-material/Check";
 import moment from "moment";
 import FullScreenDialog from "../../../../../components/dialog/FullScreenDialog";
@@ -30,6 +31,7 @@ import { Grid } from "@material-ui/core";
 
 export function Finalizadas() {
   const { idUsuario } = useParams();
+  const { refreshTrigger } = useRefreshTarefas();
   const [openFotoModal, setOpenFotoModal] = useState(false);
   const [produtoSelecionado, setProdutoSelecionado] = useState(null);
   const [ordensServicosFuncionarios, setOrdensServicosFuncionarios] = useState(
@@ -104,7 +106,7 @@ export function Finalizadas() {
   useEffect(() => {
     fullScreenLoader.setLoading(true);
     search();
-  }, []);
+  }, [refreshTrigger]);
 
   function isProdutoMarked(element) {
     var jsonAntigo = JSON.parse(element.pivot.situacao);

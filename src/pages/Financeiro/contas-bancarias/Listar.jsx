@@ -23,6 +23,7 @@ import {
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
 import moment from "moment";
+import { currencyFormatter } from "../../../constants/datagridCurrencyFormatter";
 
 function ListarContasBancariasPage() {
   const columns = [
@@ -32,7 +33,33 @@ function ListarContasBancariasPage() {
     },
     {
       name: "Saldo",
-      options: rowConfig,
+      options: {
+        ...rowConfig,
+        customBodyRender: (value) => {
+          let style = {};
+          let text;
+          if (typeof value === 'object' && value.props) {
+            text = value.props.children;
+            style = value.props.style || {};
+          } else {
+            text = value;
+          }
+          let numValue;
+          if (typeof text === 'string' && text.includes('R$')) {
+            const match = text.match(/R\$:?\s*([-\d.,]+)/);
+            if (match) {
+              numValue = Number(match[1].replace(/\./g, '').replace(',', '.'));
+            }
+          } else {
+            numValue = Number(text);
+          }
+          if (isNaN(numValue)) {
+            return <span style={style}>{text}</span>;
+          } else {
+            return <span style={style}>{currencyFormatter.format(numValue)}</span>;
+          }
+        },
+      },
     },
     {
       name: "Ações",
@@ -71,7 +98,7 @@ function ListarContasBancariasPage() {
           response.data["data"].forEach((element) => {
             var array = [
               element["nome"],
-              `R$: ${element["saldo"].toFixed(2)}`,
+              element["saldo"],
               <>
                 <EditIcon
                   className={"btn-lista"}

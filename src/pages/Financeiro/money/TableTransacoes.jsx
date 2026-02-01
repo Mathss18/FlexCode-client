@@ -14,6 +14,7 @@ import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
 import ModalTransacao from "./ModalTransacao";
 import moment from "moment";
+import { currencyFormatter } from "../../../constants/datagridCurrencyFormatter";
 
 function TableTransacoes({
   open,
@@ -54,7 +55,21 @@ function TableTransacoes({
     },
     {
       name: "Valor",
-      options: rowConfig,
+      options: {
+        ...rowConfig,
+        customBodyRender: (value) => {
+          let numValue;
+          let style = {};
+          if (typeof value === 'object' && value.props && value.props.children) {
+            numValue = Number(value.props.children);
+            style = value.props.style || {};
+          } else {
+            numValue = Number(value);
+          }
+          const formatted = isNaN(numValue) ? (value.props ? value.props.children : value) : currencyFormatter.format(numValue);
+          return <span style={style}>{formatted}</span>;
+        },
+      },
     },
     // {
     //   name: "Situação",
