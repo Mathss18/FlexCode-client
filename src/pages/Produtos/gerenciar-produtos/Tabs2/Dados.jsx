@@ -40,6 +40,19 @@ export function Dados() {
       });
   }, []);
 
+  const [unidadesProdutos, setUnidadesProdutos] = useState([]);
+
+  useEffect(() => {
+    api
+      .get("/unidades-produtos")
+      .then((response) => {
+        setUnidadesProdutos(response.data.data);
+      })
+      .catch((error) => {
+        console.log("Erro:" + error);
+      });
+  }, []);
+
   // Tras os dados do produto 
   useEffect(() => {
     console.log(fullScreenLoader);
@@ -225,6 +238,30 @@ export function Dados() {
             error={produtoContext.formik.touched.codigoBarras && Boolean(produtoContext.formik.errors.codigoBarras)}
             helperText={produtoContext.formik.touched.codigoBarras && produtoContext.formik.errors.codigoBarras}
           />
+        </Grid>
+        <Grid item xs={4}>
+          <FormControl variant="outlined" fullWidth name="unidade_produto_id">
+            <InputLabel>Unidade do Produto *</InputLabel>
+            <Select
+              className={"input-select"}
+              label="Unidade do Produto *"
+              name="unidade_produto_id"
+              value={produtoContext.formik.values.unidade_produto_id}
+              onChange={handleOnChange}
+              onBlur={produtoContext.formik.handleBlur}
+              error={produtoContext.formik.touched.unidade_produto_id && Boolean(produtoContext.formik.errors.unidade_produto_id)}
+            >
+              <MenuItem value={null}> Nenhum</MenuItem>
+              {unidadesProdutos &&
+                unidadesProdutos.map((unidade) => {
+                  return <MenuItem value={unidade.id} key={unidade.id}>{unidade.sigla ? `${unidade.sigla} - ${unidade.nome}` : unidade.nome}</MenuItem>
+                })}
+            </Select>
+            {produtoContext.formik.touched.unidade_produto_id && Boolean(produtoContext.formik.errors.unidade_produto_id)
+              ? <FormHelperText>{produtoContext.formik.errors.unidade_produto_id}</FormHelperText>
+              : ''
+            }
+          </FormControl>
         </Grid>
       </Grid>
     </>
