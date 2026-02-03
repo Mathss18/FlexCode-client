@@ -168,6 +168,12 @@ export default function Valores() {
       notaFiscalContext.formik.setFieldValue("quantidadeParcelas", 1);
       notaFiscalContext.formik.setFieldValue("intervaloParcelas", 0);
     }
+    // Se for sem cobrança, limpa as parcelas
+    if (notaFiscalContext.formik.values.tipoFormaPagamento == "2") {
+      setRowsParcelas([]);
+      notaFiscalContext.formik.setFieldValue("quantidadeParcelas", 0);
+      notaFiscalContext.formik.setFieldValue("intervaloParcelas", 0);
+    }
   }, [notaFiscalContext.formik.values.tipoFormaPagamento]);
 
   useEffect(() => {
@@ -467,6 +473,11 @@ export default function Valores() {
                   control={<Radio />}
                   label="A prazo"
                 />
+                <FormControlLabel
+                  value={"2"}
+                  control={<Radio />}
+                  label="Sem Cobrança"
+                />
               </RadioGroup>
               <FormHelperText>
                 {notaFiscalContext.formik.touched.tipoFormaPagamento &&
@@ -479,7 +490,7 @@ export default function Valores() {
                 className={"btn btn-primary"}
                 startIcon={<AddIcon />}
                 onClick={refreshParcelas}
-                disabled={isBtnDisabled}
+                disabled={isBtnDisabled || notaFiscalContext.formik.values.tipoFormaPagamento == "2"}
               >
                 Parcelas
               </Button>
