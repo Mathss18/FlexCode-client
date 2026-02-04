@@ -1,6 +1,7 @@
-import { Grid } from "@material-ui/core";
+import { Grid, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useEffect, useState } from "react";
+import { Visibility, VisibilityOff } from "@material-ui/icons";
 import DashboardCard from "../components/dashboard//DashboardCard";
 import DashboarContasBancarias from "../components/dashboard/DashboarContasBancarias";
 import DashboardChart from "../components/dashboard/DashboardChart";
@@ -27,6 +28,8 @@ function Home() {
   const [dados, setDados] = useState(null);
   const [accessToRelatorios, setAccessToRelatorios] = useState(false);
   const [isSecretariaFM, setIsSecretariaFM] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(false);
 
   function temAcessoARelatorios() {
     try {
@@ -45,6 +48,9 @@ function Home() {
       const user = JSON.parse(localStorage.getItem("user"))
       if (user.email === "gezieli@metalflex.com" || user.email === "karol@flexmol.com.br") {
         setIsSecretariaFM(true);
+      }
+      if (user.nome === "Admin") {
+        setIsAdmin(true);
       }
     } catch (error) {
       toast.error("Erro ao carregar acessos, fale com o suporte!");
@@ -72,55 +78,71 @@ function Home() {
         <div style={{ width: "99%" }}>
           <Grid container>
             <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-              <h2>
-                Bem vindo, {JSON.parse(localStorage.getItem("user")).nome}
-              </h2>
-              <DashboardComissao dados={dados} />
+              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                <h2>
+                  Bem vindo, {JSON.parse(localStorage.getItem("user")).nome}
+                </h2>
+                {isAdmin && (
+                  <Button
+                    variant="contained"
+                    color={showDashboard ? "secondary" : "primary"}
+                    startIcon={showDashboard ? <VisibilityOff /> : <Visibility />}
+                    onClick={() => setShowDashboard(!showDashboard)}
+                  >
+                    {showDashboard ? "Esconder Dashboard" : "Mostrar Dashboard"}
+                  </Button>
+                )}
+              </div>
+              {(!isAdmin || showDashboard) && <DashboardComissao dados={dados} />}
             </Grid>
           </Grid>
 
-          <Grid container spacing={3}>
-            <Grid item xl={4} lg={4} md={6} sm={12} xs={12}>
-              <DashboardCard type="green" dados={dados} />
-            </Grid>
-            <Grid item xl={4} lg={4} md={6} sm={12} xs={12}>
-              <DashboardCard type="red" dados={dados} />
-            </Grid>
-            <Grid item xl={4} lg={4} md={12} sm={12} xs={12}>
-              <DashboardCard type="blue" dados={dados} />
-            </Grid>
-          </Grid>
+          {(!isAdmin || showDashboard) && (
+            <>
+              <Grid container spacing={3}>
+                <Grid item xl={4} lg={4} md={6} sm={12} xs={12}>
+                  <DashboardCard type="green" dados={dados} />
+                </Grid>
+                <Grid item xl={4} lg={4} md={6} sm={12} xs={12}>
+                  <DashboardCard type="red" dados={dados} />
+                </Grid>
+                <Grid item xl={4} lg={4} md={12} sm={12} xs={12}>
+                  <DashboardCard type="blue" dados={dados} />
+                </Grid>
+              </Grid>
 
-          <Grid container spacing={3}>
-            <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-              <div className={"chart-container"}>
-                <DashboarContasBancarias dados={dados} />
-              </div>
-            </Grid>
-            <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-              <div className={"chart-container"}>
-                <DashboardMap dados={dados} />
-              </div>
-            </Grid>
-          </Grid>
+              <Grid container spacing={3}>
+                <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
+                  <div className={"chart-container"}>
+                    <DashboarContasBancarias dados={dados} />
+                  </div>
+                </Grid>
+                <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
+                  <div className={"chart-container"}>
+                    <DashboardMap dados={dados} />
+                  </div>
+                </Grid>
+              </Grid>
 
-          <Grid container spacing={3}>
-            <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-              <div className={"chart-container"}>
-                <DashboarMetasVendas dados={dados} />
-              </div>
-            </Grid>
-            <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-              <div className={"chart-container"}>
-                <DashboarMelhoresClientes dados={dados} />
-              </div>
-            </Grid>
-          </Grid>
-          {/* <Grid container spacing={3}>
-            <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-              <DashboardCard type="blue" dados={dados} />
-            </Grid>
-          </Grid> */}
+              <Grid container spacing={3}>
+                <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
+                  <div className={"chart-container"}>
+                    <DashboarMetasVendas dados={dados} />
+                  </div>
+                </Grid>
+                <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
+                  <div className={"chart-container"}>
+                    <DashboarMelhoresClientes dados={dados} />
+                  </div>
+                </Grid>
+              </Grid>
+              {/* <Grid container spacing={3}>
+                <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                  <DashboardCard type="blue" dados={dados} />
+                </Grid>
+              </Grid> */}
+            </>
+          )}
         </div>
       )
     }

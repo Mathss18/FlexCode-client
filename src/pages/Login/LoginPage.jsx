@@ -113,7 +113,7 @@ function LoginPage() {
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
-        height="100vh"
+        minHeight="100vh"
         className="content-container"
       >
         <Grid container className="login-grid">

@@ -389,3 +389,47 @@ footer {
   margin: 0 auto 35px;
   z-index: 2;
 }
+
+/* Mobile fixes: allow scrolling and avoid fixed 100vh clipping when keyboard opens */
+@media (max-width: 600px) {
+  .login-container {
+    overflow: auto;
+    height: auto;
+    min-height: 100vh;
+  }
+  .content-container {
+    height: auto !important;
+    padding: 1.5rem 0;
+  }
+  .login-grid {
+    width: 95%;
+    min-height: auto;
+    margin: 1rem auto;
+    border-radius: 12px;
+    display: block;
+  }
+  /* Hide the logo column on small screens and show only the form */
+  .logo-side {
+    display: none;
+  }
+  .form-side {
+    padding: 1rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .login-paper {
+    max-width: 420px;
+    padding: 0.5rem;
+    margin: 0 auto;
+  }
+  /* Hide large logo on mobile to save space */
+  .company-logo {
+    display: none;
+  }
+  .modern-footer {
+    position: static;
+    padding-top: 1rem;
+  }
+}
