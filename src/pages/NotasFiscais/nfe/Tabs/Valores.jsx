@@ -222,17 +222,17 @@ export default function Valores() {
       0
     );
 
-    if (
-      notaFiscalContext.formik.values.tipoFormaPagamento == "0" &&
-      rowsParcelas.length != 1
-    ) {
-      notaFiscalContext.formik.setSubmitting(false);
-      errorAlert(
-        "Erro no calculo das parcelas!",
-        "Vendas à vista devem ter apenas uma parcela!"
-      );
-      return;
-    }
+    // if (
+    //   notaFiscalContext.formik.values.tipoFormaPagamento == "0" &&
+    //   rowsParcelas.length != 1
+    // ) {
+    //   notaFiscalContext.formik.setSubmitting(false);
+    //   errorAlert(
+    //     "Erro no calculo das parcelas!",
+    //     "Vendas à vista devem ter apenas uma parcela!"
+    //   );
+    //   return;
+    // }
 
     const rowParcelasSanitezed = rowsParcelas.map((parcela, index) => {
       if (typeof parcela.dataVencimento === "object") {
