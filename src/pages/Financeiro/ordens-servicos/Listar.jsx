@@ -110,18 +110,23 @@ function ListarOrdensServicos() {
   }
 
   function handleOnClickPdfButton(event, item) {
-    const BASE_URL = window.location.origin;
-    const data = btoa(JSON.stringify(item));
-    localStorage.setItem("ordemServicoReport", data);
-
-    window.open(`${BASE_URL}/ordens-servicos/relatorio`, "_blank");
-    // window.print();
-    // mywindow.document.appendChild(html);
-    // mywindow.document.close(); // necessary for IE >= 10
-    // mywindow.focus(); // necessary for IE >= 10*/
-
-    // mywindow.print();
-    // mywindow.close();
+    fullScreenLoader.setLoading(true);
+    
+    // Buscar os dados completos da ordem de serviço com produtos e serviços
+    api
+      .get("/ordens-servicos/" + item.id)
+      .then((response) => {
+        const BASE_URL = window.location.origin;
+        const data = btoa(JSON.stringify(response.data.data));
+        localStorage.setItem("ordemServicoReport", data);
+        window.open(`${BASE_URL}/ordens-servicos/relatorio`, "_blank");
+      })
+      .catch((error) => {
+        errorAlert("Atenção", "Erro ao buscar dados da ordem de serviço");
+      })
+      .finally(() => {
+        fullScreenLoader.setLoading(false);
+      });
   }
 
   // Debounce effect for search text
