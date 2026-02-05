@@ -34,7 +34,7 @@ export default function OrcamentoReport() {
       0
     );
     const valorTotalProdutos = dados?.produtos.reduce(
-      (acc, element) => acc + element.pivot.total,
+      (acc, element) => acc + (element.pivot.quantidade * element.pivot.preco),
       0
     );
 
@@ -43,7 +43,7 @@ export default function OrcamentoReport() {
       0
     );
     const valorTotalServicos = dados?.servicos.reduce(
-      (acc, element) => acc + element.pivot.total,
+      (acc, element) => acc + (element.pivot.quantidade * element.pivot.preco),
       0
     );
 

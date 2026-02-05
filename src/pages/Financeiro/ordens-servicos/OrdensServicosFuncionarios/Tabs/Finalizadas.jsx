@@ -10,7 +10,12 @@ import {
   AppBar,
   Avatar,
   Button,
+  Box,
+  Card,
+  CardContent,
+  Chip,
   Divider,
+  Grid,
   IconButton,
   List,
   ListItem,
@@ -27,7 +32,6 @@ import BuildIcon from "@mui/icons-material/Build";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useFullScreenLoader } from "../../../../../context/FullScreenLoaderContext";
 import ModalFotoProduto from "./ModalFotoProduto";
-import { Grid } from "@material-ui/core";
 
 export function Finalizadas() {
   const { idUsuario } = useParams();
@@ -137,6 +141,14 @@ export function Finalizadas() {
   }
 
   const DialogHeader = () => {
+    const produtos = dados["ordem_servico"]?.produtos || [];
+    const servicos = dados["ordem_servico"]?.servicos || [];
+    const totalItems = produtos.length + servicos.length;
+    const produtosMarcados = produtos.filter((p) => isProdutoMarked(p)).length;
+    const servicosMarcados = servicos.filter((s) => isServicoMarked(s)).length;
+    const totalMarcados = produtosMarcados + servicosMarcados;
+    const progresso = totalItems > 0 ? Math.round((totalMarcados / totalItems) * 100) : 0;
+
     return (
       <AppBar sx={{ position: "relative" }}>
         <Toolbar>
@@ -148,10 +160,37 @@ export function Finalizadas() {
           >
             <CloseIcon />
           </IconButton>
-          <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-            {`Ordem de serviço N° ${dados["ordem_servico"].numero}`}
-          </Typography>
-          <Button autoFocus color="inherit" onClick={() => setOpen(false)}>
+          <Box sx={{ ml: 2, flex: 1 }}>
+            <Typography variant="h6" component="div" className="cardText">
+              {`Ordem de serviço N° ${dados["ordem_servico"]?.numero || ""}`}
+            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 0.5 }}>
+              <Typography variant="body2">
+                Cliente: {dados["ordem_servico"]?.cliente?.nome || ""}
+              </Typography>
+              <Chip
+                label={`${totalMarcados}/${totalItems} itens`}
+                size="small"
+                sx={{
+                  bgcolor: progresso === 100 ? "success.light" : "info.light",
+                  color: "white",
+                  fontWeight: 600,
+                }}
+              />
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                {progresso}% completo
+              </Typography>
+            </Box>
+          </Box>
+          <Button
+            autoFocus
+            color="inherit"
+            onClick={() => setOpen(false)}
+            sx={{
+              fontWeight: 600,
+              "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
+            }}
+          >
             Fechar
           </Button>
         </Toolbar>
@@ -161,121 +200,413 @@ export function Finalizadas() {
 
   const DialogBody = () => {
     return (
-      <div>
-        <List
-          style={{
-            display:
-              dados["ordem_servico"].produtos.length !== 0 ? "block" : "none",
-          }}
-        >
-          <h3 style={{ textAlign: "center" }}>Produtos</h3>
-          {dados["ordem_servico"].produtos.map((element, index) => {
-            return (
-              <ListItem
-                key={index}
-                button
-                onClick={() => {
-                  setProdutoSelecionado(element);
-                  setOpenFotoModal(true);
-                }}
+      <Box
+        sx={{
+          p: { xs: 2, sm: 3, md: 3 },
+          minHeight: "60vh",
+          width: "100%",
+        }}
+        className="cardBackground"
+      >
+        {/* Seção de Produtos */}
+        {dados["ordem_servico"]?.produtos?.length > 0 && (
+          <Box sx={{ mb: 5 }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
+                mb: 3,
+                pb: 2,
+                borderBottom: 2,
+                borderColor: "primary.main",
+              }}
+            >
+              <BubbleChartIcon sx={{ color: "primary.main", fontSize: 32 }} />
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 700 }}
+                className="cardText"
               >
-                <ListItemAvatar>
-                  <Avatar
-                    style={{
-                      background:
-                        isProdutoMarked(element) === true
-                          ? "#00ff00"
-                          : "#ff0000",
-                    }}
-                  >
-                    {isProdutoMarked(element) === true ? (
-                      <CheckIcon style={{ fill: "#000" }} />
-                    ) : (
-                      <CloseIcon style={{ fill: "#000" }} />
-                    )}
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  style={{ flex: "none" }}
-                  primary={element.nome}
-                  secondary={"Código Interno: " + element.codigoInterno}
-                />
-                <ListItemText
-                  style={{ flex: "none", marginLeft: 48 }}
-                  primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={
-                    "Observações: " + element.pivot.observacao == null
-                      ? ""
-                      : element.pivot.observacao
-                  }
-                />
-              </ListItem>
-            );
-          })}
-          <Divider />
-        </List>
+                Produtos
+              </Typography>
+              <Chip
+                label={`${dados["ordem_servico"]?.produtos?.filter((p) => isProdutoMarked(p)).length}/${dados["ordem_servico"]?.produtos?.length}`}
+                size="small"
+                color="primary"
+                sx={{ ml: 1, fontWeight: 600 }}
+              />
+            </Box>
+            <Grid container spacing={3}>
+              {[...dados["ordem_servico"]?.produtos].sort((a, b) => a.nome.localeCompare(b.nome)).map((element, index) => {
+                const isMarked = isProdutoMarked(element);
+                return (
+                  <Grid item xs={12} sm={12} md={6} lg={6} xl={3} key={index}>
+                    <Card
+                      elevation={isMarked ? 4 : 1}
+                      className="cardBackground"
+                      sx={{
+                        height: "100%",
+                        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                        cursor: "pointer",
+                        border: 2,
+                        borderColor: isMarked ? "success.main" : "error.main",
+                        position: "relative",
+                        overflow: "visible",
+                        "&:hover": {
+                          transform: "translateY(-6px)",
+                          boxShadow: 8,
+                          borderColor: isMarked ? "success.dark" : "error.dark",
+                        },
+                        "&::before": isMarked
+                          ? {
+                              content: '""',
+                              position: "absolute",
+                              top: -2,
+                              right: -2,
+                              width: 24,
+                              height: 24,
+                              bgcolor: "success.main",
+                              borderRadius: "50%",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              zIndex: 1,
+                            }
+                          : {},
+                      }}
+                      onClick={() => {
+                        setProdutoSelecionado(element);
+                        setOpenFotoModal(true);
+                      }}
+                    >
+                      <CardContent sx={{ p: 2.5 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            gap: 2,
+                          }}
+                        >
+                          {/* Ícone de status (apenas visual) */}
+                          <Box
+                            sx={{
+                              width: 56,
+                              height: 56,
+                              borderRadius: "50%",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              bgcolor: isMarked ? "success.main" : "error.main",
+                              color: "white",
+                              boxShadow: 2,
+                              flexShrink: 0,
+                            }}
+                          >
+                            {isMarked ? <CheckIcon /> : <CloseIcon />}
+                          </Box>
+                          <Box sx={{ flex: 1, minWidth: 0 }}>
+                            <Typography
+                              variant="h6"
+                              className="cardText"
+                              sx={{
+                                mb: 1.5,
+                                fontSize: { xs: "1rem", sm: "1.1rem" },
+                                lineHeight: 1.3,
+                              }}
+                            >
+                              {element.nome}
+                            </Typography>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: 1,
+                              }}
+                            >
+                              <Typography
+                                variant="h6"
+                                className="cardText"
+                                sx={{
+                                  width: "fit-content",
+                                  fontWeight: 700,
+                                  fontSize: "1rem",
+                                }}
+                              >
+                                {`Código: ${element.codigoInterno}`}
+                              </Typography>
+                              <Chip
+                                label={`Quantidade: ${element.pivot.quantidade}`}
+                                size="small"
+                                color="primary"
+                                sx={{
+                                  width: "fit-content",
+                                  fontWeight: 600,
+                                }}
+                              />
+                            </Box>
+                            {element.pivot.observacao && (
+                              <Box
+                                sx={{
+                                  mt: 2,
+                                  p: 1.5,
+                                  bgcolor: "action.hover",
+                                  borderRadius: 1,
+                                  borderLeft: 3,
+                                  borderColor: "warning.main",
+                                }}
+                              >
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    fontStyle: "italic",
+                                    color: "text.secondary",
+                                    fontSize: "0.875rem",
+                                  }}
+                                >
+                                  <strong>Obs:</strong> {element.pivot.observacao}
+                                </Typography>
+                              </Box>
+                            )}
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                                mt: 2,
+                                pt: 1.5,
+                                borderTop: 1,
+                                borderColor: "divider",
+                              }}
+                            >
+                              <PhotoIcon
+                                sx={{ fontSize: 18, color: "primary.main" }}
+                              />
+                              <Typography
+                                variant="caption"
+                                sx={{
+                                  color: "primary.main",
+                                  fontWeight: 500,
+                                  fontSize: "0.875rem",
+                                }}
+                              >
+                                Clique para ver fotos
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </Box>
+        )}
 
-        <List
-          style={{
-            display:
-              dados["ordem_servico"].servicos.length !== 0 ? "block" : "none",
-          }}
-        >
-          <h3 style={{ textAlign: "center" }}>Serviços</h3>
-          {dados["ordem_servico"].servicos.map((element, index) => {
-            return (
-              <ListItem
-                key={index}
-                button
+        {/* Seção de Serviços */}
+        {dados["ordem_servico"]?.servicos?.length > 0 && (
+          <Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
+                mb: 3,
+                pb: 2,
+                borderBottom: 2,
+                borderColor: "primary.main",
+              }}
+            >
+              <BuildIcon sx={{ color: "primary.main", fontSize: 32 }} />
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 700 }}
+                className="cardText"
               >
-                <ListItemAvatar>
-                  <Avatar
-                    style={{
-                      background:
-                        isServicoMarked(element) === true
-                          ? "#00ff00"
-                          : "#ff0000",
-                    }}
-                  >
-                    {isServicoMarked(element) === true ? (
-                      <CheckIcon style={{ fill: "#000" }} />
-                    ) : (
-                      <CloseIcon style={{ fill: "#000" }} />
-                    )}
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  style={{ flex: "none" }}
-                  primary={element.nome}
-                  secondary={"Código Interno: " + element.codigoInterno}
-                />
-                <ListItemText
-                  style={{ flex: "none", marginLeft: 48 }}
-                  primary={"Quantidade: " + element.pivot.quantidade}
-                  secondary={
-                    "Observações: " + element.pivot.observacao == null
-                      ? ""
-                      : element.pivot.observacao
-                  }
-                />
-              </ListItem>
-            );
-          })}
-          <Divider />
-        </List>
-      </div>
+                Serviços
+              </Typography>
+              <Chip
+                label={`${dados["ordem_servico"]?.servicos?.filter((s) => isServicoMarked(s)).length}/${dados["ordem_servico"]?.servicos?.length}`}
+                size="small"
+                color="primary"
+                sx={{ ml: 1, fontWeight: 600 }}
+              />
+            </Box>
+            <Grid container spacing={3}>
+              {[...dados["ordem_servico"]?.servicos].sort((a, b) => a.nome.localeCompare(b.nome)).map((element, index) => {
+                const isMarked = isServicoMarked(element);
+                return (
+                  <Grid item xs={12} sm={6} md={3} lg={3} xl={2} key={index}>
+                    <Card
+                      elevation={isMarked ? 4 : 1}
+                      className="cardBackground"
+                      sx={{
+                        height: "100%",
+                        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                        border: 2,
+                        borderColor: isMarked ? "success.main" : "error.main",
+                        position: "relative",
+                        "&:hover": {
+                          transform: "translateY(-6px)",
+                          boxShadow: 8,
+                          borderColor: isMarked ? "success.dark" : "error.dark",
+                        },
+                        "&::before": isMarked
+                          ? {
+                              content: '""',
+                              position: "absolute",
+                              top: -2,
+                              right: -2,
+                              width: 24,
+                              height: 24,
+                              bgcolor: "success.main",
+                              borderRadius: "50%",
+                              zIndex: 1,
+                            }
+                          : {},
+                      }}
+                    >
+                      <CardContent sx={{ p: 2.5 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            gap: 2,
+                          }}
+                        >
+                          {/* Ícone de status (apenas visual) */}
+                          <Box
+                            sx={{
+                              width: 56,
+                              height: 56,
+                              borderRadius: "50%",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              bgcolor: isMarked ? "success.main" : "error.main",
+                              color: "white",
+                              boxShadow: 2,
+                              flexShrink: 0,
+                            }}
+                          >
+                            {isMarked ? <CheckIcon /> : <CloseIcon />}
+                          </Box>
+                          <Box sx={{ flex: 1, minWidth: 0 }}>
+                            <Typography
+                              variant="h6"
+                              className="cardText"
+                              sx={{
+                                fontWeight: 700,
+                                mb: 1.5,
+                                fontSize: { xs: "1rem", sm: "1.1rem" },
+                                lineHeight: 1.3,
+                              }}
+                            >
+                              {element.nome}
+                            </Typography>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: 1,
+                              }}
+                            >
+                              <Chip
+                                label={`Código: ${element.codigoInterno}`}
+                                size="medium"
+                                variant="outlined"
+                                color="primary"
+                                sx={{
+                                  width: "fit-content",
+                                  fontWeight: 700,
+                                  fontSize: "0.875rem",
+                                }}
+                              />
+                              <Chip
+                                label={`Quantidade: ${element.pivot.quantidade}`}
+                                size="small"
+                                color="primary"
+                                sx={{
+                                  width: "fit-content",
+                                  fontWeight: 600,
+                                }}
+                              />
+                            </Box>
+                            {element.pivot.observacao && (
+                              <Box
+                                sx={{
+                                  mt: 2,
+                                  p: 1.5,
+                                  bgcolor: "action.hover",
+                                  borderRadius: 1,
+                                  borderLeft: 3,
+                                  borderColor: "warning.main",
+                                }}
+                              >
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    fontStyle: "italic",
+                                    color: "text.secondary",
+                                    fontSize: "0.875rem",
+                                  }}
+                                >
+                                  <strong>Obs:</strong> {element.pivot.observacao}
+                                </Typography>
+                              </Box>
+                            )}
+                          </Box>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </Box>
+        )}
+
+        {/* Mensagem quando não há items */}
+        {!dados["ordem_servico"]?.produtos?.length &&
+          !dados["ordem_servico"]?.servicos?.length && (
+            <Box
+              sx={{
+                textAlign: "center",
+                py: 10,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
+              <BubbleChartIcon sx={{ fontSize: 64, color: "text.disabled" }} />
+              <Typography
+                variant="h6"
+                color="text.secondary"
+                sx={{ fontWeight: 500 }}
+              >
+                Nenhum item encontrado nesta ordem de serviço
+              </Typography>
+            </Box>
+          )}
+      </Box>
     );
   };
 
   const DialogFooter = () => {
     return (
       <>
-        <Grid container style={{ margin: 12, width: "fit-content" }}>
-          <Grid item>
-            <h3>Observações:</h3>
-            <p>{dados?.observacao}</p>
-          </Grid>
-        </Grid>
+        {dados?.observacao && (
+          <Box sx={{ p: 3, borderTop: 1, borderColor: "divider" }}>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+              Observações:
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              {dados?.observacao}
+            </Typography>
+          </Box>
+        )}
       </>
     );
   };

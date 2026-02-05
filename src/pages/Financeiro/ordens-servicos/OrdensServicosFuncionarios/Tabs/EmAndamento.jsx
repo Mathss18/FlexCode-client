@@ -616,7 +616,7 @@ export function EmAndamento() {
             <CloseIcon />
           </IconButton>
           <Box sx={{ ml: 2, flex: 1 }}>
-            <Typography variant="h6" component="div">
+            <Typography variant="h6" component="div" className="cardText">
               {`Ordem de serviço N° ${dados["ordem_servico"]?.numero || ""}`}
             </Typography>
             <Box
@@ -697,7 +697,7 @@ export function EmAndamento() {
               />
             </Box>
             <Grid container spacing={3}>
-              {dados["ordem_servico"]?.produtos?.map((element, index) => {
+              {[...dados["ordem_servico"]?.produtos].sort((a, b) => a.nome.localeCompare(b.nome)).map((element, index) => {
                 const isMarked = isProdutoMarked(element);
                 return (
                   <Grid item xs={12} sm={12} md={6} lg={6} xl={3} key={index}>
@@ -915,7 +915,7 @@ export function EmAndamento() {
               />
             </Box>
             <Grid container spacing={3}>
-              {dados["ordem_servico"]?.servicos?.map((element, index) => {
+              {[...dados["ordem_servico"]?.servicos].sort((a, b) => a.nome.localeCompare(b.nome)).map((element, index) => {
                 const isMarked = isServicoMarked(element);
                 return (
                   <Grid item xs={12} sm={6} md={3} lg={3} xl={2} key={index}>
